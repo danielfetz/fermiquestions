@@ -28,17 +28,11 @@ body {
 }
 
 .game-title {
-    font-size: 1.125rem;
+    font-size: 1.0625rem;
     font-weight: bold;
     letter-spacing: -1px;
-}
-
-.title-red {
-    color: #e74c3c;
-}
-
-.title-blue {
-    color: #3498db;
+    display: flex;
+    gap: 0.5rem;
 }
 
 .icon-button {
@@ -109,7 +103,7 @@ body {
     color: #333;
     padding: 10px 15px;
     border-radius: 12px;
-    font-size: 0.9rem;
+    font-size: 0.8rem;
     text-align: center;
     border: none;
     font-family: 'Press Start 2P', monospace;
@@ -164,14 +158,14 @@ body {
 .input-row {
     display: flex;
     align-items: center;
-    gap: 10px;
+    gap: 5px;
 }
 
 .input-container {
     display: flex;
     align-items: center;
     gap: 8px;
-    background-color: #444;
+    background-color: #e0e0e0;
     padding: 8px 12px;
     border-radius: 8px;
     flex: 1;
@@ -199,7 +193,7 @@ body {
 }
 
 .submit-btn {
-    background-color: #e74c3c;
+    background-color: #3498db;
     color: white;
     border: none;
     padding: 8px 12px;
@@ -363,15 +357,6 @@ body {
         font-size: 0.8rem;
     }
     
-    .input-row {
-        gap: 6px;
-    }
-    
-    .input-container {
-        gap: 6px;
-        padding: 6px 10px;
-    }
-    
     .input-icon {
         font-size: 0.7rem;
     }
@@ -380,10 +365,6 @@ body {
         font-size: 0.7rem;
     }
     
-    .submit-btn {
-        padding: 6px 10px;
-        font-size: 0.5rem;
-    }
 }
 
 /* Animation for new guesses
@@ -412,4 +393,4 @@ body {
 
 .shake {
     animation: shake 0.5s ease-in-out;
-} 
+}
