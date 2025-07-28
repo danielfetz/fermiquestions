@@ -407,14 +407,7 @@ body {
 
 /* Responsive Design */
 @media (max-width: 768px) {
-    .question-text {
-        font-size: 0.8rem;
-    }
 
-    #guess-input {
-        font-size: 0.7rem;
-    }
-    
 }
 
 /* Animation for new guesses
