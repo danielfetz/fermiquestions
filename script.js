@@ -227,7 +227,8 @@ function getGuessText(guessNumber) {
 
 // Submit a guess
 function submitGuess() {
-    const guessValue = parseInt(guessInput.value.replace(/,/g, ''));
+    const rawValue = guessInput.value.replace(/,/g, ''); // Remove commas for parsing
+    const guessValue = parseInt(rawValue);
     
     if (isNaN(guessValue) || guessValue < 0) {
         alert('Please enter a valid positive number!');
@@ -455,7 +456,16 @@ function setupEventListeners() {
     });
     
     // Auto-format input with commas
-    guessInput.addEventListener('input', formatInputWithCommas);
+    guessInput.addEventListener('input', (e) => {
+        const value = e.target.value.replace(/,/g, ''); // Remove existing commas
+        const number = parseInt(value);
+        
+        if (!isNaN(number) && number >= 0) {
+            e.target.value = formatNumber(number);
+        } else if (value === '') {
+            e.target.value = '';
+        }
+    });
     
     // New game buttons
     newGameBtnInline.addEventListener('click', startNewGame);
@@ -479,20 +489,6 @@ function setupEventListeners() {
             closeModal(statsModal);
         }
     });
-}
-
-// Format input with commas as user types
-function formatInputWithCommas(e) {
-    // Remove all non-digit characters
-    let value = e.target.value.replace(/\D/g, '');
-    
-    // Add commas for thousands
-    if (value.length > 0) {
-        value = parseInt(value).toLocaleString();
-    }
-    
-    // Update the input value
-    e.target.value = value;
 }
 
 // Initialize the game when the page loads
