@@ -37,8 +37,14 @@
         </div>
 
         <!-- Guess Counter -->
-        <div class="guess-counter">
+        <div class="guess-counter" id="guess-counter">
             <span id="guess-count">Guess: 0/6</span>
+        </div>
+
+        <!-- Game Result (hidden by default) -->
+        <div class="game-result" id="game-result" style="display: none;">
+            <span class="result-message" id="result-message"></span>
+            <span class="correct-answer" id="correct-answer"></span>
         </div>
 
         <!-- Previous Guesses -->
@@ -47,7 +53,7 @@
         </div>
 
         <!-- Input Section -->
-        <div class="input-section">
+        <div class="input-section" id="input-section">
             <div class="input-row">
                 <div class="input-container">
                     <span class="input-icon">#</span>
@@ -61,6 +67,11 @@
                 </div>
                 <button id="submit-btn" class="submit-btn">SUBMIT</button>
             </div>
+        </div>
+
+        <!-- New Game Button (hidden by default) -->
+        <div class="new-game-section" id="new-game-section" style="display: none;">
+            <button id="new-game-btn-inline" class="new-game-btn-inline">New Game</button>
         </div>
 
         <!-- Game Over Modal -->
