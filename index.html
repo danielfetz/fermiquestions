@@ -57,11 +57,11 @@
             <div class="input-row">
                 <div class="input-container">
                     <input 
-                        type="number" 
+                        type="text" 
                         id="guess-input" 
                         placeholder="Enter a guess..." 
-                        min="0"
-                        step="1"
+                        inputmode="numeric"
+                        pattern="[0-9,]*"
                     >
                 </div>
                 <button id="submit-btn" class="submit-btn">SUBMIT</button>
