@@ -247,10 +247,19 @@ function submitGuess() {
     if (isCorrect) {
         gameWon = true;
         gameOver = true;
-        showFeedback(currentGuess - 1, 'correct', '✓');
+        showFeedback(currentGuess - 1, 'correct', 'WIN');
     } else {
         const isHigh = guessValue > currentQuestion.answer;
-        showFeedback(currentGuess - 1, isHigh ? 'high' : 'low', isHigh ? '↓' : '↑');
+        
+        // Check if guess is within 50% (close but not correct)
+        const closeTolerance = currentQuestion.answer * 0.5;
+        const isClose = Math.abs(guessValue - currentQuestion.answer) <= closeTolerance;
+        
+        if (isClose) {
+            showFeedback(currentGuess - 1, 'close', isHigh ? '↓' : '↑');
+        } else {
+            showFeedback(currentGuess - 1, isHigh ? 'high' : 'low', isHigh ? '↓' : '↑');
+        }
         
         if (currentGuess >= maxGuesses) {
             gameOver = true;
