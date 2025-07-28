@@ -227,7 +227,7 @@ function getGuessText(guessNumber) {
 
 // Submit a guess
 function submitGuess() {
-    const guessValue = parseInt(guessInput.value);
+    const guessValue = parseInt(guessInput.value.replace(/,/g, ''));
     
     if (isNaN(guessValue) || guessValue < 0) {
         alert('Please enter a valid positive number!');
@@ -454,6 +454,9 @@ function setupEventListeners() {
         }
     });
     
+    // Auto-format input with commas
+    guessInput.addEventListener('input', formatInputWithCommas);
+    
     // New game buttons
     newGameBtnInline.addEventListener('click', startNewGame);
     
@@ -476,6 +479,20 @@ function setupEventListeners() {
             closeModal(statsModal);
         }
     });
+}
+
+// Format input with commas as user types
+function formatInputWithCommas(e) {
+    // Remove all non-digit characters
+    let value = e.target.value.replace(/\D/g, '');
+    
+    // Add commas for thousands
+    if (value.length > 0) {
+        value = parseInt(value).toLocaleString();
+    }
+    
+    // Update the input value
+    e.target.value = value;
 }
 
 // Initialize the game when the page loads
