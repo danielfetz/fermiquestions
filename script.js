@@ -322,6 +322,11 @@ function startNewGame() {
     guessInput.value = '';
     guessInput.disabled = false;
     submitBtn.disabled = false;
+    
+    // Auto-focus only on non-touch devices (desktop)
+    if (!('ontouchstart' in window) && !navigator.maxTouchPoints) {
+        guessInput.focus();
+    }
 }
 
 // Get a random question
