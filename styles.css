@@ -40,6 +40,7 @@ body {
     border: none;
     font-size: 1.125rem;
     font-family: 'Press Start 2P', monospace;
+    color: #333;
     cursor: pointer;
     padding: 8px;
     border-radius: 6px;
@@ -163,7 +164,7 @@ body {
 }
 
 .guess-field.empty {
-    color: #999;
+    color: #b2b3b3;
 }
 
 .feedback-button {
@@ -227,12 +228,6 @@ body {
     padding: 8px 12px;
     border-radius: 12px;
     flex: 1;
-}
-
-.input-icon {
-    color: white;
-    font-size: 0.8rem;
-    font-weight: bold;
 }
 
 #guess-input {
@@ -413,11 +408,7 @@ body {
     .question-text {
         font-size: 0.8rem;
     }
-    
-    .input-icon {
-        font-size: 0.7rem;
-    }
-    
+
     #guess-input {
         font-size: 0.7rem;
     }
