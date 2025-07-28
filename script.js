@@ -281,7 +281,7 @@ function addGuessToDisplay(guess) {
     const currentRow = guessRows[currentGuess - 1];
     const guessField = currentRow.querySelector('.guess-field');
     
-    guessField.textContent = guess;
+    guessField.textContent = formatNumber(guess);
     guessField.classList.remove('empty');
 }
 
