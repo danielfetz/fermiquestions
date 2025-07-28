@@ -220,11 +220,12 @@ body {
 }
 
 .input-container {
+    height: 44.16px;
     display: flex;
     align-items: center;
     gap: 8px;
     background-color: #fdfdfd;
-    padding: 8px 12px;
+    padding: 10px 15px;
     border-radius: 12px;
     flex: 1;
 }
@@ -237,6 +238,7 @@ body {
     font-family: 'Press Start 2P', monospace;
     outline: none;
     min-width: 0;
+    width: 100%;
 }
 
 #guess-input::placeholder {
@@ -244,17 +246,18 @@ body {
 }
 
 .submit-btn {
+    width: 100px;
+    height: 44.16px;
     background-color: #3498db;
     color: white;
     border: none;
     padding: 8px 12px;
     border-radius: 12px;
     font-family: 'Press Start 2P', monospace;
-    font-size: 0.6rem;
+    font-size: 0.75rem;
     cursor: pointer;
     transition: background-color 0.2s;
     white-space: nowrap;
-    height: fit-content;
 }
 
 .submit-btn:hover {
