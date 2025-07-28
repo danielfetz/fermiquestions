@@ -172,7 +172,6 @@ function startNewGame() {
     guessInput.value = '';
     guessInput.disabled = false;
     submitBtn.disabled = false;
-    guessInput.focus();
 }
 
 // Get a random question
