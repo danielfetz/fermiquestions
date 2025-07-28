@@ -455,15 +455,14 @@ function setupEventListeners() {
         }
     });
     
-    // Auto-format input with commas
+    // Format input with commas as user types
     guessInput.addEventListener('input', (e) => {
         const value = e.target.value.replace(/,/g, ''); // Remove existing commas
-        const number = parseInt(value);
+        const numericValue = value.replace(/[^0-9]/g, ''); // Keep only numbers
         
-        if (!isNaN(number) && number >= 0) {
-            e.target.value = formatNumber(number);
-        } else if (value === '') {
-            e.target.value = '';
+        if (numericValue) {
+            const formattedValue = parseInt(numericValue).toLocaleString();
+            e.target.value = formattedValue;
         }
     });
     
