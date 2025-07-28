@@ -457,12 +457,25 @@ function setupEventListeners() {
     
     // Format input with commas as user types
     guessInput.addEventListener('input', (e) => {
-        const value = e.target.value.replace(/,/g, ''); // Remove existing commas
+        const input = e.target;
+        const cursorPosition = input.selectionStart;
+        const value = input.value.replace(/,/g, ''); // Remove existing commas
         const numericValue = value.replace(/[^0-9]/g, ''); // Keep only numbers
         
         if (numericValue) {
             const formattedValue = parseInt(numericValue).toLocaleString();
-            e.target.value = formattedValue;
+            
+            // Only update if the formatted value is different
+            if (input.value !== formattedValue) {
+                input.value = formattedValue;
+                
+                // Restore cursor position after formatting
+                const newCursorPosition = Math.min(cursorPosition, formattedValue.length);
+                input.setSelectionRange(newCursorPosition, newCursorPosition);
+            }
+        } else {
+            // If no numeric value, clear the input
+            input.value = '';
         }
     });
     
