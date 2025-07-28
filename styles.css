@@ -56,11 +56,11 @@ body {
 }
 
 .question-box {
-    background-color: #e0e0e0;
+    background-color: #f8f9fa;
     border-radius: 12px;
     padding: 20px;
     text-align: center;
-    box-shadow: 0 3px 6px rgba(0, 0, 0, 0.1);
+    border: 2px solid #e9ecef;
 }
 
 .question-text {
@@ -85,6 +85,59 @@ body {
     color: #333;
 }
 
+/* Game Result */
+.game-result {
+    text-align: center;
+    margin-bottom: 15px;
+    padding: 15px;
+    border-radius: 8px;
+    background-color: #f8f9fa;
+    border: 2px solid #e9ecef;
+}
+
+.result-message {
+    font-size: 1rem;
+    font-weight: bold;
+    margin-bottom: 10px;
+    color: #333;
+}
+
+.result-message.won {
+    color: #27ae60;
+}
+
+.result-message.lost {
+    color: #e74c3c;
+}
+
+.correct-answer {
+    font-size: 0.8rem;
+    color: #666;
+    line-height: 1.4;
+}
+
+/* New Game Section */
+.new-game-section {
+    margin-top: 20px;
+    text-align: center;
+}
+
+.new-game-btn-inline {
+    background-color: #27ae60;
+    color: white;
+    border: none;
+    padding: 12px 25px;
+    border-radius: 8px;
+    font-family: 'Press Start 2P', monospace;
+    font-size: 0.7rem;
+    cursor: pointer;
+    transition: background-color 0.2s;
+}
+
+.new-game-btn-inline:hover {
+    background-color: #229954;
+}
+
 /* Guesses Container */
 .guesses-container {
     margin-bottom: 20px;
@@ -99,7 +152,7 @@ body {
 
 .guess-field {
     flex: 1;
-    background-color: #e0e0e0;
+    background-color: #f8f9fa;
     color: #333;
     padding: 10px 15px;
     border-radius: 12px;
@@ -115,7 +168,7 @@ body {
 
 .feedback-button {
     width: 100px;
-    height: 40px;
+    height: 37.91px;
     border-radius: 12px;
     border: none;
     display: flex;
@@ -393,4 +446,4 @@ body {
 
 .shake {
     animation: shake 0.5s ease-in-out;
-}
+} 
