@@ -197,7 +197,11 @@ function clearGuesses() {
         
         const guessField = document.createElement('div');
         guessField.className = 'guess-field empty';
-        guessField.textContent = '---';
+        
+        // Set the appropriate text for each guess position
+        const guessNumber = i + 1;
+        const guessText = getGuessText(guessNumber);
+        guessField.textContent = guessText;
         
         const feedbackButton = document.createElement('button');
         feedbackButton.className = 'feedback-button hidden';
@@ -206,6 +210,19 @@ function clearGuesses() {
         guessRow.appendChild(feedbackButton);
         guessesContainer.appendChild(guessRow);
     }
+}
+
+// Helper function to get the text for each guess position
+function getGuessText(guessNumber) {
+    const guessTexts = {
+        1: 'First guess',
+        2: 'Second guess',
+        3: 'Third guess',
+        4: 'Fourth guess',
+        5: 'Fifth guess',
+        6: 'Sixth guess'
+    };
+    return guessTexts[guessNumber] || `${guessNumber}th guess`;
 }
 
 // Submit a guess
