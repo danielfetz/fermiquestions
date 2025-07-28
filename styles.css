@@ -27,9 +27,9 @@ body {
 }
 
 .game-title {
-    font-size: 1.0625rem;
+    font-size: 1rem;
     font-weight: bold;
-    letter-spacing: -1px;
+    letter-spacing: -0.5px;
     display: flex;
     gap: 0.5rem;
 }
@@ -261,7 +261,7 @@ body {
 }
 
 .submit-btn:hover {
-    background-color: #c0392b;
+    background-color: #3498db;
 }
 
 .submit-btn:disabled {
