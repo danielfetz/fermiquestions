@@ -113,6 +113,156 @@ const fermiQuestions = [
         answer: 500000000000,
         category: "Environment",
         explanation: "Roughly 500 billion plastic bottles are used annually worldwide."
+    },
+    {
+        question: "How many people live in Tokyo?",
+        answer: 14000000,
+        category: "Population",
+        explanation: "Tokyo has approximately 14 million residents in its metropolitan area."
+    },
+    {
+        question: "How many hamburgers does McDonald's sell each day?",
+        answer: 75000000,
+        category: "Food",
+        explanation: "McDonald's sells approximately 75 million hamburgers daily worldwide."
+    },
+    {
+        question: "How many text messages are sent per day globally?",
+        answer: 20000000000,
+        category: "Technology",
+        explanation: "About 20 billion text messages are sent daily across the world."
+    },
+    {
+        question: "How many people visit Disney World each year?",
+        answer: 20000000,
+        category: "Tourism",
+        explanation: "Disney World in Florida attracts approximately 20 million visitors annually."
+    },
+    {
+        question: "How many newspapers are sold daily in the US?",
+        answer: 30000000,
+        category: "Media",
+        explanation: "About 30 million newspapers are sold daily in the United States."
+    },
+    {
+        question: "How many people live in London?",
+        answer: 9000000,
+        category: "Population",
+        explanation: "London has approximately 9 million residents in its metropolitan area."
+    },
+    {
+        question: "How many bicycles are sold in the US each year?",
+        answer: 15000000,
+        category: "Transportation",
+        explanation: "About 15 million bicycles are sold annually in the United States."
+    },
+    {
+        question: "How many people visit the Eiffel Tower each year?",
+        answer: 7000000,
+        category: "Tourism",
+        explanation: "The Eiffel Tower receives approximately 7 million visitors annually."
+    },
+    {
+        question: "How many gallons of milk are consumed in the US each year?",
+        answer: 60000000000,
+        category: "Food",
+        explanation: "Americans consume approximately 60 billion gallons of milk annually."
+    },
+    {
+        question: "How many people work at Walmart?",
+        answer: 2300000,
+        category: "Business",
+        explanation: "Walmart employs approximately 2.3 million people worldwide."
+    },
+    {
+        question: "How many people visit the Grand Canyon each year?",
+        answer: 6000000,
+        category: "Tourism",
+        explanation: "The Grand Canyon National Park receives about 6 million visitors annually."
+    },
+    {
+        question: "How many people live in Paris?",
+        answer: 2100000,
+        category: "Population",
+        explanation: "Paris has approximately 2.1 million residents within city limits."
+    },
+    {
+        question: "How many people visit the Louvre Museum each year?",
+        answer: 10000000,
+        category: "Tourism",
+        explanation: "The Louvre Museum in Paris receives approximately 10 million visitors annually."
+    },
+    {
+        question: "How many people live in Los Angeles?",
+        answer: 4000000,
+        category: "Population",
+        explanation: "Los Angeles has approximately 4 million residents within city limits."
+    },
+    {
+        question: "How many people visit Yellowstone National Park each year?",
+        answer: 4000000,
+        category: "Tourism",
+        explanation: "Yellowstone National Park receives approximately 4 million visitors annually."
+    },
+    {
+        question: "How many people work at Amazon?",
+        answer: 1600000,
+        category: "Business",
+        explanation: "Amazon employs approximately 1.6 million people worldwide."
+    },
+    {
+        question: "How many people visit the Statue of Liberty each year?",
+        answer: 4500000,
+        category: "Tourism",
+        explanation: "The Statue of Liberty receives approximately 4.5 million visitors annually."
+    },
+    {
+        question: "How many people live in Chicago?",
+        answer: 2700000,
+        category: "Population",
+        explanation: "Chicago has approximately 2.7 million residents within city limits."
+    },
+    {
+        question: "How many people visit the Smithsonian Museums each year?",
+        answer: 30000000,
+        category: "Tourism",
+        explanation: "The Smithsonian Museums in Washington DC receive approximately 30 million visitors annually."
+    },
+    {
+        question: "How many people work at Apple?",
+        answer: 164000,
+        category: "Business",
+        explanation: "Apple employs approximately 164,000 people worldwide."
+    },
+    {
+        question: "How many people visit Central Park each year?",
+        answer: 42000000,
+        category: "Tourism",
+        explanation: "Central Park in New York City receives approximately 42 million visitors annually."
+    },
+    {
+        question: "How many people live in Houston?",
+        answer: 2300000,
+        category: "Population",
+        explanation: "Houston has approximately 2.3 million residents within city limits."
+    },
+    {
+        question: "How many people visit the Golden Gate Bridge each year?",
+        answer: 10000000,
+        category: "Tourism",
+        explanation: "The Golden Gate Bridge receives approximately 10 million visitors annually."
+    },
+    {
+        question: "How many people work at Google?",
+        answer: 156500,
+        category: "Business",
+        explanation: "Google employs approximately 156,500 people worldwide."
+    },
+    {
+        question: "How many people visit the National Mall each year?",
+        answer: 25000000,
+        category: "Tourism",
+        explanation: "The National Mall in Washington DC receives approximately 25 million visitors annually."
     }
 ];
 
@@ -172,11 +322,6 @@ function startNewGame() {
     guessInput.value = '';
     guessInput.disabled = false;
     submitBtn.disabled = false;
-    
-    // Auto-focus only on non-touch devices (desktop)
-    if (!('ontouchstart' in window) && !navigator.maxTouchPoints) {
-        guessInput.focus();
-    }
 }
 
 // Get a random question
@@ -343,7 +488,7 @@ function endGame() {
     }
     
     // Set correct answer
-    correctAnswer.innerHTML = `The correct answer was: <strong>${formatNumber(currentQuestion.answer)}</strong><br><small>${currentQuestion.explanation}</small>`;
+    correctAnswer.innerHTML = `The correct answer was: <strong>${formatNumber(currentQuestion.answer)}</strong>`;
     
     // Hide input section and show new game button
     inputSection.style.display = 'none';
