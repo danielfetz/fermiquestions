@@ -227,8 +227,7 @@ function getGuessText(guessNumber) {
 
 // Submit a guess
 function submitGuess() {
-    const rawValue = guessInput.value.replace(/,/g, ''); // Remove commas for parsing
-    const guessValue = parseInt(rawValue);
+    const guessValue = parseInt(guessInput.value.replace(/,/g, ''));
     
     if (isNaN(guessValue) || guessValue < 0) {
         alert('Please enter a valid positive number!');
@@ -282,7 +281,7 @@ function addGuessToDisplay(guess) {
     const currentRow = guessRows[currentGuess - 1];
     const guessField = currentRow.querySelector('.guess-field');
     
-    guessField.textContent = formatNumber(guess);
+    guessField.textContent = guess;
     guessField.classList.remove('empty');
 }
 
@@ -457,25 +456,10 @@ function setupEventListeners() {
     
     // Format input with commas as user types
     guessInput.addEventListener('input', (e) => {
-        const input = e.target;
-        const cursorPosition = input.selectionStart;
-        const value = input.value.replace(/,/g, ''); // Remove existing commas
-        const numericValue = value.replace(/[^0-9]/g, ''); // Keep only numbers
-        
-        if (numericValue) {
-            const formattedValue = parseInt(numericValue).toLocaleString();
-            
-            // Only update if the formatted value is different
-            if (input.value !== formattedValue) {
-                input.value = formattedValue;
-                
-                // Restore cursor position after formatting
-                const newCursorPosition = Math.min(cursorPosition, formattedValue.length);
-                input.setSelectionRange(newCursorPosition, newCursorPosition);
-            }
-        } else {
-            // If no numeric value, clear the input
-            input.value = '';
+        const value = e.target.value.replace(/,/g, ''); // Remove existing commas
+        const number = parseInt(value);
+        if (!isNaN(number)) {
+            e.target.value = formatNumber(number);
         }
     });
     
