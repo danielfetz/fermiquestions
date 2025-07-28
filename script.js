@@ -456,10 +456,15 @@ function setupEventListeners() {
     
     // Format input with commas as user types
     guessInput.addEventListener('input', (e) => {
-        const value = e.target.value.replace(/,/g, ''); // Remove existing commas
-        const number = parseInt(value);
-        if (!isNaN(number)) {
-            e.target.value = formatNumber(number);
+        const input = e.target;
+        const value = input.value.replace(/[^\d]/g, ''); // Keep only digits
+        
+        if (value === '') {
+            input.value = '';
+        } else {
+            const number = parseInt(value);
+            const formattedValue = formatNumber(number);
+            input.value = formattedValue;
         }
     });
     
