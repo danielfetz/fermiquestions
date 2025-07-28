@@ -120,9 +120,16 @@ const fermiQuestions = [
 const questionText = document.getElementById('question-text');
 const questionCategory = document.getElementById('question-category');
 const guessCount = document.getElementById('guess-count');
+const guessCounter = document.getElementById('guess-counter');
+const gameResult = document.getElementById('game-result');
+const resultMessage = document.getElementById('result-message');
+const correctAnswer = document.getElementById('correct-answer');
 const guessesContainer = document.getElementById('guesses-container');
 const guessInput = document.getElementById('guess-input');
 const submitBtn = document.getElementById('submit-btn');
+const inputSection = document.getElementById('input-section');
+const newGameSection = document.getElementById('new-game-section');
+const newGameBtnInline = document.getElementById('new-game-btn-inline');
 const gameOverModal = document.getElementById('game-over-modal');
 const modalTitle = document.getElementById('modal-title');
 const modalMessage = document.getElementById('modal-message');
@@ -154,6 +161,12 @@ function startNewGame() {
     questionCategory.textContent = currentQuestion.category;
     updateGuessCount();
     clearGuesses();
+    
+    // Reset display elements
+    guessCounter.style.display = 'block';
+    gameResult.style.display = 'none';
+    inputSection.style.display = 'block';
+    newGameSection.style.display = 'none';
     
     // Reset input
     guessInput.value = '';
@@ -286,19 +299,25 @@ function endGame() {
     stats.winRate = Math.round((stats.gamesWon / stats.gamesPlayed) * 100);
     saveStats();
     
-    // Show game over modal
+    // Hide guess counter and show game result
+    guessCounter.style.display = 'none';
+    gameResult.style.display = 'block';
+    
+    // Set result message
     if (gameWon) {
-        modalTitle.textContent = 'Congratulations!';
-        modalMessage.textContent = `You won in ${currentGuess} guess${currentGuess > 1 ? 'es' : ''}!`;
+        resultMessage.textContent = `Congratulations! You won in ${currentGuess} guess${currentGuess > 1 ? 'es' : ''}!`;
+        resultMessage.className = 'result-message won';
     } else {
-        modalTitle.textContent = 'Game Over!';
-        modalMessage.textContent = 'You ran out of guesses.';
+        resultMessage.textContent = 'Game Over! You ran out of guesses.';
+        resultMessage.className = 'result-message lost';
     }
     
-    modalAnswer.textContent = `The correct answer was: ${formatNumber(currentQuestion.answer)}`;
-    modalAnswer.innerHTML += `<br><small>${currentQuestion.explanation}</small>`;
+    // Set correct answer
+    correctAnswer.innerHTML = `The correct answer was: <strong>${formatNumber(currentQuestion.answer)}</strong><br><small>${currentQuestion.explanation}</small>`;
     
-    gameOverModal.style.display = 'block';
+    // Hide input section and show new game button
+    inputSection.style.display = 'none';
+    newGameSection.style.display = 'block';
 }
 
 // Start a new game
@@ -409,8 +428,8 @@ function setupEventListeners() {
         }
     });
     
-    // New game button
-    newGameBtn.addEventListener('click', startNewGameFromModal);
+    // New game buttons
+    newGameBtnInline.addEventListener('click', startNewGame);
     
     // Help button
     helpBtn.addEventListener('click', showHelp);
@@ -424,9 +443,6 @@ function setupEventListeners() {
     
     // Close modals when clicking outside
     window.addEventListener('click', (e) => {
-        if (e.target === gameOverModal) {
-            closeModal(gameOverModal);
-        }
         if (e.target === helpModal) {
             closeModal(helpModal);
         }
