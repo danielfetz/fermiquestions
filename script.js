@@ -833,8 +833,17 @@ function selectQuestion(question) {
     // Clear guesses
     clearGuesses();
     
-    // Simple scroll to input
-    guessInput.scrollIntoView();
+    // Only scroll, don't auto-focus on mobile
+    if ('ontouchstart' in window || navigator.maxTouchPoints) {
+        guessInput.scrollIntoView({ 
+            behavior: 'smooth', 
+            block: 'center'
+        });
+        // Don't auto-focus - let user tap when ready
+    } else {
+        // Auto-focus only on desktop
+        guessInput.focus();
+    }
 }
 
 // Setup event listeners
