@@ -833,20 +833,19 @@ function selectQuestion(question) {
     // Clear guesses
     clearGuesses();
     
-    // Handle focus/scroll based on device
-    if ('ontouchstart' in window || navigator.maxTouchPoints) {
-        // Mobile: scroll with timeout for browser quirks
-        setTimeout(() => {
+    // Scroll to input field on mobile, auto-focus on desktop
+    setTimeout(() => {
+        if ('ontouchstart' in window || navigator.maxTouchPoints) {
+            // Mobile: just scroll, no auto-focus
             guessInput.scrollIntoView({ 
                 behavior: 'smooth', 
-                block: 'center',
-                inline: 'nearest'
+                block: 'center'
             });
-        }, 100);
-    } else {
-        // Desktop: immediate focus, no timeout needed
-        guessInput.focus();
-    }
+        } else {
+            // Desktop: auto-focus
+            guessInput.focus();
+        }
+    }, 100);
 }
 
 // Setup event listeners
