@@ -337,36 +337,51 @@ const fermiQuestions = [
 ];
 
 // DOM elements
-const questionText = document.getElementById('question-text');
-const questionCategory = document.getElementById('question-category');
-const currentStreakDisplay = document.getElementById('current-streak-display');
-const guessCounter = document.getElementById('guess-counter');
-const gameResult = document.getElementById('game-result');
-const resultMessage = document.getElementById('result-message');
-const correctAnswer = document.getElementById('correct-answer');
-const guessesContainer = document.getElementById('guesses-container');
-const guessInput = document.getElementById('guess-input');
-const submitBtn = document.getElementById('submit-btn');
-const inputSection = document.getElementById('input-section');
-const newGameSection = document.getElementById('new-game-section');
-const newGameBtnInline = document.getElementById('new-game-btn-inline');
-const gameOverModal = document.getElementById('game-over-modal');
-const modalTitle = document.getElementById('modal-title');
-const modalMessage = document.getElementById('modal-message');
-const modalAnswer = document.getElementById('modal-answer');
-const newGameBtn = document.getElementById('new-game-btn');
-const helpBtn = document.getElementById('help-btn');
-const statsBtn = document.getElementById('stats-btn');
-const helpModal = document.getElementById('help-modal');
-const statsModal = document.getElementById('stats-modal');
-const questionsModal = document.getElementById('questions-modal');
-const questionsList = document.getElementById('questions-list');
-const closeHelpBtn = document.getElementById('close-help-btn');
-const closeStatsBtn = document.getElementById('close-stats-btn');
-const closeQuestionsBtn = document.getElementById('close-questions-btn');
+let questionText, questionCategory, currentStreakDisplay, guessCounter, gameResult, resultMessage, correctAnswer, guessesContainer, guessInput, submitBtn, inputSection, newGameSection, newGameBtnInline, gameOverModal, modalTitle, modalMessage, modalAnswer, newGameBtn, helpBtn, statsBtn, helpModal, statsModal, questionsModal, questionsList, closeHelpBtn, closeStatsBtn, closeQuestionsBtn;
+
+// Function to get DOM elements
+function getDOMElements() {
+    questionText = document.getElementById('question-text');
+    questionCategory = document.getElementById('question-category');
+    currentStreakDisplay = document.getElementById('current-streak-display');
+    guessCounter = document.getElementById('guess-counter');
+    gameResult = document.getElementById('game-result');
+    resultMessage = document.getElementById('result-message');
+    correctAnswer = document.getElementById('correct-answer');
+    guessesContainer = document.getElementById('guesses-container');
+    guessInput = document.getElementById('guess-input');
+    submitBtn = document.getElementById('submit-btn');
+    inputSection = document.getElementById('input-section');
+    newGameSection = document.getElementById('new-game-section');
+    newGameBtnInline = document.getElementById('new-game-btn-inline');
+    gameOverModal = document.getElementById('game-over-modal');
+    modalTitle = document.getElementById('modal-title');
+    modalMessage = document.getElementById('modal-message');
+    modalAnswer = document.getElementById('modal-answer');
+    newGameBtn = document.getElementById('new-game-btn');
+    helpBtn = document.getElementById('help-btn');
+    statsBtn = document.getElementById('stats-btn');
+    helpModal = document.getElementById('help-modal');
+    statsModal = document.getElementById('stats-modal');
+    questionsModal = document.getElementById('questions-modal');
+    questionsList = document.getElementById('questions-list');
+    closeHelpBtn = document.getElementById('close-help-btn');
+    closeStatsBtn = document.getElementById('close-stats-btn');
+    closeQuestionsBtn = document.getElementById('close-questions-btn');
+    
+    // Check if all critical elements are available
+    return questionText && questionCategory && guessInput && submitBtn;
+}
 
 // Initialize game
 function initGame() {
+    // Try to get DOM elements
+    if (!getDOMElements()) {
+        // If elements aren't ready, retry after a short delay
+        setTimeout(initGame, 50);
+        return;
+    }
+    
     loadStats();
     loadCompletedQuestions();
     const dateFromURL = getDateFromURL();
@@ -943,4 +958,9 @@ function setupEventListeners() {
 }
 
 // Initialize the game when the page loads
-document.addEventListener('DOMContentLoaded', initGame); 
+if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initGame);
+} else {
+    // DOM is already loaded, initialize immediately
+    initGame();
+} 
