@@ -269,7 +269,7 @@ const fermiQuestions = [
 // DOM elements
 const questionText = document.getElementById('question-text');
 const questionCategory = document.getElementById('question-category');
-const guessCount = document.getElementById('guess-count');
+const currentStreakDisplay = document.getElementById('current-streak-display');
 const guessCounter = document.getElementById('guess-counter');
 const gameResult = document.getElementById('game-result');
 const resultMessage = document.getElementById('result-message');
@@ -299,6 +299,11 @@ function initGame() {
     setupEventListeners();
 }
 
+// Update current streak display
+function updateStreakDisplay() {
+    currentStreakDisplay.textContent = `Current streak: ${stats.currentStreak}`;
+}
+
 // Start a new game
 function startNewGame() {
     currentQuestion = getRandomQuestion();
@@ -309,7 +314,7 @@ function startNewGame() {
     // Update display
     questionText.textContent = currentQuestion.question;
     questionCategory.textContent = currentQuestion.category;
-    updateGuessCount();
+    updateStreakDisplay();
     clearGuesses();
     
     // Reset display elements
@@ -333,11 +338,6 @@ function startNewGame() {
 function getRandomQuestion() {
     const randomIndex = Math.floor(Math.random() * fermiQuestions.length);
     return fermiQuestions[randomIndex];
-}
-
-// Update guess counter
-function updateGuessCount() {
-    guessCount.textContent = `Guess: ${currentGuess}/${maxGuesses}`;
 }
 
 // Clear previous guesses
@@ -389,7 +389,6 @@ function submitGuess() {
     }
     
     currentGuess++;
-    updateGuessCount();
     
     // Add guess to display
     addGuessToDisplay(guessValue);
@@ -498,6 +497,7 @@ function endGame() {
     // Hide input section and show new game button
     inputSection.style.display = 'none';
     newGameSection.style.display = 'block';
+    updateStreakDisplay(); // Update streak display when game ends
 }
 
 // Start a new game
