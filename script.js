@@ -999,18 +999,7 @@ function setupEventListeners() {
                 block: 'center',
                 inline: 'nearest'
             });
-        }, 300); // Delay to allow virtual keyboard to appear
-    });
-    
-    // Handle when virtual keyboard might cause layout changes
-    guessInput.addEventListener('focusin', () => {
-        // Additional fallback for better mobile keyboard handling
-        setTimeout(() => {
-            window.scrollTo({
-                top: guessInput.offsetTop - (window.innerHeight / 3),
-                behavior: 'smooth'
-            });
-        }, 400);
+        }, 100); // Delay to allow virtual keyboard to appear
     });
     
     // New game buttons
