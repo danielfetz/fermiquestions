@@ -839,7 +839,8 @@ function selectQuestion(question) {
         setTimeout(() => {
             guessInput.scrollIntoView({ 
                 behavior: 'smooth', 
-                block: 'center'
+                block: 'center',
+                inline: 'nearest'
             });
         }, 100);
     } else {
