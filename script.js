@@ -4,7 +4,7 @@ let currentGuess = 0;
 let maxGuesses = 6;
 let gameWon = false;
 let gameOver = false;
-let completedQuestions = [];
+let completedQuestions = {}; // Changed from array to object to track win/loss status
 
 // Statistics
 let stats = {
@@ -418,7 +418,7 @@ function getCurrentQuestion() {
     
     // Find the first question that hasn't been completed
     for (let question of sortedQuestions) {
-        if (!completedQuestions.includes(question.date)) {
+        if (!completedQuestions[question.date]) { // Check if the question is not completed
             return question;
         }
     }
@@ -565,8 +565,14 @@ function endGame() {
     submitBtn.disabled = true;
     
     // Mark current question as completed
-    if (currentQuestion && !completedQuestions.includes(currentQuestion.date)) {
-        completedQuestions.push(currentQuestion.date);
+    if (currentQuestion && !completedQuestions[currentQuestion.date]) {
+        completedQuestions[currentQuestion.date] = {
+            question: currentQuestion.question,
+            answer: currentQuestion.answer,
+            date: currentQuestion.date,
+            won: gameWon,
+            guesses: currentGuess
+        };
         saveCompletedQuestions();
     }
     
@@ -714,7 +720,7 @@ function loadCompletedQuestions() {
             completedQuestions = JSON.parse(savedCompletedQuestions);
         } catch (error) {
             console.error('Error loading completed questions:', error);
-            completedQuestions = []; // Reset to default on error
+            completedQuestions = {}; // Reset to default on error
         }
     }
 }
@@ -739,11 +745,16 @@ function populateQuestionsList() {
         const questionItem = document.createElement('div');
         questionItem.className = 'question-item';
         
-        const isCompleted = completedQuestions.includes(question.date);
+        const isCompleted = completedQuestions[question.date] !== undefined;
         const isCurrent = question.date === currentQuestion.date;
         
         if (isCompleted) {
-            questionItem.classList.add('completed');
+            const completedData = completedQuestions[question.date];
+            if (completedData.won) {
+                questionItem.classList.add('completed', 'won');
+            } else {
+                questionItem.classList.add('completed', 'lost');
+            }
         } else if (isCurrent) {
             questionItem.classList.add('current');
         }
@@ -766,8 +777,14 @@ function populateQuestionsList() {
         questionStatus.className = 'question-status';
         
         if (isCompleted) {
-            questionStatus.textContent = 'Completed';
-            questionStatus.classList.add('completed');
+            const completedData = completedQuestions[question.date];
+            if (completedData.won) {
+                questionStatus.textContent = `Won in ${completedData.guesses} guess${completedData.guesses > 1 ? 'es' : ''}`;
+                questionStatus.classList.add('won');
+            } else {
+                questionStatus.textContent = 'Lost';
+                questionStatus.classList.add('lost');
+            }
         } else if (isCurrent) {
             questionStatus.textContent = 'Current';
             questionStatus.classList.add('current');
