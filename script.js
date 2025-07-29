@@ -365,7 +365,7 @@ function startNewGame() {
     
     // Update display
     questionText.textContent = currentQuestion.question;
-    questionCategory.textContent = getQuestionDisplayText(currentQuestion);
+    questionCategory.innerHTML = getQuestionDisplayText(currentQuestion); // Use innerHTML to allow <span>
     updateStreakDisplay();
     clearGuesses();
     
@@ -435,7 +435,7 @@ function getQuestionDisplayText(question) {
         return "Question of the Day";
     } else {
         const formattedDate = formatDateForDisplay(question.date);
-        return `Question of the Day: ${formattedDate}`;
+        return `${formattedDate} <span class='arrow'>></span>`;
     }
 }
 
@@ -795,7 +795,7 @@ function populateQuestionsList() {
 function selectQuestion(question) {
     currentQuestion = question;
     questionText.textContent = currentQuestion.question;
-    questionCategory.textContent = getQuestionDisplayText(currentQuestion);
+    questionCategory.innerHTML = getQuestionDisplayText(currentQuestion); // Use innerHTML to allow <span>
     
     // Reset game state
     currentGuess = 0;
