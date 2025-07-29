@@ -833,18 +833,8 @@ function selectQuestion(question) {
     // Clear guesses
     clearGuesses();
     
-    // Focus input and scroll to it on mobile
-    setTimeout(() => {
-        guessInput.focus();
-        if ('ontouchstart' in window || navigator.maxTouchPoints) {
-            // Scroll to input field to ensure it's visible above keyboard
-            guessInput.scrollIntoView({ 
-                behavior: 'smooth', 
-                block: 'center',
-                inline: 'nearest'
-            });
-        }
-    }, 100);
+    // Simple scroll to input
+    guessInput.scrollIntoView();
 }
 
 // Setup event listeners
