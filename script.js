@@ -811,11 +811,15 @@ function populateQuestionsList() {
         // Add click handler to select this question
         questionItem.addEventListener('click', () => {
             if (!isCompleted) {
-                // Navigate using URL routing
-                const newURL = `#/question/${question.date}`;
-                window.history.pushState(null, '', newURL);
-                navigateToQuestion(question.date);
+                // Close modal first
                 closeModal(questionsModal);
+                
+                // Small delay to let modal fully close, then navigate
+                setTimeout(() => {
+                    const newURL = `#/question/${question.date}`;
+                    window.history.pushState(null, '', newURL);
+                    navigateToQuestion(question.date);
+                }, 100);
             }
         });
         
@@ -987,19 +991,6 @@ function setupEventListeners() {
             const formattedValue = formatNumber(number);
             input.value = formattedValue;
         }
-    });
-    
-    // Handle input focus to ensure proper positioning, especially after modal navigation
-    guessInput.addEventListener('focus', (e) => {
-        // Small delay to ensure the virtual keyboard positioning is handled properly
-        setTimeout(() => {
-            // Scroll the input into view with some padding
-            e.target.scrollIntoView({
-                behavior: 'smooth',
-                block: 'center',
-                inline: 'nearest'
-            });
-        }, 100); // Delay to allow virtual keyboard to appear
     });
     
     // New game buttons
