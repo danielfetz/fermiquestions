@@ -870,7 +870,7 @@ function selectQuestion(question) {
     // Simple scroll to top to ensure good positioning
     window.scrollTo(0, 0);
     
-    // Auto-focus on desktop only
+    // Auto-focus only on non-touch devices (desktop)
     if (!('ontouchstart' in window) && !navigator.maxTouchPoints) {
         guessInput.focus();
     }
@@ -987,6 +987,30 @@ function setupEventListeners() {
             const formattedValue = formatNumber(number);
             input.value = formattedValue;
         }
+    });
+    
+    // Handle input focus to ensure proper positioning, especially after modal navigation
+    guessInput.addEventListener('focus', (e) => {
+        // Small delay to ensure the virtual keyboard positioning is handled properly
+        setTimeout(() => {
+            // Scroll the input into view with some padding
+            e.target.scrollIntoView({
+                behavior: 'smooth',
+                block: 'center',
+                inline: 'nearest'
+            });
+        }, 300); // Delay to allow virtual keyboard to appear
+    });
+    
+    // Handle when virtual keyboard might cause layout changes
+    guessInput.addEventListener('focusin', () => {
+        // Additional fallback for better mobile keyboard handling
+        setTimeout(() => {
+            window.scrollTo({
+                top: guessInput.offsetTop - (window.innerHeight / 3),
+                behavior: 'smooth'
+            });
+        }, 400);
     });
     
     // New game buttons
