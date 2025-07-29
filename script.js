@@ -839,7 +839,8 @@ function selectQuestion(question) {
             // Mobile: just scroll, no auto-focus
             guessInput.scrollIntoView({ 
                 behavior: 'smooth', 
-                block: 'center'
+                block: 'center',
+                inline: 'nearest'
             });
         } else {
             // Desktop: auto-focus
