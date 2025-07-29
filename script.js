@@ -812,7 +812,7 @@ function populateQuestionsList() {
 function selectQuestion(question) {
     currentQuestion = question;
     questionText.textContent = currentQuestion.question;
-    questionCategory.innerHTML = getQuestionDisplayText(currentQuestion); // Use innerHTML to allow <span>
+    questionCategory.innerHTML = getQuestionDisplayText(currentQuestion);
     
     // Reset game state
     currentGuess = 0;
@@ -832,6 +832,19 @@ function selectQuestion(question) {
     
     // Clear guesses
     clearGuesses();
+    
+    // Focus input and scroll to it on mobile
+    setTimeout(() => {
+        guessInput.focus();
+        if ('ontouchstart' in window || navigator.maxTouchPoints) {
+            // Scroll to input field to ensure it's visible above keyboard
+            guessInput.scrollIntoView({ 
+                behavior: 'smooth', 
+                block: 'center',
+                inline: 'nearest'
+            });
+        }
+    }, 100);
 }
 
 // Setup event listeners
