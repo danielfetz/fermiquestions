@@ -6,6 +6,9 @@ let gameWon = false;
 let gameOver = false;
 let completedQuestions = {}; // Changed from array to object to track win/loss status
 
+// URL Routing state
+let isNavigating = false;
+
 // Statistics
 let stats = {
     gamesPlayed: 0,
@@ -349,6 +352,7 @@ function initGame() {
     loadCompletedQuestions();
     startNewGame();
     setupEventListeners();
+    initRouting();
 }
 
 // Update current streak display
@@ -369,6 +373,9 @@ function startNewGame() {
     updateStreakDisplay();
     clearGuesses();
     
+    // Update page title
+    updatePageTitle(currentQuestion);
+    
     // Reset display elements
     guessCounter.style.display = 'block';
     gameResult.style.display = 'none';
@@ -383,6 +390,11 @@ function startNewGame() {
     // Auto-focus only on non-touch devices (desktop)
     if (!('ontouchstart' in window) && !navigator.maxTouchPoints) {
         guessInput.focus();
+    }
+
+    // Update URL to reflect the current question (only if not already navigating)
+    if (!isNavigating) {
+        updateURL(currentQuestion.date);
     }
 }
 
@@ -799,7 +811,10 @@ function populateQuestionsList() {
         // Add click handler to select this question
         questionItem.addEventListener('click', () => {
             if (!isCompleted) {
-                selectQuestion(question);
+                // Navigate using URL routing
+                const newURL = `#/question/${question.date}`;
+                window.history.pushState(null, '', newURL);
+                navigateToQuestion(question.date);
                 closeModal(questionsModal);
             }
         });
@@ -808,11 +823,30 @@ function populateQuestionsList() {
     });
 }
 
+// Update the page title based on current question
+function updatePageTitle(question) {
+    const baseTitle = "Fermi Questions";
+    if (question) {
+        const today = getCurrentDate();
+        if (question.date === today) {
+            document.title = `${baseTitle} - Today's Question`;
+        } else {
+            const formattedDate = formatDateForDisplay(question.date);
+            document.title = `${baseTitle} - ${formattedDate}`;
+        }
+    } else {
+        document.title = baseTitle;
+    }
+}
+
 // Select a specific question
 function selectQuestion(question) {
     currentQuestion = question;
     questionText.textContent = currentQuestion.question;
     questionCategory.innerHTML = getQuestionDisplayText(currentQuestion);
+    
+    // Update page title
+    updatePageTitle(currentQuestion);
     
     // Reset game state
     currentGuess = 0;
@@ -839,6 +873,93 @@ function selectQuestion(question) {
     // Auto-focus on desktop only
     if (!('ontouchstart' in window) && !navigator.maxTouchPoints) {
         guessInput.focus();
+    }
+
+    // Update URL without triggering navigation
+    if (!isNavigating) {
+        updateURL(question.date);
+    }
+}
+
+// URL Routing Functions
+
+// Update the URL to reflect the current question
+function updateURL(questionDate) {
+    const newURL = `#/question/${questionDate}`;
+    if (window.location.hash !== newURL) {
+        window.history.pushState(null, '', newURL);
+    }
+}
+
+// Parse the current URL and return the question date
+function parseURL() {
+    const hash = window.location.hash;
+    
+    // Check if URL matches pattern #/question/YYYY-MM-DD
+    const questionMatch = hash.match(/^#\/question\/(\d{4}-\d{2}-\d{2})$/);
+    if (questionMatch) {
+        return questionMatch[1];
+    }
+    
+    // Default to current date if no valid route
+    return null;
+}
+
+// Navigate to a specific question by date
+function navigateToQuestion(questionDate) {
+    const question = getQuestionForDate(questionDate);
+    
+    if (question) {
+        // Check if the question is available (not future-dated)
+        const today = getCurrentDate();
+        if (question.date <= today) {
+            isNavigating = true;
+            selectQuestion(question);
+            isNavigating = false;
+            return true;
+        }
+    }
+    
+    // If question not found or not available, redirect to current question
+    navigateToCurrentQuestion();
+    return false;
+}
+
+// Navigate to the current/default question
+function navigateToCurrentQuestion() {
+    const defaultQuestion = getCurrentQuestion();
+    isNavigating = true;
+    selectQuestion(defaultQuestion);
+    isNavigating = false;
+}
+
+// Handle browser back/forward navigation
+function handlePopState() {
+    const questionDate = parseURL();
+    
+    if (questionDate) {
+        navigateToQuestion(questionDate);
+    } else {
+        navigateToCurrentQuestion();
+    }
+}
+
+// Initialize routing
+function initRouting() {
+    // Handle browser navigation
+    window.addEventListener('popstate', handlePopState);
+    
+    // Handle initial page load
+    const questionDate = parseURL();
+    if (questionDate) {
+        // Try to navigate to the question from URL
+        if (!navigateToQuestion(questionDate)) {
+            // If navigation failed, update URL to reflect actual question
+            updateURL(currentQuestion.date);
+        }
+    } else {
+        // No specific question in URL, update URL to show current question
+        updateURL(currentQuestion.date);
     }
 }
 
