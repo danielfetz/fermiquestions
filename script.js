@@ -833,16 +833,17 @@ function selectQuestion(question) {
     // Clear guesses
     clearGuesses();
     
-    // Only scroll, don't auto-focus on mobile
+    // Handle focus/scroll based on device
     if ('ontouchstart' in window || navigator.maxTouchPoints) {
-        guessInput.scrollIntoView({ 
-            behavior: 'smooth', 
-            block: 'center',
-            inline: 'nearest'
-        });
-        // Don't auto-focus - let user tap when ready
+        // Mobile: scroll with timeout for browser quirks
+        setTimeout(() => {
+            guessInput.scrollIntoView({ 
+                behavior: 'smooth', 
+                block: 'center'
+            });
+        }, 100);
     } else {
-        // Auto-focus only on desktop
+        // Desktop: immediate focus, no timeout needed
         guessInput.focus();
     }
 }
