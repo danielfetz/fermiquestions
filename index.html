@@ -1,517 +1,190 @@
-* {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-}
-
-body {
-    font-family: 'Press Start 2P', monospace;
-    background-color: #f0f0f0;
-    color: #333;
-    line-height: 1.4;
-    padding: 0px 16px;
-}
-
-.game-container {
-    max-width: 500px;
-    margin: 0 auto;
-    background-color: #f0f0f0;
-}
-
-/* Header */
-.game-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 12px 0;
-}
-
-.game-title {
-    font-size: 1.0625rem;
-    font-weight: bold;
-    letter-spacing: -0.5px;
-    display: flex;
-    gap: 0.5rem;
-}
-
-.icon-button {
-    background: none;
-    border: none;
-    font-size: 1.125rem;
-    font-family: 'Press Start 2P', monospace;
-    color: #333;
-    cursor: pointer;
-    padding: 8px;
-    border-radius: 6px;
-    transition: background-color 0.2s;
-}
-
-.icon-button:hover {
-    background-color: rgba(0, 0, 0, 0.1);
-}
-
-/* Question Container */
-.question-container {
-    margin-bottom: 20px;
-}
-
-.question-box {
-    background-color: #fdfdfd;
-    border-radius: 12px;
-    padding: 20px;
-    text-align: center;
-    border: 2px solid #e9ecef;
-}
-
-.question-text {
-    font-size: 0.9rem;
-    margin-bottom: 10px;
-    line-height: 1.5;
-    color: #333;
-}
-
-.question-category {
-    font-size: 0.7rem;
-    color: #666;
-    text-transform: uppercase;
-    letter-spacing: 1px;
-    cursor: pointer;
-    text-decoration: underline;
-    transition: color 0.2s;
-}
-
-.question-category:hover {
-    color: #333;
-}
-
-/* Questions List */
-.questions-list {
-    max-height: 400px;
-    overflow-y: auto;
-    margin: 20px 0;
-}
-
-.question-item {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 12px 15px;
-    margin-bottom: 8px;
-    background-color: #f8f9fa;
-    border-radius: 8px;
-    border: 1px solid #e9ecef;
-    cursor: pointer;
-    transition: background-color 0.2s;
-}
-
-.question-item:hover {
-    background-color: #e9ecef;
-}
-
-.question-item.completed {
-    background-color: #d4edda;
-    border-color: #c3e6cb;
-}
-
-.question-item.current {
-    background-color: #d1ecf1;
-    border-color: #bee5eb;
-}
-
-.question-info {
-    flex: 1;
-}
-
-.question-date {
-    font-size: 0.7rem;
-    color: #666;
-    margin-bottom: 4px;
-}
-
-.question-text-small {
-    font-size: 0.8rem;
-    color: #333;
-    line-height: 1.3;
-}
-
-.question-status {
-    font-size: 0.6rem;
-    padding: 4px 8px;
-    border-radius: 4px;
-    margin-left: 10px;
-}
-
-.question-status.completed {
-    background-color: #28a745;
-    color: white;
-}
-
-.question-status.current {
-    background-color: #17a2b8;
-    color: white;
-}
-
-.question-status.available {
-    background-color: #6c757d;
-    color: white;
-}
-
-/* Guess Counter */
-.guess-counter {
-    text-align: center;
-    margin-bottom: 20px;
-    font-size: 0.8rem;
-    color: #333;
-}
-
-/* Game Result */
-.game-result {
-    text-align: center;
-    margin-bottom: 15px;
-}
-
-.result-message {
-    font-size: 1rem;
-    font-weight: bold;
-    margin-bottom: 10px;
-    color: #333;
-}
-
-.result-message.won {
-    color: #27ae60;
-}
-
-.result-message.lost {
-    color: #e74c3c;
-}
-
-.correct-answer {
-    font-size: 0.8rem;
-    color: #666;
-    line-height: 1.4;
-}
-
-/* New Game Section */
-.new-game-section {
-    margin-top: 20px;
-    text-align: center;
-}
-
-.new-game-btn-inline {
-    width: 100%;
-    height: 46.16px;
-    background-color: #27ae60;
-    color: white;
-    border: none;
-    padding: 12px 25px;
-    border-radius: 12px;
-    font-family: 'Press Start 2P', monospace;
-    font-size: 0.8rem;
-    cursor: pointer;
-    transition: background-color 0.2s;
-}
-
-.new-game-btn-inline:hover {
-    background-color: #229954;
-}
-
-/* Guesses Container */
-.guesses-container {
-    margin-bottom: 20px;
-}
-
-.guess-row {
-    display: flex;
-    align-items: center;
-    margin-bottom: 5px;
-    gap: 5px;
-}
-
-.guess-field {
-    flex: 1;
-    background-color: #fdfdfd;
-    color: #333;
-    padding: 13px 15px;
-    border-radius: 12px;
-    font-size: 0.8rem;
-    text-align: center;
-    border: none;
-    font-family: 'Press Start 2P', monospace;
-}
-
-.guess-field.empty {
-    color: #b2b3b3;
-}
-
-.feedback-button {
-    width: 100px;
-    height: 43.91px;
-    border-radius: 12px;
-    border: none;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 1rem;
-    font-family: 'Press Start 2P', monospace;
-    cursor: pointer;
-    transition: transform 0.2s;
-}
-
-.feedback-button.hidden {
-    display: none;
-}
-
-.feedback-button:hover {
-    transform: scale(1.1);
-}
-
-.feedback-button.high {
-    background-color: #e74c3c;
-    color: white;
-}
-
-.feedback-button.low {
-    background-color: #e74c3c;
-    color: white;
-}
-
-.feedback-button.close {
-    background-color: #f39c12;
-    color: white;
-}
-
-.feedback-button.correct {
-    background-color: #27ae60;
-    color: white;
-    font-size: 0.8rem;
-}
-
-/* Input Section */
-.input-section {
-    margin-top: 20px;
-}
-
-.input-row {
-    display: flex;
-    align-items: center;
-    gap: 5px;
-}
-
-.input-container {
-    height: 46.16px;
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    background-color: #fdfdfd;
-    padding: 10px 15px;
-    border-radius: 12px;
-    flex: 1;
-}
-
-#guess-input {
-    flex: 1;
-    background: none;
-    border: none;
-    font-size: 0.8rem;
-    font-family: 'Press Start 2P', monospace;
-    outline: none;
-    min-width: 0;
-    width: 100%;
-}
-
-#guess-input::placeholder {
-    color: #999;
-}
-
-.submit-btn {
-    width: 100px;
-    height: 46.16px;
-    background-color: #3498db;
-    color: white;
-    border: none;
-    padding: 8px 12px;
-    border-radius: 12px;
-    font-family: 'Press Start 2P', monospace;
-    font-size: 0.75rem;
-    cursor: pointer;
-    transition: background-color 0.2s;
-    white-space: nowrap;
-}
-
-.submit-btn:hover {
-    background-color: #2e86c1;
-}
-
-.submit-btn:disabled {
-    background-color: #666;
-    cursor: not-allowed;
-}
-
-/* Modals */
-.modal {
-    display: none;
-    position: fixed;
-    z-index: 1000;
-    left: 0;
-    top: 0;
-    width: 100%;
-    height: 100%;
-    background-color: rgba(0, 0, 0, 0.5);
-    backdrop-filter: blur(5px);
-}
-
-.modal-content {
-    background-color: #f0f0f0;
-    margin: 10% auto;
-    padding: 30px;
-    border-radius: 12px;
-    width: 90%;
-    max-width: 400px;
-    text-align: center;
-    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
-}
-
-.modal-content h2 {
-    margin-bottom: 15px;
-    color: #333;
-    font-size: 1.2rem;
-}
-
-.modal-content p {
-    margin-bottom: 12px;
-    line-height: 1.4;
-    color: #555;
-    font-size: 0.8rem;
-}
-
-.new-game-btn, .close-btn {
-    background-color: #27ae60;
-    color: white;
-    border: none;
-    padding: 12px 25px;
-    border-radius: 8px;
-    font-family: 'Press Start 2P', monospace;
-    font-size: 0.7rem;
-    cursor: pointer;
-    margin-top: 15px;
-    transition: background-color 0.2s;
-}
-
-.new-game-btn:hover, .close-btn:hover {
-    background-color: #229954;
-}
-
-/* Stats Grid */
-.stats-grid {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 15px;
-    margin: 20px 0;
-}
-
-.stat-item {
-    text-align: center;
-}
-
-.stat-number {
-    display: block;
-    font-size: 1.5rem;
-    font-weight: bold;
-    color: #333;
-    margin-bottom: 8px;
-}
-
-.stat-label {
-    font-size: 0.6rem;
-    color: #666;
-    text-transform: uppercase;
-    letter-spacing: 1px;
-}
-
-/* Guess Distribution */
-.guess-distribution {
-    margin: 25px 0;
-}
-
-.guess-distribution h3 {
-    font-size: 0.9rem;
-    margin-bottom: 15px;
-    color: #333;
-    text-align: center;
-}
-
-.distribution-bars {
-    display: flex;
-    flex-direction: column;
-    gap: 8px;
-}
-
-.dist-row {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-}
-
-.dist-label {
-    font-size: 0.7rem;
-    color: #333;
-    font-weight: bold;
-    min-width: 15px;
-}
-
-.dist-bar-container {
-    flex: 1;
-    height: 20px;
-    background-color: #e0e0e0;
-    border-radius: 10px;
-    overflow: hidden;
-}
-
-.dist-bar {
-    height: 100%;
-    background-color: #27ae60;
-    border-radius: 10px;
-    transition: width 0.3s ease;
-    min-width: 20px;
-}
-
-.dist-count {
-    font-size: 0.7rem;
-    color: #333;
-    font-weight: bold;
-    min-width: 20px;
-    text-align: right;
-}
-
-/* Responsive Design */
-@media (max-width: 768px) {
-
-}
-
-/* Animation for new guesses
-@keyframes slideIn {
-    from {
-        opacity: 0;
-        transform: translateY(-15px);
-    }
-    to {
-        opacity: 1;
-        transform: translateY(0);
-    }
-}
-
-.guess-row {
-    animation: slideIn 0.3s ease-out;
-}
-    */
-
-/* Shake animation for wrong guesses */
-@keyframes shake {
-    0%, 100% { transform: translateX(0); }
-    25% { transform: translateX(-3px); }
-    75% { transform: translateX(3px); }
-}
-
-.shake {
-    animation: shake 0.5s ease-in-out;
-} 
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+    <title>Fermi Questions</title>
+    <link rel="stylesheet" href="styles.css">
+    <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div class="game-container">
+        <!-- Header -->
+        <header class="game-header">
+            <div class="header-left">
+                <button class="icon-button" id="help-btn">?</button>
+            </div>
+            <div class="header-center">
+                <h1 class="game-title">
+                    <span>fermi.quest</span
+                </h1>
+            </div>
+            <div class="header-right">
+                <button class="icon-button" id="stats-btn">📊</button>
+            </div>
+        </header>
+
+        <!-- Question Display -->
+        <div class="question-container">
+            <div class="question-box">
+                <div class="question-text" id="question-text">
+                    How many chickens are slaughtered each year?
+                </div>
+                <div class="question-category" id="question-category">
+                    Agriculture
+                </div>
+            </div>
+        </div>
+
+        <!-- Questions History Modal -->
+        <div class="modal" id="questions-modal">
+            <div class="modal-content">
+                <h2>Question History</h2>
+                <div class="questions-list" id="questions-list">
+                    <!-- Questions will be populated here -->
+                </div>
+                <button id="close-questions-btn" class="close-btn">Close</button>
+            </div>
+        </div>
+
+        <!-- Guess Counter -->
+        <div class="guess-counter" id="guess-counter">
+            <span id="current-streak-display">Current streak: 0</span>
+        </div>
+
+        <!-- Game Result (hidden by default) -->
+        <div class="game-result" id="game-result" style="display: none;">
+            <span class="result-message" id="result-message"></span>
+            <span class="correct-answer" id="correct-answer"></span>
+        </div>
+
+        <!-- Previous Guesses -->
+        <div class="guesses-container" id="guesses-container">
+            <!-- Guesses will be populated here -->
+        </div>
+
+        <!-- Input Section -->
+        <div class="input-section" id="input-section">
+            <div class="input-row">
+                <div class="input-container">
+                    <input 
+                        type="text" 
+                        id="guess-input" 
+                        placeholder="Enter a guess..." 
+                        inputmode="numeric"
+                        pattern="[0-9,]*"
+                    >
+                </div>
+                <button id="submit-btn" class="submit-btn">SUBMIT</button>
+            </div>
+        </div>
+
+        <!-- New Game Button (hidden by default) -->
+        <div class="new-game-section" id="new-game-section" style="display: none;">
+            <button id="new-game-btn-inline" class="new-game-btn-inline">New Game</button>
+        </div>
+
+        <!-- Game Over Modal -->
+        <div class="modal" id="game-over-modal">
+            <div class="modal-content">
+                <h2 id="modal-title">Game Over!</h2>
+                <p id="modal-message"></p>
+                <p id="modal-answer"></p>
+                <button id="new-game-btn" class="new-game-btn">New Game</button>
+            </div>
+        </div>
+
+        <!-- Help Modal -->
+        <div class="modal" id="help-modal">
+            <div class="modal-content">
+                <h2>How to Play</h2>
+                <p>Guess the answer to Fermi estimate questions within 6 tries.</p>
+                <p>You win if your guess is within ±5% of the correct answer.</p>
+                <p>After each guess, you'll see if your answer was too high or too low.</p>
+                <button id="close-help-btn" class="close-btn">Close</button>
+            </div>
+        </div>
+
+        <!-- Stats Modal -->
+        <div class="modal" id="stats-modal">
+            <div class="modal-content">
+                <h2>Statistics</h2>
+                <div class="stats-grid">
+                    <div class="stat-item">
+                        <span class="stat-number" id="games-played">0</span>
+                        <span class="stat-label">Games Played</span>
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-number" id="games-won">0</span>
+                        <span class="stat-label">Games Won</span>
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-number" id="win-rate">0%</span>
+                        <span class="stat-label">Win Rate</span>
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-number" id="current-streak">0</span>
+                        <span class="stat-label">Current Streak</span>
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-number" id="max-streak">0</span>
+                        <span class="stat-label">Max Streak</span>
+                    </div>
+                </div>
+                
+                <div class="guess-distribution">
+                    <h3>Guess Distribution</h3>
+                    <div class="distribution-bars">
+                        <div class="dist-row">
+                            <span class="dist-label">1</span>
+                            <div class="dist-bar-container">
+                                <div class="dist-bar" id="dist-1" style="width: 0%"></div>
+                            </div>
+                            <span class="dist-count" id="count-1">0</span>
+                        </div>
+                        <div class="dist-row">
+                            <span class="dist-label">2</span>
+                            <div class="dist-bar-container">
+                                <div class="dist-bar" id="dist-2" style="width: 0%"></div>
+                            </div>
+                            <span class="dist-count" id="count-2">0</span>
+                        </div>
+                        <div class="dist-row">
+                            <span class="dist-label">3</span>
+                            <div class="dist-bar-container">
+                                <div class="dist-bar" id="dist-3" style="width: 0%"></div>
+                            </div>
+                            <span class="dist-count" id="count-3">0</span>
+                        </div>
+                        <div class="dist-row">
+                            <span class="dist-label">4</span>
+                            <div class="dist-bar-container">
+                                <div class="dist-bar" id="dist-4" style="width: 0%"></div>
+                            </div>
+                            <span class="dist-count" id="count-4">0</span>
+                        </div>
+                        <div class="dist-row">
+                            <span class="dist-label">5</span>
+                            <div class="dist-bar-container">
+                                <div class="dist-bar" id="dist-5" style="width: 0%"></div>
+                            </div>
+                            <span class="dist-count" id="count-5">0</span>
+                        </div>
+                        <div class="dist-row">
+                            <span class="dist-label">6</span>
+                            <div class="dist-bar-container">
+                                <div class="dist-bar" id="dist-6" style="width: 0%"></div>
+                            </div>
+                            <span class="dist-count" id="count-6">0</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <button id="close-stats-btn" class="close-btn">Close</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html> 
