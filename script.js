@@ -837,7 +837,8 @@ function selectQuestion(question) {
     if ('ontouchstart' in window || navigator.maxTouchPoints) {
         guessInput.scrollIntoView({ 
             behavior: 'smooth', 
-            block: 'center'
+            block: 'center',
+            inline: 'nearest'
         });
         // Don't auto-focus - let user tap when ready
     } else {
