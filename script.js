@@ -812,7 +812,7 @@ function populateQuestionsList() {
         questionItem.addEventListener('click', () => {
             if (!isCompleted) {
                 // Navigate using URL routing
-                const newURL = `#/question/${question.date}`;
+                const newURL = `question/${question.date}`;
                 window.history.pushState(null, '', newURL);
                 navigateToQuestion(question.date);
                 closeModal(questionsModal);
@@ -885,7 +885,7 @@ function selectQuestion(question) {
 
 // Update the URL to reflect the current question
 function updateURL(questionDate) {
-    const newURL = `#/question/${questionDate}`;
+    const newURL = `question/${questionDate}`;
     if (window.location.hash !== newURL) {
         window.history.pushState(null, '', newURL);
     }
@@ -896,7 +896,7 @@ function parseURL() {
     const hash = window.location.hash;
     
     // Check if URL matches pattern #/question/YYYY-MM-DD
-    const questionMatch = hash.match(/^#\/question\/(\d{4}-\d{2}-\d{2})$/);
+    const questionMatch = hash.match(/^question\/(\d{4}-\d{2}-\d{2})$/);
     if (questionMatch) {
         return questionMatch[1];
     }
