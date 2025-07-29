@@ -204,6 +204,7 @@ body {
 .feedback-button.correct {
     background-color: #27ae60;
     color: white;
+    font-size: 0.8rem;
 }
 
 /* Input Section */
