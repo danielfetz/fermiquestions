@@ -75,6 +75,109 @@ body {
     color: #666;
     text-transform: uppercase;
     letter-spacing: 1px;
+    cursor: pointer;
+    transition: color 0.2s;
+}
+
+.question-category:hover {
+    color: #333;
+}
+
+.question-category .arrow {
+    display: inline-block;
+    transform: rotate(90deg);
+}
+
+/* Questions List */
+.questions-list {
+    max-height: 400px;
+    overflow-y: auto;
+    margin: 20px 0;
+}
+
+.question-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 12px 15px;
+    margin-bottom: 8px;
+    background-color: #f8f9fa;
+    border-radius: 8px;
+    border: 1px solid #e9ecef;
+    cursor: pointer;
+    transition: background-color 0.2s;
+}
+
+.question-item:hover {
+    background-color: #e9ecef;
+}
+
+.question-item.completed {
+    background-color: #d4edda;
+    border-color: #c3e6cb;
+}
+
+.question-item.completed.won {
+    background-color: #d4edda;
+    border-color: #c3e6cb;
+}
+
+.question-item.completed.lost {
+    background-color: #f8d7da;
+    border-color: #f5c6cb;
+}
+
+.question-item.current {
+    background-color: #d1ecf1;
+    border-color: #bee5eb;
+}
+
+.question-info {
+    flex: 1;
+}
+
+.question-date {
+    font-size: 0.7rem;
+    color: #666;
+    margin-bottom: 4px;
+}
+
+.question-text-small {
+    font-size: 0.8rem;
+    color: #333;
+    line-height: 1.3;
+}
+
+.question-status {
+    font-size: 0.6rem;
+    padding: 4px 8px;
+    border-radius: 4px;
+    margin-left: 10px;
+}
+
+.question-status.completed {
+    background-color: #28a745;
+    color: white;
+}
+
+.question-status.won {
+    background-color: #28a745;
+    color: white;
+}
+
+.question-status.lost {
+    background-color: #dc3545;
+    color: white;
+}
+
+.question-status.current {
+    background-color: #17a2b8;
+    color: white;
+}
+
+.question-status.available {
+    background-color: #6c757d;
+    color: white;
 }
 
 /* Guess Counter */

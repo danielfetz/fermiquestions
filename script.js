@@ -4,6 +4,7 @@ let currentGuess = 0;
 let maxGuesses = 6;
 let gameWon = false;
 let gameOver = false;
+let completedQuestions = {}; // Changed from array to object to track win/loss status
 
 // Statistics
 let stats = {
@@ -22,247 +23,294 @@ let stats = {
     }
 };
 
-// Database of Fermi questions
+// Database of Fermi questions with dates
 const fermiQuestions = [
     {
         question: "How many chickens are slaughtered each year?",
         answer: 50000000000,
         category: "Agriculture",
-        explanation: "Approximately 50 billion chickens are slaughtered annually worldwide for meat consumption."
+        explanation: "Approximately 50 billion chickens are slaughtered annually worldwide for meat consumption.",
+        date: "2025-01-01"
     },
     {
         question: "How many people live in New York City?",
         answer: 8400000,
         category: "Population",
-        explanation: "New York City has approximately 8.4 million residents."
+        explanation: "New York City has approximately 8.4 million residents.",
+        date: "2025-01-02"
     },
     {
         question: "How many cars are there in the United States?",
         answer: 280000000,
         category: "Transportation",
-        explanation: "There are roughly 280 million registered vehicles in the US."
+        explanation: "There are roughly 280 million registered vehicles in the US.",
+        date: "2025-01-03"
     },
     {
         question: "How many McDonald's restaurants exist worldwide?",
         answer: 40000,
         category: "Business",
-        explanation: "McDonald's operates approximately 40,000 restaurants globally."
+        explanation: "McDonald's operates approximately 40,000 restaurants globally.",
+        date: "2025-01-04"
     },
     {
         question: "How many books are published each year in the US?",
         answer: 300000,
         category: "Publishing",
-        explanation: "Around 300,000 new books are published annually in the United States."
+        explanation: "Around 300,000 new books are published annually in the United States.",
+        date: "2025-01-05"
     },
     {
         question: "How many trees are cut down each year globally?",
         answer: 15000000000,
         category: "Environment",
-        explanation: "Approximately 15 billion trees are cut down annually worldwide."
+        explanation: "Approximately 15 billion trees are cut down annually worldwide.",
+        date: "2025-01-06"
     },
     {
         question: "How many emails are sent per day worldwide?",
         answer: 300000000000,
         category: "Technology",
-        explanation: "Roughly 300 billion emails are sent daily across the globe."
+        explanation: "Roughly 300 billion emails are sent daily across the globe.",
+        date: "2025-01-07"
     },
     {
         question: "How many pizzas are sold in the US each year?",
         answer: 3000000000,
         category: "Food",
-        explanation: "About 3 billion pizzas are sold annually in the United States."
+        explanation: "About 3 billion pizzas are sold annually in the United States.",
+        date: "2025-01-08"
     },
     {
         question: "How many people visit Times Square each year?",
         answer: 50000000,
         category: "Tourism",
-        explanation: "Approximately 50 million people visit Times Square annually."
+        explanation: "Approximately 50 million people visit Times Square annually.",
+        date: "2025-01-09"
     },
     {
         question: "How many smartphones are sold worldwide each year?",
         answer: 1400000000,
         category: "Technology",
-        explanation: "Around 1.4 billion smartphones are sold globally each year."
+        explanation: "Around 1.4 billion smartphones are sold globally each year.",
+        date: "2025-01-10"
     },
     {
         question: "How many cups of coffee are consumed daily in the US?",
         answer: 400000000,
         category: "Food",
-        explanation: "Americans consume approximately 400 million cups of coffee daily."
+        explanation: "Americans consume approximately 400 million cups of coffee daily.",
+        date: "2025-01-11"
     },
     {
         question: "How many movies are released in the US each year?",
         answer: 800,
         category: "Entertainment",
-        explanation: "About 800 movies are released theatrically in the US annually."
+        explanation: "About 800 movies are released theatrically in the US annually.",
+        date: "2025-01-12"
     },
     {
         question: "How many people die from car accidents each year globally?",
         answer: 1350000,
         category: "Safety",
-        explanation: "Approximately 1.35 million people die in road traffic accidents annually."
+        explanation: "Approximately 1.35 million people die in road traffic accidents annually.",
+        date: "2025-01-13"
     },
     {
         question: "How many babies are born each day worldwide?",
         answer: 385000,
         category: "Population",
-        explanation: "About 385,000 babies are born daily across the globe."
+        explanation: "About 385,000 babies are born daily across the globe.",
+        date: "2025-01-14"
     },
     {
         question: "How many plastic bottles are used each year globally?",
         answer: 500000000000,
         category: "Environment",
-        explanation: "Roughly 500 billion plastic bottles are used annually worldwide."
+        explanation: "Roughly 500 billion plastic bottles are used annually worldwide.",
+        date: "2025-01-15"
     },
     {
         question: "How many people live in Tokyo?",
         answer: 14000000,
         category: "Population",
-        explanation: "Tokyo has approximately 14 million residents in its metropolitan area."
+        explanation: "Tokyo has approximately 14 million residents in its metropolitan area.",
+        date: "2025-01-16"
     },
     {
         question: "How many hamburgers does McDonald's sell each day?",
         answer: 75000000,
         category: "Food",
-        explanation: "McDonald's sells approximately 75 million hamburgers daily worldwide."
+        explanation: "McDonald's sells approximately 75 million hamburgers daily worldwide.",
+        date: "2025-01-17"
     },
     {
         question: "How many text messages are sent per day globally?",
         answer: 20000000000,
         category: "Technology",
-        explanation: "About 20 billion text messages are sent daily across the world."
+        explanation: "About 20 billion text messages are sent daily across the world.",
+        date: "2025-01-18"
     },
     {
         question: "How many people visit Disney World each year?",
         answer: 20000000,
         category: "Tourism",
-        explanation: "Disney World in Florida attracts approximately 20 million visitors annually."
+        explanation: "Disney World in Florida attracts approximately 20 million visitors annually.",
+        date: "2025-01-19"
     },
     {
         question: "How many newspapers are sold daily in the US?",
         answer: 30000000,
         category: "Media",
-        explanation: "About 30 million newspapers are sold daily in the United States."
+        explanation: "About 30 million newspapers are sold daily in the United States.",
+        date: "2025-01-20"
     },
     {
         question: "How many people live in London?",
         answer: 9000000,
         category: "Population",
-        explanation: "London has approximately 9 million residents in its metropolitan area."
+        explanation: "London has approximately 9 million residents in its metropolitan area.",
+        date: "2025-01-21"
     },
     {
         question: "How many bicycles are sold in the US each year?",
         answer: 15000000,
         category: "Transportation",
-        explanation: "About 15 million bicycles are sold annually in the United States."
+        explanation: "About 15 million bicycles are sold annually in the United States.",
+        date: "2025-01-22"
     },
     {
         question: "How many people visit the Eiffel Tower each year?",
         answer: 7000000,
         category: "Tourism",
-        explanation: "The Eiffel Tower receives approximately 7 million visitors annually."
+        explanation: "The Eiffel Tower receives approximately 7 million visitors annually.",
+        date: "2025-01-23"
     },
     {
         question: "How many gallons of milk are consumed in the US each year?",
         answer: 60000000000,
         category: "Food",
-        explanation: "Americans consume approximately 60 billion gallons of milk annually."
+        explanation: "Americans consume approximately 60 billion gallons of milk annually.",
+        date: "2025-01-24"
     },
     {
         question: "How many people work at Walmart?",
         answer: 2300000,
         category: "Business",
-        explanation: "Walmart employs approximately 2.3 million people worldwide."
+        explanation: "Walmart employs approximately 2.3 million people worldwide.",
+        date: "2025-01-25"
     },
     {
         question: "How many people visit the Grand Canyon each year?",
         answer: 6000000,
         category: "Tourism",
-        explanation: "The Grand Canyon National Park receives about 6 million visitors annually."
+        explanation: "The Grand Canyon National Park receives about 6 million visitors annually.",
+        date: "2025-01-26"
     },
     {
         question: "How many people live in Paris?",
         answer: 2100000,
         category: "Population",
-        explanation: "Paris has approximately 2.1 million residents within city limits."
+        explanation: "Paris has approximately 2.1 million residents within city limits.",
+        date: "2025-01-27"
     },
     {
         question: "How many people visit the Louvre Museum each year?",
         answer: 10000000,
         category: "Tourism",
-        explanation: "The Louvre Museum in Paris receives approximately 10 million visitors annually."
+        explanation: "The Louvre Museum in Paris receives approximately 10 million visitors annually.",
+        date: "2025-01-28"
     },
     {
         question: "How many people live in Los Angeles?",
         answer: 4000000,
         category: "Population",
-        explanation: "Los Angeles has approximately 4 million residents within city limits."
+        explanation: "Los Angeles has approximately 4 million residents within city limits.",
+        date: "2025-01-29"
     },
     {
         question: "How many people visit Yellowstone National Park each year?",
         answer: 4000000,
         category: "Tourism",
-        explanation: "Yellowstone National Park receives approximately 4 million visitors annually."
+        explanation: "Yellowstone National Park receives approximately 4 million visitors annually.",
+        date: "2025-01-30"
     },
     {
         question: "How many people work at Amazon?",
         answer: 1600000,
         category: "Business",
-        explanation: "Amazon employs approximately 1.6 million people worldwide."
+        explanation: "Amazon employs approximately 1.6 million people worldwide.",
+        date: "2025-01-31"
     },
     {
         question: "How many people visit the Statue of Liberty each year?",
         answer: 4500000,
         category: "Tourism",
-        explanation: "The Statue of Liberty receives approximately 4.5 million visitors annually."
+        explanation: "The Statue of Liberty receives approximately 4.5 million visitors annually.",
+        date: "2025-02-01"
     },
     {
         question: "How many people live in Chicago?",
         answer: 2700000,
         category: "Population",
-        explanation: "Chicago has approximately 2.7 million residents within city limits."
+        explanation: "Chicago has approximately 2.7 million residents within city limits.",
+        date: "2025-02-02"
     },
     {
         question: "How many people visit the Smithsonian Museums each year?",
         answer: 30000000,
         category: "Tourism",
-        explanation: "The Smithsonian Museums in Washington DC receive approximately 30 million visitors annually."
+        explanation: "The Smithsonian Museums in Washington DC receive approximately 30 million visitors annually.",
+        date: "2025-02-03"
     },
     {
         question: "How many people work at Apple?",
         answer: 164000,
         category: "Business",
-        explanation: "Apple employs approximately 164,000 people worldwide."
+        explanation: "Apple employs approximately 164,000 people worldwide.",
+        date: "2025-02-04"
     },
     {
         question: "How many people visit Central Park each year?",
         answer: 42000000,
         category: "Tourism",
-        explanation: "Central Park in New York City receives approximately 42 million visitors annually."
+        explanation: "Central Park in New York City receives approximately 42 million visitors annually.",
+        date: "2025-02-05"
     },
     {
         question: "How many people live in Houston?",
         answer: 2300000,
         category: "Population",
-        explanation: "Houston has approximately 2.3 million residents within city limits."
+        explanation: "Houston has approximately 2.3 million residents within city limits.",
+        date: "2025-02-06"
     },
     {
         question: "How many people visit the Golden Gate Bridge each year?",
         answer: 10000000,
         category: "Tourism",
-        explanation: "The Golden Gate Bridge receives approximately 10 million visitors annually."
+        explanation: "The Golden Gate Bridge receives approximately 10 million visitors annually.",
+        date: "2025-02-07"
     },
     {
         question: "How many people work at Google?",
         answer: 156500,
         category: "Business",
-        explanation: "Google employs approximately 156,500 people worldwide."
+        explanation: "Google employs approximately 156,500 people worldwide.",
+        date: "2025-02-08"
     },
     {
         question: "How many people visit the National Mall each year?",
         answer: 25000000,
         category: "Tourism",
-        explanation: "The National Mall in Washington DC receives approximately 25 million visitors annually."
+        explanation: "The National Mall in Washington DC receives approximately 25 million visitors annually.",
+        date: "2025-02-09"
+    },
+    {
+        question: "How many people visit the Pentagon each year?",
+        answer: 25000000,
+        category: "Tourism",
+        explanation: "The National Mall in Washington DC receives approximately 25 million visitors annually.",
+        date: "2025-07-29"
     }
 ];
 
@@ -289,12 +337,16 @@ const helpBtn = document.getElementById('help-btn');
 const statsBtn = document.getElementById('stats-btn');
 const helpModal = document.getElementById('help-modal');
 const statsModal = document.getElementById('stats-modal');
+const questionsModal = document.getElementById('questions-modal');
+const questionsList = document.getElementById('questions-list');
 const closeHelpBtn = document.getElementById('close-help-btn');
 const closeStatsBtn = document.getElementById('close-stats-btn');
+const closeQuestionsBtn = document.getElementById('close-questions-btn');
 
 // Initialize game
 function initGame() {
     loadStats();
+    loadCompletedQuestions();
     startNewGame();
     setupEventListeners();
 }
@@ -306,14 +358,14 @@ function updateStreakDisplay() {
 
 // Start a new game
 function startNewGame() {
-    currentQuestion = getRandomQuestion();
+    currentQuestion = getCurrentQuestion();
     currentGuess = 0;
     gameWon = false;
     gameOver = false;
     
     // Update display
     questionText.textContent = currentQuestion.question;
-    questionCategory.textContent = currentQuestion.category;
+    questionCategory.innerHTML = getQuestionDisplayText(currentQuestion); // Use innerHTML to allow <span>
     updateStreakDisplay();
     clearGuesses();
     
@@ -334,10 +386,57 @@ function startNewGame() {
     }
 }
 
-// Get a random question
-function getRandomQuestion() {
-    const randomIndex = Math.floor(Math.random() * fermiQuestions.length);
-    return fermiQuestions[randomIndex];
+// Get current date in YYYY-MM-DD format
+function getCurrentDate() {
+    const today = new Date();
+    const year = today.getFullYear();
+    const month = String(today.getMonth() + 1).padStart(2, '0');
+    const day = String(today.getDate()).padStart(2, '0');
+    return `${year}-${month}-${day}`;
+}
+
+// Get question for a specific date
+function getQuestionForDate(date) {
+    return fermiQuestions.find(q => q.date === date);
+}
+
+// Format date for display (e.g., "20 July 2025")
+function formatDateForDisplay(dateString) {
+    const date = new Date(dateString);
+    const options = { day: 'numeric', month: 'long', year: 'numeric' };
+    return date.toLocaleDateString('en-GB', options);
+}
+
+// Get question based on current date and game state
+function getCurrentQuestion() {
+    const today = getCurrentDate();
+    
+    // Get all questions sorted by date (newest first)
+    const sortedQuestions = fermiQuestions
+        .filter(q => q.date <= today)
+        .sort((a, b) => new Date(b.date) - new Date(a.date));
+    
+    // Find the first question that hasn't been completed
+    for (let question of sortedQuestions) {
+        if (!completedQuestions[question.date]) { // Check if the question is not completed
+            return question;
+        }
+    }
+    
+    // If all available questions are completed, return the first question
+    return fermiQuestions[0];
+}
+
+// Get question display text
+function getQuestionDisplayText(question) {
+    const today = getCurrentDate();
+    
+    if (question.date === today) {
+        return "Question of the Day";
+    } else {
+        const formattedDate = formatDateForDisplay(question.date);
+        return `${formattedDate} <span class='arrow'>></span>`;
+    }
 }
 
 // Clear previous guesses
@@ -464,6 +563,18 @@ function formatNumber(num) {
 function endGame() {
     guessInput.disabled = true;
     submitBtn.disabled = true;
+    
+    // Mark current question as completed
+    if (currentQuestion && !completedQuestions[currentQuestion.date]) {
+        completedQuestions[currentQuestion.date] = {
+            question: currentQuestion.question,
+            answer: currentQuestion.answer,
+            date: currentQuestion.date,
+            won: gameWon,
+            guesses: currentGuess
+        };
+        saveCompletedQuestions();
+    }
     
     // Update statistics
     stats.gamesPlayed++;
@@ -596,6 +707,141 @@ function loadStats() {
     }
 }
 
+// Save completed questions to localStorage
+function saveCompletedQuestions() {
+    localStorage.setItem('fermiCompletedQuestions', JSON.stringify(completedQuestions));
+}
+
+// Load completed questions from localStorage
+function loadCompletedQuestions() {
+    const savedCompletedQuestions = localStorage.getItem('fermiCompletedQuestions');
+    if (savedCompletedQuestions) {
+        try {
+            completedQuestions = JSON.parse(savedCompletedQuestions);
+        } catch (error) {
+            console.error('Error loading completed questions:', error);
+            completedQuestions = {}; // Reset to default on error
+        }
+    }
+}
+
+// Show questions history modal
+function showQuestionsHistory() {
+    populateQuestionsList();
+    questionsModal.style.display = 'block';
+}
+
+// Populate questions list
+function populateQuestionsList() {
+    questionsList.innerHTML = '';
+    const today = getCurrentDate();
+    
+    // Get all questions sorted by date (newest first)
+    const sortedQuestions = fermiQuestions
+        .filter(q => q.date <= today)
+        .sort((a, b) => new Date(b.date) - new Date(a.date));
+    
+    sortedQuestions.forEach(question => {
+        const questionItem = document.createElement('div');
+        questionItem.className = 'question-item';
+        
+        const isCompleted = completedQuestions[question.date] !== undefined;
+        const isCurrent = question.date === currentQuestion.date;
+        
+        if (isCompleted) {
+            const completedData = completedQuestions[question.date];
+            if (completedData.won) {
+                questionItem.classList.add('completed', 'won');
+            } else {
+                questionItem.classList.add('completed', 'lost');
+            }
+        } else if (isCurrent) {
+            questionItem.classList.add('current');
+        }
+        
+        const questionInfo = document.createElement('div');
+        questionInfo.className = 'question-info';
+        
+        const questionDate = document.createElement('div');
+        questionDate.className = 'question-date';
+        questionDate.textContent = formatDateForDisplay(question.date);
+        
+        const questionTextSmall = document.createElement('div');
+        questionTextSmall.className = 'question-text-small';
+        questionTextSmall.textContent = question.question;
+        
+        questionInfo.appendChild(questionDate);
+        questionInfo.appendChild(questionTextSmall);
+        
+        const questionStatus = document.createElement('div');
+        questionStatus.className = 'question-status';
+        
+        if (isCompleted) {
+            const completedData = completedQuestions[question.date];
+            if (completedData.won) {
+                questionStatus.textContent = `Won (${completedData.guesses})`;
+                questionStatus.classList.add('won');
+            } else {
+                questionStatus.textContent = 'Lost';
+                questionStatus.classList.add('lost');
+            }
+        } else if (isCurrent) {
+            questionStatus.textContent = 'Current';
+            questionStatus.classList.add('current');
+        } else {
+            questionStatus.textContent = 'Available';
+            questionStatus.classList.add('available');
+        }
+        
+        questionItem.appendChild(questionInfo);
+        questionItem.appendChild(questionStatus);
+        
+        // Add click handler to select this question
+        questionItem.addEventListener('click', () => {
+            if (!isCompleted) {
+                selectQuestion(question);
+                closeModal(questionsModal);
+            }
+        });
+        
+        questionsList.appendChild(questionItem);
+    });
+}
+
+// Select a specific question
+function selectQuestion(question) {
+    currentQuestion = question;
+    questionText.textContent = currentQuestion.question;
+    questionCategory.innerHTML = getQuestionDisplayText(currentQuestion);
+    
+    // Reset game state
+    currentGuess = 0;
+    gameWon = false;
+    gameOver = false;
+    
+    // Reset display
+    guessCounter.style.display = 'block';
+    gameResult.style.display = 'none';
+    inputSection.style.display = 'block';
+    newGameSection.style.display = 'none';
+    
+    // Reset input
+    guessInput.value = '';
+    guessInput.disabled = false;
+    submitBtn.disabled = false;
+    
+    // Clear guesses
+    clearGuesses();
+    
+    // Simple scroll to top to ensure good positioning
+    window.scrollTo(0, 0);
+    
+    // Auto-focus on desktop only
+    if (!('ontouchstart' in window) && !navigator.maxTouchPoints) {
+        guessInput.focus();
+    }
+}
+
 // Setup event listeners
 function setupEventListeners() {
     // Submit button
@@ -631,9 +877,13 @@ function setupEventListeners() {
     // Stats button
     statsBtn.addEventListener('click', showStats);
     
+    // Questions history button (question category)
+    questionCategory.addEventListener('click', showQuestionsHistory);
+    
     // Close buttons
     closeHelpBtn.addEventListener('click', () => closeModal(helpModal));
     closeStatsBtn.addEventListener('click', () => closeModal(statsModal));
+    closeQuestionsBtn.addEventListener('click', () => closeModal(questionsModal));
     
     // Close modals when clicking outside
     window.addEventListener('click', (e) => {
@@ -642,6 +892,9 @@ function setupEventListeners() {
         }
         if (e.target === statsModal) {
             closeModal(statsModal);
+        }
+        if (e.target === questionsModal) {
+            closeModal(questionsModal);
         }
     });
 }
