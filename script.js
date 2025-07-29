@@ -824,11 +824,12 @@ function populateQuestionsList() {
         // Add click handler to select this question
         questionItem.addEventListener('click', () => {
             if (!isCompleted) {
-                // Navigate using URL routing
-                const newURL = `#/question/${question.date}`;
-                window.history.pushState(null, '', newURL);
-                navigateToQuestion(question.date);
+                // Close modal first
                 closeModal(questionsModal);
+                
+                // Use direct URL navigation like typing in address bar
+                // This should work exactly like direct URL access which always works
+                window.location.hash = `/question/${question.date}`;
             }
         });
         
