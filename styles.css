@@ -84,6 +84,11 @@ body {
     color: #333;
 }
 
+.question-category .arrow {
+    display: inline-block;
+    transform: rotate(90deg);
+}
+
 /* Questions List */
 .questions-list {
     max-height: 400px;
