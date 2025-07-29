@@ -669,6 +669,19 @@ function updateStatsDisplay() {
 // Close modals
 function closeModal(modal) {
     modal.style.display = 'none';
+    
+    // Force cleanup of any rendering layers that might affect viewport
+    modal.style.backdropFilter = 'none';
+    modal.style.transform = 'none';
+    
+    // Trigger a style recalculation
+    modal.offsetHeight;
+    
+    // Reset backdrop filter after cleanup
+    setTimeout(() => {
+        modal.style.backdropFilter = '';
+        modal.style.transform = '';
+    }, 0);
 }
 
 // Save statistics to localStorage
@@ -811,15 +824,11 @@ function populateQuestionsList() {
         // Add click handler to select this question
         questionItem.addEventListener('click', () => {
             if (!isCompleted) {
-                // Close modal first
+                // Navigate using URL routing
+                const newURL = `#/question/${question.date}`;
+                window.history.pushState(null, '', newURL);
+                navigateToQuestion(question.date);
                 closeModal(questionsModal);
-                
-                // Small delay to let modal fully close, then navigate
-                setTimeout(() => {
-                    const newURL = `#/question/${question.date}`;
-                    window.history.pushState(null, '', newURL);
-                    navigateToQuestion(question.date);
-                }, 100);
             }
         });
         
