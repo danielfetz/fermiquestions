@@ -23,6 +23,28 @@ let stats = {
     }
 };
 
+// URL routing functions
+function getDateFromURL() {
+    const path = window.location.pathname;
+    const match = path.match(/\/question\/(\d{4}-\d{2}-\d{2})/);
+    return match ? match[1] : null;
+}
+
+function updateURL(date) {
+    const newURL = date ? `/question/${date}` : '/';
+    history.pushState({ date: date }, '', newURL);
+}
+
+function loadQuestionForDate(date) {
+    const question = getQuestionForDate(date);
+    if (question) {
+        selectQuestion(question);
+    } else {
+        // If date not found, load current question
+        startNewGame();
+    }
+}
+
 // Database of Fermi questions with dates
 const fermiQuestions = [
     {
@@ -347,7 +369,12 @@ const closeQuestionsBtn = document.getElementById('close-questions-btn');
 function initGame() {
     loadStats();
     loadCompletedQuestions();
-    startNewGame();
+    const dateFromURL = getDateFromURL();
+    if (dateFromURL) {
+        loadQuestionForDate(dateFromURL);
+    } else {
+        startNewGame();
+    }
     setupEventListeners();
 }
 
@@ -362,6 +389,9 @@ function startNewGame() {
     currentGuess = 0;
     gameWon = false;
     gameOver = false;
+    
+    // Update URL for current question
+    updateURL(currentQuestion.date);
     
     // Update display
     questionText.textContent = currentQuestion.question;
@@ -814,6 +844,9 @@ function selectQuestion(question) {
     questionText.textContent = currentQuestion.question;
     questionCategory.innerHTML = getQuestionDisplayText(currentQuestion);
     
+    // Update URL
+    updateURL(question.date);
+    
     // Reset game state
     currentGuess = 0;
     gameWon = false;
@@ -833,8 +866,8 @@ function selectQuestion(question) {
     // Clear guesses
     clearGuesses();
     
-    // Simple scroll to top to ensure good positioning
-    window.scrollTo(0, 0);
+    // Close questions modal if open
+    closeModal(questionsModal);
     
     // Auto-focus on desktop only
     if (!('ontouchstart' in window) && !navigator.maxTouchPoints) {
@@ -895,6 +928,16 @@ function setupEventListeners() {
         }
         if (e.target === questionsModal) {
             closeModal(questionsModal);
+        }
+    });
+
+    // Handle browser back/forward navigation
+    window.addEventListener('popstate', (event) => {
+        const dateFromURL = getDateFromURL();
+        if (dateFromURL) {
+            loadQuestionForDate(dateFromURL);
+        } else {
+            startNewGame();
         }
     });
 }
