@@ -27,17 +27,13 @@ body {
 }
 
 .game-title {
-    font-size: 1.0625rem;
-    font-weight: bold;
-    letter-spacing: -0.5px;
-    display: flex;
-    gap: 0.5rem;
+    font-size: 1.125rem;
 }
 
 .icon-button {
     background: none;
     border: none;
-    font-size: 1.125rem;
+    font-size: 1rem;
     font-family: 'Press Start 2P', monospace;
     color: #333;
     cursor: pointer;
