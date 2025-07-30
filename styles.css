@@ -46,7 +46,7 @@ body {
     background-color: rgba(0, 0, 0, 0.1);
 }
 
-.header-right.icon-button {
+.header-right .icon-button {
     font-size: 1rem;
 }
 
