@@ -314,6 +314,20 @@ const fermiQuestions = [
         category: "Tourism",
         explanation: "The National Mall in Washington DC receives approximately 25 million visitors annually.",
         date: "2025-07-29"
+    },
+    {
+        question: "How many people have set foot on the Moon?",
+        answer: 50,
+        category: "Tourism",
+        explanation: "The National Mall in Washington DC receives approximately 25 million visitors annually.",
+        date: "2025-07-30"
+    },
+    {
+        question: "What percentage of people died before they were 15 in 1800?",
+        answer: 20,
+        category: "Tourism",
+        explanation: "The National Mall in Washington DC receives approximately 25 million visitors annually.",
+        date: "2025-07-31"
     }
 ];
 
