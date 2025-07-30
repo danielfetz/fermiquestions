@@ -37,7 +37,7 @@ body {
     font-family: 'Press Start 2P', monospace;
     color: #333;
     cursor: pointer;
-    padding: 8px;
+    padding: 0.5rem;
     border-radius: 6px;
     transition: background-color 0.2s;
 }
