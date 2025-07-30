@@ -23,7 +23,7 @@ body {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: 12px 0;
+    padding: 13px 0;
 }
 
 .game-title {
@@ -33,7 +33,7 @@ body {
 .icon-button {
     background: none;
     border: none;
-    font-size: 1rem;
+    font-size: 1.0625rem;
     font-family: 'Press Start 2P', monospace;
     color: #333;
     cursor: pointer;
