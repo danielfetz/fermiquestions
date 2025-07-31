@@ -23,7 +23,7 @@ body {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: 13px 0;
+    padding: 15px 0;
 }
 
 .game-title {
