@@ -629,7 +629,7 @@ function endGame() {
     }
     
     // Set correct answer
-    correctAnswer.innerHTML = `The correct answer was: <strong>${formatNumber(currentQuestion.answer)}</strong>`;
+    correctAnswer.innerHTML = `The correct answer was: <i>${formatNumber(currentQuestion.answer)}</i>`;
     
     // Hide input section and show new game button
     inputSection.style.display = 'none';
