@@ -805,7 +805,7 @@ function populateQuestionsList() {
         if (isCompleted) {
             const completedData = completedQuestions[question.date];
             if (completedData.won) {
-                questionStatus.textContent = `Won (${completedData.guesses})`;
+                questionStatus.textContent = `Won (${completedData.guesses}/6)`;
                 questionStatus.classList.add('won');
             } else {
                 questionStatus.textContent = 'Lost';
