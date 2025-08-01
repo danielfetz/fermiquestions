@@ -192,24 +192,8 @@ button#stats-btn {
 .game-result {
     text-align: center;
     margin-bottom: 20px;
-}
-
-.result-message {
-    font-size: 0.9375rem;
-}
-
-.result-message.won {
-    color: #27ae60;
-}
-
-.result-message.lost {
-    color: #e74c3c;
-}
-
-.correct-answer {
+    line-height: 1.5;
     font-size: 0.8rem;
-    color: #666;
-    line-height: 1.4;
 }
 
 /* New Game Section */
@@ -393,7 +377,7 @@ button#stats-btn {
 }
 
 .modal-content h2 {
-    margin-bottom: 15px;
+    margin-bottom: 20px;
     color: #333;
     font-size: 1.2rem;
 }
