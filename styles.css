@@ -37,13 +37,17 @@ body {
     font-family: 'Press Start 2P', monospace;
     color: #333;
     cursor: pointer;
-    padding: 0.5rem;
+    padding: 8px;
     border-radius: 6px;
     transition: background-color 0.2s;
 }
 
 .icon-button:hover {
     background-color: rgba(0, 0, 0, 0.1);
+}
+
+button#stats-btn {
+    padding-right: 6px;
 }
 
 /* Question Container */
