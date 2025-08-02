@@ -715,17 +715,27 @@ function generateGuessEmojis() {
 
 // Handle sharing with Web Share API or clipboard fallback
 async function handleShare(text) {
+    const isMobile = /Android|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+    
     try {
-        if (navigator.share && /Android|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)) {
+        if (navigator.share && isMobile) {
             await navigator.share({
                 text: text
             });
+            // No feedback message for native share - OS handles this
         } else {
+            // Desktop: copy to clipboard
             await navigator.clipboard.writeText(text);
             showShareFeedback('Copied to clipboard!');
         }
     } catch (error) {
-        // Fallback for older browsers
+        // Only show clipboard feedback if we're actually copying to clipboard
+        if (navigator.share && isMobile) {
+            // User cancelled share sheet - do nothing
+            return;
+        }
+        
+        // Fallback for older browsers - copy to clipboard
         const textArea = document.createElement('textarea');
         textArea.value = text;
         document.body.appendChild(textArea);
