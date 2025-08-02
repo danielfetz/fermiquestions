@@ -23,21 +23,17 @@ body {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: 12px 0;
+    padding: 15px 0;
 }
 
 .game-title {
-    font-size: 1.0625rem;
-    font-weight: bold;
-    letter-spacing: -0.5px;
-    display: flex;
-    gap: 0.5rem;
+    font-size: 1rem;
 }
 
 .icon-button {
     background: none;
     border: none;
-    font-size: 1.125rem;
+    font-size: 1.1rem;
     font-family: 'Press Start 2P', monospace;
     color: #333;
     cursor: pointer;
@@ -48,6 +44,10 @@ body {
 
 .icon-button:hover {
     background-color: rgba(0, 0, 0, 0.1);
+}
+
+button#stats-btn {
+    padding-right: 6px;
 }
 
 /* Question Container */
@@ -64,7 +64,7 @@ body {
 }
 
 .question-text {
-    font-size: 0.9rem;
+    font-size: 0.9375rem;
     margin-bottom: 10px;
     line-height: 1.5;
     color: #333;
@@ -191,28 +191,9 @@ body {
 /* Game Result */
 .game-result {
     text-align: center;
-    margin-bottom: 15px;
-}
-
-.result-message {
-    font-size: 1rem;
-    font-weight: bold;
-    margin-bottom: 10px;
-    color: #333;
-}
-
-.result-message.won {
-    color: #27ae60;
-}
-
-.result-message.lost {
-    color: #e74c3c;
-}
-
-.correct-answer {
-    font-size: 0.8rem;
-    color: #666;
-    line-height: 1.4;
+    margin-bottom: 20px;
+    line-height: 1.5;
+    font-size: 0.85rem;
 }
 
 /* New Game Section */
@@ -223,8 +204,8 @@ body {
 
 .new-game-btn-inline {
     width: 100%;
-    height: 46.16px;
-    background-color: #27ae60;
+    height: 48.16px;
+    background-color: #3498db;
     color: white;
     border: none;
     padding: 12px 25px;
@@ -236,7 +217,7 @@ body {
 }
 
 .new-game-btn-inline:hover {
-    background-color: #229954;
+    background-color: #2e86c1;
 }
 
 /* Guesses Container */
@@ -322,7 +303,7 @@ body {
 }
 
 .input-container {
-    height: 46.16px;
+    height: 48.16px;
     display: flex;
     align-items: center;
     gap: 8px;
@@ -349,7 +330,7 @@ body {
 
 .submit-btn {
     width: 100px;
-    height: 46.16px;
+    height: 48.16px;
     background-color: #3498db;
     color: white;
     border: none;
@@ -396,7 +377,7 @@ body {
 }
 
 .modal-content h2 {
-    margin-bottom: 15px;
+    margin-bottom: 20px;
     color: #333;
     font-size: 1.2rem;
 }

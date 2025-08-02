@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
     <title>Fermi Questions</title>
+    <meta name="description" content="Challenge your estimation skills with daily Fermi questions! Guess answers to fascinating questions with 6 or less tries. A fun daily brain teaser game.">
     <link rel="stylesheet" href="styles.css">
     <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
 </head>
@@ -16,11 +17,17 @@
             </div>
             <div class="header-center">
                 <h1 class="game-title">
-                    <span>fermi.quest</span
+                    <span>Fermi Questions</span
                 </h1>
             </div>
             <div class="header-right">
-                <button class="icon-button" id="stats-btn">📊</button>
+                <button class="icon-button" id="stats-btn">
+                    <svg width="20" height="18" viewBox="0 0 58 51" fill="none" xmlns="http://www.w3.org/2000/svg" shape-rendering="crispEdges">
+                        <rect x="2" y="28" width="8" height="21" fill="#333333"/>
+                        <rect x="19" y="15" width="10" height="34" fill="#333333"/>
+                        <rect x="38" y="2" width="12" height="47" fill="#333333"/>
+                    </svg>
+                </button>
             </div>
         </header>
 
@@ -81,7 +88,7 @@
 
         <!-- New Game Button (hidden by default) -->
         <div class="new-game-section" id="new-game-section" style="display: none;">
-            <button id="new-game-btn-inline" class="new-game-btn-inline">New Game</button>
+            <button id="new-game-btn-inline" class="new-game-btn-inline">Continue Playing</button>
         </div>
 
         <!-- Game Over Modal -->
@@ -98,9 +105,9 @@
         <div class="modal" id="help-modal">
             <div class="modal-content">
                 <h2>How to Play</h2>
-                <p>Guess the answer to Fermi estimate questions within 6 tries.</p>
-                <p>You win if your guess is within ±5% of the correct answer.</p>
-                <p>After each guess, you'll see if your answer was too high or too low.</p>
+                <p>Guess the answer to Fermi estimation questions with 6 or less tries.</p>
+                <p>After each guess, you'll see if your answer was too high (arrow pointing down) or too low (arrow pointing up).</p>
+                <p>You win if your guess is within ±10% of the correct answer.</p>
                 <button id="close-help-btn" class="close-btn">Close</button>
             </div>
         </div>

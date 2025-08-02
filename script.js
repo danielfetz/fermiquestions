@@ -314,6 +314,20 @@ const fermiQuestions = [
         category: "Tourism",
         explanation: "The National Mall in Washington DC receives approximately 25 million visitors annually.",
         date: "2025-07-29"
+    },
+    {
+        question: "How many people have set foot on the Moon?",
+        answer: 50,
+        category: "Tourism",
+        explanation: "The National Mall in Washington DC receives approximately 25 million visitors annually.",
+        date: "2025-07-30"
+    },
+    {
+        question: "What percentage of people died before they were 15 in 1800?",
+        answer: 20,
+        category: "Tourism",
+        explanation: "The National Mall in Washington DC receives approximately 25 million visitors annually.",
+        date: "2025-07-31"
     }
 ];
 
@@ -504,8 +518,8 @@ function submitGuess() {
     // Add guess to display
     addGuessToDisplay(guessValue);
     
-    // Check if guess is correct (within 5%)
-    const tolerance = currentQuestion.answer * 0.05;
+    // Check if guess is correct (within 10%)
+    const tolerance = currentQuestion.answer * 0.10;
     const isCorrect = Math.abs(guessValue - currentQuestion.answer) <= tolerance;
     
     if (isCorrect) {
@@ -615,7 +629,7 @@ function endGame() {
     }
     
     // Set correct answer
-    correctAnswer.innerHTML = `The correct answer was: <strong>${formatNumber(currentQuestion.answer)}</strong>`;
+    correctAnswer.innerHTML = `The correct answer was: <i>${formatNumber(currentQuestion.answer)}</i>`;
     
     // Hide input section and show new game button
     inputSection.style.display = 'none';
@@ -791,7 +805,7 @@ function populateQuestionsList() {
         if (isCompleted) {
             const completedData = completedQuestions[question.date];
             if (completedData.won) {
-                questionStatus.textContent = `Won (${completedData.guesses})`;
+                questionStatus.textContent = `Won (${completedData.guesses}/6)`;
                 questionStatus.classList.add('won');
             } else {
                 questionStatus.textContent = 'Lost';
