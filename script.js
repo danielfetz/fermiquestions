@@ -29,305 +29,74 @@ let stats = {
 // Database of Fermi questions with dates
 const fermiQuestions = [
     {
-        question: "How many chickens are slaughtered each year?",
-        answer: 50000000000,
-        category: "Agriculture",
-        explanation: "Approximately 50 billion chickens are slaughtered annually worldwide for meat consumption.",
-        date: "2025-01-01"
+        question: "How many people live outside the country where they were born?",
+        answer: 304000000,
+        category: "",
+        explanation: "",
+        date: "2025-07-24"
     },
     {
-        question: "How many people live in New York City?",
-        answer: 8400000,
-        category: "Population",
-        explanation: "New York City has approximately 8.4 million residents.",
-        date: "2025-01-02"
-    },
-    {
-        question: "How many cars are there in the United States?",
-        answer: 280000000,
-        category: "Transportation",
-        explanation: "There are roughly 280 million registered vehicles in the US.",
-        date: "2025-01-03"
+        question: "How many people of Jewish faith live in the world?",
+        answer: 15800000,
+        category: "Religion",
+        explanation: "",
+        date: "2025-07-25"
     },
     {
         question: "How many McDonald's restaurants exist worldwide?",
-        answer: 40000,
+        answer: 43477,
         category: "Business",
-        explanation: "McDonald's operates approximately 40,000 restaurants globally.",
-        date: "2025-01-04"
+        explanation: "McDonald's operates approximately 43,500 restaurants globally.",
+        date: "2025-07-26"
     },
     {
-        question: "How many books are published each year in the US?",
-        answer: 300000,
-        category: "Publishing",
-        explanation: "Around 300,000 new books are published annually in the United States.",
-        date: "2025-01-05"
+        question: "How many new electric cars/plug-in hybrids were sold worldwide in 2024?",
+        answer: 17500000,
+        category: "",
+        explanation: "",
+        date: "2025-07-27"
     },
     {
-        question: "How many trees are cut down each year globally?",
-        answer: 15000000000,
-        category: "Environment",
-        explanation: "Approximately 15 billion trees are cut down annually worldwide.",
-        date: "2025-01-06"
+        question: "How many new smartphones were sold worldwide in 2024?",
+        answer: 1240000000,
+        category: "",
+        explanation: "",
+        date: "2025-07-28"
     },
     {
-        question: "How many emails are sent per day worldwide?",
-        answer: 300000000000,
-        category: "Technology",
-        explanation: "Roughly 300 billion emails are sent daily across the globe.",
-        date: "2025-01-07"
-    },
-    {
-        question: "How many pizzas are sold in the US each year?",
-        answer: 3000000000,
-        category: "Food",
-        explanation: "About 3 billion pizzas are sold annually in the United States.",
-        date: "2025-01-08"
-    },
-    {
-        question: "How many people visit Times Square each year?",
-        answer: 50000000,
-        category: "Tourism",
-        explanation: "Approximately 50 million people visit Times Square annually.",
-        date: "2025-01-09"
-    },
-    {
-        question: "How many smartphones are sold worldwide each year?",
-        answer: 1400000000,
-        category: "Technology",
-        explanation: "Around 1.4 billion smartphones are sold globally each year.",
-        date: "2025-01-10"
-    },
-    {
-        question: "How many cups of coffee are consumed daily in the US?",
-        answer: 400000000,
-        category: "Food",
-        explanation: "Americans consume approximately 400 million cups of coffee daily.",
-        date: "2025-01-11"
-    },
-    {
-        question: "How many movies are released in the US each year?",
-        answer: 800,
-        category: "Entertainment",
-        explanation: "About 800 movies are released theatrically in the US annually.",
-        date: "2025-01-12"
-    },
-    {
-        question: "How many people die from car accidents each year globally?",
-        answer: 1350000,
-        category: "Safety",
-        explanation: "Approximately 1.35 million people die in road traffic accidents annually.",
-        date: "2025-01-13"
-    },
-    {
-        question: "How many babies are born each day worldwide?",
-        answer: 385000,
-        category: "Population",
-        explanation: "About 385,000 babies are born daily across the globe.",
-        date: "2025-01-14"
-    },
-    {
-        question: "How many plastic bottles are used each year globally?",
-        answer: 500000000000,
-        category: "Environment",
-        explanation: "Roughly 500 billion plastic bottles are used annually worldwide.",
-        date: "2025-01-15"
-    },
-    {
-        question: "How many people live in Tokyo?",
-        answer: 14000000,
-        category: "Population",
-        explanation: "Tokyo has approximately 14 million residents in its metropolitan area.",
-        date: "2025-01-16"
-    },
-    {
-        question: "How many hamburgers does McDonald's sell each day?",
-        answer: 75000000,
-        category: "Food",
-        explanation: "McDonald's sells approximately 75 million hamburgers daily worldwide.",
-        date: "2025-01-17"
-    },
-    {
-        question: "How many text messages are sent per day globally?",
-        answer: 20000000000,
-        category: "Technology",
-        explanation: "About 20 billion text messages are sent daily across the world.",
-        date: "2025-01-18"
-    },
-    {
-        question: "How many people visit Disney World each year?",
-        answer: 20000000,
-        category: "Tourism",
-        explanation: "Disney World in Florida attracts approximately 20 million visitors annually.",
-        date: "2025-01-19"
-    },
-    {
-        question: "How many newspapers are sold daily in the US?",
-        answer: 30000000,
-        category: "Media",
-        explanation: "About 30 million newspapers are sold daily in the United States.",
-        date: "2025-01-20"
-    },
-    {
-        question: "How many people live in London?",
-        answer: 9000000,
-        category: "Population",
-        explanation: "London has approximately 9 million residents in its metropolitan area.",
-        date: "2025-01-21"
-    },
-    {
-        question: "How many bicycles are sold in the US each year?",
-        answer: 15000000,
-        category: "Transportation",
-        explanation: "About 15 million bicycles are sold annually in the United States.",
-        date: "2025-01-22"
-    },
-    {
-        question: "How many people visit the Eiffel Tower each year?",
-        answer: 7000000,
-        category: "Tourism",
-        explanation: "The Eiffel Tower receives approximately 7 million visitors annually.",
-        date: "2025-01-23"
-    },
-    {
-        question: "How many gallons of milk are consumed in the US each year?",
-        answer: 60000000000,
-        category: "Food",
-        explanation: "Americans consume approximately 60 billion gallons of milk annually.",
-        date: "2025-01-24"
-    },
-    {
-        question: "How many people work at Walmart?",
-        answer: 2300000,
-        category: "Business",
-        explanation: "Walmart employs approximately 2.3 million people worldwide.",
-        date: "2025-01-25"
-    },
-    {
-        question: "How many people visit the Grand Canyon each year?",
-        answer: 6000000,
-        category: "Tourism",
-        explanation: "The Grand Canyon National Park receives about 6 million visitors annually.",
-        date: "2025-01-26"
-    },
-    {
-        question: "How many people live in Paris?",
-        answer: 2100000,
-        category: "Population",
-        explanation: "Paris has approximately 2.1 million residents within city limits.",
-        date: "2025-01-27"
-    },
-    {
-        question: "How many people visit the Louvre Museum each year?",
-        answer: 10000000,
-        category: "Tourism",
-        explanation: "The Louvre Museum in Paris receives approximately 10 million visitors annually.",
-        date: "2025-01-28"
-    },
-    {
-        question: "How many people live in Los Angeles?",
-        answer: 4000000,
-        category: "Population",
-        explanation: "Los Angeles has approximately 4 million residents within city limits.",
-        date: "2025-01-29"
-    },
-    {
-        question: "How many people visit Yellowstone National Park each year?",
-        answer: 4000000,
-        category: "Tourism",
-        explanation: "Yellowstone National Park receives approximately 4 million visitors annually.",
-        date: "2025-01-30"
-    },
-    {
-        question: "How many people work at Amazon?",
-        answer: 1600000,
-        category: "Business",
-        explanation: "Amazon employs approximately 1.6 million people worldwide.",
-        date: "2025-01-31"
-    },
-    {
-        question: "How many people visit the Statue of Liberty each year?",
-        answer: 4500000,
-        category: "Tourism",
-        explanation: "The Statue of Liberty receives approximately 4.5 million visitors annually.",
-        date: "2025-02-01"
-    },
-    {
-        question: "How many people live in Chicago?",
-        answer: 2700000,
-        category: "Population",
-        explanation: "Chicago has approximately 2.7 million residents within city limits.",
-        date: "2025-02-02"
-    },
-    {
-        question: "How many people visit the Smithsonian Museums each year?",
-        answer: 30000000,
-        category: "Tourism",
-        explanation: "The Smithsonian Museums in Washington DC receive approximately 30 million visitors annually.",
-        date: "2025-02-03"
-    },
-    {
-        question: "How many people work at Apple?",
-        answer: 164000,
-        category: "Business",
-        explanation: "Apple employs approximately 164,000 people worldwide.",
-        date: "2025-02-04"
-    },
-    {
-        question: "How many people visit Central Park each year?",
-        answer: 42000000,
-        category: "Tourism",
-        explanation: "Central Park in New York City receives approximately 42 million visitors annually.",
-        date: "2025-02-05"
-    },
-    {
-        question: "How many people live in Houston?",
-        answer: 2300000,
-        category: "Population",
-        explanation: "Houston has approximately 2.3 million residents within city limits.",
-        date: "2025-02-06"
-    },
-    {
-        question: "How many people visit the Golden Gate Bridge each year?",
-        answer: 10000000,
-        category: "Tourism",
-        explanation: "The Golden Gate Bridge receives approximately 10 million visitors annually.",
-        date: "2025-02-07"
-    },
-    {
-        question: "How many people work at Google?",
-        answer: 156500,
-        category: "Business",
-        explanation: "Google employs approximately 156,500 people worldwide.",
-        date: "2025-02-08"
-    },
-    {
-        question: "How many people visit the National Mall each year?",
-        answer: 25000000,
-        category: "Tourism",
-        explanation: "The National Mall in Washington DC receives approximately 25 million visitors annually.",
-        date: "2025-02-09"
-    },
-    {
-        question: "How many people visit the Pentagon each year?",
-        answer: 25000000,
-        category: "Tourism",
-        explanation: "The National Mall in Washington DC receives approximately 25 million visitors annually.",
+        question: "How many cars did Tesla produce in 2024?",
+        answer: 1770000,
+        category: "",
+        explanation: "",
         date: "2025-07-29"
     },
     {
-        question: "How many people have set foot on the Moon?",
-        answer: 50,
-        category: "Tourism",
-        explanation: "The National Mall in Washington DC receives approximately 25 million visitors annually.",
+        question: "What percentage of the Earth's surface is land?",
+        answer: 29,
+        category: "",
+        explanation: "",
         date: "2025-07-30"
     },
     {
-        question: "What percentage of people died before they were 15 in 1800?",
-        answer: 20,
-        category: "Tourism",
-        explanation: "The National Mall in Washington DC receives approximately 25 million visitors annually.",
+        question: "How many chickens were slaughtered for meat worldwide in 2023?",
+        answer: 76250000000,
+        category: "",
+        explanation: "",
         date: "2025-07-31"
+    },
+    {
+        question: "How many new cars were sold in the US in 2024?",
+        answer: 15900000,
+        category: "",
+        explanation: "",
+        date: "2025-08-01"
+    },
+    {
+        question: "How many humans have ever lived (including those currently alive)?",
+        answer: 117000000000,
+        category: "",
+        explanation: "",
+        date: "2025-08-02"
     }
 ];
 
