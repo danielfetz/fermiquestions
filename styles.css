@@ -236,7 +236,7 @@ button#stats-btn {
     flex: 1;
     background-color: #fdfdfd;
     color: #333;
-    padding: 13px 15px;
+    padding: 14px 15px;
     border-radius: 12px;
     font-size: 0.8rem;
     text-align: center;
@@ -250,7 +250,7 @@ button#stats-btn {
 
 .feedback-button {
     width: 100px;
-    height: 43.91px;
+    height: 45.91px;
     border-radius: 12px;
     border: none;
     display: flex;
