@@ -405,7 +405,7 @@ function endGame() {
     
     // Hide input section and show new game button
     inputSection.style.display = 'none';
-    newGameSection.style.display = 'block';
+    newGameSection.style.display = 'flex';
     shareBtn.style.display = 'block'; // Show share button after game ends
     updateStreakDisplay(); // Update streak display when game ends
 }
@@ -678,7 +678,7 @@ function generateGameShareText() {
     const guessEmojis = generateGuessEmojis();
     const result = gameWon ? `Won in ${currentGuess}` : 'Lost';
     
-    return `Fermi Quest ${date}\n${result}/6\n\n${guessEmojis}\n\nfermi.quest`;
+    return `Fermi Question of the Day ${date}\n${result}/6\n\n${guessEmojis}\n\nhttps://fermiquestions.org`;
 }
 
 // Generate share text for stats
@@ -688,7 +688,7 @@ function generateStatsShareText() {
     const currentStreak = stats.currentStreak;
     const maxStreak = stats.maxStreak;
     
-    return `My Fermi Quest Stats:\n🎯 Games Played: ${gamesPlayed}\n📊 Win Rate: ${winRate}%\n🔥 Current Streak: ${currentStreak}\n🏆 Max Streak: ${maxStreak}\n\nfermi.quest`;
+    return `My Fermi Question Stats:\n🎯 Games Played: ${gamesPlayed}\n📊 Win Rate: ${winRate}%\n🔥 Current Streak: ${currentStreak}\n🏆 Max Streak: ${maxStreak}\n\nfermi.quest`;
 }
 
 // Generate emoji representation of guesses
@@ -703,7 +703,7 @@ function generateGuessEmojis() {
         if (feedbackButton.classList.contains('correct')) {
             emojis += '🟢';
         } else if (feedbackButton.classList.contains('close')) {
-            emojis += '🟠';
+            emojis += '🟡';
         } else {
             emojis += '🔴';
         }
