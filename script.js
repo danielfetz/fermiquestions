@@ -85,15 +85,15 @@ const fermiQuestions = [
         date: "2025-07-31"
     },
     {
-        question: "How many new cars were sold in the US in 2024?",
-        answer: 15900000,
+        question: "How many humans have ever lived (including those currently alive)?",
+        answer: 117000000000,
         category: "",
         explanation: "",
         date: "2025-08-01"
     },
     {
-        question: "How many humans have ever lived (including those currently alive)?",
-        answer: 117000000000,
+        question: "How many new cars were sold in the US in 2024?",
+        answer: 15900000,
         category: "",
         explanation: "",
         date: "2025-08-02"
