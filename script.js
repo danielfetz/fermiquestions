@@ -97,6 +97,13 @@ const fermiQuestions = [
         category: "",
         explanation: "",
         date: "2025-08-02"
+    },
+    {
+        question: "How many veterinarians are there in the US?",
+        answer: 130415,
+        category: "",
+        explanation: "",
+        date: "2025-08-03"
     }
 ];
 
