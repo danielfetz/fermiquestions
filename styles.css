@@ -220,6 +220,34 @@ button#stats-btn {
     background-color: #777777;
 }
 
+/* Share Button */
+.share-btn {
+    background-color: #3498db;
+    color: white;
+    border: none;
+    padding: 12px 25px;
+    border-radius: 8px;
+    font-family: 'Press Start 2P', monospace;
+    font-size: 0.7rem;
+    cursor: pointer;
+    margin-top: 15px;
+    margin-right: 10px;
+    transition: background-color 0.2s;
+}
+
+.share-btn:hover {
+    background-color: #2e86c1;
+}
+
+.new-game-section .share-btn {
+    width: 100%;
+    height: 48.16px;
+    font-size: 0.8rem;
+    margin-top: 0;
+    margin-bottom: 10px;
+    border-radius: 12px;
+}
+
 /* Guesses Container */
 .guesses-container {
     margin-bottom: 20px;
