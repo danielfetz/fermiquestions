@@ -677,8 +677,9 @@ function generateGameShareText() {
     const date = formatDateForDisplay(currentQuestion.date);
     const guessEmojis = generateGuessEmojis();
     const result = gameWon ? `Won in ${currentGuess}` : 'Lost';
-    
-    return `Fermi Question of the Day ${date}\n${result}/6\n\n${guessEmojis}\n\nhttps://fermiquestions.org`;
+    const question = currentQuestion.question;
+
+    return `Fermi Question of the Day: ${date}\n"${question}"\n${result}/6\n\n${guessEmojis}\n\nhttps://fermiquestions.org`;
 }
 
 // Generate share text for stats
