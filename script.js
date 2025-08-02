@@ -676,10 +676,19 @@ function generateGameShareText() {
     
     const date = formatDateForDisplay(currentQuestion.date);
     const guessEmojis = generateGuessEmojis();
-    const result = gameWon ? `Won in ${currentGuess}` : 'Lost';
     const question = currentQuestion.question;
-
-    return `Fermi Question of the Day: ${date}\n"${question}"\n${result}/6\n\n${guessEmojis}\n\nhttps://fermiquestions.org`;
+    
+    let shareText = `Fermi Question of the Day: ${date}\n\n"${question}"\n\n`;
+    
+    if (gameWon) {
+        shareText += `I won using ${currentGuess} out of 6 guesses. Can you beat me?\n\n`;
+    } else {
+        shareText += `I couldn't solve this one in 6 guesses. Can you do better?\n\n`;
+    }
+    
+    shareText += `${guessEmojis}\n\nhttps://fermiquestions.org`;
+    
+    return shareText;
 }
 
 // Generate share text for stats
@@ -689,7 +698,7 @@ function generateStatsShareText() {
     const currentStreak = stats.currentStreak;
     const maxStreak = stats.maxStreak;
     
-    return `My Fermi Question Stats:\n🎯 Games Played: ${gamesPlayed}\n📊 Win Rate: ${winRate}%\n🔥 Current Streak: ${currentStreak}\n🏆 Max Streak: ${maxStreak}\n\nfermi.quest`;
+    return `My Fermi Questions Stats:\n🎯 Games Played: ${gamesPlayed}\n📊 Win Rate: ${winRate}%\n🔥 Current Streak: ${currentStreak}\n🏆 Max Streak: ${maxStreak}\n\nhttps://fermiquestions.org`;
 }
 
 // Generate emoji representation of guesses
