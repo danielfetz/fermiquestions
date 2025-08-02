@@ -287,8 +287,8 @@ function submitGuess() {
     // Add guess to display
     addGuessToDisplay(guessValue);
     
-    // Check if guess is correct (within 10%)
-    const tolerance = currentQuestion.answer * 0.10;
+    // Check if guess is correct (within 20%)
+    const tolerance = currentQuestion.answer * 0.20;
     const isCorrect = Math.abs(guessValue - currentQuestion.answer) <= tolerance;
     
     if (isCorrect) {
