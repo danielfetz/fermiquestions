@@ -358,17 +358,25 @@ function showFeedback(guessIndex, type, symbol) {
     if (type === 'correct') {
         // Use retro pixelated checkmark SVG for correct answers
         feedbackButton.innerHTML = `
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                <rect x="2" y="12" width="4" height="2" fill="white"/>
-                <rect x="2" y="14" width="4" height="2" fill="white"/>
-                <rect x="6" y="14" width="4" height="2" fill="white"/>
-                <rect x="6" y="16" width="4" height="2" fill="white"/>
-                <rect x="10" y="10" width="4" height="2" fill="white"/>
-                <rect x="10" y="12" width="4" height="2" fill="white"/>
-                <rect x="14" y="6" width="4" height="2" fill="white"/>
-                <rect x="14" y="8" width="4" height="2" fill="white"/>
-                <rect x="18" y="2" width="4" height="2" fill="white"/>
-                <rect x="18" y="4" width="4" height="2" fill="white"/>
+            <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <rect x="1" y="11" width="2" height="2" fill="white"/>
+                <rect x="1" y="13" width="2" height="2" fill="white"/>
+                <rect x="3" y="13" width="2" height="2" fill="white"/>
+                <rect x="3" y="15" width="2" height="2" fill="white"/>
+                <rect x="5" y="15" width="2" height="2" fill="white"/>
+                <rect x="5" y="17" width="2" height="2" fill="white"/>
+                <rect x="7" y="13" width="2" height="2" fill="white"/>
+                <rect x="7" y="15" width="2" height="2" fill="white"/>
+                <rect x="9" y="11" width="2" height="2" fill="white"/>
+                <rect x="9" y="13" width="2" height="2" fill="white"/>
+                <rect x="11" y="9" width="2" height="2" fill="white"/>
+                <rect x="11" y="11" width="2" height="2" fill="white"/>
+                <rect x="13" y="7" width="2" height="2" fill="white"/>
+                <rect x="13" y="9" width="2" height="2" fill="white"/>
+                <rect x="15" y="5" width="2" height="2" fill="white"/>
+                <rect x="15" y="7" width="2" height="2" fill="white"/>
+                <rect x="17" y="3" width="2" height="2" fill="white"/>
+                <rect x="17" y="5" width="2" height="2" fill="white"/>
             </svg>
         `;
     } else {
