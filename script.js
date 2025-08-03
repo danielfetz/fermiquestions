@@ -358,7 +358,7 @@ function showFeedback(guessIndex, type, symbol) {
     if (type === 'correct') {
         // Use retro pixelated checkmark SVG for correct answers
         feedbackButton.innerHTML = `
-            <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <svg width="18" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
                 <rect x="1" y="10" width="3" height="2" fill="white"/>
                 <rect x="1" y="12" width="3" height="2" fill="white"/>
                 <rect x="3" y="12" width="3" height="2" fill="white"/>
