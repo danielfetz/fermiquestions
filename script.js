@@ -104,6 +104,13 @@ const fermiQuestions = [
         category: "",
         explanation: "",
         date: "2025-08-03"
+    },
+    {
+        question: "How many paying subscribers does Spotify have?",
+        answer: 276000000,
+        category: "",
+        explanation: "",
+        date: "2025-08-04"
     }
 ];
 
