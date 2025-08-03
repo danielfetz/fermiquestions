@@ -400,10 +400,10 @@ function endGame() {
     
     // Set result message
     if (gameWon) {
-        resultMessage.textContent = `Congratulations! You won in ${currentGuess} guess${currentGuess > 1 ? 'es' : ''}!`;
+        resultMessage.textContent = `You won in ${currentGuess} guess${currentGuess > 1 ? 'es' : ''}!`;
         resultMessage.className = 'result-message won';
     } else {
-        resultMessage.textContent = 'Game Over! You ran out of guesses.';
+        resultMessage.textContent = 'You ran out of guesses!';
         resultMessage.className = 'result-message lost';
     }
     
