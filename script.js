@@ -285,7 +285,7 @@ function getGuessText(guessNumber) {
 
 // Submit a guess
 function submitGuess() {
-    const guessValue = parseInt(guessInput.value.replace(/,/g, ''));
+    const guessValue = parseInt(guessInput.value.replace(/[^\d]/g, ''));
     
     if (isNaN(guessValue) || guessValue < 0) {
         alert('Please enter a valid positive number!');
