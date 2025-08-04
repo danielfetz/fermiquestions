@@ -944,13 +944,11 @@ function populateQuestionsList() {
         
         // Add click handler to select this question
         questionItem.addEventListener('click', () => {
-            if (!isCompleted) {
-                // Navigate using URL routing
-                const newURL = `#/${question.date}`;
-                window.history.pushState(null, '', newURL);
-                navigateToQuestion(question.date);
-                closeModal(questionsModal);
-            }
+            // Navigate using URL routing (works for both completed and incomplete questions)
+            const newURL = `#/${question.date}`;
+            window.history.pushState(null, '', newURL);
+            navigateToQuestion(question.date);
+            closeModal(questionsModal);
         });
         
         questionsList.appendChild(questionItem);
