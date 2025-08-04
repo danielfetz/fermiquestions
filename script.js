@@ -403,17 +403,40 @@ function endGame() {
     guessInput.disabled = true;
     submitBtn.disabled = true;
     
-    // Mark current question as completed
-    if (currentQuestion && !completedQuestions[currentQuestion.date]) {
-        completedQuestions[currentQuestion.date] = {
-            question: currentQuestion.question,
-            answer: currentQuestion.answer,
-            date: currentQuestion.date,
-            won: gameWon,
-            guesses: currentGuess
-        };
-        saveCompletedQuestions();
+// Mark current question as completed
+if (currentQuestion && !completedQuestions[currentQuestion.date]) {
+    // Collect all the guesses made
+    const guessData = [];
+    const guessRows = guessesContainer.querySelectorAll('.guess-row');
+    
+    for (let i = 0; i < currentGuess; i++) {
+        const row = guessRows[i];
+        const guessField = row.querySelector('.guess-field');
+        const feedbackButton = row.querySelector('.feedback-button');
+        
+        let feedbackType = 'empty';
+        if (feedbackButton.classList.contains('correct')) feedbackType = 'correct';
+        else if (feedbackButton.classList.contains('close')) feedbackType = 'close';
+        else if (feedbackButton.classList.contains('high')) feedbackType = 'high';
+        else if (feedbackButton.classList.contains('low')) feedbackType = 'low';
+        
+        guessData.push({
+            value: guessField.textContent,
+            feedback: feedbackType,
+            symbol: feedbackButton.textContent || feedbackButton.innerHTML
+        });
     }
+    
+    completedQuestions[currentQuestion.date] = {
+        question: currentQuestion.question,
+        answer: currentQuestion.answer,
+        date: currentQuestion.date,
+        won: gameWon,
+        guesses: currentGuess,
+        guessData: guessData
+    };
+    saveCompletedQuestions();
+}
     
     // Update statistics
     stats.gamesPlayed++;
@@ -980,3 +1003,76 @@ function setupEventListeners() {
 
 // Initialize the game when the page loads
 document.addEventListener('DOMContentLoaded', initGame); 
+
+
+// Recreate guesses display from stored data
+function recreateGuessesFromData(guessData) {
+    clearGuesses(); // Start with empty guess rows
+    
+    const guessRows = guessesContainer.querySelectorAll('.guess-row');
+    
+    guessData.forEach((guess, index) => {
+        const row = guessRows[index];
+        const guessField = row.querySelector('.guess-field');
+        const feedbackButton = row.querySelector('.feedback-button');
+        
+        // Set the guess value
+        guessField.textContent = guess.value;
+        guessField.classList.remove('empty');
+        
+        // Set the feedback
+        if (guess.feedback === 'correct') {
+            feedbackButton.innerHTML = guess.symbol;
+        } else {
+            feedbackButton.textContent = guess.symbol;
+        }
+        feedbackButton.className = `feedback-button ${guess.feedback}`;
+    });
+}
+
+// Show state when all questions are completed
+function showAllCompletedState() {
+    // Get the most recently completed question
+    const today = getCurrentDate();
+    const availableQuestions = fermiQuestions
+        .filter(q => q.date <= today)
+        .sort((a, b) => new Date(b.date) - new Date(a.date));
+    
+    const lastCompleted = availableQuestions[0];
+    const completedData = completedQuestions[lastCompleted.date];
+    
+    // Set current question for display
+    currentQuestion = lastCompleted;
+    
+    // Update display with the last completed question
+    questionText.textContent = lastCompleted.question;
+    questionCategory.innerHTML = getQuestionDisplayText(lastCompleted);
+    
+    // Show the result
+    gameResult.style.display = 'block';
+    if (completedData.won) {
+        resultMessage.textContent = `Congratulations! You won in ${completedData.guesses} guess${completedData.guesses > 1 ? 'es' : ''}!`;
+        resultMessage.className = 'result-message won';
+    } else {
+        resultMessage.textContent = 'Game Over! You ran out of guesses.';
+        resultMessage.className = 'result-message lost';
+    }
+    correctAnswer.innerHTML = `The correct answer was: <strong>${formatNumber(lastCompleted.answer)}</strong>`;
+    
+    // Recreate the guesses from stored data
+    if (completedData.guessData) {
+        recreateGuessesFromData(completedData.guessData);
+    }
+    
+    // Hide game elements, show completed state
+    guessCounter.style.display = 'none';
+    inputSection.style.display = 'none';
+    
+    // Show stats button
+    newGameSection.style.display = 'block';
+    shareBtn.style.display = 'block'; // Allow sharing the last result
+    newGameBtnInline.textContent = 'Show Stats';
+    newGameBtnInline.onclick = showStats;
+    
+    updateStreakDisplay();
+} 
