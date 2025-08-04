@@ -178,6 +178,9 @@ function startNewGame() {
     questionCategory.innerHTML = getQuestionDisplayText(currentQuestion); // Use innerHTML to allow <span>
     updateStreakDisplay();
     clearGuesses();
+
+    // Update page title
+    updatePageTitle(currentQuestion);
     
     // Reset display elements
     guessCounter.style.display = 'block';
