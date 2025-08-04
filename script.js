@@ -235,8 +235,8 @@ function getCurrentQuestion() {
         }
     }
     
-    // If all available questions are completed, return the first question
-    return fermiQuestions[0];
+    // If all available questions are completed, return null
+    return null;
 }
 
 // Get question display text
