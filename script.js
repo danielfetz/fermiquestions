@@ -162,6 +162,13 @@ function updateStreakDisplay() {
 // Start a new game
 function startNewGame() {
     currentQuestion = getCurrentQuestion();
+    
+    // If all questions are completed, show stats modal instead
+    if (!currentQuestion) {
+        showStats();
+        return;
+    }
+    
     currentGuess = 0;
     gameWon = false;
     gameOver = false;
@@ -171,9 +178,6 @@ function startNewGame() {
     questionCategory.innerHTML = getQuestionDisplayText(currentQuestion); // Use innerHTML to allow <span>
     updateStreakDisplay();
     clearGuesses();
-    
-    // Update page title
-    updatePageTitle(currentQuestion);
     
     // Reset display elements
     guessCounter.style.display = 'block';
@@ -235,8 +239,8 @@ function getCurrentQuestion() {
         }
     }
     
-    // If all available questions are completed, return the first question
-    return fermiQuestions[0];
+    // If all available questions are completed, return null
+    return null;
 }
 
 // Get question display text
