@@ -169,12 +169,22 @@ function updateStreakDisplay() {
 function startNewGame() {
     currentQuestion = getCurrentQuestion();
     
-    // Clear saved state for this specific question only if starting fresh
-    if (currentQuestion) {
-        const storageKey = `fermiGameState_${currentQuestion.date}`;
-        localStorage.removeItem(storageKey);
+    if (!currentQuestion) {
+        console.error('No questions available');
+        return;
     }
     
+    // Check if this question already has saved progress
+    const storageKey = `fermiGameState_${currentQuestion.date}`;
+    const existingSavedState = localStorage.getItem(storageKey);
+    
+    if (existingSavedState) {
+        // If there's existing progress, navigate to it instead of starting fresh
+        selectQuestion(currentQuestion);
+        return;
+    }
+    
+    // Only start fresh if there's no existing progress
     currentGuess = 0;
     gameWon = false;
     gameOver = false;
