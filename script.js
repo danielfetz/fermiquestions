@@ -673,31 +673,42 @@ function saveCurrentGameState() {
         timestamp: Date.now()
     };
     
+    console.log('Saving game state:', gameState);
     localStorage.setItem('fermiCurrentGameState', JSON.stringify(gameState));
 }
 
 // Load current game state from localStorage
 function loadCurrentGameState() {
     const savedGameState = localStorage.getItem('fermiCurrentGameState');
+    console.log('Attempting to load game state:', savedGameState ? 'found' : 'none');
     if (!savedGameState) return false;
     
     try {
         const gameState = JSON.parse(savedGameState);
         
-        // Check if the saved state is for the current question and not too old (24 hours)
+        // Check if the saved state is not too old (24 hours) and has valid question
         const maxAge = 24 * 60 * 60 * 1000; // 24 hours
         if (!gameState.question || 
-            gameState.question.date !== currentQuestion?.date ||
             (Date.now() - gameState.timestamp) > maxAge) {
+            clearCurrentGameState();
+            return false;
+        }
+        
+        // Check if the question from saved state is still available (not future-dated)
+        const today = getCurrentDate();
+        if (gameState.question.date > today) {
             clearCurrentGameState();
             return false;
         }
         
         // Don't restore if question is already completed (permanent state takes precedence)
         if (completedQuestions[gameState.question.date]) {
+            console.log('Question already completed, not restoring temp state');
             clearCurrentGameState();
             return false;
         }
+        
+        console.log('Restoring game state for question:', gameState.question.date);
         
         // Restore game state
         currentQuestion = gameState.question;
@@ -709,6 +720,10 @@ function loadCurrentGameState() {
         questionText.textContent = currentQuestion.question;
         questionCategory.innerHTML = getQuestionDisplayText(currentQuestion);
         updatePageTitle(currentQuestion);
+        updateStreakDisplay();
+        
+        // Update URL to reflect the restored question
+        updateURL(currentQuestion.date);
         
         // Clear guesses container and restore saved guesses
         clearGuesses();
@@ -717,6 +732,22 @@ function loadCurrentGameState() {
         // Update game state display
         if (gameOver) {
             endGameDisplay(); // Call display updates without stats/completion logic
+        } else {
+            // Show input section for continuing the game
+            guessCounter.style.display = 'block';
+            gameResult.style.display = 'none';
+            inputSection.style.display = 'block';
+            newGameSection.style.display = 'none';
+            shareBtn.style.display = 'none';
+            
+            // Enable input
+            guessInput.disabled = false;
+            submitBtn.disabled = false;
+            
+            // Auto-focus on desktop only
+            if (!('ontouchstart' in window) && !navigator.maxTouchPoints) {
+                setTimeout(() => guessInput.focus(), 100);
+            }
         }
         
         return true;
