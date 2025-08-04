@@ -151,12 +151,13 @@ function initGame() {
     loadCompletedQuestions();
     
     // Try to load saved game state first, then start new game if no saved state
-    if (!loadCurrentGameState()) {
+    const restoredFromSave = loadCurrentGameState();
+    if (!restoredFromSave) {
         startNewGame();
     }
     
     setupEventListeners();
-    initRouting();
+    initRouting(restoredFromSave);
 }
 
 // Update current streak display
@@ -673,14 +674,12 @@ function saveCurrentGameState() {
         timestamp: Date.now()
     };
     
-    console.log('Saving game state:', gameState);
     localStorage.setItem('fermiCurrentGameState', JSON.stringify(gameState));
 }
 
 // Load current game state from localStorage
 function loadCurrentGameState() {
     const savedGameState = localStorage.getItem('fermiCurrentGameState');
-    console.log('Attempting to load game state:', savedGameState ? 'found' : 'none');
     if (!savedGameState) return false;
     
     try {
@@ -703,12 +702,9 @@ function loadCurrentGameState() {
         
         // Don't restore if question is already completed (permanent state takes precedence)
         if (completedQuestions[gameState.question.date]) {
-            console.log('Question already completed, not restoring temp state');
             clearCurrentGameState();
             return false;
         }
-        
-        console.log('Restoring game state for question:', gameState.question.date);
         
         // Restore game state
         currentQuestion = gameState.question;
@@ -1213,9 +1209,14 @@ function handlePopState() {
 }
 
 // Initialize routing
-function initRouting() {
+function initRouting(skipInitialNavigation = false) {
     // Handle browser navigation
     window.addEventListener('popstate', handlePopState);
+    
+    // Skip initial navigation if we restored from saved state
+    if (skipInitialNavigation) {
+        return;
+    }
     
     // Handle initial page load
     const questionDate = parseURL();
