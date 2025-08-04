@@ -417,14 +417,48 @@ function endGame() {
     // Clear saved game state since the game is now completed
     clearCurrentGameState();
     
-    // Mark current question as completed
+    // Mark current question as completed and save guesses permanently
     if (currentQuestion && !completedQuestions[currentQuestion.date]) {
+        // Gather all guesses and their feedback for permanent storage
+        const guessRows = guessesContainer.querySelectorAll('.guess-row');
+        const savedGuesses = [];
+        
+        for (let i = 0; i < currentGuess; i++) {
+            const row = guessRows[i];
+            const guessField = row.querySelector('.guess-field');
+            const feedbackButton = row.querySelector('.feedback-button');
+            
+            let feedbackType = 'none';
+            let feedbackSymbol = '';
+            
+            if (feedbackButton.classList.contains('correct')) {
+                feedbackType = 'correct';
+                feedbackSymbol = 'WIN';
+            } else if (feedbackButton.classList.contains('close')) {
+                feedbackType = 'close';
+                feedbackSymbol = feedbackButton.textContent;
+            } else if (feedbackButton.classList.contains('high')) {
+                feedbackType = 'high';
+                feedbackSymbol = feedbackButton.textContent;
+            } else if (feedbackButton.classList.contains('low')) {
+                feedbackType = 'low';
+                feedbackSymbol = feedbackButton.textContent;
+            }
+            
+            savedGuesses.push({
+                value: guessField.textContent,
+                feedbackType: feedbackType,
+                feedbackSymbol: feedbackSymbol
+            });
+        }
+        
         completedQuestions[currentQuestion.date] = {
             question: currentQuestion.question,
             answer: currentQuestion.answer,
             date: currentQuestion.date,
             won: gameWon,
-            guesses: currentGuess
+            guesses: currentGuess,
+            savedGuesses: savedGuesses
         };
         saveCompletedQuestions();
     }
@@ -655,6 +689,12 @@ function loadCurrentGameState() {
         if (!gameState.question || 
             gameState.question.date !== currentQuestion?.date ||
             (Date.now() - gameState.timestamp) > maxAge) {
+            clearCurrentGameState();
+            return false;
+        }
+        
+        // Don't restore if question is already completed (permanent state takes precedence)
+        if (completedQuestions[gameState.question.date]) {
             clearCurrentGameState();
             return false;
         }
@@ -897,33 +937,53 @@ function selectQuestion(question) {
     // Update page title
     updatePageTitle(currentQuestion);
     
-    // Reset game state
-    currentGuess = 0;
-    gameWon = false;
-    gameOver = false;
+    // Check if this question has been completed before
+    const isCompleted = completedQuestions[question.date] !== undefined;
     
-    // Reset display
-    guessCounter.style.display = 'block';
-    gameResult.style.display = 'none';
-    inputSection.style.display = 'block';
-    newGameSection.style.display = 'none';
-    shareBtn.style.display = 'none'; // Hide share button when selecting new question
-    
-    // Reset input
-    guessInput.value = '';
-    guessInput.disabled = false;
-    submitBtn.disabled = false;
-    
-    // Clear guesses
-    clearGuesses();
+    if (isCompleted) {
+        // Restore completed question state
+        const completedData = completedQuestions[question.date];
+        currentGuess = completedData.guesses;
+        gameWon = completedData.won;
+        gameOver = true;
+        
+        // Clear guesses and restore saved ones
+        clearGuesses();
+        if (completedData.savedGuesses) {
+            restoreGuessesDisplay(completedData.savedGuesses);
+        }
+        
+        // Show completed game display
+        endGameDisplay();
+    } else {
+        // Reset game state for new/incomplete question
+        currentGuess = 0;
+        gameWon = false;
+        gameOver = false;
+        
+        // Reset display
+        guessCounter.style.display = 'block';
+        gameResult.style.display = 'none';
+        inputSection.style.display = 'block';
+        newGameSection.style.display = 'none';
+        shareBtn.style.display = 'none'; // Hide share button when selecting new question
+        
+        // Reset input
+        guessInput.value = '';
+        guessInput.disabled = false;
+        submitBtn.disabled = false;
+        
+        // Clear guesses
+        clearGuesses();
+        
+        // Auto-focus on desktop only
+        if (!('ontouchstart' in window) && !navigator.maxTouchPoints) {
+            guessInput.focus();
+        }
+    }
     
     // Simple scroll to top to ensure good positioning
     window.scrollTo(0, 0);
-    
-    // Auto-focus on desktop only
-    if (!('ontouchstart' in window) && !navigator.maxTouchPoints) {
-        guessInput.focus();
-    }
 
     // Update URL without triggering navigation
     if (!isNavigating) {
@@ -1103,9 +1163,11 @@ function navigateToQuestion(questionDate) {
 // Navigate to the current/default question
 function navigateToCurrentQuestion() {
     const defaultQuestion = getCurrentQuestion();
-    isNavigating = true;
-    selectQuestion(defaultQuestion);
-    isNavigating = false;
+    if (defaultQuestion) {
+        isNavigating = true;
+        selectQuestion(defaultQuestion);
+        isNavigating = false;
+    }
 }
 
 // Handle browser back/forward navigation
