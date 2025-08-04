@@ -443,11 +443,25 @@ function endGame() {
     
     // Set correct answer
     correctAnswer.innerHTML = `The correct answer was: <i>${formatNumber(currentQuestion.answer)}</i>`;
+
+    // Check if all available questions are completed
+    const today = getCurrentDate();
+    const availableQuestions = fermiQuestions.filter(q => q.date <= today);
+    const allCompleted = availableQuestions.every(q => completedQuestions[q.date]);
     
     // Hide input section and show new game button
     inputSection.style.display = 'none';
     newGameSection.style.display = 'flex';
     shareBtn.style.display = 'block'; // Show share button after game ends
+
+    // Update button text and functionality based on completion status
+    if (allCompleted) {
+        newGameBtnInline.textContent = 'Show stats';
+        newGameBtnInline.onclick = showStats;
+    } else {
+        newGameBtnInline.textContent = 'Play more';
+        newGameBtnInline.onclick = startNewGame;
+    }    
     updateStreakDisplay(); // Update streak display when game ends
 }
 
@@ -942,9 +956,6 @@ function setupEventListeners() {
             input.value = formattedValue;
         }
     });
-    
-    // New game buttons
-    newGameBtnInline.addEventListener('click', startNewGame);
     
     // Help button
     helpBtn.addEventListener('click', showHelp);
