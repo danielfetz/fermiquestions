@@ -149,7 +149,12 @@ const shareStatsBtn = document.getElementById('share-stats-btn');
 function initGame() {
     loadStats();
     loadCompletedQuestions();
-    startNewGame();
+    
+    // Try to load saved game state first, then start new game if no saved state
+    if (!loadCurrentGameState()) {
+        startNewGame();
+    }
+    
     setupEventListeners();
     initRouting();
 }
@@ -161,6 +166,9 @@ function updateStreakDisplay() {
 
 // Start a new game
 function startNewGame() {
+    // Clear any existing saved game state since we're starting fresh
+    clearCurrentGameState();
+    
     currentQuestion = getCurrentQuestion();
     currentGuess = 0;
     gameWon = false;
@@ -235,8 +243,8 @@ function getCurrentQuestion() {
         }
     }
     
-    // If all available questions are completed, return the first question
-    return fermiQuestions[0];
+    // If all available questions are completed, return null
+    return null;
 }
 
 // Get question display text
@@ -333,6 +341,9 @@ function submitGuess() {
     // Clear input
     guessInput.value = '';
     
+    // Save current game state after each guess
+    saveCurrentGameState();
+    
     // Check if game is over
     if (gameOver) {
         endGame();
@@ -403,6 +414,9 @@ function endGame() {
     guessInput.disabled = true;
     submitBtn.disabled = true;
     
+    // Clear saved game state since the game is now completed
+    clearCurrentGameState();
+    
     // Mark current question as completed
     if (currentQuestion && !completedQuestions[currentQuestion.date]) {
         completedQuestions[currentQuestion.date] = {
@@ -443,11 +457,25 @@ function endGame() {
     
     // Set correct answer
     correctAnswer.innerHTML = `The correct answer was: <i>${formatNumber(currentQuestion.answer)}</i>`;
+
+    // Check if all available questions are completed
+    const today = getCurrentDate();
+    const availableQuestions = fermiQuestions.filter(q => q.date <= today);
+    const allCompleted = availableQuestions.every(q => completedQuestions[q.date]);
     
     // Hide input section and show new game button
     inputSection.style.display = 'none';
     newGameSection.style.display = 'flex';
     shareBtn.style.display = 'block'; // Show share button after game ends
+
+    // Update button text and functionality based on completion status
+    if (allCompleted) {
+        newGameBtnInline.textContent = 'Show stats';
+        newGameBtnInline.onclick = showStats;
+    } else {
+        newGameBtnInline.textContent = 'Play more';
+        newGameBtnInline.onclick = startNewGame;
+    }    
     updateStreakDisplay(); // Update streak display when game ends
 }
 
@@ -565,6 +593,196 @@ function loadCompletedQuestions() {
     }
 }
 
+// Save current game state to localStorage
+function saveCurrentGameState() {
+    if (!currentQuestion) return;
+    
+    // Gather current guesses and their feedback
+    const guessRows = guessesContainer.querySelectorAll('.guess-row');
+    const guesses = [];
+    
+    for (let i = 0; i < currentGuess; i++) {
+        const row = guessRows[i];
+        const guessField = row.querySelector('.guess-field');
+        const feedbackButton = row.querySelector('.feedback-button');
+        
+        let feedbackType = 'none';
+        let feedbackSymbol = '';
+        
+        if (feedbackButton.classList.contains('correct')) {
+            feedbackType = 'correct';
+            feedbackSymbol = 'WIN';
+        } else if (feedbackButton.classList.contains('close')) {
+            feedbackType = 'close';
+            feedbackSymbol = feedbackButton.textContent;
+        } else if (feedbackButton.classList.contains('high')) {
+            feedbackType = 'high';
+            feedbackSymbol = feedbackButton.textContent;
+        } else if (feedbackButton.classList.contains('low')) {
+            feedbackType = 'low';
+            feedbackSymbol = feedbackButton.textContent;
+        }
+        
+        guesses.push({
+            value: guessField.textContent,
+            feedbackType: feedbackType,
+            feedbackSymbol: feedbackSymbol
+        });
+    }
+    
+    const gameState = {
+        question: currentQuestion,
+        currentGuess: currentGuess,
+        gameWon: gameWon,
+        gameOver: gameOver,
+        guesses: guesses,
+        timestamp: Date.now()
+    };
+    
+    localStorage.setItem('fermiCurrentGameState', JSON.stringify(gameState));
+}
+
+// Load current game state from localStorage
+function loadCurrentGameState() {
+    const savedGameState = localStorage.getItem('fermiCurrentGameState');
+    if (!savedGameState) return false;
+    
+    try {
+        const gameState = JSON.parse(savedGameState);
+        
+        // Check if the saved state is for the current question and not too old (24 hours)
+        const maxAge = 24 * 60 * 60 * 1000; // 24 hours
+        if (!gameState.question || 
+            gameState.question.date !== currentQuestion?.date ||
+            (Date.now() - gameState.timestamp) > maxAge) {
+            clearCurrentGameState();
+            return false;
+        }
+        
+        // Restore game state
+        currentQuestion = gameState.question;
+        currentGuess = gameState.currentGuess;
+        gameWon = gameState.gameWon;
+        gameOver = gameState.gameOver;
+        
+        // Update display
+        questionText.textContent = currentQuestion.question;
+        questionCategory.innerHTML = getQuestionDisplayText(currentQuestion);
+        updatePageTitle(currentQuestion);
+        
+        // Clear guesses container and restore saved guesses
+        clearGuesses();
+        restoreGuessesDisplay(gameState.guesses);
+        
+        // Update game state display
+        if (gameOver) {
+            endGameDisplay(); // Call display updates without stats/completion logic
+        }
+        
+        return true;
+    } catch (error) {
+        console.error('Error loading current game state:', error);
+        clearCurrentGameState();
+        return false;
+    }
+}
+
+// Clear current game state from localStorage
+function clearCurrentGameState() {
+    localStorage.removeItem('fermiCurrentGameState');
+}
+
+// Restore guesses display from saved state
+function restoreGuessesDisplay(savedGuesses) {
+    const guessRows = guessesContainer.querySelectorAll('.guess-row');
+    
+    savedGuesses.forEach((guess, index) => {
+        if (index < guessRows.length) {
+            const row = guessRows[index];
+            const guessField = row.querySelector('.guess-field');
+            const feedbackButton = row.querySelector('.feedback-button');
+            
+            // Restore guess value
+            guessField.textContent = guess.value;
+            guessField.classList.remove('empty');
+            
+            // Restore feedback
+            if (guess.feedbackType !== 'none') {
+                if (guess.feedbackType === 'correct') {
+                    // Use the same checkmark SVG from showFeedback function
+                    feedbackButton.innerHTML = `
+                        <svg width="18" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <rect x="1" y="10" width="3" height="2" fill="white"/>
+                            <rect x="1" y="12" width="3" height="2" fill="white"/>
+                            <rect x="3" y="12" width="3" height="2" fill="white"/>
+                            <rect x="3" y="14" width="3" height="2" fill="white"/>
+                            <rect x="5" y="14" width="3" height="2" fill="white"/>
+                            <rect x="5" y="16" width="3" height="2" fill="white"/>
+                            <rect x="7" y="12" width="3" height="2" fill="white"/>
+                            <rect x="7" y="14" width="3" height="2" fill="white"/>
+                            <rect x="9" y="10" width="3" height="2" fill="white"/>
+                            <rect x="9" y="12" width="3" height="2" fill="white"/>
+                            <rect x="11" y="8" width="3" height="2" fill="white"/>
+                            <rect x="11" y="10" width="3" height="2" fill="white"/>
+                            <rect x="13" y="6" width="3" height="2" fill="white"/>
+                            <rect x="13" y="8" width="3" height="2" fill="white"/>
+                            <rect x="15" y="4" width="3" height="2" fill="white"/>
+                            <rect x="15" y="6" width="3" height="2" fill="white"/>
+                            <rect x="17" y="2" width="3" height="2" fill="white"/>
+                            <rect x="17" y="4" width="3" height="2" fill="white"/>
+                        </svg>
+                    `;
+                } else {
+                    feedbackButton.textContent = guess.feedbackSymbol;
+                }
+                
+                feedbackButton.className = `feedback-button ${guess.feedbackType}`;
+            }
+        }
+    });
+}
+
+// Update display elements for ended game (without updating stats)
+function endGameDisplay() {
+    guessInput.disabled = true;
+    submitBtn.disabled = true;
+    
+    // Hide guess counter and show game result
+    guessCounter.style.display = 'none';
+    gameResult.style.display = 'block';
+    
+    // Set result message
+    if (gameWon) {
+        resultMessage.textContent = `You won in ${currentGuess} guess${currentGuess > 1 ? 'es' : ''}!`;
+        resultMessage.className = 'result-message won';
+    } else {
+        resultMessage.textContent = 'You ran out of guesses!';
+        resultMessage.className = 'result-message lost';
+    }
+    
+    // Set correct answer
+    correctAnswer.innerHTML = `The correct answer was: <i>${formatNumber(currentQuestion.answer)}</i>`;
+
+    // Check if all available questions are completed
+    const today = getCurrentDate();
+    const availableQuestions = fermiQuestions.filter(q => q.date <= today);
+    const allCompleted = availableQuestions.every(q => completedQuestions[q.date]);
+    
+    // Hide input section and show new game button
+    inputSection.style.display = 'none';
+    newGameSection.style.display = 'flex';
+    shareBtn.style.display = 'block'; // Show share button after game ends
+
+    // Update button text and functionality based on completion status
+    if (allCompleted) {
+        newGameBtnInline.textContent = 'Show stats';
+        newGameBtnInline.onclick = showStats;
+    } else {
+        newGameBtnInline.textContent = 'Play more';
+        newGameBtnInline.onclick = startNewGame;
+    }
+}
+
 // Show questions history modal
 function showQuestionsHistory() {
     populateQuestionsList();
@@ -669,6 +887,9 @@ function updatePageTitle(question) {
 
 // Select a specific question
 function selectQuestion(question) {
+    // Clear any existing saved game state when switching questions
+    clearCurrentGameState();
+    
     currentQuestion = question;
     questionText.textContent = currentQuestion.question;
     questionCategory.innerHTML = getQuestionDisplayText(currentQuestion);
@@ -942,9 +1163,6 @@ function setupEventListeners() {
             input.value = formattedValue;
         }
     });
-    
-    // New game buttons
-    newGameBtnInline.addEventListener('click', startNewGame);
     
     // Help button
     helpBtn.addEventListener('click', showHelp);
