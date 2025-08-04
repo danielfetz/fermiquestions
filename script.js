@@ -111,6 +111,13 @@ const fermiQuestions = [
         category: "",
         explanation: "",
         date: "2025-08-04"
+    },
+    {
+        question: "How many iPhones has Apple ever sold?",
+        answer: 3000000000,
+        category: "",
+        explanation: "",
+        date: "2025-08-05"
     }
 ];
 
