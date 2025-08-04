@@ -243,8 +243,8 @@ function getCurrentQuestion() {
         }
     }
     
-    // If all available questions are completed, return null
-    return null;
+    // If all available questions are completed, return the most recent one
+    return sortedQuestions.length > 0 ? sortedQuestions[0] : null;
 }
 
 // Get question display text
