@@ -118,6 +118,13 @@ const fermiQuestions = [
         category: "",
         explanation: "",
         date: "2025-08-05"
+    },
+    {
+        question: "How many students are currently enrolled in medical school in the US?",
+        answer: 99562,
+        category: "",
+        explanation: "",
+        date: "2025-08-06"
     }
 ];
 
