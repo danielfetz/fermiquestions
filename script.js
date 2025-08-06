@@ -33,7 +33,7 @@ const fermiQuestions = [
         answer: 304000000,
         category: "",
         explanation: "",
-        hint: "Think about major migration patterns and consider that this includes refugees, workers, and students worldwide.",
+        hint: "Hint: About 20% of Germany's population was born in another country.",
         date: "2025-07-24"
     },
     {
@@ -41,7 +41,7 @@ const fermiQuestions = [
         answer: 15800000,
         category: "Religion",
         explanation: "",
-        hint: "About 6-7 million live in Israel and a similar number in the United States.",
+        hint: "Hint: Appx. 45.5% of the world's Jewish population lives in Israel.",
         date: "2025-07-25"
     },
     {
@@ -49,7 +49,7 @@ const fermiQuestions = [
         answer: 43477,
         category: "Business",
         explanation: "McDonald's operates approximately 43,500 restaurants globally.",
-        hint: "McDonald's is in over 100 countries. The US has the most, followed by Japan and China.",
+        hint: "Hint: There are 13,557 McDonald's restaurants in the US.",
         date: "2025-07-26"
     },
     {
@@ -57,7 +57,7 @@ const fermiQuestions = [
         answer: 17500000,
         category: "",
         explanation: "",
-        hint: "China accounts for about 60% of global EV sales, with Tesla and BYD being major players.",
+        hint: "Hint: 62.9M new non-electric cars were sold worldwide in 2023.",
         date: "2025-07-27"
     },
     {
@@ -65,7 +65,7 @@ const fermiQuestions = [
         answer: 1240000000,
         category: "",
         explanation: "",
-        hint: "This is over 1 billion devices. Consider that many people upgrade every 2-3 years globally.",
+        hint: "Hint: Xiaomi sold 169 million smartphones in 2024.",
         date: "2025-07-28"
     },
     {
@@ -73,7 +73,7 @@ const fermiQuestions = [
         answer: 1770000,
         category: "",
         explanation: "",
-        hint: "Tesla is the world's most valuable automaker but still produces far fewer cars than traditional manufacturers.",
+        hint: "Hint: In 2018, Tesla produced 255K cars.",
         date: "2025-07-29"
     },
     {
@@ -81,7 +81,7 @@ const fermiQuestions = [
         answer: 29,
         category: "",
         explanation: "",
-        hint: "The rest is water. Think about how much of a world map is blue versus other colors.",
+        hint: "Hint: The US covers 1.87% of the Earth's surface.",
         date: "2025-07-30"
     },
     {
@@ -89,7 +89,7 @@ const fermiQuestions = [
         answer: 76250000000,
         category: "",
         explanation: "",
-        hint: "This is over 70 billion birds. Chicken is the most consumed meat globally.",
+        hint: "Hint: The average meat yield per chicken is 1.66 kg.",
         date: "2025-07-31"
     },
     {
@@ -97,7 +97,7 @@ const fermiQuestions = [
         answer: 117000000000,
         category: "",
         explanation: "",
-        hint: "About 8 billion people are alive today. The total includes all humans throughout history.",
+        hint: "Hint: About half the people who ever lived, lived in the past 2000 years.",
         date: "2025-08-01"
     },
     {
@@ -105,7 +105,7 @@ const fermiQuestions = [
         answer: 15900000,
         category: "",
         explanation: "",
-        hint: "The US has about 330 million people. Consider how often people buy new cars.",
+        hint: "Hint: Around 240 million people hold a valid driver's licence in the US.",
         date: "2025-08-02"
     },
     {
@@ -113,7 +113,7 @@ const fermiQuestions = [
         answer: 130415,
         category: "",
         explanation: "",
-        hint: "This includes both small animal (pets) and large animal (livestock) vets across all 50 states.",
+        hint: "Hint: There are about 15,000 veterinarians in Australia.",
         date: "2025-08-03"
     },
     {
@@ -121,7 +121,7 @@ const fermiQuestions = [
         answer: 276000000,
         category: "",
         explanation: "",
-        hint: "This is just paying subscribers, not total users. Spotify is the largest music streaming service.",
+        hint: "Hint: Spotify's revenue in the second quarter of 2025 was 4.2 billion euros.",
         date: "2025-08-04"
     },
     {
@@ -129,7 +129,7 @@ const fermiQuestions = [
         answer: 3000000000,
         category: "",
         explanation: "",
-        hint: "This is just paying subscribers, not total users. Spotify is the largest music streaming service.",
+        hint: "Hint: In 2024, Apple sold approximately 232.1 million iPhones.",
         date: "2025-08-05"
     },
     {
@@ -137,7 +137,7 @@ const fermiQuestions = [
         answer: 99562,
         category: "",
         explanation: "",
-        hint: "Hint: This is just paying subscribers, not total users. Spotify is the largest music streaming service.",
+        hint: "Hint: The US had 1,01 million active physicians in 2023.",
         date: "2025-08-06"
     }
 ];
