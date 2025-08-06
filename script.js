@@ -1114,16 +1114,15 @@ function selectQuestion(question) {
 function generateGameShareText() {
     if (!gameOver || !currentQuestion) return '';
     
-    const date = formatDateForDisplay(currentQuestion.date);
     const guessEmojis = generateGuessEmojis();
     const question = currentQuestion.question;
     
-    let shareText = `Fermi Question of the Day: ${date}\n\n"${question}"\n\n`;
+    let shareText = `Fermi Question of the Day:`;
     
     if (gameWon) {
-        shareText += `I won using ${currentGuess} out of 6 guesses.\n\n`;
+        shareText += `I got the right answer using ${currentGuess} guess.\n\n`;
     } else {
-        shareText += `I couldn't solve this one in 6 guesses.\n\n`;
+        shareText += `This was quite difficult!\n\n`;
     }
     
     shareText += `${guessEmojis}\n\nhttps://fermiquestions.org`;
