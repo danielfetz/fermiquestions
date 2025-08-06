@@ -59,6 +59,7 @@ body {
     cursor: pointer;
     padding: 12px;
     border-radius: 10px;
+    border: 2px solid #dadfe1;
     transition: background-color 0.2s;
 }
 
@@ -67,7 +68,7 @@ body {
 }
 
 button#stats-btn {
-    padding-right: 8px;
+    padding-right: 10px;
 }
 
 /* Question Container */
