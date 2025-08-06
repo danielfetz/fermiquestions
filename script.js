@@ -1121,9 +1121,9 @@ function generateGameShareText() {
     let shareText = `Fermi Question of the Day: ${date}\n\n"${question}"\n\n`;
     
     if (gameWon) {
-        shareText += `I won using ${currentGuess} out of 6 guesses. Can you beat me?\n\n`;
+        shareText += `I won using ${currentGuess} out of 6 guesses.\n\n`;
     } else {
-        shareText += `I couldn't solve this one in 6 guesses. Can you do better?\n\n`;
+        shareText += `I couldn't solve this one in 6 guesses.\n\n`;
     }
     
     shareText += `${guessEmojis}\n\nhttps://fermiquestions.org`;
