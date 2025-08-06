@@ -35,7 +35,7 @@ body {
 .fermi-logo {
     width: 43px;
     height: 43px;
-    border-radius: 10px;
+    border-radius: 12px;
     object-fit: cover;
     flex-shrink: 0;
 }
@@ -59,7 +59,7 @@ body {
     color: #333;
     cursor: pointer;
     padding: 12px;
-    border-radius: 10px;
+    border-radius: 12px;
     border: 2px solid #dadfe1;
     transition: background-color 0.2s;
 }
