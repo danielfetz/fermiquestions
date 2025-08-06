@@ -884,8 +884,9 @@ function endGameDisplay() {
     guessInput.disabled = true;
     submitBtn.disabled = true;
     
-    // Hide guess counter and show game result
+    // Hide guess counter, hint, and show game result
     guessCounter.style.display = 'none';
+    hideHint();
     gameResult.style.display = 'block';
     
     // Set result message
@@ -1082,6 +1083,13 @@ function selectQuestion(question) {
                         inputSection.style.display = 'block';
                         newGameSection.style.display = 'none';
                         shareBtn.style.display = 'none';
+                        
+                        // Check if hint should be shown (3+ guesses and not won)
+                        if (currentGuess >= 3 && !gameWon && currentQuestion.hint) {
+                            showHint();
+                        } else {
+                            hideHint();
+                        }
                         
                         // Enable input
                         guessInput.value = '';
