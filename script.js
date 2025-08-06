@@ -123,6 +123,22 @@ const fermiQuestions = [
         explanation: "",
         hint: "This is just paying subscribers, not total users. Spotify is the largest music streaming service.",
         date: "2025-08-04"
+    },
+    {
+        question: "How many iPhones has Apple ever sold?",
+        answer: 3000000000,
+        category: "",
+        explanation: "",
+        hint: "This is just paying subscribers, not total users. Spotify is the largest music streaming service.",
+        date: "2025-08-05"
+    },
+    {
+        question: "How many students are currently enrolled in medical school in the US?",
+        answer: 99562,
+        category: "",
+        explanation: "",
+        hint: "Hint: This is just paying subscribers, not total users. Spotify is the largest music streaming service.",
+        date: "2025-08-06"
     }
 ];
 
@@ -158,11 +174,6 @@ const closeStatsBtn = document.getElementById('close-stats-btn');
 const closeQuestionsBtn = document.getElementById('close-questions-btn');
 const shareBtn = document.getElementById('share-btn');
 const shareStatsBtn = document.getElementById('share-stats-btn');
-
-// Check if critical elements exist
-if (!shareStatsBtn) {
-    console.error('Share Stats button not found in DOM');
-}
 
 // Initialize game
 function initGame() {
@@ -257,9 +268,7 @@ function getQuestionForDate(date) {
 
 // Format date for display (e.g., "20 July 2025")
 function formatDateForDisplay(dateString) {
-    // Parse date components directly to avoid timezone issues
-    const [year, month, day] = dateString.split('-').map(Number);
-    const date = new Date(year, month - 1, day); // month is 0-indexed
+    const date = new Date(dateString);
     const options = { day: 'numeric', month: 'long', year: 'numeric' };
     return date.toLocaleDateString('en-GB', options);
 }
@@ -271,7 +280,7 @@ function getCurrentQuestion() {
     // Get all questions sorted by date (newest first)
     const sortedQuestions = fermiQuestions
         .filter(q => q.date <= today)
-        .sort((a, b) => b.date.localeCompare(a.date));
+        .sort((a, b) => new Date(b.date) - new Date(a.date));
     
     // Find the first question that hasn't been completed
     for (let question of sortedQuestions) {
@@ -381,8 +390,8 @@ function submitGuess() {
     // Save current game state after each guess
     saveCurrentGameState();
     
-    // Show hint after 3rd guess if game not won
-    if (currentGuess === 3 && !gameWon && currentQuestion.hint) {
+    // Show hint after 2nd guess if game not won
+    if (currentGuess === 2 && !gameWon && currentQuestion.hint) {
         showHint();
     }
     
@@ -451,7 +460,7 @@ function formatNumber(num) {
     return num.toLocaleString();
 }
 
-// Show hint after 3rd guess
+// Show hint after 2rd guess
 function showHint() {
     if (currentQuestion.hint) {
         hintText.textContent = currentQuestion.hint;
@@ -741,7 +750,7 @@ function loadCurrentGameState() {
     const today = getCurrentDate();
     const availableQuestions = fermiQuestions
         .filter(q => q.date <= today)
-        .sort((a, b) => b.date.localeCompare(a.date));
+        .sort((a, b) => new Date(b.date) - new Date(a.date));
     
     for (const question of availableQuestions) {
         // Skip if question is already completed
@@ -793,8 +802,8 @@ function loadCurrentGameState() {
             newGameSection.style.display = 'none';
             shareBtn.style.display = 'none';
             
-            // Check if hint should be shown (3+ guesses and not won)
-            if (currentGuess >= 3 && !gameWon && currentQuestion.hint) {
+            // Check if hint should be shown (2+ guesses and not won)
+            if (currentGuess >= 2 && !gameWon && currentQuestion.hint) {
                 showHint();
             } else {
                 hideHint();
@@ -935,7 +944,7 @@ function populateQuestionsList() {
     // Get all questions sorted by date (newest first)
     const sortedQuestions = fermiQuestions
         .filter(q => q.date <= today)
-        .sort((a, b) => b.date.localeCompare(a.date));
+        .sort((a, b) => new Date(b.date) - new Date(a.date));
     
     sortedQuestions.forEach(question => {
         const questionItem = document.createElement('div');
@@ -1084,8 +1093,8 @@ function selectQuestion(question) {
                         newGameSection.style.display = 'none';
                         shareBtn.style.display = 'none';
                         
-                        // Check if hint should be shown (3+ guesses and not won)
-                        if (currentGuess >= 3 && !gameWon && currentQuestion.hint) {
+                        // Check if hint should be shown (2+ guesses and not won)
+                        if (currentGuess >= 2 && !gameWon && currentQuestion.hint) {
                             showHint();
                         } else {
                             hideHint();
@@ -1404,11 +1413,7 @@ function setupEventListeners() {
 
     // Share buttons
     shareBtn.addEventListener('click', shareGame);
-    if (shareStatsBtn) {
-        shareStatsBtn.addEventListener('click', shareStats);
-    } else {
-        console.error('Cannot attach click listener to Share Stats button - element not found');
-    }
+    shareStatsBtn.addEventListener('click', shareStats);
         
     // Close modals when clicking outside (desktop + mobile)
     [helpModal, statsModal, questionsModal].forEach(modal => {
