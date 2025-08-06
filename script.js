@@ -33,6 +33,7 @@ const fermiQuestions = [
         answer: 304000000,
         category: "",
         explanation: "",
+        hint: "Hint: About 20% of Germany's population was born in another country.",
         date: "2025-07-24"
     },
     {
@@ -40,6 +41,7 @@ const fermiQuestions = [
         answer: 15800000,
         category: "Religion",
         explanation: "",
+        hint: "Hint: Appx. 45.5% of the world's Jewish population lives in Israel.",
         date: "2025-07-25"
     },
     {
@@ -47,6 +49,7 @@ const fermiQuestions = [
         answer: 43477,
         category: "Business",
         explanation: "McDonald's operates approximately 43,500 restaurants globally.",
+        hint: "Hint: There are 13,557 McDonald's restaurants in the US.",
         date: "2025-07-26"
     },
     {
@@ -54,6 +57,7 @@ const fermiQuestions = [
         answer: 17500000,
         category: "",
         explanation: "",
+        hint: "Hint: 62.9M new non-electric cars were sold worldwide in 2023.",
         date: "2025-07-27"
     },
     {
@@ -61,6 +65,7 @@ const fermiQuestions = [
         answer: 1240000000,
         category: "",
         explanation: "",
+        hint: "Hint: Xiaomi sold 169 million smartphones in 2024.",
         date: "2025-07-28"
     },
     {
@@ -68,6 +73,7 @@ const fermiQuestions = [
         answer: 1770000,
         category: "",
         explanation: "",
+        hint: "Hint: In 2018, Tesla produced 255K cars.",
         date: "2025-07-29"
     },
     {
@@ -75,6 +81,7 @@ const fermiQuestions = [
         answer: 29,
         category: "",
         explanation: "",
+        hint: "Hint: The US covers 1.87% of the Earth's surface.",
         date: "2025-07-30"
     },
     {
@@ -82,6 +89,7 @@ const fermiQuestions = [
         answer: 76250000000,
         category: "",
         explanation: "",
+        hint: "Hint: The average meat yield per chicken is 1.66 kg.",
         date: "2025-07-31"
     },
     {
@@ -89,6 +97,7 @@ const fermiQuestions = [
         answer: 117000000000,
         category: "",
         explanation: "",
+        hint: "Hint: About half the people who ever lived, lived in the past 2000 years.",
         date: "2025-08-01"
     },
     {
@@ -96,6 +105,7 @@ const fermiQuestions = [
         answer: 15900000,
         category: "",
         explanation: "",
+        hint: "Hint: Around 240 million people hold a valid driver's licence in the US.",
         date: "2025-08-02"
     },
     {
@@ -103,6 +113,7 @@ const fermiQuestions = [
         answer: 130415,
         category: "",
         explanation: "",
+        hint: "Hint: There are about 15,000 veterinarians in Australia.",
         date: "2025-08-03"
     },
     {
@@ -110,6 +121,7 @@ const fermiQuestions = [
         answer: 276000000,
         category: "",
         explanation: "",
+        hint: "Hint: Spotify's revenue in the second quarter of 2025 was 4.2 billion euros.",
         date: "2025-08-04"
     },
     {
@@ -117,6 +129,7 @@ const fermiQuestions = [
         answer: 3000000000,
         category: "",
         explanation: "",
+        hint: "Hint: In 2024, Apple sold approximately 232.1 million iPhones.",
         date: "2025-08-05"
     },
     {
@@ -124,6 +137,7 @@ const fermiQuestions = [
         answer: 99562,
         category: "",
         explanation: "",
+        hint: "Hint: The US had 1,01 million active physicians in 2023.",
         date: "2025-08-06"
     }
 ];
@@ -133,6 +147,8 @@ const questionText = document.getElementById('question-text');
 const questionCategory = document.getElementById('question-category');
 const currentStreakDisplay = document.getElementById('current-streak-display');
 const guessCounter = document.getElementById('guess-counter');
+const hintContainer = document.getElementById('hint-container');
+const hintText = document.getElementById('hint-text');
 const gameResult = document.getElementById('game-result');
 const resultMessage = document.getElementById('result-message');
 const correctAnswer = document.getElementById('correct-answer');
@@ -214,6 +230,7 @@ function startNewGame() {
     
     // Reset display elements
     guessCounter.style.display = 'block';
+    hideHint();
     gameResult.style.display = 'none';
     inputSection.style.display = 'block';
     newGameSection.style.display = 'none';
@@ -373,6 +390,11 @@ function submitGuess() {
     // Save current game state after each guess
     saveCurrentGameState();
     
+    // Show hint after 2nd guess if game not won
+    if (currentGuess === 2 && !gameWon && currentQuestion.hint) {
+        showHint();
+    }
+    
     // Check if game is over
     if (gameOver) {
         endGame();
@@ -436,6 +458,20 @@ function showFeedback(guessIndex, type, symbol) {
 // Format number with commas
 function formatNumber(num) {
     return num.toLocaleString();
+}
+
+// Show hint after 2rd guess
+function showHint() {
+    if (currentQuestion.hint) {
+        hintText.textContent = currentQuestion.hint;
+        guessCounter.style.display = 'none';
+        hintContainer.style.display = 'block';
+    }
+}
+
+// Hide hint
+function hideHint() {
+    hintContainer.style.display = 'none';
 }
 
 // End the game
@@ -505,8 +541,9 @@ function endGame() {
     stats.winRate = Math.round((stats.gamesWon / stats.gamesPlayed) * 100);
     saveStats();
     
-    // Hide guess counter and show game result
+    // Hide guess counter, hint, and show game result
     guessCounter.style.display = 'none';
+    hideHint();
     gameResult.style.display = 'block';
     
     // Set result message
@@ -754,26 +791,33 @@ function loadCurrentGameState() {
             clearGuesses();
             restoreGuessesDisplay(gameState.guesses);
             
-            // Update game state display
-            if (gameOver) {
-                endGameDisplay(); // Call display updates without stats/completion logic
+                    // Update game state display
+        if (gameOver) {
+            endGameDisplay(); // Call display updates without stats/completion logic
+        } else {
+            // Show input section for continuing the game
+            guessCounter.style.display = 'block';
+            gameResult.style.display = 'none';
+            inputSection.style.display = 'block';
+            newGameSection.style.display = 'none';
+            shareBtn.style.display = 'none';
+            
+            // Check if hint should be shown (2+ guesses and not won)
+            if (currentGuess >= 2 && !gameWon && currentQuestion.hint) {
+                showHint();
             } else {
-                // Show input section for continuing the game
-                guessCounter.style.display = 'block';
-                gameResult.style.display = 'none';
-                inputSection.style.display = 'block';
-                newGameSection.style.display = 'none';
-                shareBtn.style.display = 'none';
-                
-                // Enable input
-                guessInput.disabled = false;
-                submitBtn.disabled = false;
-                
-                // Auto-focus on desktop only
-                if (!('ontouchstart' in window) && !navigator.maxTouchPoints) {
-                    setTimeout(() => guessInput.focus(), 100);
-                }
+                hideHint();
             }
+            
+            // Enable input
+            guessInput.disabled = false;
+            submitBtn.disabled = false;
+            
+            // Auto-focus on desktop only
+            if (!('ontouchstart' in window) && !navigator.maxTouchPoints) {
+                setTimeout(() => guessInput.focus(), 100);
+            }
+        }
             
             return true;
         } catch (error) {
@@ -849,8 +893,9 @@ function endGameDisplay() {
     guessInput.disabled = true;
     submitBtn.disabled = true;
     
-    // Hide guess counter and show game result
+    // Hide guess counter, hint, and show game result
     guessCounter.style.display = 'none';
+    hideHint();
     gameResult.style.display = 'block';
     
     // Set result message
@@ -1048,6 +1093,13 @@ function selectQuestion(question) {
                         newGameSection.style.display = 'none';
                         shareBtn.style.display = 'none';
                         
+                        // Check if hint should be shown (2+ guesses and not won)
+                        if (currentGuess >= 2 && !gameWon && currentQuestion.hint) {
+                            showHint();
+                        } else {
+                            hideHint();
+                        }
+                        
                         // Enable input
                         guessInput.value = '';
                         guessInput.disabled = false;
@@ -1089,6 +1141,7 @@ function selectQuestion(question) {
         
         // Reset display
         guessCounter.style.display = 'block';
+        hideHint();
         gameResult.style.display = 'none';
         inputSection.style.display = 'block';
         newGameSection.style.display = 'none';
@@ -1118,7 +1171,6 @@ function generateGameShareText() {
     const question = currentQuestion.question;
     
     let shareText = `Fermi Question of the Day: "${question}"\n\n${guessEmojis}\n\nhttps://fermiquestions.org/#/${currentQuestion.date}`;
-
     
     return shareText;
 }
@@ -1144,18 +1196,12 @@ function generateGuessEmojis() {
         
         if (feedbackButton.classList.contains('correct')) {
             emojis += '✅'; // Green checkmark for correct
-        } else if (feedbackButton.classList.contains('close')) {
-            // Close but not correct - check the symbol to determine direction
-            const symbol = feedbackButton.textContent;
-            if (symbol === '↓') {
-                emojis += '⬇️'; // Close but too high
-            } else {
-                emojis += '⬆️'; // Close but too low
-            }
-        } else if (feedbackButton.classList.contains('high')) {
-            emojis += '⬇️'; // Too high
-        } else if (feedbackButton.classList.contains('low')) {
-            emojis += '⬆️'; // Too low
+        } else if (feedbackButton.classList.contains('high') || 
+                   (feedbackButton.classList.contains('close') && feedbackButton.textContent === '↓')) {
+            emojis += '⬇️'; // Too high (whether close or far)
+        } else if (feedbackButton.classList.contains('low') || 
+                   (feedbackButton.classList.contains('close') && feedbackButton.textContent === '↑')) {
+            emojis += '⬆️'; // Too low (whether close or far)
         } else {
             emojis += '❓'; // Fallback for unknown feedback
         }
@@ -1369,17 +1415,18 @@ function setupEventListeners() {
     shareBtn.addEventListener('click', shareGame);
     shareStatsBtn.addEventListener('click', shareStats);
         
-    // Close modals when clicking outside
-    window.addEventListener('click', (e) => {
-        if (e.target === helpModal) {
-            closeModal(helpModal);
-        }
-        if (e.target === statsModal) {
-            closeModal(statsModal);
-        }
-        if (e.target === questionsModal) {
-            closeModal(questionsModal);
-        }
+    // Close modals when clicking outside (desktop + mobile)
+    [helpModal, statsModal, questionsModal].forEach(modal => {
+        ['click', 'touchend'].forEach(event => {
+            modal.addEventListener(event, e => e.target === modal && closeModal(modal));
+        });
+    });
+    
+    // Prevent modal content clicks from closing modals
+    document.querySelectorAll('.modal-content').forEach(content => {
+        ['click', 'touchend'].forEach(event => {
+            content.addEventListener(event, e => e.stopPropagation());
+        });
     });
 }
 

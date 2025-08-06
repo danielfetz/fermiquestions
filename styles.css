@@ -188,6 +188,14 @@ button#stats-btn {
     color: #333;
 }
 
+/* Hint Container */
+.hint-container {
+    text-align: center;
+    margin-bottom: 20px;
+    line-height: 1.5;
+    font-size: 0.85rem;
+}
+
 /* Game Result */
 .game-result {
     text-align: center;
