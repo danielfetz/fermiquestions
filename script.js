@@ -33,6 +33,7 @@ const fermiQuestions = [
         answer: 304000000,
         category: "",
         explanation: "",
+        hint: "Think about major migration patterns and consider that this includes refugees, workers, and students worldwide.",
         date: "2025-07-24"
     },
     {
@@ -40,6 +41,7 @@ const fermiQuestions = [
         answer: 15800000,
         category: "Religion",
         explanation: "",
+        hint: "About 6-7 million live in Israel and a similar number in the United States.",
         date: "2025-07-25"
     },
     {
@@ -47,6 +49,7 @@ const fermiQuestions = [
         answer: 43477,
         category: "Business",
         explanation: "McDonald's operates approximately 43,500 restaurants globally.",
+        hint: "McDonald's is in over 100 countries. The US has the most, followed by Japan and China.",
         date: "2025-07-26"
     },
     {
@@ -54,6 +57,7 @@ const fermiQuestions = [
         answer: 17500000,
         category: "",
         explanation: "",
+        hint: "China accounts for about 60% of global EV sales, with Tesla and BYD being major players.",
         date: "2025-07-27"
     },
     {
@@ -61,6 +65,7 @@ const fermiQuestions = [
         answer: 1240000000,
         category: "",
         explanation: "",
+        hint: "This is over 1 billion devices. Consider that many people upgrade every 2-3 years globally.",
         date: "2025-07-28"
     },
     {
@@ -68,6 +73,7 @@ const fermiQuestions = [
         answer: 1770000,
         category: "",
         explanation: "",
+        hint: "Tesla is the world's most valuable automaker but still produces far fewer cars than traditional manufacturers.",
         date: "2025-07-29"
     },
     {
@@ -75,6 +81,7 @@ const fermiQuestions = [
         answer: 29,
         category: "",
         explanation: "",
+        hint: "The rest is water. Think about how much of a world map is blue versus other colors.",
         date: "2025-07-30"
     },
     {
@@ -82,6 +89,7 @@ const fermiQuestions = [
         answer: 76250000000,
         category: "",
         explanation: "",
+        hint: "This is over 70 billion birds. Chicken is the most consumed meat globally.",
         date: "2025-07-31"
     },
     {
@@ -89,6 +97,7 @@ const fermiQuestions = [
         answer: 117000000000,
         category: "",
         explanation: "",
+        hint: "About 8 billion people are alive today. The total includes all humans throughout history.",
         date: "2025-08-01"
     },
     {
@@ -96,6 +105,7 @@ const fermiQuestions = [
         answer: 15900000,
         category: "",
         explanation: "",
+        hint: "The US has about 330 million people. Consider how often people buy new cars.",
         date: "2025-08-02"
     },
     {
@@ -103,6 +113,7 @@ const fermiQuestions = [
         answer: 130415,
         category: "",
         explanation: "",
+        hint: "This includes both small animal (pets) and large animal (livestock) vets across all 50 states.",
         date: "2025-08-03"
     },
     {
@@ -110,21 +121,8 @@ const fermiQuestions = [
         answer: 276000000,
         category: "",
         explanation: "",
+        hint: "This is just paying subscribers, not total users. Spotify is the largest music streaming service.",
         date: "2025-08-04"
-    },
-    {
-        question: "How many iPhones has Apple ever sold?",
-        answer: 3000000000,
-        category: "",
-        explanation: "",
-        date: "2025-08-05"
-    },
-    {
-        question: "How many students are currently enrolled in medical school in the US?",
-        answer: 99562,
-        category: "",
-        explanation: "",
-        date: "2025-08-06"
     }
 ];
 
@@ -133,6 +131,8 @@ const questionText = document.getElementById('question-text');
 const questionCategory = document.getElementById('question-category');
 const currentStreakDisplay = document.getElementById('current-streak-display');
 const guessCounter = document.getElementById('guess-counter');
+const hintContainer = document.getElementById('hint-container');
+const hintText = document.getElementById('hint-text');
 const gameResult = document.getElementById('game-result');
 const resultMessage = document.getElementById('result-message');
 const correctAnswer = document.getElementById('correct-answer');
@@ -158,6 +158,11 @@ const closeStatsBtn = document.getElementById('close-stats-btn');
 const closeQuestionsBtn = document.getElementById('close-questions-btn');
 const shareBtn = document.getElementById('share-btn');
 const shareStatsBtn = document.getElementById('share-stats-btn');
+
+// Check if critical elements exist
+if (!shareStatsBtn) {
+    console.error('Share Stats button not found in DOM');
+}
 
 // Initialize game
 function initGame() {
@@ -214,6 +219,7 @@ function startNewGame() {
     
     // Reset display elements
     guessCounter.style.display = 'block';
+    hideHint();
     gameResult.style.display = 'none';
     inputSection.style.display = 'block';
     newGameSection.style.display = 'none';
@@ -251,7 +257,9 @@ function getQuestionForDate(date) {
 
 // Format date for display (e.g., "20 July 2025")
 function formatDateForDisplay(dateString) {
-    const date = new Date(dateString);
+    // Parse date components directly to avoid timezone issues
+    const [year, month, day] = dateString.split('-').map(Number);
+    const date = new Date(year, month - 1, day); // month is 0-indexed
     const options = { day: 'numeric', month: 'long', year: 'numeric' };
     return date.toLocaleDateString('en-GB', options);
 }
@@ -263,7 +271,7 @@ function getCurrentQuestion() {
     // Get all questions sorted by date (newest first)
     const sortedQuestions = fermiQuestions
         .filter(q => q.date <= today)
-        .sort((a, b) => new Date(b.date) - new Date(a.date));
+        .sort((a, b) => b.date.localeCompare(a.date));
     
     // Find the first question that hasn't been completed
     for (let question of sortedQuestions) {
@@ -373,6 +381,11 @@ function submitGuess() {
     // Save current game state after each guess
     saveCurrentGameState();
     
+    // Show hint after 3rd guess if game not won
+    if (currentGuess === 3 && !gameWon && currentQuestion.hint) {
+        showHint();
+    }
+    
     // Check if game is over
     if (gameOver) {
         endGame();
@@ -436,6 +449,20 @@ function showFeedback(guessIndex, type, symbol) {
 // Format number with commas
 function formatNumber(num) {
     return num.toLocaleString();
+}
+
+// Show hint after 3rd guess
+function showHint() {
+    if (currentQuestion.hint) {
+        hintText.textContent = currentQuestion.hint;
+        guessCounter.style.display = 'none';
+        hintContainer.style.display = 'block';
+    }
+}
+
+// Hide hint
+function hideHint() {
+    hintContainer.style.display = 'none';
 }
 
 // End the game
@@ -505,8 +532,9 @@ function endGame() {
     stats.winRate = Math.round((stats.gamesWon / stats.gamesPlayed) * 100);
     saveStats();
     
-    // Hide guess counter and show game result
+    // Hide guess counter, hint, and show game result
     guessCounter.style.display = 'none';
+    hideHint();
     gameResult.style.display = 'block';
     
     // Set result message
@@ -713,7 +741,7 @@ function loadCurrentGameState() {
     const today = getCurrentDate();
     const availableQuestions = fermiQuestions
         .filter(q => q.date <= today)
-        .sort((a, b) => new Date(b.date) - new Date(a.date));
+        .sort((a, b) => b.date.localeCompare(a.date));
     
     for (const question of availableQuestions) {
         // Skip if question is already completed
@@ -754,26 +782,33 @@ function loadCurrentGameState() {
             clearGuesses();
             restoreGuessesDisplay(gameState.guesses);
             
-            // Update game state display
-            if (gameOver) {
-                endGameDisplay(); // Call display updates without stats/completion logic
+                    // Update game state display
+        if (gameOver) {
+            endGameDisplay(); // Call display updates without stats/completion logic
+        } else {
+            // Show input section for continuing the game
+            guessCounter.style.display = 'block';
+            gameResult.style.display = 'none';
+            inputSection.style.display = 'block';
+            newGameSection.style.display = 'none';
+            shareBtn.style.display = 'none';
+            
+            // Check if hint should be shown (3+ guesses and not won)
+            if (currentGuess >= 3 && !gameWon && currentQuestion.hint) {
+                showHint();
             } else {
-                // Show input section for continuing the game
-                guessCounter.style.display = 'block';
-                gameResult.style.display = 'none';
-                inputSection.style.display = 'block';
-                newGameSection.style.display = 'none';
-                shareBtn.style.display = 'none';
-                
-                // Enable input
-                guessInput.disabled = false;
-                submitBtn.disabled = false;
-                
-                // Auto-focus on desktop only
-                if (!('ontouchstart' in window) && !navigator.maxTouchPoints) {
-                    setTimeout(() => guessInput.focus(), 100);
-                }
+                hideHint();
             }
+            
+            // Enable input
+            guessInput.disabled = false;
+            submitBtn.disabled = false;
+            
+            // Auto-focus on desktop only
+            if (!('ontouchstart' in window) && !navigator.maxTouchPoints) {
+                setTimeout(() => guessInput.focus(), 100);
+            }
+        }
             
             return true;
         } catch (error) {
@@ -899,7 +934,7 @@ function populateQuestionsList() {
     // Get all questions sorted by date (newest first)
     const sortedQuestions = fermiQuestions
         .filter(q => q.date <= today)
-        .sort((a, b) => new Date(b.date) - new Date(a.date));
+        .sort((a, b) => b.date.localeCompare(a.date));
     
     sortedQuestions.forEach(question => {
         const questionItem = document.createElement('div');
@@ -1089,6 +1124,7 @@ function selectQuestion(question) {
         
         // Reset display
         guessCounter.style.display = 'block';
+        hideHint();
         gameResult.style.display = 'none';
         inputSection.style.display = 'block';
         newGameSection.style.display = 'none';
@@ -1118,7 +1154,6 @@ function generateGameShareText() {
     const question = currentQuestion.question;
     
     let shareText = `Fermi Question of the Day: "${question}"\n\n${guessEmojis}\n\nhttps://fermiquestions.org/#/${currentQuestion.date}`;
-
     
     return shareText;
 }
@@ -1144,18 +1179,12 @@ function generateGuessEmojis() {
         
         if (feedbackButton.classList.contains('correct')) {
             emojis += '✅'; // Green checkmark for correct
-        } else if (feedbackButton.classList.contains('close')) {
-            // Close but not correct - check the symbol to determine direction
-            const symbol = feedbackButton.textContent;
-            if (symbol === '↓') {
-                emojis += '⬇️'; // Close but too high
-            } else {
-                emojis += '⬆️'; // Close but too low
-            }
-        } else if (feedbackButton.classList.contains('high')) {
-            emojis += '⬇️'; // Too high
-        } else if (feedbackButton.classList.contains('low')) {
-            emojis += '⬆️'; // Too low
+        } else if (feedbackButton.classList.contains('high') || 
+                   (feedbackButton.classList.contains('close') && feedbackButton.textContent === '↓')) {
+            emojis += '⬇️'; // Too high (whether close or far)
+        } else if (feedbackButton.classList.contains('low') || 
+                   (feedbackButton.classList.contains('close') && feedbackButton.textContent === '↑')) {
+            emojis += '⬆️'; // Too low (whether close or far)
         } else {
             emojis += '❓'; // Fallback for unknown feedback
         }
@@ -1367,19 +1396,24 @@ function setupEventListeners() {
 
     // Share buttons
     shareBtn.addEventListener('click', shareGame);
-    shareStatsBtn.addEventListener('click', shareStats);
+    if (shareStatsBtn) {
+        shareStatsBtn.addEventListener('click', shareStats);
+    } else {
+        console.error('Cannot attach click listener to Share Stats button - element not found');
+    }
         
-    // Close modals when clicking outside
-    window.addEventListener('click', (e) => {
-        if (e.target === helpModal) {
-            closeModal(helpModal);
-        }
-        if (e.target === statsModal) {
-            closeModal(statsModal);
-        }
-        if (e.target === questionsModal) {
-            closeModal(questionsModal);
-        }
+    // Close modals when clicking outside (desktop + mobile)
+    [helpModal, statsModal, questionsModal].forEach(modal => {
+        ['click', 'touchend'].forEach(event => {
+            modal.addEventListener(event, e => e.target === modal && closeModal(modal));
+        });
+    });
+    
+    // Prevent modal content clicks from closing modals
+    document.querySelectorAll('.modal-content').forEach(content => {
+        ['click', 'touchend'].forEach(event => {
+            content.addEventListener(event, e => e.stopPropagation());
+        });
     });
 }
 
