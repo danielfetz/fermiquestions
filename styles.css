@@ -57,7 +57,7 @@ button#stats-btn {
 
 .question-box {
     background-color: #fdfdfd;
-    border-radius: 14px;
+    border-radius: 12px;
     padding: 22px;
     text-align: center;
     border: 2px solid #e9ecef;
@@ -188,6 +188,25 @@ button#stats-btn {
     color: #333;
 }
 
+/* Hint Container */
+.hint-container {
+    text-align: center;
+    margin-bottom: 20px;
+    padding: 15px;
+    background-color: #fff3cd;
+    border: 1px solid #ffeaa7;
+    border-radius: 8px;
+    max-width: 400px;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.hint-text {
+    font-size: 0.7rem;
+    color: #856404;
+    line-height: 1.4;
+}
+
 /* Game Result */
 .game-result {
     text-align: center;
@@ -200,7 +219,6 @@ button#stats-btn {
 .new-game-section {
     margin-top: 20px;
     text-align: center;
-    gap: 10px;
 }
 
 .new-game-btn-inline {
@@ -226,12 +244,16 @@ button#stats-btn {
     background-color: white;
     color: #333333;
     border: none;
-    padding: 15px 25px;
-    border-radius: 12px;
+    padding: 12px 25px;
+    border-radius: 8px;
     font-family: 'Press Start 2P', monospace;
     font-size: 0.7rem;
     cursor: pointer;
+    margin-top: 15px;
+    margin-right: 10px;
     transition: background-color 0.2s;
+    display: inline-block !important; /* Ensure button is always visible */
+    visibility: visible !important;
 }
 
 .share-btn:hover {
@@ -419,12 +441,12 @@ button#stats-btn {
     background-color: #27ae60;
     color: white;
     border: none;
-    padding: 15px 25px;
-    border-radius: 12px;
+    padding: 12px 25px;
+    border-radius: 8px;
     font-family: 'Press Start 2P', monospace;
     font-size: 0.7rem;
     cursor: pointer;
-    margin-top: 10px;
+    margin-top: 15px;
     transition: background-color 0.2s;
 }
 
@@ -437,7 +459,7 @@ button#stats-btn {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
     gap: 15px;
-    margin: 25px 0;
+    margin: 20px 0;
 }
 
 .stat-item {
@@ -466,7 +488,7 @@ button#stats-btn {
 
 .guess-distribution h3 {
     font-size: 0.9rem;
-    margin-bottom: 20px;
+    margin-bottom: 15px;
     color: #333;
     text-align: center;
 }
