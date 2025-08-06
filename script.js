@@ -1150,11 +1150,21 @@ function generateGuessEmojis() {
         const feedbackButton = row.querySelector('.feedback-button');
         
         if (feedbackButton.classList.contains('correct')) {
-            emojis += '🟢';
+            emojis += '✅'; // Green checkmark for correct
         } else if (feedbackButton.classList.contains('close')) {
-            emojis += '🟡';
+            // Close but not correct - check the symbol to determine direction
+            const symbol = feedbackButton.textContent;
+            if (symbol === '↓') {
+                emojis += '⬇️'; // Close but too high
+            } else {
+                emojis += '⬆️'; // Close but too low
+            }
+        } else if (feedbackButton.classList.contains('high')) {
+            emojis += '⬇️'; // Too high
+        } else if (feedbackButton.classList.contains('low')) {
+            emojis += '⬆️'; // Too low
         } else {
-            emojis += '🔴';
+            emojis += '❓'; // Fallback for unknown feedback
         }
     }
     
