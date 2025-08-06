@@ -274,6 +274,7 @@ button#stats-btn {
     margin-top: 0;
     margin-bottom: 10px;
     border-radius: 12px;
+    border: 2px solid #eaecef;
 }
 
 /* Guesses Container */
