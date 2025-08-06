@@ -1117,7 +1117,7 @@ function generateGameShareText() {
     const guessEmojis = generateGuessEmojis();
     const question = currentQuestion.question;
     
-    let shareText = `Fermi Question of the Day: "${question}"\n\n${guessEmojis}\n\nhttps://fermiquestions.org`;
+    let shareText = `Fermi Question of the Day: "${question}"\n\n${guessEmojis}\n\nhttps://fermiquestions.org/#/${currentQuestion.date}`;
 
     
     return shareText;
