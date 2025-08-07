@@ -331,6 +331,7 @@ button#stats-btn {
 }
 
 .feedback-button {
+    position: relative;
     width: 100px;
     height: 45.91px;
     border-radius: 12px;
@@ -350,6 +351,12 @@ button#stats-btn {
 
 .feedback-button:hover {
     transform: scale(1.1);
+}
+
+.feedback-button:hover .feedback-tooltip {
+    opacity: 1;
+    visibility: visible;
+    transform: translateX(-50%) translateY(-12px);
 }
 
 .feedback-button.high {
@@ -435,10 +442,6 @@ button#stats-btn {
 }
 
 /* Feedback Tooltip */
-.feedback-button {
-    position: relative;
-}
-
 .feedback-tooltip {
     position: absolute;
     bottom: 100%;
@@ -451,8 +454,7 @@ button#stats-btn {
     pointer-events: none;
 }
 
-/* Show tooltip on hover */
-.feedback-button:hover .feedback-tooltip,
+/* Show tooltip manually */
 .feedback-tooltip.show {
     opacity: 1;
     visibility: visible;
