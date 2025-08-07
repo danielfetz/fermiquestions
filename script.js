@@ -529,18 +529,28 @@ function showFeedback(guessIndex, type, symbol) {
     
     feedbackButton.className = `feedback-button ${type}`;
     
-    // Show tooltip automatically for first incorrect guess
-    if (guessIndex === 0 && type !== 'correct' && !stats.hasSeenFirstGuessFeedback) {
-        if (tooltip) {
+    // Update tooltip text based on feedback and show for first incorrect guess
+    if (tooltip) {
+        const tooltipContent = tooltip.querySelector('.tooltip-content');
+        if (tooltipContent) {
+            if (type === 'high' || type === 'close' && symbol === '↓') {
+                tooltipContent.textContent = 'Too high! You need to go lower ↓';
+            } else if (type === 'low' || type === 'close' && symbol === '↑') {
+                tooltipContent.textContent = 'Too low! You need to go higher ↑';
+            }
+        }
+        
+        // Show tooltip automatically for first incorrect guess
+        if (guessIndex === 0 && type !== 'correct' && !stats.hasSeenFirstGuessFeedback) {
             setTimeout(() => {
                 tooltip.classList.add('show');
                 setTimeout(() => {
                     tooltip.classList.remove('show');
                 }, 3500);
             }, 200);
+            stats.hasSeenFirstGuessFeedback = true;
+            saveStats();
         }
-        stats.hasSeenFirstGuessFeedback = true;
-        saveStats();
     }
     
     if (type !== 'correct') {
