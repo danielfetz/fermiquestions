@@ -222,24 +222,7 @@ function updateStreakDisplay() {
     currentStreakDisplay.textContent = `Current streak: ${stats.currentStreak}`;
 }
 
-// Show feedback tooltip on first feedback button
-function showFeedbackTooltip() {
-    const guessRows = guessesContainer.querySelectorAll('.guess-row');
-    const firstFeedbackButton = guessRows[0].querySelector('.feedback-button');
-    
-    if (firstFeedbackButton) {
-        const tooltip = firstFeedbackButton.querySelector('.feedback-tooltip');
-        if (tooltip) {
-            // Show the tooltip
-            tooltip.classList.add('show');
-            
-            // Hide after 3.5 seconds
-            setTimeout(() => {
-                tooltip.classList.remove('show');
-            }, 3500);
-        }
-    }
-}
+
 
 // Update question display including image
 function updateQuestionDisplay(question) {
@@ -412,6 +395,8 @@ function clearGuesses() {
         tooltip.appendChild(tooltipArrow);
         feedbackButton.appendChild(tooltip);
         
+
+        
         guessRow.appendChild(guessField);
         guessRow.appendChild(feedbackButton);
         guessesContainer.appendChild(guessRow);
@@ -456,15 +441,7 @@ function submitGuess() {
     } else {
         const isHigh = guessValue > currentQuestion.answer;
         
-        // Show feedback tooltip on first incorrect guess ever
-        if (currentGuess === 1 && !stats.hasSeenFirstGuessFeedback) {
-            // Small delay to ensure feedback button is rendered
-            setTimeout(() => {
-                showFeedbackTooltip();
-            }, 100);
-            stats.hasSeenFirstGuessFeedback = true;
-            saveStats(); // Save the updated stats
-        }
+
         
         // Check if guess is within 50% (close but not correct)
         const closeTolerance = currentQuestion.answer * 0.5;
@@ -514,6 +491,9 @@ function showFeedback(guessIndex, type, symbol) {
     const currentRow = guessRows[guessIndex];
     const feedbackButton = currentRow.querySelector('.feedback-button');
     
+    // Preserve the tooltip
+    const tooltip = feedbackButton.querySelector('.feedback-tooltip');
+    
     if (type === 'correct') {
         // Use retro pixelated checkmark SVG for correct answers
         feedbackButton.innerHTML = `
@@ -542,7 +522,26 @@ function showFeedback(guessIndex, type, symbol) {
         feedbackButton.textContent = symbol;
     }
     
+    // Re-add the tooltip if it existed
+    if (tooltip) {
+        feedbackButton.appendChild(tooltip);
+    }
+    
     feedbackButton.className = `feedback-button ${type}`;
+    
+    // Show tooltip automatically for first incorrect guess
+    if (guessIndex === 0 && type !== 'correct' && !stats.hasSeenFirstGuessFeedback) {
+        if (tooltip) {
+            setTimeout(() => {
+                tooltip.classList.add('show');
+                setTimeout(() => {
+                    tooltip.classList.remove('show');
+                }, 3500);
+            }, 200);
+        }
+        stats.hasSeenFirstGuessFeedback = true;
+        saveStats();
+    }
     
     if (type !== 'correct') {
         currentRow.classList.add('shake');
