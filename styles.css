@@ -349,6 +349,12 @@ button#stats-btn {
     display: none;
 }
 
+.feedback-button.hidden .feedback-tooltip {
+    display: none !important;
+}
+
+
+
 .feedback-button:hover {
     transform: scale(1.1);
 }
@@ -452,6 +458,10 @@ button#stats-btn {
     visibility: hidden;
     transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
     pointer-events: none;
+    /* Force it completely out of layout flow */
+    width: 0;
+    height: 0;
+    overflow: visible;
 }
 
 /* Show tooltip manually */
