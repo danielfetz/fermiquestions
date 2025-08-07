@@ -331,6 +331,7 @@ button#stats-btn {
 }
 
 .feedback-button {
+    position: relative;
     width: 100px;
     height: 45.91px;
     border-radius: 12px;
@@ -350,6 +351,12 @@ button#stats-btn {
 
 .feedback-button:hover {
     transform: scale(1.1);
+}
+
+.feedback-button:hover .feedback-tooltip {
+    opacity: 1;
+    visibility: visible;
+    transform: translateX(-50%) translateY(-12px);
 }
 
 .feedback-button.high {
@@ -432,6 +439,51 @@ button#stats-btn {
 .submit-btn:disabled {
     background-color: #666;
     cursor: not-allowed;
+}
+
+/* Feedback Tooltip */
+.feedback-tooltip {
+    position: absolute;
+    bottom: 100%;
+    left: 50%;
+    transform: translateX(-50%) translateY(-8px);
+    z-index: 2000;
+    opacity: 0;
+    visibility: hidden;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    pointer-events: none;
+}
+
+/* Show tooltip manually */
+.feedback-tooltip.show {
+    opacity: 1;
+    visibility: visible;
+    transform: translateX(-50%) translateY(-12px);
+}
+
+.tooltip-content {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    padding: 10px 14px;
+    border-radius: 8px;
+    font-family: 'Press Start 2P', monospace;
+    font-size: 0.65rem;
+    line-height: 1.4;
+    white-space: nowrap;
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.tooltip-arrow {
+    position: absolute;
+    top: 100%;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 0;
+    height: 0;
+    border-left: 8px solid transparent;
+    border-right: 8px solid transparent;
+    border-top: 8px solid #667eea;
 }
 
 /* Modals */

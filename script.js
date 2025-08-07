@@ -23,7 +23,8 @@ let stats = {
         4: 0,
         5: 0,
         6: 0
-    }
+    },
+    hasSeenFirstGuessFeedback: false
 };
 
 // Database of Fermi questions with dates
@@ -170,6 +171,7 @@ const questionText = document.getElementById('question-text');
 const questionCategory = document.getElementById('question-category');
 const questionImage = document.getElementById('question-image');
 const questionImageContainer = document.getElementById('question-image-container');
+
 const currentStreakDisplay = document.getElementById('current-streak-display');
 const guessCounter = document.getElementById('guess-counter');
 const hintContainer = document.getElementById('hint-container');
@@ -219,6 +221,8 @@ function initGame() {
 function updateStreakDisplay() {
     currentStreakDisplay.textContent = `Current streak: ${stats.currentStreak}`;
 }
+
+
 
 // Update question display including image
 function updateQuestionDisplay(question) {
@@ -378,6 +382,21 @@ function clearGuesses() {
         const feedbackButton = document.createElement('button');
         feedbackButton.className = 'feedback-button hidden';
         
+        // Add tooltip to each feedback button
+        const tooltip = document.createElement('div');
+        tooltip.className = 'feedback-tooltip';
+        const tooltipContent = document.createElement('div');
+        tooltipContent.className = 'tooltip-content';
+        tooltipContent.textContent = 'Arrows show if you need to go higher ↑ or lower ↓';
+        const tooltipArrow = document.createElement('div');
+        tooltipArrow.className = 'tooltip-arrow';
+        
+        tooltip.appendChild(tooltipContent);
+        tooltip.appendChild(tooltipArrow);
+        feedbackButton.appendChild(tooltip);
+        
+
+        
         guessRow.appendChild(guessField);
         guessRow.appendChild(feedbackButton);
         guessesContainer.appendChild(guessRow);
@@ -421,6 +440,8 @@ function submitGuess() {
         showFeedback(currentGuess - 1, 'correct', 'WIN');
     } else {
         const isHigh = guessValue > currentQuestion.answer;
+        
+
         
         // Check if guess is within 50% (close but not correct)
         const closeTolerance = currentQuestion.answer * 0.5;
@@ -470,6 +491,9 @@ function showFeedback(guessIndex, type, symbol) {
     const currentRow = guessRows[guessIndex];
     const feedbackButton = currentRow.querySelector('.feedback-button');
     
+    // Preserve the tooltip
+    const tooltip = feedbackButton.querySelector('.feedback-tooltip');
+    
     if (type === 'correct') {
         // Use retro pixelated checkmark SVG for correct answers
         feedbackButton.innerHTML = `
@@ -498,7 +522,26 @@ function showFeedback(guessIndex, type, symbol) {
         feedbackButton.textContent = symbol;
     }
     
+    // Re-add the tooltip if it existed
+    if (tooltip) {
+        feedbackButton.appendChild(tooltip);
+    }
+    
     feedbackButton.className = `feedback-button ${type}`;
+    
+    // Show tooltip automatically for first incorrect guess
+    if (guessIndex === 0 && type !== 'correct' && !stats.hasSeenFirstGuessFeedback) {
+        if (tooltip) {
+            setTimeout(() => {
+                tooltip.classList.add('show');
+                setTimeout(() => {
+                    tooltip.classList.remove('show');
+                }, 3500);
+            }, 200);
+        }
+        stats.hasSeenFirstGuessFeedback = true;
+        saveStats();
+    }
     
     if (type !== 'correct') {
         currentRow.classList.add('shake');
@@ -704,7 +747,8 @@ function loadStats() {
                     4: 0,
                     5: 0,
                     6: 0
-                }
+                },
+                hasSeenFirstGuessFeedback: loadedStats.hasSeenFirstGuessFeedback || false
             };
         } catch (error) {
             console.error('Error loading stats:', error);
@@ -722,7 +766,8 @@ function loadStats() {
                     4: 0,
                     5: 0,
                     6: 0
-                }
+                },
+                hasSeenFirstGuessFeedback: false
             };
         }
     }
