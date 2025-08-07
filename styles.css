@@ -462,16 +462,19 @@ button#stats-btn {
 }
 
 .tooltip-content {
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-    color: white;
+    background-color: #333;
+    color: #ffffff;
     padding: 10px 14px;
     border-radius: 8px;
     font-family: 'Press Start 2P', monospace;
     font-size: 0.65rem;
     line-height: 1.4;
     white-space: nowrap;
-    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
-    border: 1px solid rgba(255, 255, 255, 0.2);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    border: 1px solid #666;
+    max-width: calc(100vw - 40px);
+    word-wrap: break-word;
+    white-space: normal;
 }
 
 .tooltip-arrow {
@@ -483,7 +486,35 @@ button#stats-btn {
     height: 0;
     border-left: 8px solid transparent;
     border-right: 8px solid transparent;
-    border-top: 8px solid #667eea;
+    border-top: 8px solid #333;
+}
+
+/* Responsive positioning for mobile */
+@media (max-width: 768px) {
+    .feedback-tooltip {
+        /* On mobile, show tooltip above but allow it to adjust position if needed */
+        left: 0;
+        right: 0;
+        transform: translateY(-8px);
+        margin: 0 10px;
+    }
+    
+    .feedback-tooltip.show {
+        transform: translateY(-12px);
+    }
+    
+    .tooltip-content {
+        font-size: 0.6rem;
+        padding: 8px 12px;
+        margin: 0 auto;
+        text-align: center;
+        max-width: calc(100vw - 40px);
+    }
+    
+    .tooltip-arrow {
+        left: 50%;
+        transform: translateX(-50%);
+    }
 }
 
 /* Modals */
