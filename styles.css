@@ -601,6 +601,9 @@ button#stats-btn {
     .hint-container {
         font-size: 0.8rem;
     }
+    .game-result {
+        font-size: 0.8rem;
+    }
 }
 
 /* Animation for new guesses
