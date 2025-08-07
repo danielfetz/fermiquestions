@@ -171,8 +171,7 @@ const questionText = document.getElementById('question-text');
 const questionCategory = document.getElementById('question-category');
 const questionImage = document.getElementById('question-image');
 const questionImageContainer = document.getElementById('question-image-container');
-const feedbackTooltip = document.getElementById('feedback-tooltip');
-const tooltipContent = document.getElementById('tooltip-content');
+
 const currentStreakDisplay = document.getElementById('current-streak-display');
 const guessCounter = document.getElementById('guess-counter');
 const hintContainer = document.getElementById('hint-container');
@@ -223,28 +222,22 @@ function updateStreakDisplay() {
     currentStreakDisplay.textContent = `Current streak: ${stats.currentStreak}`;
 }
 
-// Show feedback tooltip
+// Show feedback tooltip on first feedback button
 function showFeedbackTooltip() {
-    // Position tooltip over the first feedback button
     const guessRows = guessesContainer.querySelectorAll('.guess-row');
     const firstFeedbackButton = guessRows[0].querySelector('.feedback-button');
     
     if (firstFeedbackButton) {
-        const buttonRect = firstFeedbackButton.getBoundingClientRect();
-        const containerRect = document.querySelector('.game-container').getBoundingClientRect();
-        
-        // Position tooltip above the feedback button
-        feedbackTooltip.style.left = (buttonRect.left - containerRect.left) + (buttonRect.width / 2) + 'px';
-        feedbackTooltip.style.top = (buttonRect.top - containerRect.top) - 12 + 'px';
-        feedbackTooltip.style.transform = 'translateX(-50%) translateY(-100%)';
-        
-        // Show the tooltip
-        feedbackTooltip.classList.add('show');
-        
-        // Hide after 3.5 seconds
-        setTimeout(() => {
-            feedbackTooltip.classList.remove('show');
-        }, 3500);
+        const tooltip = firstFeedbackButton.querySelector('.feedback-tooltip');
+        if (tooltip) {
+            // Show the tooltip
+            tooltip.classList.add('show');
+            
+            // Hide after 3.5 seconds
+            setTimeout(() => {
+                tooltip.classList.remove('show');
+            }, 3500);
+        }
     }
 }
 
@@ -405,6 +398,19 @@ function clearGuesses() {
         
         const feedbackButton = document.createElement('button');
         feedbackButton.className = 'feedback-button hidden';
+        
+        // Add tooltip to each feedback button
+        const tooltip = document.createElement('div');
+        tooltip.className = 'feedback-tooltip';
+        const tooltipContent = document.createElement('div');
+        tooltipContent.className = 'tooltip-content';
+        tooltipContent.textContent = 'Arrows show if you need to go higher ↑ or lower ↓';
+        const tooltipArrow = document.createElement('div');
+        tooltipArrow.className = 'tooltip-arrow';
+        
+        tooltip.appendChild(tooltipContent);
+        tooltip.appendChild(tooltipArrow);
+        feedbackButton.appendChild(tooltip);
         
         guessRow.appendChild(guessField);
         guessRow.appendChild(feedbackButton);
