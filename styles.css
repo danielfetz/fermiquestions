@@ -9,13 +9,15 @@ body {
     background-color: #f0f0f0;
     color: #333;
     line-height: 1.4;
-    padding: 0px 16px;
+    padding: 0 6px;
 }
 
 .game-container {
     max-width: 500px;
     margin: 0 auto;
-    background-color: #f0f0f0;
+    background-color: #ffffff;
+    border-radius: 16px;
+    padding: 20px;    
 }
 
 /* Header */
@@ -23,33 +25,32 @@ body {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: 15px 0;
+    padding: 16px 10px;
 }
 
 .header-left {
     display: flex;
     align-items: center;
-    gap: 12px;
+    gap: 16px;
 }
 
 .fermi-logo {
-    width: 40px;
-    height: 40px;
-    border-radius: 50%;
+    width: 43px;
+    height: 43px;
+    border-radius: 12px;
     object-fit: cover;
-    border: 2px solid #333;
     flex-shrink: 0;
 }
 
 .header-right {
     display: flex;
     align-items: center;
-    gap: 8px;
+    gap: 10px;
 }
 
 .game-title {
     font-size: 1rem;
-    margin: 0;
+    width: 150px;
 }
 
 .icon-button {
@@ -59,8 +60,9 @@ body {
     font-family: 'Press Start 2P', monospace;
     color: #333;
     cursor: pointer;
-    padding: 8px;
-    border-radius: 6px;
+    padding: 12px;
+    border-radius: 12px;
+    border: 2px solid #dadfe1;
     transition: background-color 0.2s;
 }
 
@@ -69,7 +71,7 @@ body {
 }
 
 button#stats-btn {
-    padding-right: 6px;
+    padding-right: 10px;
 }
 
 /* Question Container */
@@ -78,8 +80,7 @@ button#stats-btn {
 }
 
 .question-box {
-    background-color: #fdfdfd;
-    border-radius: 12px;
+    border-radius: 14px;
     padding: 22px;
     text-align: center;
     border: 2px solid #e9ecef;
@@ -87,24 +88,25 @@ button#stats-btn {
 
 .question-content {
     display: flex;
+    flex-direction: column;
     align-items: center;
     gap: 16px;
-    text-align: left;
+}
+
+.question-image-container {
+    display: none; /* Hidden by default */
 }
 
 .question-image {
-    width: 100px;
-    height: 100px;
-    object-fit: cover;
+    width: 80px;
+    height: 80px;
     border-radius: 8px;
+    object-fit: cover;
     border: 2px solid #e9ecef;
-    flex-shrink: 0;
-    display: none; /* Hidden by default on mobile */
 }
 
 .question-text-container {
     flex: 1;
-    text-align: center;
 }
 
 .question-text {
@@ -236,19 +238,8 @@ button#stats-btn {
 .hint-container {
     text-align: center;
     margin-bottom: 20px;
-    padding: 15px;
-    background-color: #fff3cd;
-    border: 1px solid #ffeaa7;
-    border-radius: 8px;
-    max-width: 400px;
-    margin-left: auto;
-    margin-right: auto;
-}
-
-.hint-text {
-    font-size: 0.7rem;
-    color: #856404;
-    line-height: 1.4;
+    line-height: 1.5;
+    font-size: 0.85rem;
 }
 
 /* Game Result */
@@ -263,6 +254,7 @@ button#stats-btn {
 .new-game-section {
     margin-top: 20px;
     text-align: center;
+    gap: 10px;
 }
 
 .new-game-btn-inline {
@@ -288,16 +280,12 @@ button#stats-btn {
     background-color: white;
     color: #333333;
     border: none;
-    padding: 12px 25px;
-    border-radius: 8px;
+    padding: 15px 25px;
+    border-radius: 12px;
     font-family: 'Press Start 2P', monospace;
     font-size: 0.7rem;
     cursor: pointer;
-    margin-top: 15px;
-    margin-right: 10px;
     transition: background-color 0.2s;
-    display: inline-block !important; /* Ensure button is always visible */
-    visibility: visible !important;
 }
 
 .share-btn:hover {
@@ -310,6 +298,7 @@ button#stats-btn {
     margin-top: 0;
     margin-bottom: 10px;
     border-radius: 12px;
+    border: 2px solid #eaecef;
 }
 
 /* Guesses Container */
@@ -326,7 +315,7 @@ button#stats-btn {
 
 .guess-field {
     flex: 1;
-    background-color: #fdfdfd;
+    background-color: #f6f6f6;
     color: #333;
     padding: 14px 15px;
     border-radius: 12px;
@@ -337,7 +326,7 @@ button#stats-btn {
 }
 
 .guess-field.empty {
-    color: #b2b3b3;
+    color: #acacac;
 }
 
 .feedback-button {
@@ -391,7 +380,7 @@ button#stats-btn {
 .input-row {
     display: flex;
     align-items: center;
-    gap: 5px;
+    gap: 10px;
 }
 
 .input-container {
@@ -399,10 +388,10 @@ button#stats-btn {
     display: flex;
     align-items: center;
     gap: 8px;
-    background-color: #fdfdfd;
     padding: 10px 15px;
     border-radius: 12px;
     flex: 1;
+    border: 2px solid #eaecf0;
 }
 
 #guess-input {
@@ -485,12 +474,12 @@ button#stats-btn {
     background-color: #27ae60;
     color: white;
     border: none;
-    padding: 12px 25px;
-    border-radius: 8px;
+    padding: 15px 25px;
+    border-radius: 12px;
     font-family: 'Press Start 2P', monospace;
     font-size: 0.7rem;
     cursor: pointer;
-    margin-top: 15px;
+    margin-top: 10px;
     transition: background-color 0.2s;
 }
 
@@ -503,7 +492,7 @@ button#stats-btn {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
     gap: 15px;
-    margin: 20px 0;
+    margin: 25px 0;
 }
 
 .stat-item {
@@ -532,7 +521,7 @@ button#stats-btn {
 
 .guess-distribution h3 {
     font-size: 0.9rem;
-    margin-bottom: 15px;
+    margin-bottom: 20px;
     color: #333;
     text-align: center;
 }
@@ -580,35 +569,32 @@ button#stats-btn {
     text-align: right;
 }
 
-/* Responsive Design */
+/* Large screens (>768px) - Show images side by side */
 @media (min-width: 769px) {
+    .question-content {
+        flex-direction: row;
+        align-items: flex-start;
+        text-align: left;
+    }
+    
+    .question-image-container {
+        display: block !important; /* Override JavaScript hide for large screens */
+        flex-shrink: 0;
+    }
+    
     .question-image {
-        display: block; /* Show images on large screens */
+        width: 100px;
+        height: 100px;
+    }
+    
+    .question-text-container {
+        text-align: left;
     }
 }
 
+/* Responsive Design */
 @media (max-width: 768px) {
-    .game-title {
-        font-size: 0.9rem;
-    }
-    
-    .fermi-logo {
-        width: 35px;
-        height: 35px;
-    }
-    
-    .header-left {
-        gap: 10px;
-    }
-    
-    .question-content {
-        flex-direction: column; /* Stack vertically on mobile */
-        text-align: center;
-    }
-    
-    .question-image {
-        display: none; /* Hide images on mobile */
-    }
+
 }
 
 /* Animation for new guesses
