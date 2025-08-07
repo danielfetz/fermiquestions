@@ -34,7 +34,8 @@ const fermiQuestions = [
         category: "",
         explanation: "",
         hint: "Hint: About 20% of Germany's population was born in another country.",
-        date: "2025-07-24"
+        date: "2025-07-24",
+        image: "https://images.unsplash.com/photo-1488646953014-85cb44e25828?w=100&h=100&fit=crop&crop=center"
     },
     {
         question: "How many people of Jewish faith live in the world?",
@@ -42,7 +43,8 @@ const fermiQuestions = [
         category: "Religion",
         explanation: "",
         hint: "Hint: Appx. 45.5% of the world's Jewish population lives in Israel.",
-        date: "2025-07-25"
+        date: "2025-07-25",
+        image: "https://images.unsplash.com/photo-1549294413-26f195200c16?w=100&h=100&fit=crop&crop=center"
     },
     {
         question: "How many McDonald's restaurants exist worldwide?",
@@ -50,7 +52,8 @@ const fermiQuestions = [
         category: "Business",
         explanation: "McDonald's operates approximately 43,500 restaurants globally.",
         hint: "Hint: There are 13,557 McDonald's restaurants in the US.",
-        date: "2025-07-26"
+        date: "2025-07-26",
+        image: "https://images.unsplash.com/photo-1513475382585-d06e58bcb0e0?w=100&h=100&fit=crop&crop=center"
     },
     {
         question: "How many new electric cars/plug-in hybrids were sold worldwide in 2024?",
@@ -58,7 +61,8 @@ const fermiQuestions = [
         category: "",
         explanation: "",
         hint: "Hint: 62.9M new non-electric cars were sold worldwide in 2023.",
-        date: "2025-07-27"
+        date: "2025-07-27",
+        image: "https://images.unsplash.com/photo-1593941707882-a5bac6861d75?w=100&h=100&fit=crop&crop=center"
     },
     {
         question: "How many new smartphones were sold worldwide in 2024?",
@@ -66,7 +70,8 @@ const fermiQuestions = [
         category: "",
         explanation: "",
         hint: "Hint: Xiaomi sold 169 million smartphones in 2024.",
-        date: "2025-07-28"
+        date: "2025-07-28",
+        image: "https://images.unsplash.com/photo-1512941937669-90a1b58e7e9c?w=100&h=100&fit=crop&crop=center"
     },
     {
         question: "How many cars did Tesla produce in 2024?",
@@ -74,7 +79,8 @@ const fermiQuestions = [
         category: "",
         explanation: "",
         hint: "Hint: In 2018, Tesla produced 255K cars.",
-        date: "2025-07-29"
+        date: "2025-07-29",
+        image: "https://images.unsplash.com/photo-1560958089-b8a1929cea89?w=100&h=100&fit=crop&crop=center"
     },
     {
         question: "What percentage of the Earth's surface is land?",
@@ -82,7 +88,8 @@ const fermiQuestions = [
         category: "",
         explanation: "",
         hint: "Hint: The US covers 1.87% of the Earth's surface.",
-        date: "2025-07-30"
+        date: "2025-07-30",
+        image: "https://images.unsplash.com/photo-1446776653964-20c1d3a81b06?w=100&h=100&fit=crop&crop=center"
     },
     {
         question: "How many chickens were slaughtered for meat worldwide in 2023?",
@@ -90,7 +97,8 @@ const fermiQuestions = [
         category: "",
         explanation: "",
         hint: "Hint: The average meat yield per chicken is 1.66 kg.",
-        date: "2025-07-31"
+        date: "2025-07-31",
+        image: "https://images.unsplash.com/photo-1548550023-2bdb3c5beed7?w=100&h=100&fit=crop&crop=center"
     },
     {
         question: "How many humans have ever lived (including those currently alive)?",
@@ -98,7 +106,8 @@ const fermiQuestions = [
         category: "",
         explanation: "",
         hint: "Hint: About half the people who ever lived, lived in the past 2000 years.",
-        date: "2025-08-01"
+        date: "2025-08-01",
+        image: "https://images.unsplash.com/photo-1529626455594-4ff0802cfb7e?w=100&h=100&fit=crop&crop=center"
     },
     {
         question: "How many new cars were sold in the US in 2024?",
@@ -106,7 +115,8 @@ const fermiQuestions = [
         category: "",
         explanation: "",
         hint: "Hint: Around 240 million people hold a valid driver's licence in the US.",
-        date: "2025-08-02"
+        date: "2025-08-02",
+        image: "https://images.unsplash.com/photo-1449965408869-eaa3f722e40d?w=100&h=100&fit=crop&crop=center"
     },
     {
         question: "How many veterinarians are there in the US?",
@@ -114,7 +124,8 @@ const fermiQuestions = [
         category: "",
         explanation: "",
         hint: "Hint: There are about 15,000 veterinarians in Australia.",
-        date: "2025-08-03"
+        date: "2025-08-03",
+        image: "https://images.unsplash.com/photo-1576201836106-db1758fd1c97?w=100&h=100&fit=crop&crop=center"
     },
     {
         question: "How many paying subscribers does Spotify have?",
@@ -122,7 +133,8 @@ const fermiQuestions = [
         category: "",
         explanation: "",
         hint: "Hint: Spotify's revenue in the second quarter of 2025 was 4.2 billion euros.",
-        date: "2025-08-04"
+        date: "2025-08-04",
+        image: "https://images.unsplash.com/photo-1611348524140-53c9a25263d6?w=100&h=100&fit=crop&crop=center"
     },
     {
         question: "How many iPhones has Apple ever sold?",
@@ -130,7 +142,8 @@ const fermiQuestions = [
         category: "",
         explanation: "",
         hint: "Hint: In 2024, Apple sold approximately 232.1 million iPhones.",
-        date: "2025-08-05"
+        date: "2025-08-05",
+        image: "https://images.unsplash.com/photo-1510557880182-3d4d3cba35a5?w=100&h=100&fit=crop&crop=center"
     },
     {
         question: "How many students are currently enrolled in medical school in the US?",
@@ -138,7 +151,8 @@ const fermiQuestions = [
         category: "",
         explanation: "",
         hint: "Hint: The US had 1,01 million active physicians in 2023.",
-        date: "2025-08-06"
+        date: "2025-08-06",
+        image: "https://images.unsplash.com/photo-1576091160399-112ba8d25d1f?w=100&h=100&fit=crop&crop=center"
     },
     {
         question: "How many pigs were slaughtered for meat worldwide in 2023?",
@@ -146,13 +160,16 @@ const fermiQuestions = [
         category: "",
         explanation: "",
         hint: "Hint: The average meat yield per pig is 82 kg (181 lbs).",
-        date: "2025-08-07"
+        date: "2025-08-07",
+        image: "https://images.unsplash.com/photo-1516467508483-a7212febe31a?w=100&h=100&fit=crop&crop=center"
     }
 ];
 
 // DOM elements
 const questionText = document.getElementById('question-text');
 const questionCategory = document.getElementById('question-category');
+const questionImage = document.getElementById('question-image');
+const questionImageContainer = document.getElementById('question-image-container');
 const currentStreakDisplay = document.getElementById('current-streak-display');
 const guessCounter = document.getElementById('guess-counter');
 const hintContainer = document.getElementById('hint-container');
@@ -203,6 +220,21 @@ function updateStreakDisplay() {
     currentStreakDisplay.textContent = `Current streak: ${stats.currentStreak}`;
 }
 
+// Update question display including image
+function updateQuestionDisplay(question) {
+    questionText.textContent = question.question;
+    questionCategory.innerHTML = getQuestionDisplayText(question); // Use innerHTML to allow <span>
+    
+    // Update question image
+    if (question.image) {
+        questionImage.src = question.image;
+        questionImage.alt = `Image related to: ${question.question}`;
+        questionImageContainer.style.display = 'block';
+    } else {
+        questionImageContainer.style.display = 'none';
+    }
+}
+
 // Start a new game
 function startNewGame() {
     currentQuestion = getCurrentQuestion();
@@ -228,8 +260,7 @@ function startNewGame() {
     gameOver = false;
     
     // Update display
-    questionText.textContent = currentQuestion.question;
-    questionCategory.innerHTML = getQuestionDisplayText(currentQuestion); // Use innerHTML to allow <span>
+    updateQuestionDisplay(currentQuestion);
     updateStreakDisplay();
     clearGuesses();
     
@@ -787,8 +818,7 @@ function loadCurrentGameState() {
             gameOver = gameState.gameOver;
             
             // Update display
-            questionText.textContent = currentQuestion.question;
-            questionCategory.innerHTML = getQuestionDisplayText(currentQuestion);
+            updateQuestionDisplay(currentQuestion);
             updatePageTitle(currentQuestion);
             updateStreakDisplay();
             
@@ -1046,8 +1076,7 @@ function selectQuestion(question) {
     }
     
     currentQuestion = question;
-    questionText.textContent = currentQuestion.question;
-    questionCategory.innerHTML = getQuestionDisplayText(currentQuestion);
+    updateQuestionDisplay(currentQuestion);
     
     // Update page title
     updatePageTitle(currentQuestion);
