@@ -81,7 +81,7 @@ button#stats-btn {
 
 .question-box {
     border-radius: 14px;
-    padding: 22px;
+    padding: 20px;
     text-align: center;
     border: 2px solid #e9ecef;
 }
@@ -94,13 +94,13 @@ button#stats-btn {
 }
 
 .question-image-container {
-    display: none; /* Hidden by default */
+    display: none; /* Hidden on small screens */
 }
 
 .question-image {
     width: 80px;
     height: 80px;
-    border-radius: 8px;
+    border-radius: 12px;
     object-fit: cover;
     border: 2px solid #e9ecef;
     background-color: #f8f9fa;
@@ -576,7 +576,6 @@ button#stats-btn {
     .question-content {
         flex-direction: row;
         align-items: flex-start;
-        text-align: left;
     }
     
     .question-image-container {
@@ -587,10 +586,6 @@ button#stats-btn {
     .question-image {
         width: 100px;
         height: 100px;
-    }
-    
-    .question-text-container {
-        text-align: left;
     }
 }
 
