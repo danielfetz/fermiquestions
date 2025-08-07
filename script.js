@@ -26,6 +26,59 @@ let stats = {
     }
 };
 
+// Function to get appropriate image for a question
+function getQuestionImage(question) {
+    const questionLower = question.toLowerCase();
+    
+    // Keywords to image mappings
+    const imageMap = {
+        // People/Population
+        'people': 'https://images.unsplash.com/photo-1511632765486-a01980e01a18?w=400&h=400&fit=crop&crop=faces',
+        'population': 'https://images.unsplash.com/photo-1511632765486-a01980e01a18?w=400&h=400&fit=crop&crop=faces',
+        'humans': 'https://images.unsplash.com/photo-1511632765486-a01980e01a18?w=400&h=400&fit=crop&crop=faces',
+        'live': 'https://images.unsplash.com/photo-1511632765486-a01980e01a18?w=400&h=400&fit=crop&crop=faces',
+        
+        // Animals
+        'chicken': 'https://images.unsplash.com/photo-1548550023-2bdb3c5beed7?w=400&h=400&fit=crop&crop=center',
+        'animal': 'https://images.unsplash.com/photo-1548550023-2bdb3c5beed7?w=400&h=400&fit=crop&crop=center',
+        'veterinarian': 'https://images.unsplash.com/photo-1601758228041-f3b2795255f1?w=400&h=400&fit=crop&crop=center',
+        
+        // Cars/Transportation
+        'car': 'https://images.unsplash.com/photo-1549924231-f129b911e442?w=400&h=400&fit=crop&crop=center',
+        'tesla': 'https://images.unsplash.com/photo-1560958089-b8a1929cea89?w=400&h=400&fit=crop&crop=center',
+        'electric': 'https://images.unsplash.com/photo-1593941707882-a5bac6861d75?w=400&h=400&fit=crop&crop=center',
+        
+        // Technology
+        'smartphone': 'https://images.unsplash.com/photo-1511707171634-5f897ff02aa9?w=400&h=400&fit=crop&crop=center',
+        'phone': 'https://images.unsplash.com/photo-1511707171634-5f897ff02aa9?w=400&h=400&fit=crop&crop=center',
+        'spotify': 'https://images.unsplash.com/photo-1493225457124-a3eb161ffa5f?w=400&h=400&fit=crop&crop=center',
+        'music': 'https://images.unsplash.com/photo-1493225457124-a3eb161ffa5f?w=400&h=400&fit=crop&crop=center',
+        
+        // Food/Business
+        'mcdonald': 'https://images.unsplash.com/photo-1561758033-d89a9ad46330?w=400&h=400&fit=crop&crop=center',
+        'restaurant': 'https://images.unsplash.com/photo-1514933651103-005eec06c04b?w=400&h=400&fit=crop&crop=center',
+        
+        // Geography/Earth
+        'earth': 'https://images.unsplash.com/photo-1614730321146-b6fa6a46bcb4?w=400&h=400&fit=crop&crop=center',
+        'surface': 'https://images.unsplash.com/photo-1614730321146-b6fa6a46bcb4?w=400&h=400&fit=crop&crop=center',
+        'land': 'https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=400&h=400&fit=crop&crop=center',
+        
+        // Religion
+        'jewish': 'https://images.unsplash.com/photo-1549198543-e09b5bb8db87?w=400&h=400&fit=crop&crop=center',
+        'faith': 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=400&h=400&fit=crop&crop=center'
+    };
+    
+    // Check for keywords in the question
+    for (const [keyword, imageUrl] of Object.entries(imageMap)) {
+        if (questionLower.includes(keyword)) {
+            return imageUrl;
+        }
+    }
+    
+    // Default image for questions without specific matches
+    return 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=400&h=400&fit=crop&crop=center';
+}
+
 // Database of Fermi questions with dates
 const fermiQuestions = [
     {
@@ -230,6 +283,8 @@ function startNewGame() {
     // Update display
     questionText.textContent = currentQuestion.question;
     questionCategory.innerHTML = getQuestionDisplayText(currentQuestion); // Use innerHTML to allow <span>
+    questionImage.src = getQuestionImage(currentQuestion.question);
+    questionImage.alt = `Illustration for: ${currentQuestion.question}`;
     updateStreakDisplay();
     clearGuesses();
     
@@ -789,6 +844,8 @@ function loadCurrentGameState() {
             // Update display
             questionText.textContent = currentQuestion.question;
             questionCategory.innerHTML = getQuestionDisplayText(currentQuestion);
+            questionImage.src = getQuestionImage(currentQuestion.question);
+            questionImage.alt = `Illustration for: ${currentQuestion.question}`;
             updatePageTitle(currentQuestion);
             updateStreakDisplay();
             
@@ -1048,6 +1105,8 @@ function selectQuestion(question) {
     currentQuestion = question;
     questionText.textContent = currentQuestion.question;
     questionCategory.innerHTML = getQuestionDisplayText(currentQuestion);
+    questionImage.src = getQuestionImage(currentQuestion.question);
+    questionImage.alt = `Illustration for: ${currentQuestion.question}`;
     
     // Update page title
     updatePageTitle(currentQuestion);
