@@ -10,10 +10,9 @@
     <script defer data-domain="fermiquestions.org" src="https://plausible.io/js/script.hash.js"></script>
 </head>
 <body>
-        <!-- Header -->
         <header class="game-header">
             <div class="header-left">
-                <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/d/d4/Enrico_Fermi_1943-49.jpg/220px-Enrico_Fermi_1943-49.jpg" alt="Enrico Fermi" class="fermi-logo">
+                <img src="https://upload.wikimedia.org/wikipedia/commons/6/6f/Photograph_of_Enrico_Fermi_-_NARA_-_595043.gif" alt="Enrico Fermi" class="fermi-logo">
                 <h1 class="game-title">
                     <span>Fermi Questions</span>
                 </h1>
@@ -34,7 +33,9 @@
         <div class="question-container">
             <div class="question-box">
                 <div class="question-content">
-                    <img id="question-image" class="question-image" src="" alt="Question illustration" style="display: none;">
+                    <div class="question-image-container" id="question-image-container">
+                        <img class="question-image" id="question-image" alt="" />
+                    </div>
                     <div class="question-text-container">
                         <div class="question-text" id="question-text">
                             How many chickens are slaughtered each year?
@@ -198,7 +199,7 @@
                     </div>
                 </div>
 
-                <button id="share-stats-btn" class="share-btn">Share Stats</button>
+                <button id="share-stats-btn" class="share-btn">Share</button>
                 <button id="close-stats-btn" class="close-btn">Close</button>
             </div>
         </div>
