@@ -33,108 +33,135 @@ const fermiQuestions = [
         answer: 304000000,
         category: "",
         explanation: "",
-        hint: "Think about major migration patterns and consider that this includes refugees, workers, and students worldwide.",
+        hint: "Hint: About 20% of Germany's population was born in another country.",
         date: "2025-07-24",
-        image: "https://images.unsplash.com/photo-1502920917128-1aa500764cbd?w=200&h=200&fit=crop&crop=center"
+        image: "https://images.unsplash.com/photo-1488646953014-85cb44e25828?w=100&h=100&fit=crop&crop=center"
     },
     {
         question: "How many people of Jewish faith live in the world?",
         answer: 15800000,
         category: "Religion",
         explanation: "",
-        hint: "About 6-7 million live in Israel and a similar number in the United States.",
+        hint: "Hint: Appx. 45.5% of the world's Jewish population lives in Israel.",
         date: "2025-07-25",
-        image: "https://images.unsplash.com/photo-1554158636-193b4d6b5d28?w=200&h=200&fit=crop&crop=center"
+        image: "https://images.unsplash.com/photo-1549294413-26f195200c16?w=100&h=100&fit=crop&crop=center"
     },
     {
         question: "How many McDonald's restaurants exist worldwide?",
         answer: 43477,
         category: "Business",
         explanation: "McDonald's operates approximately 43,500 restaurants globally.",
-        hint: "McDonald's is in over 100 countries. The US has the most, followed by Japan and China.",
+        hint: "Hint: There are 13,557 McDonald's restaurants in the US.",
         date: "2025-07-26",
-        image: "https://images.unsplash.com/photo-1552566291-8d8d6c7e8dc9?w=200&h=200&fit=crop&crop=center"
+        image: "https://images.unsplash.com/photo-1513475382585-d06e58bcb0e0?w=100&h=100&fit=crop&crop=center"
     },
     {
         question: "How many new electric cars/plug-in hybrids were sold worldwide in 2024?",
         answer: 17500000,
         category: "",
         explanation: "",
-        hint: "China accounts for about 60% of global EV sales, with Tesla and BYD being major players.",
+        hint: "Hint: 62.9M new non-electric cars were sold worldwide in 2023.",
         date: "2025-07-27",
-        image: "https://images.unsplash.com/photo-1593941707874-ef25b8b4a92b?w=200&h=200&fit=crop&crop=center"
+        image: "https://images.unsplash.com/photo-1593941707882-a5bac6861d75?w=100&h=100&fit=crop&crop=center"
     },
     {
         question: "How many new smartphones were sold worldwide in 2024?",
         answer: 1240000000,
         category: "",
         explanation: "",
-        hint: "This is over 1 billion devices. Consider that many people upgrade every 2-3 years globally.",
+        hint: "Hint: Xiaomi sold 169 million smartphones in 2024.",
         date: "2025-07-28",
-        image: "https://images.unsplash.com/photo-1511707171634-5f897ff02aa9?w=200&h=200&fit=crop&crop=center"
+        image: "https://images.unsplash.com/photo-1512941937669-90a1b58e7e9c?w=100&h=100&fit=crop&crop=center"
     },
     {
         question: "How many cars did Tesla produce in 2024?",
         answer: 1770000,
         category: "",
         explanation: "",
-        hint: "Tesla is the world's most valuable automaker but still produces far fewer cars than traditional manufacturers.",
+        hint: "Hint: In 2018, Tesla produced 255K cars.",
         date: "2025-07-29",
-        image: "https://images.unsplash.com/photo-1560958089-b8a1929cea89?w=200&h=200&fit=crop&crop=center"
+        image: "https://images.unsplash.com/photo-1560958089-b8a1929cea89?w=100&h=100&fit=crop&crop=center"
     },
     {
         question: "What percentage of the Earth's surface is land?",
         answer: 29,
         category: "",
         explanation: "",
-        hint: "The rest is water. Think about how much of a world map is blue versus other colors.",
+        hint: "Hint: The US covers 1.87% of the Earth's surface.",
         date: "2025-07-30",
-        image: "https://images.unsplash.com/photo-1614730321146-b6fa6a46bcb4?w=200&h=200&fit=crop&crop=center"
+        image: "https://images.unsplash.com/photo-1446776653964-20c1d3a81b06?w=100&h=100&fit=crop&crop=center"
     },
     {
         question: "How many chickens were slaughtered for meat worldwide in 2023?",
         answer: 76250000000,
         category: "",
         explanation: "",
-        hint: "This is over 70 billion birds. Chicken is the most consumed meat globally.",
+        hint: "Hint: The average meat yield per chicken is 1.66 kg.",
         date: "2025-07-31",
-        image: "https://images.unsplash.com/photo-1548550023-2bdb3c5beed7?w=200&h=200&fit=crop&crop=center"
+        image: "https://images.unsplash.com/photo-1548550023-2bdb3c5beed7?w=100&h=100&fit=crop&crop=center"
     },
     {
         question: "How many humans have ever lived (including those currently alive)?",
         answer: 117000000000,
         category: "",
         explanation: "",
-        hint: "About 8 billion people are alive today. The total includes all humans throughout history.",
+        hint: "Hint: About half the people who ever lived, lived in the past 2000 years.",
         date: "2025-08-01",
-        image: "https://images.unsplash.com/photo-1583337130417-3346a1be7dee?w=200&h=200&fit=crop&crop=center"
+        image: "https://images.unsplash.com/photo-1529626455594-4ff0802cfb7e?w=100&h=100&fit=crop&crop=center"
     },
     {
         question: "How many new cars were sold in the US in 2024?",
         answer: 15900000,
         category: "",
         explanation: "",
-        hint: "The US has about 330 million people. Consider how often people buy new cars.",
+        hint: "Hint: Around 240 million people hold a valid driver's licence in the US.",
         date: "2025-08-02",
-        image: "https://images.unsplash.com/photo-1549924231-f129b911e442?w=200&h=200&fit=crop&crop=center"
+        image: "https://images.unsplash.com/photo-1449965408869-eaa3f722e40d?w=100&h=100&fit=crop&crop=center"
     },
     {
         question: "How many veterinarians are there in the US?",
         answer: 130415,
         category: "",
         explanation: "",
-        hint: "This includes both small animal (pets) and large animal (livestock) vets across all 50 states.",
+        hint: "Hint: There are about 15,000 veterinarians in Australia.",
         date: "2025-08-03",
-        image: "https://images.unsplash.com/photo-1576201836106-db1758fd1c97?w=200&h=200&fit=crop&crop=center"
+        image: "https://images.unsplash.com/photo-1576201836106-db1758fd1c97?w=100&h=100&fit=crop&crop=center"
     },
     {
         question: "How many paying subscribers does Spotify have?",
         answer: 276000000,
         category: "",
         explanation: "",
-        hint: "This is just paying subscribers, not total users. Spotify is the largest music streaming service.",
+        hint: "Hint: Spotify's revenue in the second quarter of 2025 was 4.2 billion euros.",
         date: "2025-08-04",
-        image: "https://images.unsplash.com/photo-1493225457124-a3eb161ffa5f?w=200&h=200&fit=crop&crop=center"
+        image: "https://images.unsplash.com/photo-1611348524140-53c9a25263d6?w=100&h=100&fit=crop&crop=center"
+    },
+    {
+        question: "How many iPhones has Apple ever sold?",
+        answer: 3000000000,
+        category: "",
+        explanation: "",
+        hint: "Hint: In 2024, Apple sold approximately 232.1 million iPhones.",
+        date: "2025-08-05",
+        image: "https://images.unsplash.com/photo-1510557880182-3d4d3cba35a5?w=100&h=100&fit=crop&crop=center"
+    },
+    {
+        question: "How many students are currently enrolled in medical school in the US?",
+        answer: 99562,
+        category: "",
+        explanation: "",
+        hint: "Hint: The US had 1,01 million active physicians in 2023.",
+        date: "2025-08-06",
+        image: "https://images.unsplash.com/photo-1576091160399-112ba8d25d1f?w=100&h=100&fit=crop&crop=center"
+    },
+    {
+        question: "How many pigs were slaughtered for meat worldwide in 2023?",
+        answer: 1510000000,
+        category: "",
+        explanation: "",
+        hint: "Hint: The average meat yield per pig is 82 kg (181 lbs).",
+        date: "2025-08-07",
+        image: "https://images.unsplash.com/photo-1516467508483-a7212febe31a?w=100&h=100&fit=crop&crop=center"
     }
 ];
 
@@ -142,6 +169,7 @@ const fermiQuestions = [
 const questionText = document.getElementById('question-text');
 const questionCategory = document.getElementById('question-category');
 const questionImage = document.getElementById('question-image');
+const questionImageContainer = document.getElementById('question-image-container');
 const currentStreakDisplay = document.getElementById('current-streak-display');
 const guessCounter = document.getElementById('guess-counter');
 const hintContainer = document.getElementById('hint-container');
@@ -172,11 +200,6 @@ const closeQuestionsBtn = document.getElementById('close-questions-btn');
 const shareBtn = document.getElementById('share-btn');
 const shareStatsBtn = document.getElementById('share-stats-btn');
 
-// Check if critical elements exist
-if (!shareStatsBtn) {
-    console.error('Share Stats button not found in DOM');
-}
-
 // Initialize game
 function initGame() {
     loadStats();
@@ -195,6 +218,21 @@ function initGame() {
 // Update current streak display
 function updateStreakDisplay() {
     currentStreakDisplay.textContent = `Current streak: ${stats.currentStreak}`;
+}
+
+// Update question display including image
+function updateQuestionDisplay(question) {
+    questionText.textContent = question.question;
+    questionCategory.innerHTML = getQuestionDisplayText(question); // Use innerHTML to allow <span>
+    
+    // Update question image
+    if (question.image) {
+        questionImage.src = question.image;
+        questionImage.alt = `Image related to: ${question.question}`;
+        questionImageContainer.style.display = 'block';
+    } else {
+        questionImageContainer.style.display = 'none';
+    }
 }
 
 // Start a new game
@@ -269,9 +307,7 @@ function getQuestionForDate(date) {
 
 // Format date for display (e.g., "20 July 2025")
 function formatDateForDisplay(dateString) {
-    // Parse date components directly to avoid timezone issues
-    const [year, month, day] = dateString.split('-').map(Number);
-    const date = new Date(year, month - 1, day); // month is 0-indexed
+    const date = new Date(dateString);
     const options = { day: 'numeric', month: 'long', year: 'numeric' };
     return date.toLocaleDateString('en-GB', options);
 }
@@ -283,7 +319,7 @@ function getCurrentQuestion() {
     // Get all questions sorted by date (newest first)
     const sortedQuestions = fermiQuestions
         .filter(q => q.date <= today)
-        .sort((a, b) => b.date.localeCompare(a.date));
+        .sort((a, b) => new Date(b.date) - new Date(a.date));
     
     // Find the first question that hasn't been completed
     for (let question of sortedQuestions) {
@@ -305,21 +341,6 @@ function getQuestionDisplayText(question) {
     } else {
         const formattedDate = formatDateForDisplay(question.date);
         return `${formattedDate} <span class='arrow'>></span>`;
-    }
-}
-
-// Update question display including text, category, and image
-function updateQuestionDisplay(question) {
-    questionText.textContent = question.question;
-    questionCategory.innerHTML = getQuestionDisplayText(question);
-    
-    // Update question image if available
-    if (question.image) {
-        questionImage.src = question.image;
-        questionImage.alt = `Illustration for: ${question.question}`;
-        questionImage.style.display = ''; // Remove inline display none, let CSS handle responsive display
-    } else {
-        questionImage.style.display = 'none';
     }
 }
 
@@ -408,8 +429,8 @@ function submitGuess() {
     // Save current game state after each guess
     saveCurrentGameState();
     
-    // Show hint after 3rd guess if game not won
-    if (currentGuess === 3 && !gameWon && currentQuestion.hint) {
+    // Show hint after 2nd guess if game not won
+    if (currentGuess === 2 && !gameWon && currentQuestion.hint) {
         showHint();
     }
     
@@ -478,7 +499,7 @@ function formatNumber(num) {
     return num.toLocaleString();
 }
 
-// Show hint after 3rd guess
+// Show hint after 2rd guess
 function showHint() {
     if (currentQuestion.hint) {
         hintText.textContent = currentQuestion.hint;
@@ -768,7 +789,7 @@ function loadCurrentGameState() {
     const today = getCurrentDate();
     const availableQuestions = fermiQuestions
         .filter(q => q.date <= today)
-        .sort((a, b) => b.date.localeCompare(a.date));
+        .sort((a, b) => new Date(b.date) - new Date(a.date));
     
     for (const question of availableQuestions) {
         // Skip if question is already completed
@@ -819,8 +840,8 @@ function loadCurrentGameState() {
             newGameSection.style.display = 'none';
             shareBtn.style.display = 'none';
             
-            // Check if hint should be shown (3+ guesses and not won)
-            if (currentGuess >= 3 && !gameWon && currentQuestion.hint) {
+            // Check if hint should be shown (2+ guesses and not won)
+            if (currentGuess >= 2 && !gameWon && currentQuestion.hint) {
                 showHint();
             } else {
                 hideHint();
@@ -961,7 +982,7 @@ function populateQuestionsList() {
     // Get all questions sorted by date (newest first)
     const sortedQuestions = fermiQuestions
         .filter(q => q.date <= today)
-        .sort((a, b) => b.date.localeCompare(a.date));
+        .sort((a, b) => new Date(b.date) - new Date(a.date));
     
     sortedQuestions.forEach(question => {
         const questionItem = document.createElement('div');
@@ -1109,8 +1130,8 @@ function selectQuestion(question) {
                         newGameSection.style.display = 'none';
                         shareBtn.style.display = 'none';
                         
-                        // Check if hint should be shown (3+ guesses and not won)
-                        if (currentGuess >= 3 && !gameWon && currentQuestion.hint) {
+                        // Check if hint should be shown (2+ guesses and not won)
+                        if (currentGuess >= 2 && !gameWon && currentQuestion.hint) {
                             showHint();
                         } else {
                             hideHint();
@@ -1429,11 +1450,7 @@ function setupEventListeners() {
 
     // Share buttons
     shareBtn.addEventListener('click', shareGame);
-    if (shareStatsBtn) {
-        shareStatsBtn.addEventListener('click', shareStats);
-    } else {
-        console.error('Cannot attach click listener to Share Stats button - element not found');
-    }
+    shareStatsBtn.addEventListener('click', shareStats);
         
     // Close modals when clicking outside (desktop + mobile)
     [helpModal, statsModal, questionsModal].forEach(modal => {
