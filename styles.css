@@ -50,6 +50,7 @@ body {
 .game-title {
     font-size: 1rem;
     width: 150px;
+    font-weight: 400;
 }
 
 .icon-button {
@@ -599,10 +600,10 @@ button#stats-btn {
         font-size: 0.9375rem;
     }
     .hint-container {
-        font-size: 0.8rem;
+        font-size: 0.825rem;
     }
     .game-result {
-        font-size: 0.8rem;
+        font-size: 0.825rem;
     }
 }
 
