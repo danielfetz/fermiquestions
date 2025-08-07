@@ -387,7 +387,7 @@ function clearGuesses() {
         tooltip.className = 'feedback-tooltip';
         const tooltipContent = document.createElement('div');
         tooltipContent.className = 'tooltip-content';
-        tooltipContent.textContent = 'Arrows show if you need to go higher ↑ or lower ↓';
+        tooltipContent.textContent = 'Arrows show direction for your next guess';
         const tooltipArrow = document.createElement('div');
         tooltipArrow.className = 'tooltip-arrow';
         
@@ -519,12 +519,15 @@ function showFeedback(guessIndex, type, symbol) {
             </svg>
         `;
     } else {
-        feedbackButton.textContent = symbol;
-    }
-    
-    // Re-add the tooltip if it existed
-    if (tooltip) {
-        feedbackButton.appendChild(tooltip);
+        // Clear the button content first
+        feedbackButton.innerHTML = '';
+        // Add the symbol as a text node
+        const symbolText = document.createTextNode(symbol);
+        feedbackButton.appendChild(symbolText);
+        // Re-add the tooltip if it existed
+        if (tooltip) {
+            feedbackButton.appendChild(tooltip);
+        }
     }
     
     feedbackButton.className = `feedback-button ${type}`;
