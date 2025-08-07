@@ -595,6 +595,12 @@ button#stats-btn {
     .question-box {
         border-radius: 12px;
     }
+    .game-title {
+        font-size: 0.9375rem;
+    }
+    .hint-container {
+        font-size: 0.8rem;
+    }
 }
 
 /* Animation for new guesses
