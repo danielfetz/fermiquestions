@@ -593,7 +593,7 @@ button#stats-btn {
         padding: 18px 16px;
     }
     .question-box {
-        padding: 12px;
+        border-radius: 12px;
     }
 }
 
