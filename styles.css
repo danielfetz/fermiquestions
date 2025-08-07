@@ -9,7 +9,6 @@ body {
     background-color: #f0f0f0;
     color: #333;
     line-height: 1.4;
-    padding: 0 6px;
 }
 
 .game-container {
@@ -25,7 +24,7 @@ body {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: 16px 10px;
+    padding: 16px;
 }
 
 .header-left {
@@ -590,7 +589,9 @@ button#stats-btn {
 
 /* Responsive Design */
 @media (max-width: 768px) {
-
+    .game-container {
+        padding: 16px;
+    }
 }
 
 /* Animation for new guesses
