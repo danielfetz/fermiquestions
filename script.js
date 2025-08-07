@@ -387,7 +387,7 @@ function clearGuesses() {
         tooltip.className = 'feedback-tooltip';
         const tooltipContent = document.createElement('div');
         tooltipContent.className = 'tooltip-content';
-        tooltipContent.textContent = 'Arrows show direction for your next guess';
+        // Start with empty content - will be set when feedback is shown
         const tooltipArrow = document.createElement('div');
         tooltipArrow.className = 'tooltip-arrow';
         
@@ -536,10 +536,13 @@ function showFeedback(guessIndex, type, symbol) {
     if (tooltip) {
         const tooltipContent = tooltip.querySelector('.tooltip-content');
         if (tooltipContent) {
-            if (type === 'high' || type === 'close' && symbol === '↓') {
+            if (type === 'high' || (type === 'close' && symbol === '↓')) {
                 tooltipContent.textContent = 'Too high! You need to go lower ↓';
-            } else if (type === 'low' || type === 'close' && symbol === '↑') {
+            } else if (type === 'low' || (type === 'close' && symbol === '↑')) {
                 tooltipContent.textContent = 'Too low! You need to go higher ↑';
+            } else {
+                // Fallback for correct answers or other cases
+                tooltipContent.textContent = 'This shows the direction for your guess';
             }
         }
         
