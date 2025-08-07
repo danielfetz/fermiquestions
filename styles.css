@@ -434,55 +434,46 @@ button#stats-btn {
     cursor: not-allowed;
 }
 
-/* Feedback Popup */
-.feedback-popup {
-    position: fixed;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%) scale(0);
+/* Feedback Tooltip */
+.feedback-tooltip {
+    position: absolute;
     z-index: 2000;
     opacity: 0;
+    visibility: hidden;
+    transform: translateY(-5px);
     transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
     pointer-events: none;
 }
 
-.feedback-popup.show {
-    transform: translate(-50%, -50%) scale(1);
+.feedback-tooltip.show {
     opacity: 1;
-    pointer-events: auto;
+    visibility: visible;
+    transform: translateY(0);
 }
 
-.feedback-content {
+.tooltip-content {
     background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
     color: white;
-    padding: 24px 32px;
-    border-radius: 16px;
-    text-align: center;
-    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
-    min-width: 320px;
-    max-width: 400px;
-    border: 2px solid rgba(255, 255, 255, 0.2);
-}
-
-.feedback-icon {
-    font-size: 3rem;
-    margin-bottom: 12px;
-    line-height: 1;
-}
-
-.feedback-message {
+    padding: 12px 16px;
+    border-radius: 8px;
     font-family: 'Press Start 2P', monospace;
-    font-size: 0.8rem;
+    font-size: 0.7rem;
     line-height: 1.4;
-    margin: 0;
+    white-space: nowrap;
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
+    border: 1px solid rgba(255, 255, 255, 0.2);
 }
 
-.feedback-popup.too-high .feedback-content {
-    background: linear-gradient(135deg, #ff6b6b 0%, #ee5a52 100%);
-}
-
-.feedback-popup.too-low .feedback-content {
-    background: linear-gradient(135deg, #4ecdc4 0%, #44a08d 100%);
+.tooltip-arrow {
+    position: absolute;
+    top: 100%;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 0;
+    height: 0;
+    border-left: 8px solid transparent;
+    border-right: 8px solid transparent;
+    border-top: 8px solid #667eea;
 }
 
 /* Modals */
