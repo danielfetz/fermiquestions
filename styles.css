@@ -48,7 +48,7 @@ body {
 }
 
 .game-title {
-    font-size: 1rem;
+    font-size: 0.9375rem;
     width: 150px;
     font-weight: 400;
 }
@@ -596,14 +596,11 @@ button#stats-btn {
     .question-box {
         border-radius: 12px;
     }
-    .game-title {
-        font-size: 0.9375rem;
-    }
     .hint-container {
-        font-size: 0.825rem;
+        font-size: 0.8375rem;
     }
     .game-result {
-        font-size: 0.825rem;
+        font-size: 0.8375rem;
     }
 }
 
