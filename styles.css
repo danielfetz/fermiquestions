@@ -592,6 +592,9 @@ button#stats-btn {
     .game-container {
         padding: 18px 16px;
     }
+    .question-box {
+        padding: 12px;
+    }
 }
 
 /* Animation for new guesses
