@@ -387,7 +387,7 @@ function clearGuesses() {
         tooltip.className = 'feedback-tooltip';
         const tooltipContent = document.createElement('div');
         tooltipContent.className = 'tooltip-content';
-        // Start with empty content - will be set when feedback is shown
+        tooltipContent.textContent = 'Arrows show direction for your next guess';
         const tooltipArrow = document.createElement('div');
         tooltipArrow.className = 'tooltip-arrow';
         
@@ -536,13 +536,10 @@ function showFeedback(guessIndex, type, symbol) {
     if (tooltip) {
         const tooltipContent = tooltip.querySelector('.tooltip-content');
         if (tooltipContent) {
-            if (type === 'high' || (type === 'close' && symbol === '↓')) {
+            if (type === 'high' || type === 'close' && symbol === '↓') {
                 tooltipContent.textContent = 'Too high! You need to go lower ↓';
-            } else if (type === 'low' || (type === 'close' && symbol === '↑')) {
+            } else if (type === 'low' || type === 'close' && symbol === '↑') {
                 tooltipContent.textContent = 'Too low! You need to go higher ↑';
-            } else {
-                // Fallback for correct answers or other cases
-                tooltipContent.textContent = 'This shows the direction for your guess';
             }
         }
         
@@ -967,6 +964,9 @@ function restoreGuessesDisplay(savedGuesses) {
             
             // Restore feedback
             if (guess.feedbackType !== 'none') {
+                // Preserve the tooltip when restoring feedback
+                const tooltip = feedbackButton.querySelector('.feedback-tooltip');
+                
                 if (guess.feedbackType === 'correct') {
                     // Use the same checkmark SVG from showFeedback function
                     feedbackButton.innerHTML = `
@@ -991,8 +991,28 @@ function restoreGuessesDisplay(savedGuesses) {
                             <rect x="17" y="4" width="3" height="2" fill="white"/>
                         </svg>
                     `;
+                    // Re-add tooltip for correct answers too
+                    if (tooltip) {
+                        feedbackButton.appendChild(tooltip);
+                    }
                 } else {
-                    feedbackButton.textContent = guess.feedbackSymbol;
+                    // Clear and restore with symbol
+                    feedbackButton.innerHTML = '';
+                    const symbolText = document.createTextNode(guess.feedbackSymbol);
+                    feedbackButton.appendChild(symbolText);
+                    // Re-add tooltip
+                    if (tooltip) {
+                        feedbackButton.appendChild(tooltip);
+                        // Update tooltip text based on the restored feedback
+                        const tooltipContent = tooltip.querySelector('.tooltip-content');
+                        if (tooltipContent) {
+                            if (guess.feedbackSymbol === '↓') {
+                                tooltipContent.textContent = 'Too high! You need to go lower ↓';
+                            } else if (guess.feedbackSymbol === '↑') {
+                                tooltipContent.textContent = 'Too low! You need to go higher ↑';
+                            }
+                        }
+                    }
                 }
                 
                 feedbackButton.className = `feedback-button ${guess.feedbackType}`;
