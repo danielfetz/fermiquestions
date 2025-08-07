@@ -23,7 +23,8 @@ let stats = {
         4: 0,
         5: 0,
         6: 0
-    }
+    },
+    hasSeenFirstGuessFeedback: false
 };
 
 // Database of Fermi questions with dates
@@ -228,21 +229,33 @@ function showFeedbackPopup(isHigh) {
     // Set the appropriate message and icon
     if (isHigh) {
         feedbackIcon.textContent = '📉';
-        feedbackMessage.textContent = 'Too high! Try a smaller number.';
+        feedbackMessage.innerHTML = `
+            <div style="margin-bottom: 12px; font-size: 0.9rem; color: #ffeb3b;">Too high!</div>
+            <div style="font-size: 0.7rem; line-height: 1.5; opacity: 0.9;">
+                After each guess, you'll see arrows showing if you need to go higher ↑ or lower ↓. 
+                You win if you get within 20% of the correct answer!
+            </div>
+        `;
         feedbackPopup.className = 'feedback-popup too-high';
     } else {
         feedbackIcon.textContent = '📈';
-        feedbackMessage.textContent = 'Too low! Try a bigger number.';
+        feedbackMessage.innerHTML = `
+            <div style="margin-bottom: 12px; font-size: 0.9rem; color: #ffeb3b;">Too low!</div>
+            <div style="font-size: 0.7rem; line-height: 1.5; opacity: 0.9;">
+                After each guess, you'll see arrows showing if you need to go higher ↑ or lower ↓. 
+                You win if you get within 20% of the correct answer!
+            </div>
+        `;
         feedbackPopup.className = 'feedback-popup too-low';
     }
     
     // Show the popup
     feedbackPopup.classList.add('show');
     
-    // Hide after 2.5 seconds
+    // Hide after 4 seconds (longer since there's more content)
     setTimeout(() => {
         feedbackPopup.classList.remove('show');
-    }, 2500);
+    }, 4000);
 }
 
 // Update question display including image
@@ -447,9 +460,11 @@ function submitGuess() {
     } else {
         const isHigh = guessValue > currentQuestion.answer;
         
-        // Show feedback popup on first incorrect guess
-        if (currentGuess === 1) {
+        // Show feedback popup on first incorrect guess ever
+        if (currentGuess === 1 && !stats.hasSeenFirstGuessFeedback) {
             showFeedbackPopup(isHigh);
+            stats.hasSeenFirstGuessFeedback = true;
+            saveStats(); // Save the updated stats
         }
         
         // Check if guess is within 50% (close but not correct)
@@ -734,7 +749,8 @@ function loadStats() {
                     4: 0,
                     5: 0,
                     6: 0
-                }
+                },
+                hasSeenFirstGuessFeedback: loadedStats.hasSeenFirstGuessFeedback || false
             };
         } catch (error) {
             console.error('Error loading stats:', error);
@@ -752,7 +768,8 @@ function loadStats() {
                     4: 0,
                     5: 0,
                     6: 0
-                }
+                },
+                hasSeenFirstGuessFeedback: false
             };
         }
     }
