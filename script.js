@@ -162,6 +162,15 @@ const fermiQuestions = [
         hint: "Hint: The average meat yield per pig is 82 kg (181 lbs).",
         date: "2025-08-07",
         image: "data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' width='100' height='100' viewBox='0 0 100 100'%3e%3crect width='100' height='100' fill='%23fdf2f8'/%3e%3ctext x='50' y='62' font-size='40' text-anchor='middle' fill='%23ec4899'%3e🐷%3c/text%3e%3c/svg%3e"
+    },
+    {
+        question: "How many passengers traveled through San Francisco Airport in 2024?",
+        answer: 52300000,
+        category: "",
+        explanation: "",
+        hint: "Hint: 1.35M passengers were flown from SFO to Taiwan in 2024.",
+        date: "2025-08-08",
+        image: "data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' width='100' height='100' viewBox='0 0 100 100'%3e%3crect width='100' height='100' fill='%23f0f8ff'/%3e%3ctext x='50' y='62' font-size='40' text-anchor='middle' fill='%234169e1'%3e✈️%3c/text%3e%3c/svg%3e"
     }
 ];
 
