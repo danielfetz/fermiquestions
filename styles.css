@@ -472,9 +472,7 @@ button#stats-btn {
     white-space: nowrap;
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
     border: 1px solid #666;
-    max-width: calc(100vw - 40px);
-    word-wrap: break-word;
-    white-space: normal;
+    max-width: 320px;
 }
 
 .tooltip-arrow {
@@ -492,28 +490,35 @@ button#stats-btn {
 /* Responsive positioning for mobile */
 @media (max-width: 768px) {
     .feedback-tooltip {
-        /* On mobile, show tooltip above but allow it to adjust position if needed */
-        left: 0;
-        right: 0;
-        transform: translateY(-8px);
-        margin: 0 10px;
+        /* Adjust positioning to prevent overflow while using available space */
+        left: 50%;
+        transform: translateX(-50%) translateY(-8px);
     }
     
     .feedback-tooltip.show {
-        transform: translateY(-12px);
+        transform: translateX(-50%) translateY(-12px);
     }
     
     .tooltip-content {
         font-size: 0.6rem;
         padding: 8px 12px;
-        margin: 0 auto;
+        max-width: calc(100vw - 60px);
+        white-space: normal;
         text-align: center;
-        max-width: calc(100vw - 40px);
     }
     
     .tooltip-arrow {
         left: 50%;
         transform: translateX(-50%);
+    }
+}
+
+/* Very small screens - more conservative spacing */
+@media (max-width: 480px) {
+    .tooltip-content {
+        max-width: calc(100vw - 40px);
+        font-size: 0.55rem;
+        padding: 6px 10px;
     }
 }
 
