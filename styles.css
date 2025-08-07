@@ -548,7 +548,27 @@ button#stats-btn {
 
 /* Responsive Design */
 @media (max-width: 768px) {
+    .question-content {
+        flex-direction: column;
+        text-align: center;
+        gap: 15px;
+    }
+    
+    .question-image {
+        width: 80px;
+        height: 80px;
+    }
+    
+    .question-details {
+        text-align: center;
+    }
+}
 
+@media (max-width: 480px) {
+    .question-image {
+        width: 60px;
+        height: 60px;
+    }
 }
 
 /* Animation for new guesses
