@@ -171,9 +171,8 @@ const questionText = document.getElementById('question-text');
 const questionCategory = document.getElementById('question-category');
 const questionImage = document.getElementById('question-image');
 const questionImageContainer = document.getElementById('question-image-container');
-const feedbackPopup = document.getElementById('feedback-popup');
-const feedbackIcon = document.getElementById('feedback-icon');
-const feedbackMessage = document.getElementById('feedback-message');
+const feedbackTooltip = document.getElementById('feedback-tooltip');
+const tooltipContent = document.getElementById('tooltip-content');
 const currentStreakDisplay = document.getElementById('current-streak-display');
 const guessCounter = document.getElementById('guess-counter');
 const hintContainer = document.getElementById('hint-container');
@@ -224,38 +223,29 @@ function updateStreakDisplay() {
     currentStreakDisplay.textContent = `Current streak: ${stats.currentStreak}`;
 }
 
-// Show feedback popup
-function showFeedbackPopup(isHigh) {
-    // Set the appropriate message and icon
-    if (isHigh) {
-        feedbackIcon.textContent = '📉';
-        feedbackMessage.innerHTML = `
-            <div style="margin-bottom: 12px; font-size: 0.9rem; color: #ffeb3b;">Too high!</div>
-            <div style="font-size: 0.7rem; line-height: 1.5; opacity: 0.9;">
-                After each guess, you'll see arrows showing if you need to go higher ↑ or lower ↓. 
-                You win if you get within 20% of the correct answer!
-            </div>
-        `;
-        feedbackPopup.className = 'feedback-popup too-high';
-    } else {
-        feedbackIcon.textContent = '📈';
-        feedbackMessage.innerHTML = `
-            <div style="margin-bottom: 12px; font-size: 0.9rem; color: #ffeb3b;">Too low!</div>
-            <div style="font-size: 0.7rem; line-height: 1.5; opacity: 0.9;">
-                After each guess, you'll see arrows showing if you need to go higher ↑ or lower ↓. 
-                You win if you get within 20% of the correct answer!
-            </div>
-        `;
-        feedbackPopup.className = 'feedback-popup too-low';
+// Show feedback tooltip
+function showFeedbackTooltip() {
+    // Position tooltip over the first feedback button
+    const guessRows = guessesContainer.querySelectorAll('.guess-row');
+    const firstFeedbackButton = guessRows[0].querySelector('.feedback-button');
+    
+    if (firstFeedbackButton) {
+        const buttonRect = firstFeedbackButton.getBoundingClientRect();
+        const containerRect = document.querySelector('.game-container').getBoundingClientRect();
+        
+        // Position tooltip above the feedback button
+        feedbackTooltip.style.left = (buttonRect.left - containerRect.left) + (buttonRect.width / 2) + 'px';
+        feedbackTooltip.style.top = (buttonRect.top - containerRect.top) - 12 + 'px';
+        feedbackTooltip.style.transform = 'translateX(-50%) translateY(-100%)';
+        
+        // Show the tooltip
+        feedbackTooltip.classList.add('show');
+        
+        // Hide after 3.5 seconds
+        setTimeout(() => {
+            feedbackTooltip.classList.remove('show');
+        }, 3500);
     }
-    
-    // Show the popup
-    feedbackPopup.classList.add('show');
-    
-    // Hide after 4 seconds (longer since there's more content)
-    setTimeout(() => {
-        feedbackPopup.classList.remove('show');
-    }, 4000);
 }
 
 // Update question display including image
@@ -460,9 +450,12 @@ function submitGuess() {
     } else {
         const isHigh = guessValue > currentQuestion.answer;
         
-        // Show feedback popup on first incorrect guess ever
+        // Show feedback tooltip on first incorrect guess ever
         if (currentGuess === 1 && !stats.hasSeenFirstGuessFeedback) {
-            showFeedbackPopup(isHigh);
+            // Small delay to ensure feedback button is rendered
+            setTimeout(() => {
+                showFeedbackTooltip();
+            }, 100);
             stats.hasSeenFirstGuessFeedback = true;
             saveStats(); // Save the updated stats
         }
