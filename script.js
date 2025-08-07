@@ -170,6 +170,9 @@ const questionText = document.getElementById('question-text');
 const questionCategory = document.getElementById('question-category');
 const questionImage = document.getElementById('question-image');
 const questionImageContainer = document.getElementById('question-image-container');
+const feedbackPopup = document.getElementById('feedback-popup');
+const feedbackIcon = document.getElementById('feedback-icon');
+const feedbackMessage = document.getElementById('feedback-message');
 const currentStreakDisplay = document.getElementById('current-streak-display');
 const guessCounter = document.getElementById('guess-counter');
 const hintContainer = document.getElementById('hint-container');
@@ -218,6 +221,28 @@ function initGame() {
 // Update current streak display
 function updateStreakDisplay() {
     currentStreakDisplay.textContent = `Current streak: ${stats.currentStreak}`;
+}
+
+// Show feedback popup
+function showFeedbackPopup(isHigh) {
+    // Set the appropriate message and icon
+    if (isHigh) {
+        feedbackIcon.textContent = '📉';
+        feedbackMessage.textContent = 'Too high! Try a smaller number.';
+        feedbackPopup.className = 'feedback-popup too-high';
+    } else {
+        feedbackIcon.textContent = '📈';
+        feedbackMessage.textContent = 'Too low! Try a bigger number.';
+        feedbackPopup.className = 'feedback-popup too-low';
+    }
+    
+    // Show the popup
+    feedbackPopup.classList.add('show');
+    
+    // Hide after 2.5 seconds
+    setTimeout(() => {
+        feedbackPopup.classList.remove('show');
+    }, 2500);
 }
 
 // Update question display including image
@@ -421,6 +446,11 @@ function submitGuess() {
         showFeedback(currentGuess - 1, 'correct', 'WIN');
     } else {
         const isHigh = guessValue > currentQuestion.answer;
+        
+        // Show feedback popup on first incorrect guess
+        if (currentGuess === 1) {
+            showFeedbackPopup(isHigh);
+        }
         
         // Check if guess is within 50% (close but not correct)
         const closeTolerance = currentQuestion.answer * 0.5;
