@@ -382,19 +382,6 @@ function clearGuesses() {
         const feedbackButton = document.createElement('button');
         feedbackButton.className = 'feedback-button hidden';
         
-        // Add tooltip to each feedback button
-        const tooltip = document.createElement('div');
-        tooltip.className = 'feedback-tooltip';
-        const tooltipContent = document.createElement('div');
-        tooltipContent.className = 'tooltip-content';
-        tooltipContent.textContent = 'Arrows show direction for your next guess';
-        const tooltipArrow = document.createElement('div');
-        tooltipArrow.className = 'tooltip-arrow';
-        
-        tooltip.appendChild(tooltipContent);
-        tooltip.appendChild(tooltipArrow);
-        feedbackButton.appendChild(tooltip);
-        
 
         
         guessRow.appendChild(guessField);
@@ -491,9 +478,6 @@ function showFeedback(guessIndex, type, symbol) {
     const currentRow = guessRows[guessIndex];
     const feedbackButton = currentRow.querySelector('.feedback-button');
     
-    // Preserve the tooltip
-    const tooltip = feedbackButton.querySelector('.feedback-tooltip');
-    
     if (type === 'correct') {
         // Use retro pixelated checkmark SVG for correct answers
         feedbackButton.innerHTML = `
@@ -519,32 +503,31 @@ function showFeedback(guessIndex, type, symbol) {
             </svg>
         `;
     } else {
-        // Clear the button content first
-        feedbackButton.innerHTML = '';
-        // Add the symbol as a text node
-        const symbolText = document.createTextNode(symbol);
-        feedbackButton.appendChild(symbolText);
-        // Re-add the tooltip if it existed
-        if (tooltip) {
-            feedbackButton.appendChild(tooltip);
-        }
-    }
-    
-    feedbackButton.className = `feedback-button ${type}`;
-    
-    // Update tooltip text based on feedback and show for first incorrect guess
-    if (tooltip) {
-        const tooltipContent = tooltip.querySelector('.tooltip-content');
-        if (tooltipContent) {
-            if (type === 'high' || type === 'close' && symbol === '↓') {
-                tooltipContent.textContent = 'Too high! You need to go lower ↓';
-            } else if (type === 'low' || type === 'close' && symbol === '↑') {
-                tooltipContent.textContent = 'Too low! You need to go higher ↑';
-            }
+        // For incorrect answers, add arrow symbol and tooltip
+        feedbackButton.textContent = symbol;
+        
+        // Create and add tooltip for incorrect answers
+        const tooltip = document.createElement('div');
+        tooltip.className = 'feedback-tooltip';
+        const tooltipContent = document.createElement('div');
+        tooltipContent.className = 'tooltip-content';
+        
+        // Set tooltip text based on direction
+        if (type === 'high' || (type === 'close' && symbol === '↓')) {
+            tooltipContent.textContent = 'Too high! You need to go lower ↓';
+        } else if (type === 'low' || (type === 'close' && symbol === '↑')) {
+            tooltipContent.textContent = 'Too low! You need to go higher ↑';
         }
         
-        // Show tooltip automatically for first incorrect guess
-        if (guessIndex === 0 && type !== 'correct' && !stats.hasSeenFirstGuessFeedback) {
+        const tooltipArrow = document.createElement('div');
+        tooltipArrow.className = 'tooltip-arrow';
+        
+        tooltip.appendChild(tooltipContent);
+        tooltip.appendChild(tooltipArrow);
+        feedbackButton.appendChild(tooltip);
+        
+        // Show tooltip automatically for first incorrect guess ever
+        if (guessIndex === 0 && !stats.hasSeenFirstGuessFeedback) {
             setTimeout(() => {
                 tooltip.classList.add('show');
                 setTimeout(() => {
@@ -555,6 +538,8 @@ function showFeedback(guessIndex, type, symbol) {
             saveStats();
         }
     }
+    
+    feedbackButton.className = `feedback-button ${type}`;
     
     if (type !== 'correct') {
         currentRow.classList.add('shake');
@@ -964,11 +949,8 @@ function restoreGuessesDisplay(savedGuesses) {
             
             // Restore feedback
             if (guess.feedbackType !== 'none') {
-                // Preserve the tooltip when restoring feedback
-                const tooltip = feedbackButton.querySelector('.feedback-tooltip');
-                
                 if (guess.feedbackType === 'correct') {
-                    // Use the same checkmark SVG from showFeedback function
+                    // Correct answer - just show checkmark, no tooltip
                     feedbackButton.innerHTML = `
                         <svg width="18" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
                             <rect x="1" y="10" width="3" height="2" fill="white"/>
@@ -991,28 +973,29 @@ function restoreGuessesDisplay(savedGuesses) {
                             <rect x="17" y="4" width="3" height="2" fill="white"/>
                         </svg>
                     `;
-                    // Re-add tooltip for correct answers too
-                    if (tooltip) {
-                        feedbackButton.appendChild(tooltip);
-                    }
                 } else {
-                    // Clear and restore with symbol
-                    feedbackButton.innerHTML = '';
-                    const symbolText = document.createTextNode(guess.feedbackSymbol);
-                    feedbackButton.appendChild(symbolText);
-                    // Re-add tooltip
-                    if (tooltip) {
-                        feedbackButton.appendChild(tooltip);
-                        // Update tooltip text based on the restored feedback
-                        const tooltipContent = tooltip.querySelector('.tooltip-content');
-                        if (tooltipContent) {
-                            if (guess.feedbackSymbol === '↓') {
-                                tooltipContent.textContent = 'Too high! You need to go lower ↓';
-                            } else if (guess.feedbackSymbol === '↑') {
-                                tooltipContent.textContent = 'Too low! You need to go higher ↑';
-                            }
-                        }
+                    // Incorrect answer - show arrow and add tooltip
+                    feedbackButton.textContent = guess.feedbackSymbol;
+                    
+                    // Create and add tooltip
+                    const tooltip = document.createElement('div');
+                    tooltip.className = 'feedback-tooltip';
+                    const tooltipContent = document.createElement('div');
+                    tooltipContent.className = 'tooltip-content';
+                    
+                    // Set tooltip text based on arrow
+                    if (guess.feedbackSymbol === '↓') {
+                        tooltipContent.textContent = 'Too high! You need to go lower ↓';
+                    } else if (guess.feedbackSymbol === '↑') {
+                        tooltipContent.textContent = 'Too low! You need to go higher ↑';
                     }
+                    
+                    const tooltipArrow = document.createElement('div');
+                    tooltipArrow.className = 'tooltip-arrow';
+                    
+                    tooltip.appendChild(tooltipContent);
+                    tooltip.appendChild(tooltipArrow);
+                    feedbackButton.appendChild(tooltip);
                 }
                 
                 feedbackButton.className = `feedback-button ${guess.feedbackType}`;
