@@ -420,7 +420,7 @@ button#stats-btn {
     padding: 8px 12px;
     border-radius: 12px;
     font-family: 'Press Start 2P', monospace;
-    font-size: 0.75rem;
+    font-size: 0.765625rem;
     cursor: pointer;
     transition: background-color 0.2s;
     white-space: nowrap;
@@ -593,7 +593,8 @@ button#stats-btn {
 @media (max-width: 768px) {
     .game-container {
         padding: 18px 16px;
-        border-radius: 12px;
+        border-radius: 13px;
+        box-shadow: 0 0 5px #dcdcdc5e;
     }
     .question-box {
         border-radius: 12px;
