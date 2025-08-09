@@ -353,6 +353,48 @@ button#stats-btn {
     transform: scale(1.1);
 }
 
+.feedback-button {
+    position: relative;
+}
+
+/* Custom tooltip for feedback buttons */
+.feedback-button::after {
+    content: attr(data-tooltip);
+    position: absolute;
+    bottom: 100%;
+    left: 50%;
+    transform: translate(-50%, -2px);
+    background: rgba(51, 51, 51, 0.95);
+    color: #fff;
+    padding: 6px 8px;
+    border-radius: 6px;
+    font-size: 0.65rem;
+    white-space: nowrap;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.15s ease, transform 0.15s ease;
+    z-index: 1000;
+}
+
+.feedback-button::before {
+    content: '';
+    position: absolute;
+    bottom: calc(100% - 4px);
+    left: 50%;
+    transform: translateX(-50%);
+    border-width: 6px;
+    border-style: solid;
+    border-color: rgba(51, 51, 51, 0.95) transparent transparent transparent;
+    opacity: 0;
+    transition: opacity 0.15s ease;
+    z-index: 1000;
+}
+
+.feedback-button:hover::after,
+.feedback-button:hover::before {
+    opacity: 1;
+}
+
 .feedback-button.high {
     background-color: #e74c3c;
     color: white;
