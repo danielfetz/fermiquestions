@@ -655,6 +655,7 @@ button#stats-btn {
     .feedback-button::after {
         width: 120px;
         white-space: normal;
+    }
 }
 
 /* Animation for new guesses
