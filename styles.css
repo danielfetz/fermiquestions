@@ -267,7 +267,7 @@ button#stats-btn {
     color: white;
     border: none;
     padding: 12px 25px;
-    border-radius: 12px;
+    border-radius: 14px;
     font-family: 'Press Start 2P', monospace;
     font-size: 0.8rem;
     cursor: pointer;
@@ -299,7 +299,7 @@ button#stats-btn {
     height: 50.16px;
     font-size: 0.8rem;
     margin-top: 0;
-    border-radius: 12px;
+    border-radius: 14px;
     border: 2px solid #eaecef;
 }
 
@@ -319,8 +319,8 @@ button#stats-btn {
     flex: 1;
     background-color: #f6f6f6;
     color: #333;
-    padding: 14px 15px;
-    border-radius: 12px;
+    padding: 13.5px 15px;
+    border-radius: 13px;
     font-size: 0.8rem;
     text-align: center;
     border: none;
@@ -333,8 +333,8 @@ button#stats-btn {
 
 .feedback-button {
     width: 100px;
-    height: 45.91px;
-    border-radius: 12px;
+    height: 44.91px;
+    border-radius: 13px;
     border: none;
     display: flex;
     align-items: center;
@@ -437,7 +437,7 @@ button#stats-btn {
     align-items: center;
     gap: 8px;
     padding: 10px 15px;
-    border-radius: 12px;
+    border-radius: 14px;
     flex: 1;
     border: 2px solid #eaecf0;
 }
@@ -464,7 +464,7 @@ button#stats-btn {
     color: white;
     border: none;
     padding: 8px 12px;
-    border-radius: 12px;
+    border-radius: 14px;
     font-family: 'Press Start 2P', monospace;
     font-size: 0.765625rem;
     cursor: pointer;
