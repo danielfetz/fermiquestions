@@ -180,6 +180,15 @@ const fermiQuestions = [
         hint: "Hint: In France, retailers sold 440 million print books in 2023.",
         date: "2025-08-09",
         image: "data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' width='100' height='100' viewBox='0 0 100 100'%3e%3crect width='100' height='100' fill='%23f0fdf4'/%3e%3ctext x='50' y='62' font-size='40' text-anchor='middle' fill='%2316a34a'%3e📚%3c/text%3e%3c/svg%3e"
+    },
+    {
+        question: "How many babies were born worldwide in 2024?",
+        answer: 132000000,
+        category: "",
+        explanation: "",
+        hint: "Hint: For every person that died in 2024, more than two babies were born.",
+        date: "2025-08-10",
+        image: "data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' width='100' height='100' viewBox='0 0 100 100'%3e%3crect width='100' height='100' fill='%23fffbeb'/%3e%3ctext x='50' y='62' font-size='40' text-anchor='middle' fill='%23d97706'%3e👶%3c/text%3e%3c/svg%3e"
     }
 ];
 
