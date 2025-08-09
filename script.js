@@ -525,6 +525,16 @@ function showFeedback(guessIndex, type, symbol) {
     } else if (type === 'high') {
         feedbackButton.setAttribute('data-tooltip', 'Too high! You need to go lower ↓');
         feedbackButton.title = '';
+    } else if (type === 'close') {
+        // Use the direction symbol to choose appropriate text
+        if (symbol === '↑') {
+            feedbackButton.setAttribute('data-tooltip', 'Too low!');
+        } else if (symbol === '↓') {
+            feedbackButton.setAttribute('data-tooltip', 'Too high!');
+        } else {
+            feedbackButton.removeAttribute('data-tooltip');
+        }
+        feedbackButton.title = '';
     } else {
         feedbackButton.removeAttribute('data-tooltip');
         feedbackButton.title = '';
@@ -972,6 +982,15 @@ function restoreGuessesDisplay(savedGuesses) {
                         feedbackButton.title = '';
                     } else if (guess.feedbackType === 'high') {
                         feedbackButton.setAttribute('data-tooltip', 'Too high! You need to go lower ↓');
+                        feedbackButton.title = '';
+                    } else if (guess.feedbackType === 'close') {
+                        if (guess.feedbackSymbol === '↑') {
+                            feedbackButton.setAttribute('data-tooltip', 'Too low!');
+                        } else if (guess.feedbackSymbol === '↓') {
+                            feedbackButton.setAttribute('data-tooltip', 'Too high!');
+                        } else {
+                            feedbackButton.removeAttribute('data-tooltip');
+                        }
                         feedbackButton.title = '';
                     } else {
                         feedbackButton.removeAttribute('data-tooltip');
