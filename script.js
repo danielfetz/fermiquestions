@@ -458,7 +458,7 @@ function submitGuess() {
                 const currentRow = guessRows[currentGuess - 1];
                 const feedbackButton = currentRow.querySelector('.feedback-button');
                 feedbackButton.classList.add('show-tooltip');
-                setTimeout(() => feedbackButton.classList.remove('show-tooltip'), 2200);
+                setTimeout(() => feedbackButton.classList.remove('show-tooltip'), 8000);
                 localStorage.setItem('fermiTooltipTutorialShown', '1');
             }
         } catch (e) {
