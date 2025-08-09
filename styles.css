@@ -349,9 +349,6 @@ button#stats-btn {
     display: none;
 }
 
-.feedback-button:hover {
-    transform: scale(1.1);
-}
 
 .feedback-button {
     position: relative;
@@ -374,6 +371,7 @@ button#stats-btn {
     pointer-events: none;
     transition: opacity 0.15s ease, transform 0.15s ease;
     z-index: 1000;
+    line-height: 1.4;
 }
 
 .feedback-button::before {
