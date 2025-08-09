@@ -543,9 +543,9 @@ function showFeedback(guessIndex, type, symbol) {
     } else if (type === 'close') {
         // Use the direction symbol to choose appropriate text
         if (symbol === '↑') {
-            feedbackButton.setAttribute('data-tooltip', 'Too low!');
+            feedbackButton.setAttribute('data-tooltip', 'Too low! You need to go higher ↑');
         } else if (symbol === '↓') {
-            feedbackButton.setAttribute('data-tooltip', 'Too high!');
+            feedbackButton.setAttribute('data-tooltip', 'Too high! You need to go lower ↓');
         } else {
             feedbackButton.removeAttribute('data-tooltip');
         }
