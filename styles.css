@@ -319,16 +319,18 @@ button#stats-btn {
     flex: 1;
     background-color: #f6f6f6;
     color: #333;
-    padding: 13.5px 15px;
+    padding: 15.96px 15px;
     border-radius: 13px;
     font-size: 0.8rem;
     text-align: center;
     border: none;
     font-family: 'Press Start 2P', monospace;
+    line-height: normal;
+    max-height: 44.91px;
 }
 
 .guess-field.empty {
-    color: #acacac;
+    color: #bfbfbf;
 }
 
 .feedback-button {
