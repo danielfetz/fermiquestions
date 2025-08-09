@@ -395,6 +395,12 @@ button#stats-btn {
     opacity: 1;
 }
 
+/* Programmatically show tooltip without hover (for tutorial) */
+.feedback-button.show-tooltip::after,
+.feedback-button.show-tooltip::before {
+    opacity: 1;
+}
+
 .feedback-button.high {
     background-color: #e74c3c;
     color: white;
