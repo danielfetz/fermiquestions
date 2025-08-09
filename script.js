@@ -449,6 +449,21 @@ function submitGuess() {
         } else {
             showFeedback(currentGuess - 1, isHigh ? 'high' : 'low', isHigh ? '↓' : '↑');
         }
+
+        // Tutorial: auto-show tooltip on the first ever miss
+        try {
+            const tutorialShown = localStorage.getItem('fermiTooltipTutorialShown');
+            if (!tutorialShown) {
+                const guessRows = guessesContainer.querySelectorAll('.guess-row');
+                const currentRow = guessRows[currentGuess - 1];
+                const feedbackButton = currentRow.querySelector('.feedback-button');
+                feedbackButton.classList.add('show-tooltip');
+                setTimeout(() => feedbackButton.classList.remove('show-tooltip'), 2200);
+                localStorage.setItem('fermiTooltipTutorialShown', '1');
+            }
+        } catch (e) {
+            // ignore storage errors
+        }
         
         if (currentGuess >= maxGuesses) {
             gameOver = true;
@@ -534,6 +549,9 @@ function showFeedback(guessIndex, type, symbol) {
         } else {
             feedbackButton.removeAttribute('data-tooltip');
         }
+        feedbackButton.title = '';
+    } else if (type === 'correct') {
+        feedbackButton.setAttribute('data-tooltip', "You're within ±20% of the correct answer!");
         feedbackButton.title = '';
     } else {
         feedbackButton.removeAttribute('data-tooltip');
@@ -991,6 +1009,9 @@ function restoreGuessesDisplay(savedGuesses) {
                         } else {
                             feedbackButton.removeAttribute('data-tooltip');
                         }
+                        feedbackButton.title = '';
+                    } else if (guess.feedbackType === 'correct') {
+                        feedbackButton.setAttribute('data-tooltip', "You're within ±20% of the correct answer!");
                         feedbackButton.title = '';
                     } else {
                         feedbackButton.removeAttribute('data-tooltip');
