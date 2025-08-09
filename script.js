@@ -520,11 +520,14 @@ function showFeedback(guessIndex, type, symbol) {
 
     // Set tooltip titles for low/high feedback
     if (type === 'low') {
-        feedbackButton.title = 'Too low! You need to go higher ↑';
+        feedbackButton.setAttribute('data-tooltip', 'Too low! You need to go higher ↑');
+        feedbackButton.title = '';
     } else if (type === 'high') {
-        feedbackButton.title = 'Too high! You need to go lower ↓';
+        feedbackButton.setAttribute('data-tooltip', 'Too high! You need to go lower ↓');
+        feedbackButton.title = '';
     } else {
-        feedbackButton.removeAttribute('title');
+        feedbackButton.removeAttribute('data-tooltip');
+        feedbackButton.title = '';
     }
     
     if (type !== 'correct') {
@@ -965,11 +968,14 @@ function restoreGuessesDisplay(savedGuesses) {
 
                     // Set tooltip titles for low/high feedback
                     if (guess.feedbackType === 'low') {
-                        feedbackButton.title = 'Too low! You need to go higher ↑';
+                        feedbackButton.setAttribute('data-tooltip', 'Too low! You need to go higher ↑');
+                        feedbackButton.title = '';
                     } else if (guess.feedbackType === 'high') {
-                        feedbackButton.title = 'Too high! You need to go lower ↓';
+                        feedbackButton.setAttribute('data-tooltip', 'Too high! You need to go lower ↓');
+                        feedbackButton.title = '';
                     } else {
-                        feedbackButton.removeAttribute('title');
+                        feedbackButton.removeAttribute('data-tooltip');
+                        feedbackButton.title = '';
                     }
             }
         }
