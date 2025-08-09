@@ -517,6 +517,15 @@ function showFeedback(guessIndex, type, symbol) {
     }
     
     feedbackButton.className = `feedback-button ${type}`;
+
+    // Set tooltip titles for low/high feedback
+    if (type === 'low') {
+        feedbackButton.title = 'Too low! You need to go higher ↑';
+    } else if (type === 'high') {
+        feedbackButton.title = 'Too high! You need to go lower ↓';
+    } else {
+        feedbackButton.removeAttribute('title');
+    }
     
     if (type !== 'correct') {
         currentRow.classList.add('shake');
@@ -923,7 +932,7 @@ function restoreGuessesDisplay(savedGuesses) {
             guessField.classList.remove('empty');
             
             // Restore feedback
-            if (guess.feedbackType !== 'none') {
+                if (guess.feedbackType !== 'none') {
                 if (guess.feedbackType === 'correct') {
                     // Use the same checkmark SVG from showFeedback function
                     feedbackButton.innerHTML = `
@@ -952,7 +961,16 @@ function restoreGuessesDisplay(savedGuesses) {
                     feedbackButton.textContent = guess.feedbackSymbol;
                 }
                 
-                feedbackButton.className = `feedback-button ${guess.feedbackType}`;
+                    feedbackButton.className = `feedback-button ${guess.feedbackType}`;
+
+                    // Set tooltip titles for low/high feedback
+                    if (guess.feedbackType === 'low') {
+                        feedbackButton.title = 'Too low! You need to go higher ↑';
+                    } else if (guess.feedbackType === 'high') {
+                        feedbackButton.title = 'Too high! You need to go lower ↓';
+                    } else {
+                        feedbackButton.removeAttribute('title');
+                    }
             }
         }
     });
