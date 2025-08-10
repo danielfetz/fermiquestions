@@ -642,17 +642,28 @@ button#stats-btn {
 @media (max-width: 768px) {
     body {
         background: linear-gradient(aliceblue 0 170px, #fff 170px 100%);
+        padding-bottom: calc(120px + env(safe-area-inset-bottom));
     }
     .game-container {
         padding: 0;
         border-radius: 18px;
+        padding-bottom: 120px; /* space for fixed input/new game area */
     }
     .question-box {
         border-radius: 16px;
         padding: 20px;
     }
+    .input-section,
+    .new-game-section {
+        position: fixed;
+        left: 50%;
+        transform: translateX(-50%);
+        width: min(500px, calc(100% - 32px));
+        bottom: calc(16px + env(safe-area-inset-bottom));
+        z-index: 900;
+    }
     .feedback-button::after {
-        width: 120px;
+        width: 90px;
         white-space: normal;
     }
     .guess-field {
