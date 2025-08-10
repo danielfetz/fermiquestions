@@ -191,7 +191,7 @@ const fermiQuestions = [
         image: "data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' width='100' height='100' viewBox='0 0 100 100'%3e%3crect width='100' height='100' fill='%23fffbeb'/%3e%3ctext x='50' y='62' font-size='40' text-anchor='middle' fill='%23d97706'%3e👶%3c/text%3e%3c/svg%3e"
     },
     {
-        question: "How many air traffic controllers work for the FAA in the US?",
+        question: "How many air traffic controllers are there in the US?",
         answer: 14264,
         category: "",
         explanation: "",
