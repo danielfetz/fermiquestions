@@ -724,6 +724,29 @@ function updateStatsDisplay() {
     document.getElementById('current-streak').textContent = stats.currentStreak;
     document.getElementById('max-streak').textContent = stats.maxStreak;
     
+    // Compute Guess Average (count losses as 7 guesses)
+    const guessAverageElement = document.getElementById('guess-average');
+    if (guessAverageElement) {
+        try {
+            const completed = completedQuestions || {};
+            const games = Object.values(completed);
+            const totalGames = games.length;
+            if (totalGames === 0) {
+                guessAverageElement.textContent = '0';
+            } else {
+                const totalRatedGuesses = games.reduce((sum, game) => {
+                    const won = !!game.won;
+                    const guessesUsed = Number(game.guesses) || 0;
+                    return sum + (won ? guessesUsed : 7);
+                }, 0);
+                const average = totalRatedGuesses / totalGames;
+                guessAverageElement.textContent = Number.isInteger(average) ? `${average}` : average.toFixed(1);
+            }
+        } catch (e) {
+            guessAverageElement.textContent = '0';
+        }
+    }
+    
     // Update guess distribution
     const guessDist = stats.guessDistribution || {};
     const maxWins = Math.max(...Object.values(guessDist), 0);
