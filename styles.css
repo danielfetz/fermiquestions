@@ -650,7 +650,6 @@ button#stats-btn {
     .question-box {
         border-radius: 16px;
         padding: 20px;
-        border-bottom: 4px solid #e9ecef;
     }
     .feedback-button::after {
         width: 120px;
