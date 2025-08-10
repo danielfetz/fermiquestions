@@ -9,7 +9,7 @@ body {
     background-color: #f0f0f0;
     color: #333;
     line-height: 1.4;
-    padding: 0 14px;
+    padding: 0 16px;
 }
 
 .game-container {
@@ -25,7 +25,7 @@ body {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: 16px 2px;
+    padding: 16px 0;
 }
 
 .header-left {
@@ -642,7 +642,6 @@ button#stats-btn {
     .game-container {
         padding: 16px;
         border-radius: 18px;
-        border: 2px solid #e7e7e7;
     }
     .question-box {
         border-radius: 16px;
