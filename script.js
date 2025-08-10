@@ -1443,8 +1443,51 @@ function shareGame() {
 
 // Share stats
 function shareStats() {
-    const shareText = generateStatsShareText();
-    handleShare(shareText);
+    const captureRoot = document.getElementById('stats-capture');
+    if (!window.html2canvas || !captureRoot) {
+        showShareFeedback('Sharing not supported on this device.');
+        return;
+    }
+
+    const scale = Math.min(2, window.devicePixelRatio || 1.5);
+    window.html2canvas(captureRoot, {
+        backgroundColor: getComputedStyle(captureRoot).backgroundColor || '#f0f0f0',
+        scale: scale,
+        useCORS: true,
+        allowTaint: true,
+        logging: false
+    }).then(async (canvas) => {
+        const dataUrl = canvas.toDataURL('image/png');
+
+        // Try Web Share with files
+        try {
+            if (navigator.canShare && navigator.share && window.fetch) {
+                const res = await fetch(dataUrl);
+                const blob = await res.blob();
+                const file = new File([blob], 'fermi-stats.png', { type: 'image/png' });
+                if (navigator.canShare({ files: [file] })) {
+                    await navigator.share({ files: [file], title: 'My Fermi Questions Stats' });
+                    return;
+                }
+            }
+        } catch (_) {}
+
+        // Otherwise, copy image to clipboard if supported
+        try {
+            if (navigator.clipboard && window.ClipboardItem) {
+                const res = await fetch(dataUrl);
+                const blob = await res.blob();
+                const clipboardItem = new ClipboardItem({ 'image/png': blob });
+                await navigator.clipboard.write([clipboardItem]);
+                showShareFeedback('Image copied to clipboard!');
+                return;
+            }
+        } catch (_) {}
+
+        showShareFeedback('Sharing not supported on this device.');
+    }).catch(() => {
+        showShareFeedback('Sharing not supported on this device.');
+    });
 }
 
 // URL Routing Functions
