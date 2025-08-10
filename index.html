@@ -4,10 +4,11 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
     <title>Fermi Questions</title>
-    <meta name="description" content="A Wordle-style game for Fermi questions.">
+    <meta name="description" content="Challenge your estimation skills with daily Fermi questions! Guess answers to fascinating questions with 6 or less tries.">
     <link rel="stylesheet" href="styles.css">
     <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
     <script defer data-domain="fermiquestions.org" src="https://plausible.io/js/script.hash.js"></script>
+    <script defer src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
 </head>
 <body>
         <header class="game-header">
@@ -128,7 +129,8 @@
         <div class="modal" id="stats-modal">
             <div class="modal-content">
                 <h2>Statistics</h2>
-                <div class="stats-grid">
+                <div id="stats-capture">
+                    <div class="stats-grid">
                     <div class="stat-item">
                         <span class="stat-number" id="games-played">0</span>
                         <span class="stat-label">Games Played</span>
@@ -153,9 +155,9 @@
                         <span class="stat-number" id="guess-average">0</span>
                         <span class="stat-label">Guess Average</span>
                     </div>
-                </div>
-                
-                <div class="guess-distribution">
+                    </div>
+                    
+                    <div class="guess-distribution">
                     <h3>Guess Distribution</h3>
                     <div class="distribution-bars">
                         <div class="dist-row">
@@ -200,6 +202,7 @@
                             </div>
                             <span class="dist-count" id="count-6">0</span>
                         </div>
+                    </div>
                     </div>
                 </div>
 
