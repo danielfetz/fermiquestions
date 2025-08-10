@@ -507,6 +507,12 @@ button#stats-btn {
     box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
 }
 
+/* Ensure captured stats area has a solid background for screenshots */
+#stats-capture {
+    background: #f0f0f0;
+    padding: 0 0 10px 0;
+}
+
 .modal-content h2 {
     margin-bottom: 20px;
     color: #333;
