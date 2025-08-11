@@ -246,6 +246,7 @@ button#stats-btn {
     padding: 18px;
     width: 100%;
     border-radius: 14px;
+    color: #333;
 }
 
 .strategy-link .arrow {
