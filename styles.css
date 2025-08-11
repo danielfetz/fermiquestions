@@ -237,6 +237,18 @@ button#stats-btn {
     color: #333;
 }
 
+.strategy-link {
+    display: none;
+    background: none;
+    border: none;
+    color: #2e86c1;
+    text-decoration: underline;
+    font-family: 'Press Start 2P', monospace;
+    font-size: 0.8rem;
+    margin-left: 10px;
+    cursor: pointer;
+}
+
 /* Hint Container */
 .hint-container {
     text-align: center;
@@ -676,6 +688,13 @@ button#stats-btn {
     }
     .guesses-container {
         margin-bottom: 0px;
+    }
+    /* On mobile, hide the streak label and show strategy link */
+    #current-streak-display {
+        display: none;
+    }
+    .strategy-link {
+        display: inline;
     }
     
 }
