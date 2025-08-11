@@ -699,6 +699,12 @@ button#stats-btn {
     .guess-counter {
         margin-bottom: 18px;
     }
+    .hint-container,
+    .game-result {
+        border: 2px solid #e8ecee;
+        border-radius: 16px;
+        padding: 18px;
+    }
     /* On mobile, hide the streak label and show strategy link */
     #current-streak-display {
         display: none;
@@ -706,7 +712,6 @@ button#stats-btn {
     .strategy-link {
         display: inline;
     }
-    
 }
 
 /* Animation for new guesses
