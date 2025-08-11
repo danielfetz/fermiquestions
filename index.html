@@ -63,6 +63,7 @@
         <!-- Guess Counter -->
         <div class="guess-counter" id="guess-counter">
             <span id="current-streak-display">Current streak: 0</span>
+            <button id="strategy-tips-btn" class="strategy-link" aria-controls="strategy-modal" aria-haspopup="dialog">Show strategy tips</button>
         </div>
 
         <!-- Hint (hidden by default) -->
@@ -122,6 +123,19 @@
                 <p>The feedback color shows how close you are: orange means your guess is within ±50% of the correct answer, red means it is further away.</p>
                 <p>You win if your guess is within ±20% of the correct answer.</p>
                 <button id="close-help-btn" class="close-btn">Close</button>
+            </div>
+        </div>
+
+        <!-- Strategy Tips Modal -->
+        <div class="modal" id="strategy-modal">
+            <div class="modal-content">
+                <h2>Strategy tips</h2>
+                <p>Use a Fermi estimate: break the problem into simple factors, choose round numbers, then multiply. Aim for the right order of magnitude.</p>
+                <p><strong>Steps</strong></p>
+                <p>1) Identify the few key factors. 2) Use easy round values. 3) Expect 2–5× error per factor. 4) Multiply to get a rough answer. 5) Sanity‑check with an alternate approach.</p>
+                <p><strong>Example</strong>: How many pizzas are eaten in NYC per day?</p>
+                <p>Population ≈ 8M. About half eat pizza weekly → 4M people. Typical serving ≈ 2 slices per person per week → 8M slices/week. Per day ≈ 8M/7 ≈ 1.1M slices/day. ≈ 8 slices/pizza → ~140k pizzas/day.</p>
+                <button id="close-strategy-btn" class="close-btn">Close</button>
             </div>
         </div>
 
