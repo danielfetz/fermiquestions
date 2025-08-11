@@ -243,9 +243,9 @@ button#stats-btn {
     border: 2px solid #e9ecef;
     font-family: 'Press Start 2P', monospace;
     font-size: 0.8rem;
-    padding: 19px;
+    padding: 18px;
     width: 100%;
-    border-radius: 16px;
+    border-radius: 14px;
     color: #333;
 }
 
@@ -336,14 +336,14 @@ button#stats-btn {
     flex: 1;
     background-color: #f6f6f6;
     color: #333;
-    padding: 17.5px 15px;
+    padding: 16.5px 15px;
     border-radius: 13px;
     font-size: 0.835rem;
     text-align: center;
     border: none;
     font-family: 'Press Start 2P', monospace;
     line-height: normal;
-    max-height: 47.91px;
+    max-height: 46.91px;
 }
 
 .guess-field.empty {
