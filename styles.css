@@ -460,7 +460,7 @@ button#stats-btn {
 }
 
 .submit-btn {
-    width: 100px;
+    width: 110px;
     height: 52.16px;
     background-color: #3498db;
     color: white;
@@ -472,6 +472,7 @@ button#stats-btn {
     cursor: pointer;
     transition: background-color 0.2s;
     white-space: nowrap;
+    text-transform: capitalize;
 }
 
 .submit-btn:hover {
@@ -643,7 +644,7 @@ button#stats-btn {
         background: #fff;
     }
     body {
-        background: linear-gradient(aliceblue 0 162px, #fff 162px 100%);
+        background: linear-gradient(#f6f8fb 162px, #fff 162px 100%);
     }
     .game-container {
         padding: 0;
