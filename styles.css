@@ -643,12 +643,12 @@ button#stats-btn {
         background: #fff;
     }
     body {
-        background: linear-gradient(#f2f4f7 162px, #fff 162px 100%);
+        background: linear-gradient(#f4f7fd 162px, #fff 162px 100%);
     }
     .game-container {
         padding: 0;
         border-radius: 18px;
-        padding-bottom: 83px; /* space for fixed input/new game area */
+        padding-bottom: 79px; /* space for fixed input/new game area */
     }
     .question-box {
         border-radius: 16px;
@@ -661,7 +661,7 @@ button#stats-btn {
         bottom: calc(0px + env(safe-area-inset-bottom));
         z-index: 900;
         padding-top: 16px;
-        padding-bottom: 20px;
+        padding-bottom: 16px;
         margin-top: 0;
         background: white;
     }
