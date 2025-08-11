@@ -641,6 +641,7 @@ button#stats-btn {
 @media (max-width: 768px) {
     html {
         background: #fff;
+        min-height: 100%;
     }
     body {
         background: linear-gradient(aliceblue 0 160px, #fff 160px 100%);
