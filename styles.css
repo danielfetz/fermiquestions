@@ -114,7 +114,7 @@ button#stats-btn {
 
 .question-text {
     font-size: 0.9375rem;
-    margin-bottom: 13px;
+    margin-bottom: 15px;
     line-height: 1.5;
     color: #333;
 }
@@ -262,7 +262,7 @@ button#stats-btn {
 
 .new-game-btn-inline {
     width: 100%;
-    height: 50.16px;
+    height: 52.16px;
     background-color: #3498db;
     color: white;
     border: none;
@@ -296,7 +296,7 @@ button#stats-btn {
 }
 
 .new-game-section .share-btn {
-    height: 50.16px;
+    height: 52.16px;
     font-size: 0.8rem;
     margin-top: 0;
     border-radius: 14px;
@@ -434,7 +434,7 @@ button#stats-btn {
 }
 
 .input-container {
-    height: 50.16px;
+    height: 52.16px;
     display: flex;
     align-items: center;
     gap: 8px;
@@ -461,7 +461,7 @@ button#stats-btn {
 
 .submit-btn {
     width: 100px;
-    height: 50.16px;
+    height: 52.16px;
     background-color: #3498db;
     color: white;
     border: none;
@@ -643,16 +643,16 @@ button#stats-btn {
         background: #fff;
     }
     body {
-        background: linear-gradient(aliceblue 0 160px, #fff 160px 100%);
+        background: linear-gradient(aliceblue 0 162px, #fff 162px 100%);
     }
     .game-container {
         padding: 0;
         border-radius: 18px;
-        padding-bottom: 77px; /* space for fixed input/new game area */
+        padding-bottom: 79px; /* space for fixed input/new game area */
     }
     .question-box {
         border-radius: 16px;
-        padding: 20px;
+        padding: 22px;
     }
     .input-section,
     .new-game-section {
@@ -667,13 +667,6 @@ button#stats-btn {
     .feedback-button::after {
         width: 90px;
         white-space: normal;
-    }
-    .guess-field {
-        padding: 15.96px 15px;
-        max-height: 44.91px;        
-    }
-    .feedback-button {
-        height: 44.91px;
     }
     .guesses-container {
         margin-bottom: 0px;
