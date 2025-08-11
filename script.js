@@ -229,6 +229,9 @@ const statsBtn = document.getElementById('stats-btn');
 const helpModal = document.getElementById('help-modal');
 const statsModal = document.getElementById('stats-modal');
 const questionsModal = document.getElementById('questions-modal');
+const strategyModal = document.getElementById('strategy-modal');
+const strategyTipsBtn = document.getElementById('strategy-tips-btn');
+const closeStrategyBtn = document.getElementById('close-strategy-btn');
 const questionsList = document.getElementById('questions-list');
 const closeHelpBtn = document.getElementById('close-help-btn');
 const closeStatsBtn = document.getElementById('close-stats-btn');
@@ -717,6 +720,11 @@ function startNewGameFromModal() {
 // Show help modal
 function showHelp() {
     helpModal.style.display = 'block';
+}
+
+// Show strategy modal
+function showStrategy() {
+    if (strategyModal) strategyModal.style.display = 'block';
 }
 
 // Show stats modal
@@ -1577,6 +1585,11 @@ function setupEventListeners() {
     // Stats button
     statsBtn.addEventListener('click', showStats);
     
+    // Strategy tips (mobile link in guess counter)
+    if (strategyTipsBtn) {
+        strategyTipsBtn.addEventListener('click', showStrategy);
+    }
+    
     // Questions history button (question category)
     questionCategory.addEventListener('click', showQuestionsHistory);
     
@@ -1584,13 +1597,16 @@ function setupEventListeners() {
     closeHelpBtn.addEventListener('click', () => closeModal(helpModal));
     closeStatsBtn.addEventListener('click', () => closeModal(statsModal));
     closeQuestionsBtn.addEventListener('click', () => closeModal(questionsModal));
+    if (closeStrategyBtn) {
+        closeStrategyBtn.addEventListener('click', () => closeModal(strategyModal));
+    }
 
     // Share buttons
     shareBtn.addEventListener('click', shareGame);
     shareStatsBtn.addEventListener('click', shareStats);
         
     // Close modals when clicking outside (desktop + mobile)
-    [helpModal, statsModal, questionsModal].forEach(modal => {
+    [helpModal, statsModal, questionsModal, strategyModal].forEach(modal => {
         ['click', 'touchend'].forEach(event => {
             modal.addEventListener(event, e => e.target === modal && closeModal(modal));
         });
