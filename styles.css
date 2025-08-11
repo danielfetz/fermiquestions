@@ -642,12 +642,11 @@ button#stats-btn {
 @media (max-width: 768px) {
     body {
         background: linear-gradient(aliceblue 0 160px, #fff 160px 100%);
-        padding-bottom: calc(82px + env(safe-area-inset-bottom));
     }
     .game-container {
         padding: 0;
         border-radius: 18px;
-        padding-bottom: 82px; /* space for fixed input/new game area */
+        padding-bottom: 77px; /* space for fixed input/new game area */
     }
     .question-box {
         border-radius: 16px;
@@ -671,6 +670,10 @@ button#stats-btn {
     .feedback-button {
         height: 44.91px;
     }
+    .guesses-container {
+        margin-bottom: 0px;
+    }
+    
 }
 
 /* Animation for new guesses
