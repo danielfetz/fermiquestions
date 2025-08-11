@@ -643,7 +643,7 @@ button#stats-btn {
         background: #fff;
     }
     body {
-        background: linear-gradient(#f4f7fd 162px, #fff 162px 100%);
+        background: linear-gradient(#f0f5ff 162px, #fff 162px 100%);
     }
     .game-container {
         padding: 0;
