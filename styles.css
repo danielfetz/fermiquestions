@@ -472,7 +472,6 @@ button#stats-btn {
     cursor: pointer;
     transition: background-color 0.2s;
     white-space: nowrap;
-    text-transform: capitalize;
 }
 
 .submit-btn:hover {
