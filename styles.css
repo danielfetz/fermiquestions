@@ -239,11 +239,11 @@ button#stats-btn {
 
 .strategy-link {
     display: none;
-    background: none;
+    background: white;
     border: 2px solid #e9ecef;
     font-family: 'Press Start 2P', monospace;
     font-size: 0.8rem;
-    padding: 18px;
+    padding: 19px;
     width: 100%;
     border-radius: 16px;
     color: #333;
@@ -661,7 +661,7 @@ button#stats-btn {
         background: #fff;
     }
     body {
-        background: linear-gradient(to bottom, aliceblue 0 140px, #fff 210px);
+        background: linear-gradient(to bottom, aliceblue 0 220px, #fff 290px);
         padding: 0px 18px;
     }
     .game-header {
@@ -671,6 +671,7 @@ button#stats-btn {
         padding: 0;
         border-radius: 18px;
         padding-bottom: 83px; /* space for fixed input/new game area */
+        background: transparent;
     }
     .question-container {
         margin-bottom: 12px;
@@ -678,6 +679,7 @@ button#stats-btn {
     .question-box {
         border-radius: 16px;
         padding: 22px;
+        background: white;
     }
     .input-section,
     .new-game-section {
@@ -705,6 +707,7 @@ button#stats-btn {
         border: 2px solid #e8ecee;
         border-radius: 16px;
         padding: 18px;
+        background: white;
     }
     /* On mobile, hide the streak label and show strategy link */
     #current-streak-display {
