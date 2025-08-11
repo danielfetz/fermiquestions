@@ -249,6 +249,11 @@ button#stats-btn {
     cursor: pointer;
 }
 
+.strategy-link .arrow {
+    display: inline-block;
+    transform: rotate(90deg);
+}
+
 /* Hint Container */
 .hint-container {
     text-align: center;
@@ -656,7 +661,7 @@ button#stats-btn {
         background: #fff;
     }
     body {
-        background: linear-gradient(#f0f5ff 166px, #fff 166px 100%);
+        background: linear-gradient(to bottom, aliceblue 0 140px, #fff 210px);
         padding: 0px 18px;
     }
     .game-header {
