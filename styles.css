@@ -321,7 +321,7 @@ button#stats-btn {
     color: #333;
     padding: 17.5px 15px;
     border-radius: 13px;
-    font-size: 0.8rem;
+    font-size: 0.835rem;
     text-align: center;
     border: none;
     font-family: 'Press Start 2P', monospace;
@@ -331,6 +331,7 @@ button#stats-btn {
 
 .guess-field.empty {
     color: #b3b3b3;
+    font-size: 0.8rem;
 }
 
 .feedback-button {
@@ -643,7 +644,10 @@ button#stats-btn {
         background: #fff;
     }
     body {
-        background: linear-gradient(#f0f5ff 162px, #fff 162px 100%);
+        background: linear-gradient(#f0f5ff 166px, #fff 166px 100%);
+    }
+    .game-header {
+        padding: 18px 0;
     }
     .game-container {
         padding: 0;
