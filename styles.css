@@ -279,7 +279,7 @@ button#stats-btn {
 
 .new-game-btn-inline {
     width: 100%;
-    height: 52.16px;
+    height: 50.16px;
     background-color: #3498db;
     color: white;
     border: none;
@@ -313,7 +313,7 @@ button#stats-btn {
 }
 
 .new-game-section .share-btn {
-    height: 52.16px;
+    height: 50.16px;
     font-size: 0.8rem;
     margin-top: 0;
     border-radius: 14px;
@@ -452,7 +452,7 @@ button#stats-btn {
 }
 
 .input-container {
-    height: 52.16px;
+    height: 50.16px;
     display: flex;
     align-items: center;
     gap: 8px;
@@ -479,7 +479,7 @@ button#stats-btn {
 
 .submit-btn {
     width: 110px;
-    height: 52.16px;
+    height: 50.16px;
     background-color: #3498db;
     color: white;
     border: none;
@@ -670,7 +670,7 @@ button#stats-btn {
     .game-container {
         padding: 0;
         border-radius: 18px;
-        padding-bottom: 83px; /* space for fixed input/new game area */
+        padding-bottom: 81px; /* space for fixed input/new game area */
         background: transparent;
     }
     .question-container {
