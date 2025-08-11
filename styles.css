@@ -10,7 +10,6 @@ body {
     color: #333;
     line-height: 1.4;
     padding: 0 16px;
-    height: 100vh;
 }
 
 .game-container {
@@ -640,6 +639,9 @@ button#stats-btn {
 
 /* Responsive Design */
 @media (max-width: 768px) {
+    html {
+        background: #fff;
+    }
     body {
         background: linear-gradient(aliceblue 0 160px, #fff 160px 100%);
     }
