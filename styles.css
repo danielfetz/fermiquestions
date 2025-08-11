@@ -644,7 +644,6 @@ button#stats-btn {
     }
     body {
         background: linear-gradient(aliceblue 0 160px, #fff 160px 100%);
-        min-height: -webkit-fill-available;
     }
     .game-container {
         padding: 0;
