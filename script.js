@@ -33,7 +33,7 @@ const fermiQuestions = [
         answer: 304000000,
         category: "",
         explanation: "",
-        hint: "Hint: About 20% of Germany's population was born in another country.",
+        hint: "About 20% of Germany's population was born in another country.",
         date: "2025-07-24",
         image: "data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' width='100' height='100' viewBox='0 0 100 100'%3e%3crect width='100' height='100' fill='%23f0f8ff'/%3e%3ctext x='50' y='62' font-size='40' text-anchor='middle' fill='%234169e1'%3e🌍%3c/text%3e%3c/svg%3e"
     },
@@ -42,7 +42,7 @@ const fermiQuestions = [
         answer: 15800000,
         category: "Religion",
         explanation: "",
-        hint: "Hint: Appx. 45.5% of the world's Jewish population lives in Israel.",
+        hint: "Appx. 45.5% of the world's Jewish population lives in Israel.",
         date: "2025-07-25",
         image: "data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' width='100' height='100' viewBox='0 0 100 100'%3e%3crect width='100' height='100' fill='%23fff8dc'/%3e%3ctext x='50' y='62' font-size='40' text-anchor='middle' fill='%236b46c1'%3e✡️%3c/text%3e%3c/svg%3e"
     },
@@ -51,7 +51,7 @@ const fermiQuestions = [
         answer: 43477,
         category: "Business",
         explanation: "McDonald's operates approximately 43,500 restaurants globally.",
-        hint: "Hint: There are 13,557 McDonald's restaurants in the US.",
+        hint: "There are 13,557 McDonald's restaurants in the US.",
         date: "2025-07-26",
         image: "data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' width='100' height='100' viewBox='0 0 100 100'%3e%3crect width='100' height='100' fill='%23fef3c7'/%3e%3ctext x='50' y='62' font-size='40' text-anchor='middle' fill='%23dc2626'%3e🍟%3c/text%3e%3c/svg%3e"
     },
@@ -60,7 +60,7 @@ const fermiQuestions = [
         answer: 17500000,
         category: "",
         explanation: "",
-        hint: "Hint: 62.9M new non-electric cars were sold worldwide in 2023.",
+        hint: "62.9M new non-electric cars were sold worldwide in 2023.",
         date: "2025-07-27",
         image: "data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' width='100' height='100' viewBox='0 0 100 100'%3e%3crect width='100' height='100' fill='%23dcfce7'/%3e%3ctext x='50' y='62' font-size='40' text-anchor='middle' fill='%2316a34a'%3e🔋%3c/text%3e%3c/svg%3e"
     },
@@ -69,7 +69,7 @@ const fermiQuestions = [
         answer: 1240000000,
         category: "",
         explanation: "",
-        hint: "Hint: Xiaomi sold 169 million smartphones in 2024.",
+        hint: "Xiaomi sold 169 million smartphones in 2024.",
         date: "2025-07-28",
         image: "data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' width='100' height='100' viewBox='0 0 100 100'%3e%3crect width='100' height='100' fill='%23f3f4f6'/%3e%3ctext x='50' y='62' font-size='40' text-anchor='middle' fill='%23374151'%3e📱%3c/text%3e%3c/svg%3e"
     },
@@ -78,7 +78,7 @@ const fermiQuestions = [
         answer: 1770000,
         category: "",
         explanation: "",
-        hint: "Hint: In 2018, Tesla produced 255K cars.",
+        hint: "In 2018, Tesla produced 255K cars.",
         date: "2025-07-29",
         image: "data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' width='100' height='100' viewBox='0 0 100 100'%3e%3crect width='100' height='100' fill='%23fef2f2'/%3e%3ctext x='50' y='62' font-size='40' text-anchor='middle' fill='%23dc2626'%3e🚗%3c/text%3e%3c/svg%3e"
     },
@@ -87,7 +87,7 @@ const fermiQuestions = [
         answer: 29,
         category: "",
         explanation: "",
-        hint: "Hint: The US covers 1.87% of the Earth's surface.",
+        hint: "The US covers 1.87% of the Earth's surface.",
         date: "2025-07-30",
         image: "data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' width='100' height='100' viewBox='0 0 100 100'%3e%3crect width='100' height='100' fill='%23dbeafe'/%3e%3ctext x='50' y='62' font-size='40' text-anchor='middle' fill='%232563eb'%3e🌍%3c/text%3e%3c/svg%3e"
     },
@@ -96,7 +96,7 @@ const fermiQuestions = [
         answer: 76250000000,
         category: "",
         explanation: "",
-        hint: "Hint: The average meat yield per chicken is 1.66 kg.",
+        hint: "The average meat yield per chicken is 1.66 kg.",
         date: "2025-07-31",
         image: "data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' width='100' height='100' viewBox='0 0 100 100'%3e%3crect width='100' height='100' fill='%23fffbeb'/%3e%3ctext x='50' y='62' font-size='40' text-anchor='middle' fill='%23d97706'%3e🐔%3c/text%3e%3c/svg%3e"
     },
@@ -105,7 +105,7 @@ const fermiQuestions = [
         answer: 117000000000,
         category: "",
         explanation: "",
-        hint: "Hint: About half the people who ever lived, lived in the past 2000 years.",
+        hint: "About half the people who ever lived, lived in the past 2000 years.",
         date: "2025-08-01",
         image: "data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' width='100' height='100' viewBox='0 0 100 100'%3e%3crect width='100' height='100' fill='%23fef7cd'/%3e%3ctext x='50' y='62' font-size='40' text-anchor='middle' fill='%23a16207'%3e👥%3c/text%3e%3c/svg%3e"
     },
@@ -114,7 +114,7 @@ const fermiQuestions = [
         answer: 15900000,
         category: "",
         explanation: "",
-        hint: "Hint: Around 240 million people hold a valid driver's licence in the US.",
+        hint: "Around 240 million people hold a valid driver's licence in the US.",
         date: "2025-08-02",
         image: "data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' width='100' height='100' viewBox='0 0 100 100'%3e%3crect width='100' height='100' fill='%23eff6ff'/%3e%3ctext x='50' y='62' font-size='40' text-anchor='middle' fill='%232563eb'%3e🚙%3c/text%3e%3c/svg%3e"
     },
@@ -123,7 +123,7 @@ const fermiQuestions = [
         answer: 130415,
         category: "",
         explanation: "",
-        hint: "Hint: There are about 15,000 veterinarians in Australia.",
+        hint: "There are about 15,000 veterinarians in Australia.",
         date: "2025-08-03",
         image: "data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' width='100' height='100' viewBox='0 0 100 100'%3e%3crect width='100' height='100' fill='%23f0fdf4'/%3e%3ctext x='50' y='62' font-size='40' text-anchor='middle' fill='%2316a34a'%3e🐈%3c/text%3e%3c/svg%3e"
     },
@@ -132,7 +132,7 @@ const fermiQuestions = [
         answer: 276000000,
         category: "",
         explanation: "",
-        hint: "Hint: Spotify's revenue in the second quarter of 2025 was 4.2 billion euros.",
+        hint: "Spotify's revenue in the second quarter of 2025 was 4.2 billion euros.",
         date: "2025-08-04",
         image: "data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' width='100' height='100' viewBox='0 0 100 100'%3e%3crect width='100' height='100' fill='%23f0fdf4'/%3e%3ctext x='50' y='62' font-size='40' text-anchor='middle' fill='%2316a34a'%3e🎵%3c/text%3e%3c/svg%3e"
     },
@@ -141,7 +141,7 @@ const fermiQuestions = [
         answer: 3000000000,
         category: "",
         explanation: "",
-        hint: "Hint: In 2024, Apple sold approximately 232.1 million iPhones.",
+        hint: "In 2024, Apple sold approximately 232.1 million iPhones.",
         date: "2025-08-05",
         image: "data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' width='100' height='100' viewBox='0 0 100 100'%3e%3crect width='100' height='100' fill='%23f8fafc'/%3e%3ctext x='50' y='62' font-size='40' text-anchor='middle' fill='%23374151'%3e📱%3c/text%3e%3c/svg%3e"
     },
@@ -150,7 +150,7 @@ const fermiQuestions = [
         answer: 99562,
         category: "",
         explanation: "",
-        hint: "Hint: The US had 1,01 million active physicians in 2023.",
+        hint: "The US had 1,01 million active physicians in 2023.",
         date: "2025-08-06",
         image: "data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' width='100' height='100' viewBox='0 0 100 100'%3e%3crect width='100' height='100' fill='%23fef2f2'/%3e%3ctext x='50' y='62' font-size='40' text-anchor='middle' fill='%23dc2626'%3e🏥%3c/text%3e%3c/svg%3e"
     },
@@ -159,7 +159,7 @@ const fermiQuestions = [
         answer: 1510000000,
         category: "",
         explanation: "",
-        hint: "Hint: The average meat yield per pig is 82 kg (181 lbs).",
+        hint: "The average meat yield per pig is 82 kg (181 lbs).",
         date: "2025-08-07",
         image: "data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' width='100' height='100' viewBox='0 0 100 100'%3e%3crect width='100' height='100' fill='%23fdf2f8'/%3e%3ctext x='50' y='62' font-size='40' text-anchor='middle' fill='%23ec4899'%3e🐷%3c/text%3e%3c/svg%3e"
     },
@@ -168,7 +168,7 @@ const fermiQuestions = [
         answer: 52300000,
         category: "",
         explanation: "",
-        hint: "Hint: 1.35M passengers were flown from SFO to Taiwan in 2024.",
+        hint: "1.35M passengers were flown from SFO to Taiwan in 2024.",
         date: "2025-08-08",
         image: "data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' width='100' height='100' viewBox='0 0 100 100'%3e%3crect width='100' height='100' fill='%23f0f8ff'/%3e%3ctext x='50' y='62' font-size='40' text-anchor='middle' fill='%234169e1'%3e✈️%3c/text%3e%3c/svg%3e"
     },
@@ -177,7 +177,7 @@ const fermiQuestions = [
         answer: 308000000,
         category: "",
         explanation: "",
-        hint: "Hint: In France, retailers sold 440 million print books in 2023.",
+        hint: "In France, retailers sold 440 million print books in 2023.",
         date: "2025-08-09",
         image: "data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' width='100' height='100' viewBox='0 0 100 100'%3e%3crect width='100' height='100' fill='%23f0fdf4'/%3e%3ctext x='50' y='62' font-size='40' text-anchor='middle' fill='%2316a34a'%3e📚%3c/text%3e%3c/svg%3e"
     },
@@ -186,7 +186,7 @@ const fermiQuestions = [
         answer: 132000000,
         category: "",
         explanation: "",
-        hint: "Hint: For every person that died in 2024, more than two babies were born.",
+        hint: "For every person that died in 2024, more than two babies were born.",
         date: "2025-08-10",
         image: "data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' width='100' height='100' viewBox='0 0 100 100'%3e%3crect width='100' height='100' fill='%23fffbeb'/%3e%3ctext x='50' y='62' font-size='40' text-anchor='middle' fill='%23d97706'%3e👶%3c/text%3e%3c/svg%3e"
     },
@@ -195,7 +195,7 @@ const fermiQuestions = [
         answer: 14264,
         category: "",
         explanation: "",
-        hint: "Hint: There are 527 airport traffic control towers in the US.",
+        hint: "There are 527 airport traffic control towers in the US.",
         date: "2025-08-11",
         image: "data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' width='100' height='100' viewBox='0 0 100 100'%3e%3crect width='100' height='100' fill='%23f8fafc'/%3e%3ctext x='50' y='62' font-size='40' text-anchor='middle' fill='%23374151'%3e🧭%3c/text%3e%3c/svg%3e"
     },
@@ -204,7 +204,7 @@ const fermiQuestions = [
         answer: 1266000000,
         category: "",
         explanation: "",
-        hint: "Hint: A single sheep provides around 4.5 kg of wool per year.",
+        hint: "A single sheep provides around 4.5 kg of wool per year.",
         date: "2025-08-12",
         image: "data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' width='100' height='100' viewBox='0 0 100 100'%3e%3crect width='100' height='100' fill='%23f8fafc'/%3e%3ctext x='50' y='62' font-size='40' text-anchor='middle' fill='%23374151'%3e🐑%3c/text%3e%3c/svg%3e"
     }
@@ -609,7 +609,8 @@ function formatNumber(num) {
 // Show hint after 2rd guess
 function showHint() {
     if (currentQuestion.hint) {
-        hintText.textContent = currentQuestion.hint;
+        // Inline hint text always includes a "Hint: " prefix (it's hidden on mobile via CSS)
+        hintText.textContent = `Hint: ${currentQuestion.hint}`;
         guessCounter.style.display = 'none';
         hintContainer.style.display = 'block';
         // Also update modal hint text
