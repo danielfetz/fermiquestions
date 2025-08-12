@@ -262,6 +262,25 @@ button#stats-btn {
     font-size: 0.85rem;
 }
 
+/* Hint modal trigger button (mobile) */
+.hint-link {
+    display: none;
+    background: white;
+    border: 2px solid #e9ecef;
+    font-family: 'Press Start 2P', monospace;
+    font-size: 0.8rem;
+    padding: 19px;
+    width: 100%;
+    border-radius: 14px;
+    color: #333;
+    margin-top: 8px;
+}
+
+.hint-link .arrow {
+    display: inline-block;
+    transform: rotate(90deg);
+}
+
 /* Game Result */
 .game-result {
     text-align: center;
@@ -709,6 +728,13 @@ button#stats-btn {
         padding: 16px;
         background: white;
         font-size: 0.8rem;
+    }
+    /* On mobile, hide inline hint text and show the button */
+    #hint-text {
+        display: none;
+    }
+    .hint-link {
+        display: inline;
     }
     /* On mobile, hide the streak label and show strategy link */
     #current-streak-display {
