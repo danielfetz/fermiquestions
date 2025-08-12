@@ -242,10 +242,10 @@ button#stats-btn {
     background: white;
     border: 2px solid #e9ecef;
     font-family: 'Press Start 2P', monospace;
-    font-size: 0.8rem;
-    padding: 19px;
+    font-size: 0.82rem;
+    padding: 18px;
     width: 100%;
-    border-radius: 14px;
+    border-radius: 15px;
     color: #333;
 }
 
@@ -268,12 +268,11 @@ button#stats-btn {
     background: white;
     border: 2px solid #e9ecef;
     font-family: 'Press Start 2P', monospace;
-    font-size: 0.8rem;
-    padding: 19px;
+    font-size: 0.82rem;
+    padding: 18px;
     width: 100%;
-    border-radius: 14px;
+    border-radius: 15px;
     color: #333;
-    margin-top: 8px;
 }
 
 .hint-link .arrow {
@@ -718,10 +717,10 @@ button#stats-btn {
     .guesses-container {
         margin-bottom: 0px;
     }
-    .guess-counter {
+    .guess-counter,
+    .hint-container {
         margin-bottom: 18px;
     }
-    .hint-container,
     .game-result {
         border: 2px solid #e8ecee;
         border-radius: 16px;
