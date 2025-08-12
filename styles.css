@@ -336,7 +336,7 @@ button#stats-btn {
     flex: 1;
     background-color: #f6f6f6;
     color: #333;
-    padding: 16.5px 15px;
+    padding: 17px 15px;
     border-radius: 13px;
     font-size: 0.835rem;
     text-align: center;
@@ -678,7 +678,7 @@ button#stats-btn {
     }
     .question-box {
         border-radius: 16px;
-        padding: 22px;
+        padding: 20px;
         background: white;
     }
     .input-section,
