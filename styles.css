@@ -243,7 +243,7 @@ button#stats-btn {
     border: 2px solid #e9ecef;
     font-family: 'Press Start 2P', monospace;
     font-size: 0.82rem;
-    padding: 18px;
+    padding: 19px;
     width: 100%;
     border-radius: 15px;
     color: #333;
@@ -269,7 +269,7 @@ button#stats-btn {
     border: 2px solid #e9ecef;
     font-family: 'Press Start 2P', monospace;
     font-size: 0.82rem;
-    padding: 18px;
+    padding: 19px;
     width: 100%;
     border-radius: 15px;
     color: #333;
@@ -724,7 +724,7 @@ button#stats-btn {
     .game-result {
         border: 2px solid #e8ecee;
         border-radius: 16px;
-        padding: 18px;
+        padding: 19px;
         background: white;
         font-size: 0.82rem;
         margin-bottom: 18px;
