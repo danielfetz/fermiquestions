@@ -727,6 +727,7 @@ button#stats-btn {
         padding: 18px;
         background: white;
         font-size: 0.82rem;
+        margin-bottom: 18px;
     }
     /* On mobile, hide inline hint text and show the button */
     #hint-text {
