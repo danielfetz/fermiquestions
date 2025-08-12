@@ -241,6 +241,11 @@ const questionsModal = document.getElementById('questions-modal');
 const strategyModal = document.getElementById('strategy-modal');
 const strategyTipsBtn = document.getElementById('strategy-tips-btn');
 const closeStrategyBtn = document.getElementById('close-strategy-btn');
+// Hint modal elements
+const hintModal = document.getElementById('hint-modal');
+const hintModalBtn = document.getElementById('hint-modal-btn');
+const hintModalText = document.getElementById('hint-modal-text');
+const closeHintBtn = document.getElementById('close-hint-btn');
 const questionsList = document.getElementById('questions-list');
 const closeHelpBtn = document.getElementById('close-help-btn');
 const closeStatsBtn = document.getElementById('close-stats-btn');
@@ -607,6 +612,10 @@ function showHint() {
         hintText.textContent = currentQuestion.hint;
         guessCounter.style.display = 'none';
         hintContainer.style.display = 'block';
+        // Also update modal hint text
+        if (hintModalText) {
+            hintModalText.textContent = currentQuestion.hint;
+        }
     }
 }
 
@@ -1598,6 +1607,17 @@ function setupEventListeners() {
     if (strategyTipsBtn) {
         strategyTipsBtn.addEventListener('click', showStrategy);
     }
+
+    // Hint modal trigger (mobile)
+    if (hintModalBtn && hintModal) {
+        hintModalBtn.addEventListener('click', () => {
+            // Ensure latest hint is shown
+            if (currentQuestion && currentQuestion.hint && hintModalText) {
+                hintModalText.textContent = currentQuestion.hint;
+            }
+            hintModal.style.display = 'block';
+        });
+    }
     
     // Questions history button (question category)
     questionCategory.addEventListener('click', showQuestionsHistory);
@@ -1609,13 +1629,16 @@ function setupEventListeners() {
     if (closeStrategyBtn) {
         closeStrategyBtn.addEventListener('click', () => closeModal(strategyModal));
     }
+    if (closeHintBtn) {
+        closeHintBtn.addEventListener('click', () => closeModal(hintModal));
+    }
 
     // Share buttons
     shareBtn.addEventListener('click', shareGame);
     shareStatsBtn.addEventListener('click', shareStats);
         
     // Close modals when clicking outside (desktop + mobile)
-    [helpModal, statsModal, questionsModal, strategyModal].forEach(modal => {
+    [helpModal, statsModal, questionsModal, strategyModal, hintModal].forEach(modal => {
         ['click', 'touchend'].forEach(event => {
             modal.addEventListener(event, e => e.target === modal && closeModal(modal));
         });
