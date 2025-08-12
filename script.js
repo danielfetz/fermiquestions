@@ -606,6 +606,13 @@ function formatNumber(num) {
     return num.toLocaleString();
 }
 
+// Briefly add a 'shake' animation class to an element
+function triggerShake(element, durationMs = 500) {
+    if (!element) return;
+    element.classList.add('shake');
+    setTimeout(() => element.classList.remove('shake'), durationMs);
+}
+
 // Show hint after 2rd guess
 function showHint() {
     if (currentQuestion.hint) {
@@ -613,6 +620,7 @@ function showHint() {
         hintText.textContent = `Hint: ${currentQuestion.hint}`;
         guessCounter.style.display = 'none';
         hintContainer.style.display = 'block';
+        triggerShake(hintContainer);
         // Also update modal hint text
         if (hintModalText) {
             hintModalText.textContent = currentQuestion.hint;
@@ -696,6 +704,7 @@ function endGame() {
     guessCounter.style.display = 'none';
     hideHint();
     gameResult.style.display = 'block';
+    triggerShake(gameResult);
     
     // Set result message
     if (gameWon) {
@@ -1099,6 +1108,7 @@ function endGameDisplay() {
     guessCounter.style.display = 'none';
     hideHint();
     gameResult.style.display = 'block';
+    triggerShake(gameResult);
     
     // Set result message
     if (gameWon) {
