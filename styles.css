@@ -724,9 +724,9 @@ button#stats-btn {
     .game-result {
         border: 2px solid #e8ecee;
         border-radius: 16px;
-        padding: 16px;
+        padding: 18px;
         background: white;
-        font-size: 0.8rem;
+        font-size: 0.82rem;
     }
     /* On mobile, hide inline hint text and show the button */
     #hint-text {
