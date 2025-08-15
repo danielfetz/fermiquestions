@@ -11,8 +11,8 @@ let isNavigating = false;
 
 // Supabase (configure these with your project's values)
 let supabaseClient = null;
-const SUPABASE_URL = '';
-const SUPABASE_ANON_KEY = '';
+const SUPABASE_URL = 'https://hxyaaqdnbkpsdpreddsf.supabase.co';
+const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imh4eWFhcWRuYmtwc2RwcmVkZHNmIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTUyNTg3MTgsImV4cCI6MjA3MDgzNDcxOH0.ONL920tQUbG-ttVVhV4yuTof4V0Oc-WMBwWY1Q-VQXc';
 let deviceId = null; // persistent per-device identifier
 let gameSessionId = null; // per-question session id
 
