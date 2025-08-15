@@ -247,6 +247,7 @@ button#stats-btn {
     width: 100%;
     border-radius: 15px;
     color: #333;
+    -webkit-tap-highlight-color: transparent;
 }
 
 .strategy-link .arrow {
@@ -273,6 +274,7 @@ button#stats-btn {
     width: 100%;
     border-radius: 15px;
     color: #333;
+    -webkit-tap-highlight-color: transparent;
 }
 
 .hint-link .arrow {
