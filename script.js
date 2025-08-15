@@ -9,6 +9,13 @@ let completedQuestions = {}; // Changed from array to object to track win/loss s
 // URL Routing state
 let isNavigating = false;
 
+// Supabase (configure these with your project's values)
+let supabaseClient = null;
+const SUPABASE_URL = '';
+const SUPABASE_ANON_KEY = '';
+let deviceId = null; // persistent per-device identifier
+let gameSessionId = null; // per-question session id
+
 // Statistics
 let stats = {
     gamesPlayed: 0,
@@ -207,34 +214,7 @@ const fermiQuestions = [
         hint: "A single sheep provides around 4.5 kg of wool per year.",
         date: "2025-08-12",
         image: "data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' width='100' height='100' viewBox='0 0 100 100'%3e%3crect width='100' height='100' fill='%23f8fafc'/%3e%3ctext x='50' y='62' font-size='40' text-anchor='middle' fill='%23374151'%3e🐑%3c/text%3e%3c/svg%3e"
-    },
-    {
-        question: "How many dentists work in the UK?",
-        answer: 45580,
-        category: "",
-        explanation: "",
-        hint: "There are 11,976 dental practices in the UK.",
-        date: "2025-08-13",
-        image: "data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' width='100' height='100' viewBox='0 0 100 100'%3e%3crect width='100' height='100' fill='%23f8fafc'/%3e%3ctext x='50' y='62' font-size='40' text-anchor='middle' fill='%23374151'%3e🦷%3c/text%3e%3c/svg%3e"
-    },
-    {
-        question: "How many public school teachers are there in California?",
-        answer: 285891,
-        category: "",
-        explanation: "",
-        hint: "There are around 10,000 public schools in California.",
-        date: "2025-08-14",
-        image: "data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' width='100' height='100' viewBox='0 0 100 100'%3e%3crect width='100' height='100' fill='%23f8fafc'/%3e%3ctext x='50' y='62' font-size='40' text-anchor='middle' fill='%23374151'%3e👩‍🏫%3c/text%3e%3c/svg%3e"
-    },
-    {
-        question: "How many weddings took place in the US in 2022?",
-        answer: 2070000,
-        category: "",
-        explanation: "",
-        hint: "673,989 divorces happened in the US in 2022.",
-        date: "2025-08-15",
-        image: "data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' width='100' height='100' viewBox='0 0 100 100'%3e%3crect width='100' height='100' fill='%23f8fafc'/%3e%3ctext x='50' y='62' font-size='40' text-anchor='middle' fill='%23374151'%3e💍%3c/text%3e%3c/svg%3e"
-    }    
+    }
 ];
 
 // DOM elements
@@ -282,6 +262,8 @@ const shareStatsBtn = document.getElementById('share-stats-btn');
 
 // Initialize game
 function initGame() {
+    initSupabase();
+    initDeviceId();
     loadStats();
     loadCompletedQuestions();
     
@@ -383,6 +365,9 @@ function startNewGame() {
     if (!isNavigating) {
         updateURL(currentQuestion.date);
     }
+
+    // Start a new logging session for this question
+    startGameSession();
 }
 
 // Get current date in YYYY-MM-DD format
@@ -538,6 +523,29 @@ function submitGuess() {
     // Save current game state after each guess
     saveCurrentGameState();
     
+    // Log the guess to Supabase (if configured)
+    try {
+        const guessRows = guessesContainer.querySelectorAll('.guess-row');
+        const row = guessRows[currentGuess - 1];
+        const feedbackButton = row.querySelector('.feedback-button');
+        let feedbackType = 'none';
+        let feedbackSymbol = '';
+        if (feedbackButton.classList.contains('correct')) {
+            feedbackType = 'correct';
+            feedbackSymbol = 'WIN';
+        } else if (feedbackButton.classList.contains('close')) {
+            feedbackType = 'close';
+            feedbackSymbol = feedbackButton.textContent;
+        } else if (feedbackButton.classList.contains('high')) {
+            feedbackType = 'high';
+            feedbackSymbol = feedbackButton.textContent;
+        } else if (feedbackButton.classList.contains('low')) {
+            feedbackType = 'low';
+            feedbackSymbol = feedbackButton.textContent;
+        }
+        logGuessRow(guessValue, feedbackType, feedbackSymbol, currentGuess);
+    } catch (_) {}
+    
     // Show hint after 2nd guess if game not won
     if (currentGuess === 2 && !gameWon && currentQuestion.hint) {
         showHint();
@@ -631,6 +639,85 @@ function showFeedback(guessIndex, type, symbol) {
 // Format number with commas
 function formatNumber(num) {
     return num.toLocaleString();
+}
+
+// Initialize Supabase client if keys are present
+function initSupabase() {
+    try {
+        if (window && window.supabase && SUPABASE_URL && SUPABASE_ANON_KEY) {
+            supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+        }
+    } catch (e) {
+        supabaseClient = null;
+    }
+}
+
+// Generate/load a persistent device id
+function initDeviceId() {
+    try {
+        const key = 'fermiDeviceId';
+        const existing = localStorage.getItem(key);
+        if (existing) {
+            deviceId = existing;
+            return;
+        }
+        const newId = `dev_${Math.random().toString(36).slice(2)}_${Date.now()}`;
+        localStorage.setItem(key, newId);
+        deviceId = newId;
+    } catch (_) {
+        deviceId = `dev_${Math.random().toString(36).slice(2)}_${Date.now()}`;
+    }
+}
+
+// Create a session id for the current question and log it
+function startGameSession() {
+    if (!currentQuestion) return;
+    gameSessionId = `sess_${currentQuestion.date}_${Math.random().toString(36).slice(2)}_${Date.now()}`;
+    logSessionStart();
+}
+
+async function logSessionStart() {
+    if (!supabaseClient || !currentQuestion) return;
+    try {
+        await supabaseClient.from('sessions').insert({
+            session_id: gameSessionId,
+            device_id: deviceId,
+            question_date: currentQuestion.date,
+            question_text: currentQuestion.question,
+            created_at: new Date().toISOString()
+        });
+    } catch (_) {}
+}
+
+async function logGuessRow(guessValue, feedbackType, feedbackSymbol, guessIndex) {
+    if (!supabaseClient || !currentQuestion) return;
+    try {
+        await supabaseClient.from('guesses').insert({
+            session_id: gameSessionId,
+            device_id: deviceId,
+            question_date: currentQuestion.date,
+            guess_number: guessIndex,
+            guess_value: Number(String(guessValue).replace(/[^\d]/g, '')),
+            feedback_type: feedbackType,
+            feedback_symbol: feedbackSymbol || null,
+            created_at: new Date().toISOString()
+        });
+    } catch (_) {}
+}
+
+async function logGameEnd() {
+    if (!supabaseClient || !currentQuestion) return;
+    try {
+        await supabaseClient.from('results').insert({
+            session_id: gameSessionId,
+            device_id: deviceId,
+            question_date: currentQuestion.date,
+            won: !!gameWon,
+            guesses_used: currentGuess,
+            answer: currentQuestion.answer,
+            ended_at: new Date().toISOString()
+        });
+    } catch (_) {}
 }
 
 // Briefly add a 'shake' animation class to an element
@@ -764,6 +851,9 @@ function endGame() {
         newGameBtnInline.onclick = startNewGame;
     }    
     updateStreakDisplay(); // Update streak display when game ends
+    
+    // Log result (if Supabase configured)
+    logGameEnd();
 }
 
 // Start a new game
