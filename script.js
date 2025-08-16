@@ -207,6 +207,42 @@ const fermiQuestions = [
         hint: "A single sheep provides around 4.5 kg of wool per year.",
         date: "2025-08-12",
         image: "data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' width='100' height='100' viewBox='0 0 100 100'%3e%3crect width='100' height='100' fill='%23f8fafc'/%3e%3ctext x='50' y='62' font-size='40' text-anchor='middle' fill='%23374151'%3e🐑%3c/text%3e%3c/svg%3e"
+    },
+    {
+        question: "How many dentists work in the UK?",
+        answer: 45580,
+        category: "",
+        explanation: "",
+        hint: "There are 11,976 dental practices in the UK.",
+        date: "2025-08-13",
+        image: "data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' width='100' height='100' viewBox='0 0 100 100'%3e%3crect width='100' height='100' fill='%23f8fafc'/%3e%3ctext x='50' y='62' font-size='40' text-anchor='middle' fill='%23374151'%3e🦷%3c/text%3e%3c/svg%3e"
+    },
+    {
+        question: "How many public school teachers are there in California?",
+        answer: 285891,
+        category: "",
+        explanation: "",
+        hint: "There are around 10,000 public schools in California.",
+        date: "2025-08-14",
+        image: "data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' width='100' height='100' viewBox='0 0 100 100'%3e%3crect width='100' height='100' fill='%23f8fafc'/%3e%3ctext x='50' y='62' font-size='40' text-anchor='middle' fill='%23374151'%3e👩‍🏫%3c/text%3e%3c/svg%3e"
+    },
+    {
+        question: "How many weddings took place in the US in 2022?",
+        answer: 2070000,
+        category: "",
+        explanation: "",
+        hint: "673,989 divorces happened in the US in 2022.",
+        date: "2025-08-15",
+        image: "data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' width='100' height='100' viewBox='0 0 100 100'%3e%3crect width='100' height='100' fill='%23f8fafc'/%3e%3ctext x='50' y='62' font-size='40' text-anchor='middle' fill='%23374151'%3e💍%3c/text%3e%3c/svg%3e"
+    },
+    {
+        question: "How many police officers are there in the EU countries?",
+        answer: 1537588,
+        category: "",
+        explanation: "",
+        hint: "Finland has around 135 police officers per 100,000 inhabitants.",
+        date: "2025-08-16",
+        image: "data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' width='100' height='100' viewBox='0 0 100 100'%3e%3crect width='100' height='100' fill='%23f8fafc'/%3e%3ctext x='50' y='62' font-size='40' text-anchor='middle' fill='%23374151'%3e🚓%3c/text%3e%3c/svg%3e"
     }
 ];
 
@@ -606,6 +642,13 @@ function formatNumber(num) {
     return num.toLocaleString();
 }
 
+// Briefly add a 'shake' animation class to an element
+function triggerShake(element, durationMs = 500) {
+    if (!element) return;
+    element.classList.add('shake');
+    setTimeout(() => element.classList.remove('shake'), durationMs);
+}
+
 // Show hint after 2rd guess
 function showHint() {
     if (currentQuestion.hint) {
@@ -613,6 +656,7 @@ function showHint() {
         hintText.textContent = `Hint: ${currentQuestion.hint}`;
         guessCounter.style.display = 'none';
         hintContainer.style.display = 'block';
+        triggerShake(hintContainer);
         // Also update modal hint text
         if (hintModalText) {
             hintModalText.textContent = currentQuestion.hint;
@@ -696,6 +740,7 @@ function endGame() {
     guessCounter.style.display = 'none';
     hideHint();
     gameResult.style.display = 'block';
+    triggerShake(gameResult);
     
     // Set result message
     if (gameWon) {
@@ -1099,6 +1144,7 @@ function endGameDisplay() {
     guessCounter.style.display = 'none';
     hideHint();
     gameResult.style.display = 'block';
+    triggerShake(gameResult);
     
     // Set result message
     if (gameWon) {
