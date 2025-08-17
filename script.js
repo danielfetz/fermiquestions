@@ -684,7 +684,7 @@ function triggerShake(element, durationMs = 500) {
 // Brief confetti animation when winning a game
 function triggerConfetti(durationMs = 1200, particleCount = 80) {
     const onSmall = isSmallDevice();
-    const total = onSmall ? Math.min(particleCount, 32) : particleCount;
+    const total = onSmall ? Math.min(particleCount, 40) : particleCount;
 
     const canvas = document.createElement('canvas');
     canvas.style.position = 'fixed';
@@ -717,7 +717,7 @@ function triggerConfetti(durationMs = 1200, particleCount = 80) {
         const size = 6 + Math.random() * 6; // 6-12px (slightly larger)
         particles.push({
             x: Math.random() * width(),
-            y: -10 - Math.random() * 40,
+            y: -10 - Math.random() * 60,
             vx: (Math.random() - 0.5) * 260, // px/s
             vy: 120 + Math.random() * 240, // px/s
             ax: (Math.random() - 0.5) * 40,   // lateral drift
