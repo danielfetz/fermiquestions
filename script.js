@@ -669,11 +669,44 @@ function formatNumber(num) {
     return num.toLocaleString();
 }
 
-// Briefly add a 'shake' animation class to an element
+// Detect small devices for conditional animations
+function isSmallDevice() {
+    return window.matchMedia('(max-width: 768px)').matches;
+}
+
+// Briefly add a 'shake' animation class to an element (mobile only)
 function triggerShake(element, durationMs = 500) {
-    if (!element) return;
+    if (!element || !isSmallDevice()) return;
     element.classList.add('shake');
     setTimeout(() => element.classList.remove('shake'), durationMs);
+}
+
+// Brief confetti animation when winning a game
+function triggerConfetti(durationMs = 1200, pieceCount = 80) {
+    const container = document.createElement('div');
+    container.className = 'confetti-container';
+    document.body.appendChild(container);
+
+    const colors = ['#e74c3c', '#f1c40f', '#2ecc71', '#3498db', '#9b59b6', '#e67e22'];
+    const screenWidth = window.innerWidth || document.documentElement.clientWidth || 320;
+
+    for (let i = 0; i < pieceCount; i++) {
+        const piece = document.createElement('div');
+        piece.className = 'confetti-piece';
+        const size = 6 + Math.random() * 8; // 6-14px
+        piece.style.width = `${size}px`;
+        piece.style.height = `${size * 0.6}px`;
+        piece.style.left = `${Math.random() * screenWidth}px`;
+        piece.style.backgroundColor = colors[Math.floor(Math.random() * colors.length)];
+        piece.style.opacity = '0.95';
+        piece.style.animationDuration = `${0.9 + Math.random() * 0.9}s`;
+        piece.style.animationDelay = `${Math.random() * 0.2}s`;
+        container.appendChild(piece);
+    }
+
+    setTimeout(() => {
+        try { document.body.removeChild(container); } catch (e) { /* noop */ }
+    }, durationMs + 300);
 }
 
 // Show hint after 2rd guess
@@ -773,6 +806,8 @@ function endGame() {
     if (gameWon) {
         resultMessage.textContent = `You win!`;
         resultMessage.className = 'result-message won';
+        // Brief confetti on win
+        triggerConfetti(1200, 80);
     } else {
         resultMessage.textContent = 'You ran out of guesses!';
         resultMessage.className = 'result-message lost';
