@@ -549,6 +549,7 @@ button#stats-btn {
     margin-bottom: 20px;
     color: #333;
     font-size: 1.2rem;
+    font-weight: 400;
 }
 
 .modal-content p {
@@ -590,7 +591,6 @@ button#stats-btn {
 .stat-number {
     display: block;
     font-size: 1.5rem;
-    font-weight: bold;
     color: #333;
     margin-bottom: 8px;
 }
