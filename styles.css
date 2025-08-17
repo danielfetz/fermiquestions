@@ -784,7 +784,6 @@ button#stats-btn {
     overflow: visible;
     pointer-events: none;
     z-index: 10000;
-    contain: layout paint;
 }
 
 .confetti-piece {
