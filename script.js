@@ -689,12 +689,12 @@ function triggerConfetti(durationMs = 1200, pieceCount = 80) {
     const colors = ['#e74c3c', '#f1c40f', '#2ecc71', '#3498db', '#9b59b6', '#e67e22'];
     const screenWidth = window.innerWidth || document.documentElement.clientWidth || 320;
     const onSmall = isSmallDevice();
-    const localCount = onSmall ? Math.min(pieceCount, 24) : pieceCount;
+    const localCount = onSmall ? Math.min(pieceCount, 18) : pieceCount;
 
     const fragment = document.createDocumentFragment();
     const base = onSmall ? 0.7 : 0.9;
     const span = onSmall ? 0.6 : 0.9;
-    const maxDelay = onSmall ? 0.12 : 0.2;
+    const maxDelay = onSmall ? 0.18 : 0.2;
 
     for (let i = 0; i < localCount; i++) {
         const piece = document.createElement('div');
@@ -702,7 +702,8 @@ function triggerConfetti(durationMs = 1200, pieceCount = 80) {
         const size = 6 + Math.random() * 8; // 6-14px
         piece.style.width = `${size}px`;
         piece.style.height = `${size * 0.6}px`;
-        piece.style.left = `${Math.random() * screenWidth}px`;
+        const x = Math.random() * screenWidth;
+        piece.style.setProperty('--x', `${x}px`);
         piece.style.backgroundColor = colors[Math.floor(Math.random() * colors.length)];
         piece.style.opacity = '0.95';
         piece.style.animationDuration = `${base + Math.random() * span}s`;
@@ -720,7 +721,7 @@ function triggerConfetti(durationMs = 1200, pieceCount = 80) {
     };
 
     if (onSmall) {
-        setTimeout(() => requestAnimationFrame(mount), 60);
+        setTimeout(() => requestAnimationFrame(mount), 120);
     } else {
         requestAnimationFrame(mount);
     }
