@@ -685,28 +685,47 @@ function triggerShake(element, durationMs = 500) {
 function triggerConfetti(durationMs = 1200, pieceCount = 80) {
     const container = document.createElement('div');
     container.className = 'confetti-container';
-    document.body.appendChild(container);
+    container.style.willChange = 'transform';
+    container.style.transform = 'translateZ(0)';
+    container.style.contain = 'layout paint';
+
+    // Cap and speed-tune on small devices to reduce initial jank
+    let localCount = pieceCount;
+    const onSmall = isSmallDevice();
+    if (onSmall) {
+        localCount = Math.min(localCount, 24);
+    }
 
     const colors = ['#e74c3c', '#f1c40f', '#2ecc71', '#3498db', '#9b59b6', '#e67e22'];
     const screenWidth = window.innerWidth || document.documentElement.clientWidth || 320;
 
-    for (let i = 0; i < pieceCount; i++) {
+    // Build off-DOM in a fragment, then attach in next frame
+    const fragment = document.createDocumentFragment();
+    for (let i = 0; i < localCount; i++) {
         const piece = document.createElement('div');
         piece.className = 'confetti-piece';
         const size = 6 + Math.random() * 8; // 6-14px
         piece.style.width = `${size}px`;
         piece.style.height = `${size * 0.6}px`;
-        piece.style.left = `${Math.random() * screenWidth}px`;
+        const x = Math.random() * screenWidth;
+        piece.style.setProperty('--x', `${x}px`);
         piece.style.backgroundColor = colors[Math.floor(Math.random() * colors.length)];
         piece.style.opacity = '0.95';
-        piece.style.animationDuration = `${0.9 + Math.random() * 0.9}s`;
-        piece.style.animationDelay = `${Math.random() * 0.2}s`;
-        container.appendChild(piece);
+        const base = onSmall ? 0.7 : 0.9;
+        const span = onSmall ? 0.4 : 0.9;
+        piece.style.animationDuration = `${base + Math.random() * span}s`;
+        piece.style.animationDelay = `${Math.random() * 0.12}s`;
+        fragment.appendChild(piece);
     }
+    container.appendChild(fragment);
 
-    setTimeout(() => {
-        try { document.body.removeChild(container); } catch (e) { /* noop */ }
-    }, durationMs + 300);
+    // Append on next frame to avoid blocking the current UI update
+    requestAnimationFrame(() => {
+        document.body.appendChild(container);
+        setTimeout(() => {
+            try { document.body.removeChild(container); } catch (e) { /* noop */ }
+        }, durationMs + 300);
+    });
 }
 
 // Show hint after 2rd guess
