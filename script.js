@@ -685,12 +685,18 @@ function triggerShake(element, durationMs = 500) {
 function triggerConfetti(durationMs = 1200, pieceCount = 80) {
     const container = document.createElement('div');
     container.className = 'confetti-container';
-    document.body.appendChild(container);
 
     const colors = ['#e74c3c', '#f1c40f', '#2ecc71', '#3498db', '#9b59b6', '#e67e22'];
     const screenWidth = window.innerWidth || document.documentElement.clientWidth || 320;
+    const onSmall = isSmallDevice();
+    const localCount = onSmall ? Math.min(pieceCount, 24) : pieceCount;
 
-    for (let i = 0; i < pieceCount; i++) {
+    const fragment = document.createDocumentFragment();
+    const base = onSmall ? 0.7 : 0.9;
+    const span = onSmall ? 0.6 : 0.9;
+    const maxDelay = onSmall ? 0.12 : 0.2;
+
+    for (let i = 0; i < localCount; i++) {
         const piece = document.createElement('div');
         piece.className = 'confetti-piece';
         const size = 6 + Math.random() * 8; // 6-14px
@@ -699,14 +705,25 @@ function triggerConfetti(durationMs = 1200, pieceCount = 80) {
         piece.style.left = `${Math.random() * screenWidth}px`;
         piece.style.backgroundColor = colors[Math.floor(Math.random() * colors.length)];
         piece.style.opacity = '0.95';
-        piece.style.animationDuration = `${0.9 + Math.random() * 0.9}s`;
-        piece.style.animationDelay = `${Math.random() * 0.2}s`;
-        container.appendChild(piece);
+        piece.style.animationDuration = `${base + Math.random() * span}s`;
+        piece.style.animationDelay = `${Math.random() * maxDelay}s`;
+        fragment.appendChild(piece);
     }
 
-    setTimeout(() => {
-        try { document.body.removeChild(container); } catch (e) { /* noop */ }
-    }, durationMs + 300);
+    container.appendChild(fragment);
+
+    const mount = () => {
+        document.body.appendChild(container);
+        setTimeout(() => {
+            try { document.body.removeChild(container); } catch (e) { /* noop */ }
+        }, durationMs + 300);
+    };
+
+    if (onSmall) {
+        setTimeout(() => requestAnimationFrame(mount), 60);
+    } else {
+        requestAnimationFrame(mount);
+    }
 }
 
 // Show hint after 2rd guess
