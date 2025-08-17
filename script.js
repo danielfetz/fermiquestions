@@ -284,6 +284,7 @@ const hintContainer = document.getElementById('hint-container');
 const hintText = document.getElementById('hint-text');
 const gameResult = document.getElementById('game-result');
 const resultMessage = document.getElementById('result-message');
+const resultEmoji = document.getElementById('result-emoji');
 const correctAnswer = document.getElementById('correct-answer');
 const guessesContainer = document.getElementById('guesses-container');
 const guessInput = document.getElementById('guess-input');
@@ -881,11 +882,13 @@ function endGame() {
     if (gameWon) {
         resultMessage.textContent = `You win!`;
         resultMessage.className = 'result-message won';
+        resultEmoji.textContent = '🎉';
         // Brief confetti on win
         triggerConfetti(1200, 80);
     } else {
         resultMessage.textContent = 'You ran out of guesses!';
         resultMessage.className = 'result-message lost';
+        resultEmoji.textContent = '🚫';
     }
     
     // Set correct answer
