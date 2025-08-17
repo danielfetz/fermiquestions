@@ -728,32 +728,23 @@ button#stats-btn {
         margin-bottom: 18px;
     }
     .game-result {
+        display: flex !important;
+        align-items: center;
+        gap: 4px;
         border: 2px solid #e8ecee;
         border-radius: 16px;
         padding: 18.5px;
         background: white;
         margin-bottom: 18px;
     }
-    .game-result {
-        display: grid !important;
-        grid-template-columns: 28px 1fr;
-        grid-auto-rows: auto;
-        gap: 8px 10px;
-        align-items: start;
-        text-align: left;
-    }
     .result-emoji {
         display: block;
-        grid-row: 1 / span 2;
-        font-size: 1.1rem;
-        line-height: 1;
-        margin-top: 2px;
+        font-size: 2.125rem;
+        padding: 0 12px;
+        height: 58px;
     }
-    .result-message {
-        grid-column: 2;
-    }
-    .correct-answer {
-        grid-column: 2;
+    .result-container {
+        padding: 10px 0;
     }
     /* On mobile, hide inline hint text and show the button */
     #hint-text {
