@@ -733,6 +733,7 @@ button#stats-btn {
         padding: 8.5px 18.5px;
         background: white;
         margin-bottom: 18px;
+        font-size: 0.8rem;
     }
     .result-container {
         display: flex;
