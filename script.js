@@ -712,11 +712,6 @@ function triggerConfetti(durationMs = 1200, particleCount = 80) {
     const width = () => canvas.clientWidth;
     const height = () => canvas.clientHeight;
 
-    // Physics tuning (uniform across devices)
-    const g = 1000; // gravity px/s^2
-    const minVy = 220; // initial vy min px/s
-    const vySpan = 260; // additional random vy range
-
     const particles = [];
     for (let i = 0; i < total; i++) {
         const size = 6 + Math.random() * 6; // 6-12px (slightly larger)
@@ -724,9 +719,9 @@ function triggerConfetti(durationMs = 1200, particleCount = 80) {
             x: Math.random() * width(),
             y: -10 - Math.random() * 40,
             vx: (Math.random() - 0.5) * 260, // px/s
-            vy: minVy + Math.random() * vySpan, // px/s
+            vy: 120 + Math.random() * 240, // px/s
             ax: (Math.random() - 0.5) * 40,   // lateral drift
-            ay: g,                            // gravity px/s^2
+            ay: 540,                            // gravity px/s^2
             size,
             rotation: Math.random() * Math.PI * 2,
             rotationSpeed: (Math.random() - 0.5) * 6, // rad/s
@@ -734,9 +729,6 @@ function triggerConfetti(durationMs = 1200, particleCount = 80) {
         });
     }
     
-    // Fixed duration; no guaranteed bottom reach
-    const totalMs = durationMs + 200;
-
     let running = true;
     const start = performance.now();
     let last = start;
@@ -766,7 +758,7 @@ function triggerConfetti(durationMs = 1200, particleCount = 80) {
             ctx.restore();
         }
 
-        if (elapsed < totalMs) {
+        if (elapsed < durationMs + 200) {
             requestAnimationFrame(frame);
         } else {
             cleanup();
@@ -784,7 +776,7 @@ function triggerConfetti(durationMs = 1200, particleCount = 80) {
     const stopTimer = setTimeout(() => {
         window.removeEventListener('resize', onResize);
         cleanup();
-    }, totalMs + 200);
+    }, durationMs + 400);
 
     if (onSmall) {
         setTimeout(() => requestAnimationFrame(frame), 80);
