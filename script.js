@@ -1289,9 +1289,13 @@ function endGameDisplay() {
     if (gameWon) {
         resultMessage.textContent = `You win!`;
         resultMessage.className = 'result-message won';
+        resultEmoji.textContent = '🎉';
+        // Brief confetti on win
+        triggerConfetti(1200, 80);
     } else {
         resultMessage.textContent = 'You ran out of guesses!';
         resultMessage.className = 'result-message lost';
+        resultEmoji.textContent = '🚫';
     }
     
     // Set correct answer
