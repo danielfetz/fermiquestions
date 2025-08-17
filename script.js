@@ -712,22 +712,30 @@ function triggerConfetti(durationMs = 1200, particleCount = 80) {
     const width = () => canvas.clientWidth;
     const height = () => canvas.clientHeight;
 
+    // Physics tuning (uniform across devices)
+    const g = 1000; // gravity px/s^2
+    const minVy = 220; // initial vy min px/s
+    const vySpan = 260; // additional random vy range
+
     const particles = [];
     for (let i = 0; i < total; i++) {
-        const size = 4 + Math.random() * 6; // 4-10px
+        const size = 6 + Math.random() * 6; // 6-12px (slightly larger)
         particles.push({
             x: Math.random() * width(),
             y: -10 - Math.random() * 40,
             vx: (Math.random() - 0.5) * 260, // px/s
-            vy: 80 + Math.random() * 160,     // px/s
+            vy: minVy + Math.random() * vySpan, // px/s
             ax: (Math.random() - 0.5) * 40,   // lateral drift
-            ay: 360,                           // gravity px/s^2
+            ay: g,                            // gravity px/s^2
             size,
             rotation: Math.random() * Math.PI * 2,
             rotationSpeed: (Math.random() - 0.5) * 6, // rad/s
             color: colors[Math.floor(Math.random() * colors.length)]
         });
     }
+    
+    // Fixed duration; no guaranteed bottom reach
+    const totalMs = durationMs + 200;
 
     let running = true;
     const start = performance.now();
@@ -758,7 +766,7 @@ function triggerConfetti(durationMs = 1200, particleCount = 80) {
             ctx.restore();
         }
 
-        if (elapsed < durationMs + 200) {
+        if (elapsed < totalMs) {
             requestAnimationFrame(frame);
         } else {
             cleanup();
@@ -776,7 +784,7 @@ function triggerConfetti(durationMs = 1200, particleCount = 80) {
     const stopTimer = setTimeout(() => {
         window.removeEventListener('resize', onResize);
         cleanup();
-    }, durationMs + 400);
+    }, totalMs + 200);
 
     if (onSmall) {
         setTimeout(() => requestAnimationFrame(frame), 80);
