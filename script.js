@@ -758,7 +758,7 @@ function triggerConfetti(durationMs = 1200, particleCount = 80) {
             ctx.restore();
         }
 
-        if (elapsed < durationMs + 200) {
+        if (elapsed < durationMs + 400) {
             requestAnimationFrame(frame);
         } else {
             cleanup();
@@ -776,7 +776,7 @@ function triggerConfetti(durationMs = 1200, particleCount = 80) {
     const stopTimer = setTimeout(() => {
         window.removeEventListener('resize', onResize);
         cleanup();
-    }, durationMs + 400);
+    }, durationMs + 600);
 
     if (onSmall) {
         setTimeout(() => requestAnimationFrame(frame), 80);
