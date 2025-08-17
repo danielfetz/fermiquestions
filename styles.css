@@ -733,7 +733,7 @@ button#stats-btn {
         gap: 4px;
         border: 2px solid #e8ecee;
         border-radius: 16px;
-        padding: 18.5px;
+        padding: 18.5px 8.5px;
         background: white;
         margin-bottom: 18px;
     }
