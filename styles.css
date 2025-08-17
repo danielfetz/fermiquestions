@@ -290,6 +290,10 @@ button#stats-btn {
     font-size: 0.85rem;
 }
 
+.result-emoji {
+    display: none;
+}
+
 /* New Game Section */
 .new-game-section {
     margin-top: 20px;
@@ -549,7 +553,6 @@ button#stats-btn {
     margin-bottom: 20px;
     color: #333;
     font-size: 1.2rem;
-    font-weight: 400;
 }
 
 .modal-content p {
@@ -591,6 +594,7 @@ button#stats-btn {
 .stat-number {
     display: block;
     font-size: 1.5rem;
+    font-weight: bold;
     color: #333;
     margin-bottom: 8px;
 }
@@ -730,6 +734,27 @@ button#stats-btn {
         background: white;
         margin-bottom: 18px;
     }
+    .game-result {
+        display: grid !important;
+        grid-template-columns: 28px 1fr;
+        grid-auto-rows: auto;
+        gap: 8px 10px;
+        align-items: start;
+        text-align: left;
+    }
+    .result-emoji {
+        display: block;
+        grid-row: 1 / span 2;
+        font-size: 1.1rem;
+        line-height: 1;
+        margin-top: 2px;
+    }
+    .result-message {
+        grid-column: 2;
+    }
+    .correct-answer {
+        grid-column: 2;
+    }
     /* On mobile, hide inline hint text and show the button */
     #hint-text {
         display: none;
@@ -772,6 +797,4 @@ button#stats-btn {
 
 .shake {
     animation: shake 0.5s ease-in-out;
-} 
-
-/* DOM-based confetti removed; now using canvas for performance on mobile */
+}
