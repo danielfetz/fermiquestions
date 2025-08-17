@@ -876,7 +876,6 @@ function endGame() {
     guessCounter.style.display = 'none';
     hideHint();
     gameResult.style.display = 'block';
-    triggerShake(gameResult);
     
     // Set result message
     if (gameWon) {
@@ -1282,7 +1281,6 @@ function endGameDisplay() {
     guessCounter.style.display = 'none';
     hideHint();
     gameResult.style.display = 'block';
-    triggerShake(gameResult);
     
     // Set result message
     if (gameWon) {
