@@ -682,48 +682,106 @@ function triggerShake(element, durationMs = 500) {
 }
 
 // Brief confetti animation when winning a game
-function triggerConfetti(durationMs = 1200, pieceCount = 80) {
-    const container = document.createElement('div');
-    container.className = 'confetti-container';
+function triggerConfetti(durationMs = 1200, particleCount = 80) {
+    const onSmall = isSmallDevice();
+    const total = onSmall ? Math.min(particleCount, 32) : particleCount;
+
+    const canvas = document.createElement('canvas');
+    canvas.style.position = 'fixed';
+    canvas.style.inset = '0';
+    canvas.style.width = '100vw';
+    canvas.style.height = '100vh';
+    canvas.style.pointerEvents = 'none';
+    canvas.style.zIndex = '10000';
+
+    const ctx = canvas.getContext('2d');
+    const dpr = Math.max(1, Math.min(window.devicePixelRatio || 1, 2));
+    function resizeCanvas() {
+        const vw = Math.max(document.documentElement.clientWidth || 0, window.innerWidth || 0);
+        const vh = Math.max(document.documentElement.clientHeight || 0, window.innerHeight || 0);
+        canvas.width = Math.floor(vw * dpr);
+        canvas.height = Math.floor(vh * dpr);
+        canvas.style.width = `${vw}px`;
+        canvas.style.height = `${vh}px`;
+        ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+    }
+    resizeCanvas();
+    document.body.appendChild(canvas);
 
     const colors = ['#e74c3c', '#f1c40f', '#2ecc71', '#3498db', '#9b59b6', '#e67e22'];
-    const screenWidth = window.innerWidth || document.documentElement.clientWidth || 320;
-    const onSmall = isSmallDevice();
-    const localCount = onSmall ? Math.min(pieceCount, 16) : pieceCount;
+    const width = () => canvas.clientWidth;
+    const height = () => canvas.clientHeight;
 
-    const fragment = document.createDocumentFragment();
-    const base = onSmall ? 0.7 : 0.9;
-    const span = onSmall ? 0.6 : 0.9;
-    const maxDelay = onSmall ? 0.12 : 0.2;
-
-    for (let i = 0; i < localCount; i++) {
-        const piece = document.createElement('div');
-        piece.className = 'confetti-piece';
-        const size = 6 + Math.random() * 8; // 6-14px
-        piece.style.width = `${size}px`;
-        piece.style.height = `${size * 0.6}px`;
-        const x = Math.random() * screenWidth;
-        piece.style.setProperty('--x', `${x}px`);
-        piece.style.backgroundColor = colors[Math.floor(Math.random() * colors.length)];
-        piece.style.opacity = '0.95';
-        piece.style.animationDuration = `${base + Math.random() * span}s`;
-        piece.style.animationDelay = `${Math.random() * maxDelay}s`;
-        fragment.appendChild(piece);
+    const particles = [];
+    for (let i = 0; i < total; i++) {
+        const size = 4 + Math.random() * 6; // 4-10px
+        particles.push({
+            x: Math.random() * width(),
+            y: -10 - Math.random() * 40,
+            vx: (Math.random() - 0.5) * 260, // px/s
+            vy: 80 + Math.random() * 160,     // px/s
+            ax: (Math.random() - 0.5) * 40,   // lateral drift
+            ay: 360,                           // gravity px/s^2
+            size,
+            rotation: Math.random() * Math.PI * 2,
+            rotationSpeed: (Math.random() - 0.5) * 6, // rad/s
+            color: colors[Math.floor(Math.random() * colors.length)]
+        });
     }
 
-    container.appendChild(fragment);
+    let running = true;
+    const start = performance.now();
+    let last = start;
 
-    const mount = () => {
-        document.body.appendChild(container);
-        setTimeout(() => {
-            try { document.body.removeChild(container); } catch (e) { /* noop */ }
-        }, durationMs + 300);
-    };
+    function frame(now) {
+        if (!running) return;
+        const elapsed = now - start;
+        const dt = Math.min(32, now - last) / 1000; // clamp dt to avoid big jumps
+        last = now;
+
+        ctx.clearRect(0, 0, width(), height());
+        for (let i = 0; i < particles.length; i++) {
+            const p = particles[i];
+            // update physics
+            p.vx += p.ax * dt;
+            p.vy += p.ay * dt;
+            p.x += p.vx * dt;
+            p.y += p.vy * dt;
+            p.rotation += p.rotationSpeed * dt;
+
+            // draw
+            ctx.save();
+            ctx.translate(p.x, p.y);
+            ctx.rotate(p.rotation);
+            ctx.fillStyle = p.color;
+            ctx.fillRect(-p.size * 0.5, -p.size * 0.3, p.size, p.size * 0.6);
+            ctx.restore();
+        }
+
+        if (elapsed < durationMs + 200) {
+            requestAnimationFrame(frame);
+        } else {
+            cleanup();
+        }
+    }
+
+    function cleanup() {
+        running = false;
+        try { document.body.removeChild(canvas); } catch (e) { /* noop */ }
+    }
+
+    // Resize handler for orientation changes during the brief animation
+    const onResize = () => resizeCanvas();
+    window.addEventListener('resize', onResize, { passive: true });
+    const stopTimer = setTimeout(() => {
+        window.removeEventListener('resize', onResize);
+        cleanup();
+    }, durationMs + 400);
 
     if (onSmall) {
-        setTimeout(() => requestAnimationFrame(mount), 120);
+        setTimeout(() => requestAnimationFrame(frame), 80);
     } else {
-        requestAnimationFrame(mount);
+        requestAnimationFrame(frame);
     }
 }
 
