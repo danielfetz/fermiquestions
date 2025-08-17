@@ -728,14 +728,16 @@ button#stats-btn {
         margin-bottom: 18px;
     }
     .game-result {
-        display: flex !important;
-        align-items: center;
-        gap: 4px;
         border: 2px solid #e8ecee;
         border-radius: 16px;
         padding: 18.5px 8.5px;
         background: white;
         margin-bottom: 18px;
+    }
+    .result-container {
+        display: flex;
+        align-items: center;
+        gap: 4px;
     }
     .result-emoji {
         display: block;
@@ -743,7 +745,7 @@ button#stats-btn {
         padding: 0 12px;
         height: 58px;
     }
-    .result-container {
+    .result-text {
         padding: 10px 0;
     }
     /* On mobile, hide inline hint text and show the button */
