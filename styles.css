@@ -730,7 +730,7 @@ button#stats-btn {
     .game-result {
         border: 2px solid #e8ecee;
         border-radius: 16px;
-        padding: 18.5px 8.5px;
+        padding: 8.5px 18.5px;
         background: white;
         margin-bottom: 18px;
     }
