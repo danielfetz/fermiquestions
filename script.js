@@ -728,7 +728,7 @@ function triggerConfetti(durationMs = 1200, particleCount = 80) {
             color: colors[Math.floor(Math.random() * colors.length)]
         });
     }
-    
+
     let running = true;
     const start = performance.now();
     let last = start;
