@@ -613,6 +613,7 @@ button#stats-btn {
 
 .guess-distribution h3 {
     font-size: 0.9rem;
+    font-weight: 400;
     margin-bottom: 20px;
     color: #333;
     text-align: center;
