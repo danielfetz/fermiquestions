@@ -1804,7 +1804,7 @@ function setupEventListeners() {
     
     // Strategy tips (mobile link in guess counter)
     if (strategyTipsBtn) {
-        strategyTipsBtn.addEventListener('click', showStrategy);
+        strategyTipsBtn.addEventListener('click', showHelp);
     }
 
     // Hint modal trigger (mobile)
