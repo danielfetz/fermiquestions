@@ -634,7 +634,6 @@ button#stats-btn {
 .dist-label {
     font-size: 0.7rem;
     color: #333;
-    font-weight: bold;
     min-width: 15px;
 }
 
@@ -657,7 +656,6 @@ button#stats-btn {
 .dist-count {
     font-size: 0.7rem;
     color: #333;
-    font-weight: bold;
     min-width: 20px;
     text-align: right;
 }
