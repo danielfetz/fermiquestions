@@ -290,6 +290,10 @@ button#stats-btn {
     font-size: 0.85rem;
 }
 
+.result-emoji {
+    display: none;
+}
+
 /* New Game Section */
 .new-game-section {
     margin-top: 20px;
@@ -609,6 +613,7 @@ button#stats-btn {
 
 .guess-distribution h3 {
     font-size: 0.9rem;
+    font-weight: 400;
     margin-bottom: 20px;
     color: #333;
     text-align: center;
@@ -726,9 +731,24 @@ button#stats-btn {
     .game-result {
         border: 2px solid #e8ecee;
         border-radius: 16px;
-        padding: 18.5px;
+        padding: 8.5px 18.5px;
         background: white;
         margin-bottom: 18px;
+        font-size: 0.8rem;
+    }
+    .result-container {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+    }
+    .result-emoji {
+        display: block;
+        font-size: 2.125rem;
+        padding: 0 8px;
+        height: 58px;
+    }
+    .result-text {
+        padding: 10px 0;
     }
     /* On mobile, hide inline hint text and show the button */
     #hint-text {
@@ -772,6 +792,4 @@ button#stats-btn {
 
 .shake {
     animation: shake 0.5s ease-in-out;
-} 
-
-/* DOM-based confetti removed; now using canvas for performance on mobile */
+}
