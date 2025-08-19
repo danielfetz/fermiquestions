@@ -696,7 +696,7 @@ button#stats-btn {
     .game-container {
         padding: 0;
         border-radius: 18px;
-        padding-bottom: 84px; /* space for fixed input/new game area */
+        padding-bottom: 85px; /* space for fixed input/new game area */
         background: transparent;
     }
     .question-container {
