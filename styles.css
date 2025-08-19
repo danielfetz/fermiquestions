@@ -303,12 +303,12 @@ button#stats-btn {
 
 .new-game-btn-inline {
     width: 100%;
-    height: 53px;
+    height: 54px;
     background-color: #3498db;
     color: white;
     border: none;
     padding: 12px 25px;
-    border-radius: 14px;
+    border-radius: 15px;
     font-family: 'Press Start 2P', monospace;
     font-size: 0.8rem;
     cursor: pointer;
@@ -337,10 +337,10 @@ button#stats-btn {
 }
 
 .new-game-section .share-btn {
-    height: 53px;
+    height: 54px;
     font-size: 0.8rem;
     margin-top: 0;
-    border-radius: 14px;
+    border-radius: 15px;
     border: 2px solid #eaecef;
 }
 
@@ -360,14 +360,14 @@ button#stats-btn {
     flex: 1;
     background-color: #f6f6f6;
     color: #333;
-    padding: 17px 15px;
+    padding: 17.5px 15px;
     border-radius: 13px;
     font-size: 0.835rem;
     text-align: center;
     border: none;
     font-family: 'Press Start 2P', monospace;
     line-height: normal;
-    max-height: 46.91px;
+    max-height: 48px;
 }
 
 .guess-field.empty {
@@ -377,7 +377,7 @@ button#stats-btn {
 
 .feedback-button {
     width: 100px;
-    height: 46.91px;
+    height: 48px;
     border-radius: 13px;
     border: none;
     display: flex;
@@ -476,12 +476,12 @@ button#stats-btn {
 }
 
 .input-container {
-    height: 53px;
+    height: 54px;
     display: flex;
     align-items: center;
     gap: 8px;
     padding: 10px 15px;
-    border-radius: 14px;
+    border-radius: 15px;
     flex: 1;
     border: 2px solid #eaecf0;
 }
@@ -503,12 +503,12 @@ button#stats-btn {
 
 .submit-btn {
     width: 110px;
-    height: 53px;
+    height: 54px;
     background-color: #3498db;
     color: white;
     border: none;
     padding: 8px 12px;
-    border-radius: 14px;
+    border-radius: 15px;
     font-family: 'Press Start 2P', monospace;
     font-size: 0.8rem;
     cursor: pointer;
