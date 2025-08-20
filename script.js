@@ -1818,10 +1818,30 @@ function setupEventListeners() {
     // This helps prevent issues where clicking elsewhere first prevents keyboard from showing
     guessInput.addEventListener('touchstart', (e) => {
         e.stopPropagation(); // Prevent any parent touch handlers from interfering
+        
+        // On mobile, immediately focus the input on touch
+        if ('ontouchstart' in window || navigator.maxTouchPoints > 0) {
+            // Use a small timeout to ensure the focus happens after any other touch handlers
+            setTimeout(() => {
+                if (document.activeElement !== guessInput) {
+                    guessInput.focus();
+                }
+            }, 0);
+        }
+    });
+    
+    // Also handle touchend for better mobile compatibility
+    guessInput.addEventListener('touchend', (e) => {
+        e.preventDefault(); // Prevent any default behavior
+        
+        // Ensure focus on touch end as well
+        if (document.activeElement !== guessInput) {
+            guessInput.focus();
+        }
     });
     
     guessInput.addEventListener('click', () => {
-        // Force focus if not already focused
+        // Force focus if not already focused (for desktop or as fallback)
         if (document.activeElement !== guessInput) {
             guessInput.focus();
         }
