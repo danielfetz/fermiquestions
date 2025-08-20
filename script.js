@@ -1867,6 +1867,51 @@ function setupEventListeners() {
             content.addEventListener(event, e => e.stopPropagation());
         });
     });
+
+    // Mobile keyboard handling: adjust fixed footer and ensure input is visible
+    try {
+        const supportsTouch = 'ontouchstart' in window || navigator.maxTouchPoints > 0;
+        if (supportsTouch) {
+            const updateViewportOffsets = () => {
+                const vv = window.visualViewport;
+                if (!vv) return;
+                const bottomInset = Math.max(0, Math.round((window.innerHeight - (vv.height + vv.offsetTop))));
+                document.documentElement.style.setProperty('--viewport-bottom', `calc(${bottomInset}px + env(safe-area-inset-bottom))`);
+            };
+
+            if (window.visualViewport) {
+                updateViewportOffsets();
+                window.visualViewport.addEventListener('resize', updateViewportOffsets, { passive: true });
+                window.visualViewport.addEventListener('scroll', updateViewportOffsets, { passive: true });
+            }
+
+            // On focusing the input, scroll it into view when the keyboard opens
+            let focusScrollTimer = null;
+            guessInput.addEventListener('focus', () => {
+                // Small delay to let keyboard animate in, then ensure visibility
+                clearTimeout(focusScrollTimer);
+                focusScrollTimer = setTimeout(() => {
+                    try {
+                        guessInput.scrollIntoView({ block: 'center', inline: 'nearest', behavior: 'auto' });
+                    } catch (e) {
+                        // Fallback: center-ish
+                        const rect = guessInput.getBoundingClientRect();
+                        const y = window.scrollY + rect.top - (window.innerHeight * 0.4);
+                        window.scrollTo({ top: Math.max(0, y) });
+                    }
+                }, 150);
+            });
+
+            // Clear CSS var when input blurs to restore footer position
+            guessInput.addEventListener('blur', () => {
+                clearTimeout(focusScrollTimer);
+                // Reset to safe-area baseline; visualViewport handlers will re-apply as needed
+                document.documentElement.style.setProperty('--viewport-bottom', 'env(safe-area-inset-bottom)');
+            });
+        }
+    } catch (_) {
+        // no-op
+    }
 }
 
 // Initialize the game when the page loads
