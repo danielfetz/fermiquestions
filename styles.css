@@ -684,7 +684,12 @@ button#stats-btn {
         background: #fff;
     }
     body {
-        background: repeating-linear-gradient(to bottom, rgb(0 0 0 / 1%) 0px, rgb(0 0 0 / 1%) 1px, transparent 2px, transparent 4px), linear-gradient(to bottom, rgb(16 163 127 / 5%) 0px, rgb(90 97 255 / 5%) 120px, rgb(0 204 255 / 2%) 200px, rgba(255, 255, 255, 0.95) 290px, #ffffff 100%);
+        background: linear-gradient(to bottom, 
+            rgba(16, 163, 127, 0.05) 0px, 
+            rgba(90, 97, 255, 0.05) 120px, 
+            rgba(0, 204, 255, 0.02) 200px, 
+            rgba(255, 255, 255, 0.95) 290px, 
+            #ffffff 100%);
         padding: 0px 18px;
     }
     .icon-button {
