@@ -1814,6 +1814,19 @@ function setupEventListeners() {
         }
     });
     
+    // Ensure proper focus behavior on mobile
+    // This helps prevent issues where clicking elsewhere first prevents keyboard from showing
+    guessInput.addEventListener('touchstart', (e) => {
+        e.stopPropagation(); // Prevent any parent touch handlers from interfering
+    });
+    
+    guessInput.addEventListener('click', () => {
+        // Force focus if not already focused
+        if (document.activeElement !== guessInput) {
+            guessInput.focus();
+        }
+    });
+    
     // Help button
     helpBtn.addEventListener('click', showHelp);
     
@@ -1856,15 +1869,31 @@ function setupEventListeners() {
         
     // Close modals when clicking outside (desktop + mobile)
     [helpModal, statsModal, questionsModal, strategyModal, hintModal].forEach(modal => {
-        ['click', 'touchend'].forEach(event => {
-            modal.addEventListener(event, e => e.target === modal && closeModal(modal));
+        modal.addEventListener('click', e => {
+            if (e.target === modal) closeModal(modal);
+        });
+        
+        // Handle touch events separately to avoid focus issues
+        modal.addEventListener('touchend', e => {
+            if (e.target === modal) {
+                e.preventDefault(); // Prevent any default touch behavior
+                closeModal(modal);
+            }
         });
     });
     
     // Prevent modal content clicks from closing modals
     document.querySelectorAll('.modal-content').forEach(content => {
-        ['click', 'touchend'].forEach(event => {
-            content.addEventListener(event, e => e.stopPropagation());
+        content.addEventListener('click', e => {
+            e.stopPropagation();
+        });
+        
+        // For touch events, only stop propagation if we're actually in a visible modal
+        content.addEventListener('touchend', e => {
+            const modal = content.closest('.modal');
+            if (modal && modal.style.display === 'block') {
+                e.stopPropagation();
+            }
         });
     });
 }
