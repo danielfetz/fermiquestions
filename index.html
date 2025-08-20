@@ -8,7 +8,7 @@
     <meta name="description" content="A Wordle-style game for Fermi questions.">
     <link rel="stylesheet" href="styles.css">
     <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
-    <script defer data-domain="fermiquestions.org" src="https://plausible.io/js/script.hash.tagged-events.js"></script>
+    <script defer data-domain="fermiquestions.org" src="https://plausible.io/js/script.hash.js"></script>
 </head>
 <body>
         <header class="game-header">
@@ -100,14 +100,14 @@
                         pattern="[0-9,]*"
                     >
                 </div>
-                <button id="submit-btn" class="submit-btn plausible-event-name=Guess+Submitted">Submit</button>
+                <button id="submit-btn" class="submit-btn">Submit</button>
             </div>
         </div>
 
         <!-- New Game Button (hidden by default) -->
         <div class="new-game-section" id="new-game-section" style="display: none;">
-            <button id="share-btn" class="share-btn plausible-event-name=Share+click" style="display: none;">Share</button>
-            <button id="new-game-btn-inline" class="new-game-btn-inline plausible-event-name=Play+more">Play more</button>
+            <button id="share-btn" class="share-btn" style="display: none;">Share</button>
+            <button id="new-game-btn-inline" class="new-game-btn-inline">Play more</button>
         </div>
 
         <!-- Game Over Modal -->
