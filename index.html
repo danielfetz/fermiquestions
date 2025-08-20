@@ -3,12 +3,12 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
-    <meta name="theme-color" content="#f0f8ff">
+    <meta name="theme-color" content="#f4f8fa">
     <title>Fermi Questions</title>
     <meta name="description" content="A Wordle-style game for Fermi questions.">
     <link rel="stylesheet" href="styles.css">
     <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
-    <script defer data-domain="fermiquestions.org" src="https://plausible.io/js/script.hash.js"></script>
+    <script defer data-domain="fermiquestions.org" src="https://plausible.io/js/script.hash.tagged-events.js"></script>
 </head>
 <body>
         <header class="game-header">
@@ -63,7 +63,7 @@
         <!-- Guess Counter -->
         <div class="guess-counter" id="guess-counter">
             <span id="current-streak-display">Current streak: 0</span>
-            <button id="strategy-tips-btn" class="strategy-link" aria-controls="strategy-modal" aria-haspopup="dialog">Show strategy tips <span class="arrow">></span></button>
+            <button id="strategy-tips-btn" class="strategy-link" aria-controls="help-modal" aria-haspopup="dialog">How to Play <span class="arrow">></span></button>
         </div>
 
         <!-- Hint (hidden by default) -->
@@ -100,14 +100,14 @@
                         pattern="[0-9,]*"
                     >
                 </div>
-                <button id="submit-btn" class="submit-btn">Submit</button>
+                <button id="submit-btn" class="submit-btn plausible-event-name=Guess+Submitted">Submit</button>
             </div>
         </div>
 
         <!-- New Game Button (hidden by default) -->
         <div class="new-game-section" id="new-game-section" style="display: none;">
-            <button id="share-btn" class="share-btn" style="display: none;">Share</button>
-            <button id="new-game-btn-inline" class="new-game-btn-inline">Play more</button>
+            <button id="share-btn" class="share-btn plausible-event-name=Share+click" style="display: none;">Share</button>
+            <button id="new-game-btn-inline" class="new-game-btn-inline plausible-event-name=Play+more">Play more</button>
         </div>
 
         <!-- Game Over Modal -->
@@ -124,9 +124,9 @@
         <div class="modal" id="help-modal">
             <div class="modal-content">
                 <h2>How to Play</h2>
-                <p>Guess the answer to Fermi estimation questions with 6 or less tries.</p>
-                <p>After each guess, you'll see if your answer was too high (arrow pointing down) or too low (arrow pointing up).</p>
-                <p>The feedback color shows how close you are: orange means your guess is within ±50% of the correct answer, red means it is further away.</p>
+                <p>Guess the answer to estimation questions in 6 or less tries.</p>
+                <p>After each guess, you'll see if your answer was too high or too low. An arrow pointing down means that the correct answer is below your guess.</p>
+                <p>The color of the arrows shows how close you are: orange indicates your guess is within ±50% of the answer, red means it is further away</p>
                 <p>You win if your guess is within ±20% of the correct answer.</p>
                 <button id="close-help-btn" class="close-btn">Close</button>
             </div>
