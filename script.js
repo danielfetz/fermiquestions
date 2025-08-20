@@ -438,9 +438,14 @@ function startNewGame() {
     guessInput.disabled = false;
     submitBtn.disabled = false;
     
-    // Auto-focus only on non-touch devices (desktop)
+    // Handle input focus based on device type
     if (!('ontouchstart' in window) && !navigator.maxTouchPoints) {
+        // Desktop: Auto-focus for convenience
         guessInput.focus();
+    } else {
+        // Mobile: Ensure input is in a clean blurred state
+        // This prevents focus state ambiguity that can cause keyboard issues
+        guessInput.blur();
     }
 
     // Update URL to reflect the current question (only if not already navigating)
@@ -1203,9 +1208,13 @@ function loadCurrentGameState() {
             guessInput.disabled = false;
             submitBtn.disabled = false;
             
-            // Auto-focus on desktop only
+            // Handle input focus based on device type
             if (!('ontouchstart' in window) && !navigator.maxTouchPoints) {
+                // Desktop: Auto-focus with delay
                 setTimeout(() => guessInput.focus(), 100);
+            } else {
+                // Mobile: Ensure clean blurred state
+                setTimeout(() => guessInput.blur(), 100);
             }
         }
             
@@ -1522,9 +1531,13 @@ function selectQuestion(question) {
                         guessInput.disabled = false;
                         submitBtn.disabled = false;
                         
-                        // Auto-focus on desktop only
+                        // Handle input focus based on device type
                         if (!('ontouchstart' in window) && !navigator.maxTouchPoints) {
+                            // Desktop: Auto-focus for convenience
                             guessInput.focus();
+                        } else {
+                            // Mobile: Ensure clean blurred state
+                            guessInput.blur();
                         }
                     }
                 } else {
@@ -1572,9 +1585,13 @@ function selectQuestion(question) {
         // Clear guesses
         clearGuesses();
         
-        // Auto-focus on desktop only
+        // Handle input focus based on device type
         if (!('ontouchstart' in window) && !navigator.maxTouchPoints) {
+            // Desktop: Auto-focus for convenience
             guessInput.focus();
+        } else {
+            // Mobile: Ensure clean blurred state
+            guessInput.blur();
         }
     }
 }
@@ -1811,39 +1828,6 @@ function setupEventListeners() {
             const number = parseInt(value);
             const formattedValue = formatNumber(number);
             input.value = formattedValue;
-        }
-    });
-    
-    // Ensure proper focus behavior on mobile
-    // This helps prevent issues where clicking elsewhere first prevents keyboard from showing
-    guessInput.addEventListener('touchstart', (e) => {
-        e.stopPropagation(); // Prevent any parent touch handlers from interfering
-        
-        // On mobile, immediately focus the input on touch
-        if ('ontouchstart' in window || navigator.maxTouchPoints > 0) {
-            // Use a small timeout to ensure the focus happens after any other touch handlers
-            setTimeout(() => {
-                if (document.activeElement !== guessInput) {
-                    guessInput.focus();
-                }
-            }, 0);
-        }
-    });
-    
-    // Also handle touchend for better mobile compatibility
-    guessInput.addEventListener('touchend', (e) => {
-        e.preventDefault(); // Prevent any default behavior
-        
-        // Ensure focus on touch end as well
-        if (document.activeElement !== guessInput) {
-            guessInput.focus();
-        }
-    });
-    
-    guessInput.addEventListener('click', () => {
-        // Force focus if not already focused (for desktop or as fallback)
-        if (document.activeElement !== guessInput) {
-            guessInput.focus();
         }
     });
     
