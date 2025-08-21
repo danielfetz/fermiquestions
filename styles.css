@@ -294,6 +294,20 @@ button#stats-btn {
     display: none;
 }
 
+.result-text {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.average-info {
+    display: block;
+    margin-top: 8px;
+    font-size: 0.75rem;
+    color: #666;
+    font-style: italic;
+}
+
 /* New Game Section */
 .new-game-section {
     margin-top: 20px;
@@ -750,6 +764,10 @@ button#stats-btn {
     }
     .result-text {
         padding: 10px 0;
+    }
+    .average-info {
+        font-size: 0.7rem;
+        margin-top: 6px;
     }
     /* On mobile, hide inline hint text and show the button */
     #hint-text {
