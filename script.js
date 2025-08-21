@@ -1,3 +1,121 @@
+// Supabase configuration
+const SUPABASE_URL = 'https://hxyaaqdnbkpsdpreddsf.supabase.co';
+const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imh4eWFhcWRuYmtwc2RwcmVkZHNmIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTUyNTg3MTgsImV4cCI6MjA3MDgzNDcxOH0.ONL920tQUbG-ttVVhV4yuTof4V0Oc-WMBwWY1Q-VQXc';
+
+// Initialize Supabase client
+let supabase = null;
+let currentUserId = null;
+
+// Initialize Supabase with error handling
+function initSupabase() {
+    try {
+        if (typeof window.supabase !== 'undefined') {
+            supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+            console.log('Supabase initialized successfully');
+            
+            // Sign in anonymously and get/create user session
+            initSupabaseAuth();
+        } else {
+            console.error('Supabase library not loaded');
+        }
+    } catch (error) {
+        console.error('Error initializing Supabase:', error);
+    }
+}
+
+// Initialize Supabase authentication
+async function initSupabaseAuth() {
+    if (!supabase) return;
+    
+    try {
+        // Check if user already has a session
+        const { data: { session } } = await supabase.auth.getSession();
+        
+        if (!session) {
+            // Sign in anonymously
+            const { data, error } = await supabase.auth.signInAnonymously();
+            if (error) {
+                console.error('Error signing in anonymously:', error);
+            } else {
+                currentUserId = data.user?.id;
+                console.log('Anonymous user created:', currentUserId);
+            }
+        } else {
+            currentUserId = session.user?.id;
+            console.log('Existing user session:', currentUserId);
+        }
+        
+        // Listen for auth changes
+        supabase.auth.onAuthStateChange((event, session) => {
+            currentUserId = session?.user?.id || null;
+            console.log('Auth state changed:', event, currentUserId);
+        });
+    } catch (error) {
+        console.error('Error with Supabase auth:', error);
+    }
+}
+
+// Save game data to Supabase
+async function saveGameToSupabase(gameData) {
+    if (!supabase || !currentUserId) return;
+    
+    try {
+        const { data, error } = await supabase
+            .from('game_sessions')
+            .upsert({
+                user_id: currentUserId,
+                question_date: gameData.question_date,
+                question_text: gameData.question_text,
+                correct_answer: gameData.correct_answer,
+                won: gameData.won,
+                total_guesses: gameData.total_guesses,
+                guesses: gameData.guesses,
+                completed_at: gameData.completed_at,
+                created_at: new Date().toISOString()
+            }, {
+                onConflict: 'user_id,question_date'
+            });
+            
+        if (error) {
+            console.error('Error saving game to Supabase:', error);
+        } else {
+            console.log('Game saved to Supabase successfully');
+        }
+    } catch (error) {
+        console.error('Error with Supabase save:', error);
+    }
+}
+
+// Save stats to Supabase
+async function saveStatsToSupabase(statsData) {
+    if (!supabase || !currentUserId) return;
+    
+    try {
+        const { data, error } = await supabase
+            .from('user_stats')
+            .upsert({
+                user_id: currentUserId,
+                games_played: statsData.gamesPlayed,
+                games_won: statsData.gamesWon,
+                win_rate: statsData.winRate,
+                current_streak: statsData.currentStreak,
+                max_streak: statsData.maxStreak,
+                guess_distribution: statsData.guessDistribution,
+                updated_at: new Date().toISOString()
+            }, {
+                onConflict: 'user_id'
+            });
+            
+        if (error) {
+            console.error('Error saving stats to Supabase:', error);
+        } else {
+            console.log('Stats saved to Supabase successfully');
+        }
+    } catch (error) {
+        console.error('Error with Supabase stats save:', error);
+    }
+}
+
 // Game state
 let currentQuestion = null;
 let currentGuess = 0;
@@ -346,6 +464,9 @@ const shareStatsBtn = document.getElementById('share-stats-btn');
 
 // Initialize game
 function initGame() {
+    // Initialize Supabase first
+    initSupabase();
+    
     loadStats();
     loadCompletedQuestions();
     
@@ -559,16 +680,20 @@ function submitGuess() {
     const tolerance = currentQuestion.answer * 0.20;
     const isCorrect = Math.abs(guessValue - currentQuestion.answer) <= tolerance;
     
+    // Define these variables for all cases (needed for Supabase save)
+    let isHigh = false;
+    let isClose = false;
+    
     if (isCorrect) {
         gameWon = true;
         gameOver = true;
         showFeedback(currentGuess - 1, 'correct', 'WIN');
     } else {
-        const isHigh = guessValue > currentQuestion.answer;
+        isHigh = guessValue > currentQuestion.answer;
         
         // Check if guess is within 50% (close but not correct)
         const closeTolerance = currentQuestion.answer * 0.5;
-        const isClose = Math.abs(guessValue - currentQuestion.answer) <= closeTolerance;
+        isClose = Math.abs(guessValue - currentQuestion.answer) <= closeTolerance;
         
         if (isClose) {
             showFeedback(currentGuess - 1, 'close', isHigh ? '↓' : '↑');
@@ -601,6 +726,30 @@ function submitGuess() {
     
     // Save current game state after each guess
     saveCurrentGameState();
+    
+    // Save guess to Supabase
+    if (supabase && currentUserId && currentQuestion) {
+        const guessData = {
+            user_id: currentUserId,
+            question_date: currentQuestion.date,
+            guess_number: currentGuess,
+            value: guessValue,
+            is_correct: isCorrect,
+            is_close: isClose,
+            is_high: isHigh,
+            timestamp: new Date().toISOString()
+        };
+        
+        // Save asynchronously without blocking
+        supabase
+            .from('guesses')
+            .insert(guessData)
+            .then(({ error }) => {
+                if (error) console.error('Error saving guess to Supabase:', error);
+                else console.log('Guess saved to Supabase');
+            })
+            .catch(err => console.error('Error with Supabase guess save:', err));
+    }
     
     // Show hint after 2nd guess if game not won
     if (currentGuess === 2 && !gameWon && currentQuestion.hint) {
@@ -885,6 +1034,21 @@ function endGame() {
             savedGuesses: savedGuesses
         };
         saveCompletedQuestions();
+        
+        // Save completed game to Supabase
+        if (supabase && currentUserId) {
+            const gameData = {
+                question_date: currentQuestion.date,
+                question_text: currentQuestion.question,
+                correct_answer: currentQuestion.answer,
+                won: gameWon,
+                total_guesses: currentGuess,
+                guesses: savedGuesses,
+                completed_at: new Date().toISOString()
+            };
+            
+            saveGameToSupabase(gameData);
+        }
     }
     
     // Update statistics
@@ -1018,9 +1182,12 @@ function closeModal(modal) {
     modal.style.display = 'none';
 }
 
-// Save statistics to localStorage
+// Save statistics to localStorage and Supabase
 function saveStats() {
     localStorage.setItem('fermiGameStats', JSON.stringify(stats));
+    
+    // Also save to Supabase
+    saveStatsToSupabase(stats);
 }
 
 // Load statistics from localStorage
@@ -1084,7 +1251,7 @@ function loadCompletedQuestions() {
     }
 }
 
-// Save current game state to localStorage (per question)
+// Save current game state to localStorage and Supabase (per question)
 function saveCurrentGameState() {
     if (!currentQuestion) return;
     
@@ -1133,6 +1300,22 @@ function saveCurrentGameState() {
     // Store state with question date as key
     const storageKey = `fermiGameState_${currentQuestion.date}`;
     localStorage.setItem(storageKey, JSON.stringify(gameState));
+    
+    // Also save in-progress game state to Supabase
+    if (supabase && currentUserId && !gameOver) {
+        const gameData = {
+            question_date: currentQuestion.date,
+            question_text: currentQuestion.question,
+            correct_answer: currentQuestion.answer,
+            won: gameWon,
+            total_guesses: currentGuess,
+            guesses: guesses,
+            completed_at: null // Not completed yet
+        };
+        
+        // Save asynchronously without blocking
+        saveGameToSupabase(gameData);
+    }
 }
 
 // Load current game state from localStorage
