@@ -276,12 +276,12 @@ const fermiQuestions = [
         answer: 6700000,
         category: "",
         explanation: "",
-        hint: "The horse population in the US has declined by more than two-thirds since it peaked in 1920.",
+        hint: "The horse population has declined by more than two-thirds since it peaked in 1920.",
         date: "2025-08-20",
         image: "data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' width='100' height='100' viewBox='0 0 100 100'%3e%3crect width='100' height='100' fill='%23f8fafc'/%3e%3ctext x='50' y='62' font-size='40' text-anchor='middle' fill='%23374151'%3e🐴%3c/text%3e%3c/svg%3e"
     },
     {
-        question: "How much revenue did Meta (Facebook) make on an average day in 2024? (in $)",
+        question: "How much revenue did Meta/Facebook make on an average day in 2024? (in $)",
         answer: 450000000,
         category: "",
         explanation: "",
