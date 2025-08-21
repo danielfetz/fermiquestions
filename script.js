@@ -1131,7 +1131,7 @@ function endGame() {
     }
     
     // Set correct answer
-    correctAnswer.innerHTML = `The correct answer was: <i>${formatNumber(currentQuestion.answer)}</i>`;
+    correctAnswer.innerHTML = `The correct answer was <i>${formatNumber(currentQuestion.answer)}</i>`;
     
     // Fetch and display average guesses from other players
     if (currentQuestion) {
@@ -1567,7 +1567,7 @@ function endGameDisplay() {
     }
     
     // Set correct answer
-    correctAnswer.innerHTML = `The correct answer was: <i>${formatNumber(currentQuestion.answer)}</i>`;
+    correctAnswer.innerHTML = `The correct answer was <i>${formatNumber(currentQuestion.answer)}</i>`;
     
     // Fetch and display average guesses from other players (for restored games too)
     if (currentQuestion) {
