@@ -162,7 +162,7 @@ function updateAverageDisplay(averageData) {
     
     if (!averageInfo) return;
     
-    if (!averageData || averageData.totalPlayers < 2) {
+    if (!averageData || averageData.totalPlayers < 1) {
         // Not enough data yet or error fetching
         averageInfo.textContent = '';
         return;
