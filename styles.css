@@ -155,7 +155,7 @@ button#stats-btn {
     color: #333;
     height: 58px;
     text-align: center;
-    background: #fafafaa8;
+    background: #fff;
     min-width: 100px;
     padding: 23px 8px 16px 0;
     border-width: 2px 0px 2px 2px;
@@ -864,23 +864,6 @@ button#stats-btn {
         display: inline;
     }
 }
-
-/* Animation for new guesses
-@keyframes slideIn {
-    from {
-        opacity: 0;
-        transform: translateY(-15px);
-    }
-    to {
-        opacity: 1;
-        transform: translateY(0);
-    }
-}
-
-.guess-row {
-    animation: slideIn 0.3s ease-out;
-}
-    */
 
 /* Shake animation for wrong guesses */
 @keyframes shake {
