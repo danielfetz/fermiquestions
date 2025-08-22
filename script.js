@@ -153,21 +153,15 @@ async function fetchAverageGuesses(questionDate) {
     }
 }
 
-// Update the average display inline with result text
+// Update the average tries display in the inline meta row
 function updateAverageDisplay(averageData) {
-    const averageInfo = document.getElementById('average-info');
-    
-    if (!averageInfo) return;
-    
+    if (!avgTriesInline) return;
     if (!averageData || averageData.totalPlayers < 1) {
-        // Not enough data yet or error fetching
-        averageInfo.innerHTML = '';
+        avgTriesInline.textContent = '';
         return;
     }
-    
-    // Display average with one decimal place
     const avgDisplay = averageData.average.toFixed(1);
-    averageInfo.innerHTML = `— it took players on average <i>${avgDisplay}</i> tries`;
+    avgTriesInline.textContent = `/ ${avgDisplay}`;
 }
 
 // Game state
@@ -286,7 +280,7 @@ const fermiQuestions = [
         answer: 15900000,
         category: "",
         explanation: "",
-        hint: "Around 240 million people hold a valid driver's licence in the US.",
+        hint: "Around 240 million people hold a valid driver's licence in the US.",
         date: "2025-08-02",
         image: "data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' width='100' height='100' viewBox='0 0 100 100'%3e%3crect width='100' height='100' fill='%23eff6ff'/%3e%3ctext x='50' y='62' font-size='40' text-anchor='middle' fill='%232563eb'%3e🚙%3c/text%3e%3c/svg%3e"
     },
@@ -481,6 +475,13 @@ const currentStreakDisplay = document.getElementById('current-streak-display');
 const guessCounter = document.getElementById('guess-counter');
 const hintContainer = document.getElementById('hint-container');
 const hintText = document.getElementById('hint-text');
+const questionMeta = document.getElementById('question-meta');
+const streakInline = document.getElementById('streak-inline');
+const avgTriesInline = document.getElementById('avg-tries-inline');
+const sourceBtn = document.getElementById('source-btn');
+const sourceModal = document.getElementById('source-modal');
+const sourceText = document.getElementById('source-text');
+const closeSourceBtn = document.getElementById('close-source-btn');
 const gameResult = document.getElementById('game-result');
 const resultMessage = document.getElementById('result-message');
 const resultEmoji = document.getElementById('result-emoji');
@@ -604,6 +605,11 @@ function startNewGame() {
     guessCounter.style.display = 'block';
     hideHint();
     gameResult.style.display = 'none';
+    if (questionMeta) {
+        questionMeta.style.display = 'none';
+        if (avgTriesInline) avgTriesInline.textContent = '';
+        if (streakInline) streakInline.textContent = `🔥 ${stats.currentStreak}`;
+    }
     inputSection.style.display = 'block';
     newGameSection.style.display = 'none';
     shareBtn.style.display = 'none'; // Hide share button for new game
@@ -1122,6 +1128,11 @@ function endGame() {
     guessCounter.style.display = 'none';
     hideHint();
     gameResult.style.display = 'block';
+    if (questionMeta) {
+        questionMeta.style.display = 'flex';
+        if (streakInline) streakInline.textContent = `🔥 ${stats.currentStreak}`;
+        if (avgTriesInline) avgTriesInline.textContent = '';
+    }
     
     // Set result message
     if (gameWon) {
@@ -1558,6 +1569,11 @@ function endGameDisplay() {
     guessCounter.style.display = 'none';
     hideHint();
     gameResult.style.display = 'block';
+    if (questionMeta) {
+        questionMeta.style.display = 'flex';
+        if (streakInline) streakInline.textContent = `🔥 ${stats.currentStreak}`;
+        if (avgTriesInline) avgTriesInline.textContent = '';
+    }
     
     // Set result message
     if (gameWon) {
@@ -1763,6 +1779,11 @@ function selectQuestion(question) {
                         // Show input section for continuing the game
                         guessCounter.style.display = 'block';
                         gameResult.style.display = 'none';
+                        if (questionMeta) {
+                            questionMeta.style.display = 'none';
+                            if (avgTriesInline) avgTriesInline.textContent = '';
+                            if (streakInline) streakInline.textContent = `🔥 ${stats.currentStreak}`;
+                        }
                         inputSection.style.display = 'block';
                         newGameSection.style.display = 'none';
                         shareBtn.style.display = 'none';
@@ -1817,6 +1838,11 @@ function selectQuestion(question) {
         guessCounter.style.display = 'block';
         hideHint();
         gameResult.style.display = 'none';
+        if (questionMeta) {
+            questionMeta.style.display = 'none';
+            if (avgTriesInline) avgTriesInline.textContent = '';
+            if (streakInline) streakInline.textContent = `🔥 ${stats.currentStreak}`;
+        }
         inputSection.style.display = 'block';
         newGameSection.style.display = 'none';
         shareBtn.style.display = 'none';
@@ -2096,6 +2122,24 @@ function setupEventListeners() {
     // Questions history button (question category)
     questionCategory.addEventListener('click', showQuestionsHistory);
     
+    // Source button opens explanation modal
+    if (sourceBtn && sourceModal) {
+        sourceBtn.addEventListener('click', () => {
+            if (currentQuestion && sourceText) {
+                const explanation = currentQuestion.explanation || 'No source available for this question yet. This is a new feature that will show you additional context like an example solution path, and additional information on what the median guesses of all players were.';
+                // Allow simple links if present; otherwise treat as plain text
+                sourceText.textContent = '';
+                const asHtml = /<a\s|https?:\/\//i.test(explanation);
+                if (asHtml) {
+                    sourceText.innerHTML = explanation;
+                } else {
+                    sourceText.textContent = explanation;
+                }
+            }
+            sourceModal.style.display = 'block';
+        });
+    }
+    
     // Close buttons
     closeHelpBtn.addEventListener('click', () => closeModal(helpModal));
     closeStatsBtn.addEventListener('click', () => closeModal(statsModal));
@@ -2112,7 +2156,7 @@ function setupEventListeners() {
     shareStatsBtn.addEventListener('click', shareStats);
         
     // Close modals when clicking outside (desktop + mobile)
-    [helpModal, statsModal, questionsModal, strategyModal, hintModal].forEach(modal => {
+    [helpModal, statsModal, questionsModal, strategyModal, hintModal, sourceModal].forEach(modal => {
         ['click', 'touchend'].forEach(event => {
             modal.addEventListener(event, e => e.target === modal && closeModal(modal));
         });
@@ -2124,6 +2168,11 @@ function setupEventListeners() {
             content.addEventListener(event, e => e.stopPropagation());
         });
     });
+
+    // Close source modal via button
+    if (closeSourceBtn && sourceModal) {
+        closeSourceBtn.addEventListener('click', () => closeModal(sourceModal));
+    }
 }
 
 // Initialize the game when the page loads
