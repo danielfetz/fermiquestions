@@ -206,6 +206,12 @@ button#stats-btn {
     opacity: 1;
 }
 
+/* Show tooltips on tap/click for mobile */
+.question-meta .meta-item.show-tooltip::after,
+.question-meta .meta-item.show-tooltip::before {
+    opacity: 1;
+}
+
 #avg-tries-inline {
     min-width: 110px;
     margin-left: -8px;
