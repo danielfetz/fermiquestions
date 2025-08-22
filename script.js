@@ -607,8 +607,6 @@ function startNewGame() {
     gameResult.style.display = 'none';
     if (questionMeta) {
         questionMeta.style.display = 'none';
-        if (avgTriesInline) avgTriesInline.textContent = '';
-        if (streakInline) streakInline.textContent = `🔥 ${stats.currentStreak}`;
     }
     inputSection.style.display = 'block';
     newGameSection.style.display = 'none';
@@ -1781,8 +1779,6 @@ function selectQuestion(question) {
                         gameResult.style.display = 'none';
                         if (questionMeta) {
                             questionMeta.style.display = 'none';
-                            if (avgTriesInline) avgTriesInline.textContent = '';
-                            if (streakInline) streakInline.textContent = `🔥 ${stats.currentStreak}`;
                         }
                         inputSection.style.display = 'block';
                         newGameSection.style.display = 'none';
@@ -1840,8 +1836,6 @@ function selectQuestion(question) {
         gameResult.style.display = 'none';
         if (questionMeta) {
             questionMeta.style.display = 'none';
-            if (avgTriesInline) avgTriesInline.textContent = '';
-            if (streakInline) streakInline.textContent = `🔥 ${stats.currentStreak}`;
         }
         inputSection.style.display = 'block';
         newGameSection.style.display = 'none';
