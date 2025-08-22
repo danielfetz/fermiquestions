@@ -49,6 +49,12 @@
                     </div>
                 </div>
             </div>
+            <!-- Inline info shown only after game ends -->
+            <div class="question-meta" id="question-meta" style="display: none;">
+                <span class="meta-item" id="streak-inline" data-tooltip="This is how many questions in a row you've answered in 6 or less tries">🔥 0</span>
+                <span class="meta-item" id="avg-tries-inline" data-tooltip="Average number of tries needed by players for this question"></span>
+                <button id="source-btn" class="source-btn">Source <span class="arrow">></span></button>
+            </div>
         </div>
 
         <!-- Questions History Modal -->
@@ -81,7 +87,6 @@
                 <div class="result-text" id="result-text">
                     <span class="result-message" id="result-message"></span>
                     <span class="correct-answer" id="correct-answer"></span>
-                    <span class="average-info" id="average-info"></span>
                 </div>
             </div>
         </div>
@@ -152,6 +157,15 @@
                 <h2>Hint</h2>
                 <p id="hint-modal-text"></p>
                 <button id="close-hint-btn" class="close-btn">Close</button>
+            </div>
+        </div>
+
+        <!-- Source/Explanation Modal -->
+        <div class="modal" id="source-modal">
+            <div class="modal-content">
+                <h2>Source</h2>
+                <div id="source-text"></div>
+                <button id="close-source-btn" class="close-btn">Close</button>
             </div>
         </div>
 
