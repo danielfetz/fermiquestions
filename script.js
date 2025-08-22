@@ -2148,31 +2148,6 @@ function setupEventListeners() {
     // Share buttons
     shareBtn.addEventListener('click', shareGame);
     shareStatsBtn.addEventListener('click', shareStats);
-    
-    // Tap-to-toggle tooltips for inline meta on mobile
-    const metaItems = Array.from(document.querySelectorAll('.question-meta .meta-item'));
-    if (metaItems.length) {
-        const isTouch = 'ontouchstart' in window || navigator.maxTouchPoints > 0;
-        if (isTouch) {
-            metaItems.forEach(el => {
-                el.addEventListener('click', (e) => {
-                    e.stopPropagation();
-                    // toggle current
-                    const nowShowing = el.classList.toggle('show-tooltip');
-                    // hide others
-                    if (nowShowing) {
-                        metaItems.forEach(other => {
-                            if (other !== el) other.classList.remove('show-tooltip');
-                        });
-                    }
-                });
-            });
-            // close when tapping outside
-            document.addEventListener('click', () => {
-                metaItems.forEach(el => el.classList.remove('show-tooltip'));
-            });
-        }
-    }
         
     // Close modals when clicking outside (desktop + mobile)
     [helpModal, statsModal, questionsModal, strategyModal, hintModal, sourceModal].forEach(modal => {
