@@ -202,11 +202,9 @@ button#stats-btn {
 }
 
 .question-meta .meta-item:hover::after,
-.question-meta .meta-item:hover::before {
-    opacity: 1;
-}
-
-/* Show tooltips on tap/click for mobile */
+.question-meta .meta-item:hover::before,
+.question-meta .meta-item:focus::after,
+.question-meta .meta-item:focus::before,
 .question-meta .meta-item.show-tooltip::after,
 .question-meta .meta-item.show-tooltip::before {
     opacity: 1;
