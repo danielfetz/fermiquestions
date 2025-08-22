@@ -2129,7 +2129,7 @@ function setupEventListeners() {
     if (sourceBtn && sourceModal) {
         sourceBtn.addEventListener('click', () => {
             if (currentQuestion && sourceText) {
-                const explanation = currentQuestion.explanation || 'No source available for this question as of now. This is a new feature that will also show you additional information like an example solution path, and how well the median first guess for this question was.';
+                const explanation = currentQuestion.explanation || 'No source available for this question as of now. This is a new feature that will also show you additional information like an example solution path, and how good the median first guess for this question was.';
                 // Allow simple links if present; otherwise treat as plain text
                 sourceText.textContent = '';
                 const asHtml = /<a\s|https?:\/\//i.test(explanation);
