@@ -153,6 +153,53 @@ async function fetchAverageGuesses(questionDate) {
     }
 }
 
+// Fetch median of first guesses for a question.
+// Tries RPC 'median_first_guess_for_date' first; falls back to client aggregation from game_sessions.
+async function fetchMedianFirstGuess(questionDate) {
+    if (!supabase) return null;
+    // Try server-side RPC (preferred)
+    try {
+        const { data, error } = await supabase
+            .rpc('median_first_guess_for_date', { q_date: questionDate });
+        if (!error && data && data.length > 0) {
+            const row = data[0];
+            if (row && row.median != null) {
+                const value = typeof row.median === 'string' ? parseFloat(row.median) : row.median;
+                if (!isNaN(value)) return Math.round(value);
+            }
+        }
+    } catch (err) {
+        // ignore and try fallback
+    }
+    // Fallback: read first guesses from game_sessions JSON and compute client-side
+    try {
+        const { data, error } = await supabase
+            .from('game_sessions')
+            .select('guesses, completed_at')
+            .eq('question_date', questionDate)
+            .not('guesses', 'is', null);
+        if (error || !data) return null;
+        const firstGuesses = [];
+        for (const row of data) {
+            const list = Array.isArray(row.guesses) ? row.guesses : null;
+            if (!list || list.length === 0) continue;
+            const first = list[0];
+            if (!first || first.value == null) continue;
+            const num = parseInt(String(first.value).replace(/[^\d]/g, ''));
+            if (!isNaN(num)) firstGuesses.push(num);
+        }
+        if (firstGuesses.length === 0) return null;
+        firstGuesses.sort((a, b) => a - b);
+        const mid = Math.floor(firstGuesses.length / 2);
+        if (firstGuesses.length % 2 === 0) {
+            return Math.round((firstGuesses[mid - 1] + firstGuesses[mid]) / 2);
+        }
+        return firstGuesses[mid];
+    } catch (err) {
+        return null;
+    }
+}
+
 // Update the average tries display in the inline meta row
 function updateAverageDisplay(averageData) {
     if (!avgTriesInline) return;
@@ -463,15 +510,6 @@ const fermiQuestions = [
         hint: "The FAA handles on average more than 44,000 flights per day.",
         date: "2025-08-22",
         image: "data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' width='100' height='100' viewBox='0 0 100 100'%3e%3crect width='100' height='100' fill='%23f8fafc'/%3e%3ctext x='50' y='62' font-size='40' text-anchor='middle' fill='%23374151'%3e✈️%3c/text%3e%3c/svg%3e"
-    },
-    {
-        question: "How many new cars did Toyota sell globally in 2024?",
-        answer: 10200000,
-        category: "",
-        explanation: "",
-        hint: "In 2024, Toyoto sold around 2.33 million cars in the US.",
-        date: "2025-08-23",
-        image: "data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' width='100' height='100' viewBox='0 0 100 100'%3e%3crect width='100' height='100' fill='%23f8fafc'/%3e%3ctext x='50' y='62' font-size='40' text-anchor='middle' fill='%23374151'%3e🚗️%3c/text%3e%3c/svg%3e"
     }
 ];
 
@@ -525,6 +563,7 @@ const closeStatsBtn = document.getElementById('close-stats-btn');
 const closeQuestionsBtn = document.getElementById('close-questions-btn');
 const shareBtn = document.getElementById('share-btn');
 const shareStatsBtn = document.getElementById('share-stats-btn');
+const medianFirstGuessText = document.getElementById('median-first-guess-text');
 
 // Initialize game
 function initGame() {
@@ -2129,7 +2168,7 @@ function setupEventListeners() {
     if (sourceBtn && sourceModal) {
         sourceBtn.addEventListener('click', () => {
             if (currentQuestion && sourceText) {
-                const explanation = currentQuestion.explanation || 'No source available for this question as of now. This is a new feature that will also show you additional information like an example solution path, and how good the median first guess for this question was.';
+                const explanation = currentQuestion.explanation || 'No source available for this question as of now. This is a new feature that will also show you additional information like an example solution path, and how well the median first guess for this question was.';
                 // Allow simple links if present; otherwise treat as plain text
                 sourceText.textContent = '';
                 const asHtml = /<a\s|https?:\/\//i.test(explanation);
@@ -2138,6 +2177,18 @@ function setupEventListeners() {
                 } else {
                     sourceText.textContent = explanation;
                 }
+                // Reset median first guess text before fetching
+                if (medianFirstGuessText) medianFirstGuessText.textContent = '';
+                // Fetch median first guess and display
+                fetchMedianFirstGuess(currentQuestion.date)
+                    .then(median => {
+                        if (median != null && medianFirstGuessText) {
+                            medianFirstGuessText.textContent = `Median first guess: ${formatNumber(median)}`;
+                        }
+                    })
+                    .catch(() => {
+                        // ignore errors, keep it blank
+                    });
             }
             sourceModal.style.display = 'block';
         });
