@@ -542,17 +542,17 @@ button#stats-btn {
 }
 
 .feedback-button.high {
-    background-color: #e74c3c;
+    background-color: #fe4c4c;
     color: white;
 }
 
 .feedback-button.low {
-    background-color: #e74c3c;
+    background-color: #fe4c4c;
     color: white;
 }
 
 .feedback-button.close {
-    background-color: #f39c12;
+    background-color: #ffad00;
     color: white;
 }
 
