@@ -153,11 +153,11 @@ button#stats-btn {
 
 .question-meta .meta-item {
     color: #333;
-    height: 58px;
+    height: 62px;
     text-align: center;
-    background: #fff;
+    background: transparent;
     min-width: 100px;
-    padding: 23px 8px 16px 0;
+    padding: 25px 8px 16px 0;
     border-width: 2px 0px 2px 2px;
     border-style: dashed;
     border-color: #e9ecef;
@@ -225,7 +225,7 @@ button#stats-btn {
     cursor: pointer;
     width: 100%;
     padding: 21px 8px 12px;
-    height: 58px;
+    height: 62px;
     margin-left: -8px;
     z-index: 4;
 }
@@ -828,7 +828,7 @@ button#stats-btn {
         margin-bottom: 18px;
     }
     .game-result {
-        border: 2px solid #e8ecee;
+        border: 2px dashed #e8ecee;
         border-radius: 16px;
         padding: 8.5px 18.5px;
         background: white;
