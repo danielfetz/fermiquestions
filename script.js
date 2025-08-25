@@ -200,6 +200,68 @@ async function fetchMedianFirstGuess(questionDate) {
     }
 }
 
+// Compute the percentile of the user's first guess among all first guesses for this date
+// Attempts RPC 'first_guess_percentile_for_date' first; falls back to client aggregation
+async function fetchFirstGuessPercentile(questionDate) {
+    if (!supabase) return null;
+    // get user's first guess from current game or saved data
+    let userFirstGuess = null;
+    try {
+        const guessRows = guessesContainer.querySelectorAll('.guess-row');
+        if (guessRows.length > 0) {
+            const firstRow = guessRows[0];
+            const guessField = firstRow.querySelector('.guess-field');
+            if (guessField && guessField.textContent) {
+                const n = parseInt(String(guessField.textContent).replace(/[^\d]/g, ''));
+                if (!isNaN(n)) userFirstGuess = n;
+            }
+        }
+    } catch (e) {
+        // ignore
+    }
+    if (userFirstGuess == null) return null;
+
+    // Try RPC
+    try {
+        const { data, error } = await supabase
+            .rpc('first_guess_percentile_for_date', { q_date: questionDate, g_value: userFirstGuess });
+        if (!error && data && data.length > 0) {
+            const row = data[0];
+            if (row && typeof row.percentile === 'number') return row.percentile;
+        }
+    } catch (e) {
+        // ignore and fallback
+    }
+
+    // Fallback: compute percentile client-side from game_sessions
+    try {
+        const { data, error } = await supabase
+            .from('game_sessions')
+            .select('guesses')
+            .eq('question_date', questionDate)
+            .not('guesses', 'is', null);
+        if (error || !data) return null;
+        const values = [];
+        for (const row of data) {
+            const list = Array.isArray(row.guesses) ? row.guesses : null;
+            if (!list || list.length === 0) continue;
+            const first = list[0];
+            if (!first || first.value == null) continue;
+            const num = parseInt(String(first.value).replace(/[^\d]/g, ''));
+            if (!isNaN(num)) values.push(num);
+        }
+        if (values.length === 0) return null;
+        values.sort((a, b) => a - b);
+        // percentile rank: percentage of values <= user's value
+        let countLE = 0;
+        for (const v of values) if (v <= userFirstGuess) countLE++;
+        const percentile = Math.round((countLE / values.length) * 100);
+        return percentile;
+    } catch (e) {
+        return null;
+    }
+}
+
 // Update the average tries display in the inline meta row
 function updateAverageDisplay(averageData) {
     if (!avgTriesInline) return;
@@ -564,6 +626,7 @@ const closeQuestionsBtn = document.getElementById('close-questions-btn');
 const shareBtn = document.getElementById('share-btn');
 const shareStatsBtn = document.getElementById('share-stats-btn');
 const medianFirstGuessText = document.getElementById('median-first-guess-text');
+const firstGuessPercentileText = document.getElementById('first-guess-percentile-text');
 
 // Initialize game
 function initGame() {
@@ -2181,14 +2244,26 @@ function setupEventListeners() {
                 if (medianFirstGuessText) medianFirstGuessText.textContent = '';
                 const playersEl = document.getElementById('source-players-count');
                 const winRateEl = document.getElementById('source-win-rate');
+                const avgTriesEl = document.getElementById('source-avg-tries');
                 if (playersEl) playersEl.textContent = '0';
                 if (winRateEl) winRateEl.textContent = '0%';
+                if (avgTriesEl) avgTriesEl.textContent = '0';
 
                 // Fetch median first guess
                 fetchMedianFirstGuess(currentQuestion.date)
                     .then(median => {
                         if (median != null && medianFirstGuessText) {
                             medianFirstGuessText.textContent = `Median first guess: ${formatNumber(median)}`;
+                        }
+                    })
+                    .catch(() => {/* ignore */});
+
+                // Fetch user's first-guess percentile
+                if (firstGuessPercentileText) firstGuessPercentileText.textContent = '';
+                fetchFirstGuessPercentile(currentQuestion.date)
+                    .then(p => {
+                        if (typeof p === 'number' && firstGuessPercentileText) {
+                            firstGuessPercentileText.textContent = `Your first guess is in the ${p}th percentile`;
                         }
                     })
                     .catch(() => {/* ignore */});
@@ -2202,6 +2277,10 @@ function setupEventListeners() {
                         }
                         if (winRateEl && typeof avgData.winRate === 'number') {
                             winRateEl.textContent = `${avgData.winRate}%`;
+                        }
+                        if (avgTriesEl && typeof avgData.average === 'number') {
+                            const v = avgData.average;
+                            avgTriesEl.textContent = Number.isInteger(v) ? `${v}` : v.toFixed(1);
                         }
                     })
                     .catch(() => {/* ignore */});
