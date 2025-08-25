@@ -741,6 +741,8 @@ function startNewGame() {
     inputSection.style.display = 'block';
     newGameSection.style.display = 'none';
     shareBtn.style.display = 'none'; // Hide share button for new game
+    // Nudge attention to the counter on initial start (mobile only)
+    triggerShake(guessCounter);
     
     // Reset input
     guessInput.value = '';
@@ -1691,6 +1693,7 @@ function endGameDisplay() {
     if (questionMeta) {
         questionMeta.style.display = 'flex';
         if (streakInline) streakInline.textContent = `🔥 ${stats.currentStreak}`;
+        if (avgTriesInline) avgTriesInline.textContent = '';
     }
     
     // Set result message
@@ -1895,6 +1898,8 @@ function selectQuestion(question) {
                         inputSection.style.display = 'block';
                         newGameSection.style.display = 'none';
                         shareBtn.style.display = 'none';
+                        // Nudge attention to the counter when selecting question
+                        triggerShake(guessCounter);
                         
                         // Check if hint should be shown (2+ guesses and not won)
                         if (currentGuess >= 2 && !gameWon && currentQuestion.hint) {
@@ -1952,6 +1957,8 @@ function selectQuestion(question) {
         inputSection.style.display = 'block';
         newGameSection.style.display = 'none';
         shareBtn.style.display = 'none';
+        // Nudge attention for fresh selection
+        triggerShake(guessCounter);
         
         // Reset input
         guessInput.value = '';
