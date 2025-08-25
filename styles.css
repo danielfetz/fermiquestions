@@ -666,7 +666,7 @@ button#stats-btn {
 /* Accordion inside Source modal */
 .accordion {
     text-align: left;
-    max-height: calc(90vh - 200px);
+    max-height: calc(90vh - 220px);
     overflow-y: auto;
     margin: 16px 0;
 }
