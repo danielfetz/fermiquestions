@@ -2253,7 +2253,7 @@ function setupEventListeners() {
                 fetchMedianFirstGuess(currentQuestion.date)
                     .then(median => {
                         if (median != null && medianFirstGuessText) {
-                            medianFirstGuessText.textContent = `Median first guess: ${formatNumber(median)}`;
+                            medianFirstGuessText.textContent = `The median first guess was ${formatNumber(median)}`;
                         }
                     })
                     .catch(() => {/* ignore */});
@@ -2263,7 +2263,7 @@ function setupEventListeners() {
                 fetchFirstGuessPercentile(currentQuestion.date)
                     .then(p => {
                         if (typeof p === 'number' && firstGuessPercentileText) {
-                            firstGuessPercentileText.textContent = `Your first guess is in the ${p}th percentile`;
+                            firstGuessPercentileText.textContent = `Your first guess is in the ${p}th percentile, meaning you've performed as well or better than ${p}% of players.`;
                         }
                     })
                     .catch(() => {/* ignore */});
@@ -2292,6 +2292,8 @@ function setupEventListeners() {
         const accSourceHeader = document.getElementById('acc-source-header');
         const accStatsItem = document.getElementById('acc-stats-item');
         const accStatsHeader = document.getElementById('acc-stats-header');
+        const accInitialItem = document.getElementById('acc-initial-item');
+        const accInitialHeader = document.getElementById('acc-initial-header');
         if (accSourceHeader && accSourceItem) {
             accSourceHeader.addEventListener('click', () => {
                 const isOpen = accSourceItem.classList.contains('open');
@@ -2304,6 +2306,13 @@ function setupEventListeners() {
                 const isOpen = accStatsItem.classList.contains('open');
                 if (isOpen) accStatsItem.classList.remove('open');
                 else accStatsItem.classList.add('open');
+            });
+        }
+        if (accInitialHeader && accInitialItem) {
+            accInitialHeader.addEventListener('click', () => {
+                const isOpen = accInitialItem.classList.contains('open');
+                if (isOpen) accInitialItem.classList.remove('open');
+                else accInitialItem.classList.add('open');
             });
         }
     }
