@@ -273,15 +273,7 @@ async function fetchFirstGuessPercentile(questionDate) {
 }
 
 // Update the average tries display in the inline meta row
-function updateAverageDisplay(averageData) {
-    if (!avgTriesInline) return;
-    if (!averageData || averageData.totalPlayers < 1) {
-        avgTriesInline.textContent = '';
-        return;
-    }
-    const avgDisplay = averageData.average.toFixed(1);
-    avgTriesInline.textContent = `/ ${avgDisplay}`;
-}
+// Inline avg display removed entirely
 
 // Game state
 let currentQuestion = null;
@@ -614,7 +606,6 @@ const hintContainer = document.getElementById('hint-container');
 const hintText = document.getElementById('hint-text');
 const questionMeta = document.getElementById('question-meta');
 const streakInline = document.getElementById('streak-inline');
-const avgTriesInline = document.getElementById('avg-tries-inline');
 const sourceBtn = document.getElementById('source-btn');
 const sourceModal = document.getElementById('source-modal');
 const sourceText = document.getElementById('source-text');
@@ -1268,7 +1259,6 @@ function endGame() {
     if (questionMeta) {
         questionMeta.style.display = 'flex';
         if (streakInline) streakInline.textContent = `🔥 ${stats.currentStreak}`;
-        if (avgTriesInline) avgTriesInline.textContent = '';
     }
     
     // Set result message
@@ -1287,15 +1277,7 @@ function endGame() {
     // Set correct answer
     correctAnswer.innerHTML = `The correct answer was <i>${formatNumber(currentQuestion.answer)}</i>`;
     
-    // Fetch and display average guesses from other players
-    if (currentQuestion) {
-        fetchAverageGuesses(currentQuestion.date).then(averageData => {
-            updateAverageDisplay(averageData);
-        }).catch(error => {
-            console.error('Error fetching average:', error);
-            // Just don't show average if there's an error
-        });
-    }
+    // Average tries inline removed; stats shown in Source modal on demand
 
     // Check if all available questions are completed
     const today = getCurrentDate();
@@ -1728,15 +1710,7 @@ function endGameDisplay() {
     // Set correct answer
     correctAnswer.innerHTML = `The correct answer was <i>${formatNumber(currentQuestion.answer)}</i>`;
     
-    // Fetch and display average guesses from other players (for restored games too)
-    if (currentQuestion) {
-        fetchAverageGuesses(currentQuestion.date).then(averageData => {
-            updateAverageDisplay(averageData);
-        }).catch(error => {
-            console.error('Error fetching average:', error);
-            // Just don't show average if there's an error
-        });
-    }
+    // Average tries inline removed; stats shown in Source modal on demand
 
     // Check if all available questions are completed
     const today = getCurrentDate();
