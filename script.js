@@ -233,7 +233,7 @@ async function fetchFirstGuessPercentile(questionDate) {
         // ignore and fallback
     }
 
-    // Fallback: compute percentile client-side from game_sessions
+    // Fallback: compute percentile client-side from game_sessions based on closeness to the correct answer
     try {
         const { data, error } = await supabase
             .from('game_sessions')
@@ -251,11 +251,21 @@ async function fetchFirstGuessPercentile(questionDate) {
             if (!isNaN(num)) values.push(num);
         }
         if (values.length === 0) return null;
-        values.sort((a, b) => a - b);
-        // percentile rank: percentage of values <= user's value
-        let countLE = 0;
-        for (const v of values) if (v <= userFirstGuess) countLE++;
-        const percentile = Math.round((countLE / values.length) * 100);
+        if (!currentQuestion || !currentQuestion.answer) return null;
+        const correct = Number(currentQuestion.answer);
+        if (!isFinite(correct) || correct <= 0) return null;
+        if (!(userFirstGuess > 0)) return null;
+        // log-scale error (symmetric, multiplicative)
+        const userErr = Math.abs(Math.log(userFirstGuess) - Math.log(correct));
+        const errors = values
+            .filter(v => v > 0)
+            .map(v => Math.abs(Math.log(v) - Math.log(correct)))
+            .filter(e => isFinite(e));
+        if (errors.length === 0) return null;
+        // percentile rank by closeness: percentage of players with error >= user's error
+        let countGE = 0;
+        for (const e of errors) if (e >= userErr) countGE++;
+        const percentile = Math.round((countGE / errors.length) * 100);
         return percentile;
     } catch (e) {
         return null;
@@ -572,24 +582,6 @@ const fermiQuestions = [
         hint: "The FAA handles on average more than 44,000 flights per day.",
         date: "2025-08-22",
         image: "data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' width='100' height='100' viewBox='0 0 100 100'%3e%3crect width='100' height='100' fill='%23f8fafc'/%3e%3ctext x='50' y='62' font-size='40' text-anchor='middle' fill='%23374151'%3e✈️%3c/text%3e%3c/svg%3e"
-    },
-    {
-        question: "How many golf courses are there in the US?",
-        answer: 15963,
-        category: "",
-        explanation: "",
-        hint: "In 2024, around 28 million people played on a golf course in the US.",
-        date: "2025-08-24",
-        image: "data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' width='100' height='100' viewBox='0 0 100 100'%3e%3crect width='100' height='100' fill='%23f8fafc'/%3e%3ctext x='50' y='62' font-size='40' text-anchor='middle' fill='%23374151'%3e⛳️%3c/text%3e%3c/svg%3e"
-    },
-    {
-        question: "How many PCs (desktops and laptops) were sold globally in 2024?",
-        answer: 245300000,
-        category: "",
-        explanation: "",
-        hint: "Dell was the third-largest PC vendor in 2024, selling 39.5 million units.",
-        date: "2025-08-25",
-        image: "data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' width='100' height='100' viewBox='0 0 100 100'%3e%3crect width='100' height='100' fill='%23f8fafc'/%3e%3ctext x='50' y='62' font-size='40' text-anchor='middle' fill='%23374151'%3e💻%3c/text%3e%3c/svg%3e"
     }
 ];
 
@@ -2249,7 +2241,7 @@ function setupEventListeners() {
     if (sourceBtn && sourceModal) {
         sourceBtn.addEventListener('click', () => {
             if (currentQuestion && sourceText) {
-                const explanation = currentQuestion.explanation || 'No source available for this question as of now. This is a new feature that will be available in the coming days.';
+                const explanation = currentQuestion.explanation || 'No source available for this question as of now. This is a new feature that will also show you additional information like an example solution path, and how well the median first guess for this question was.';
                 // Allow simple links if present; otherwise treat as plain text
                 sourceText.textContent = '';
                 const asHtml = /<a\s|https?:\/\//i.test(explanation);
