@@ -643,7 +643,7 @@ button#stats-btn {
     border-radius: 12px;
     width: 90%;
     max-width: 400px;
-    max-height: 90vh;
+    max-height: calc(90vh + env(safe-area-inset-bottom));
     text-align: center;
     box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
     font-size: 0.8rem;
@@ -687,6 +687,7 @@ button#stats-btn {
     width: 100%;
     text-align: left;
     background: #fff;
+    color: #333;
     border: none;
     padding: 14px 16px;
     font-family: 'Press Start 2P', monospace;
