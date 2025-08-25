@@ -2177,29 +2177,54 @@ function setupEventListeners() {
                 } else {
                     sourceText.textContent = explanation;
                 }
-                // Reset median first guess text before fetching
+                // Reset stats placeholders before fetching
                 if (medianFirstGuessText) medianFirstGuessText.textContent = '';
-                // Fetch median first guess and display
+                const playersEl = document.getElementById('source-players-count');
+                const winRateEl = document.getElementById('source-win-rate');
+                if (playersEl) playersEl.textContent = '0';
+                if (winRateEl) winRateEl.textContent = '0%';
+
+                // Fetch median first guess
                 fetchMedianFirstGuess(currentQuestion.date)
                     .then(median => {
                         if (median != null && medianFirstGuessText) {
                             medianFirstGuessText.textContent = `Median first guess: ${formatNumber(median)}`;
                         }
                     })
-                    .catch(() => {
-                        // ignore errors, keep it blank
-                    });
+                    .catch(() => {/* ignore */});
+
+                // Fetch aggregate stats (players, win rate)
+                fetchAverageGuesses(currentQuestion.date)
+                    .then(avgData => {
+                        if (!avgData) return;
+                        if (playersEl && typeof avgData.totalPlayers === 'number') {
+                            playersEl.textContent = `${avgData.totalPlayers}`;
+                        }
+                        if (winRateEl && typeof avgData.winRate === 'number') {
+                            winRateEl.textContent = `${avgData.winRate}%`;
+                        }
+                    })
+                    .catch(() => {/* ignore */});
             }
             sourceModal.style.display = 'block';
         });
-        // Accordion toggle for Source section
+        // Accordion toggles
         const accSourceItem = document.getElementById('acc-source-item');
         const accSourceHeader = document.getElementById('acc-source-header');
+        const accStatsItem = document.getElementById('acc-stats-item');
+        const accStatsHeader = document.getElementById('acc-stats-header');
         if (accSourceHeader && accSourceItem) {
             accSourceHeader.addEventListener('click', () => {
                 const isOpen = accSourceItem.classList.contains('open');
                 if (isOpen) accSourceItem.classList.remove('open');
                 else accSourceItem.classList.add('open');
+            });
+        }
+        if (accStatsHeader && accStatsItem) {
+            accStatsHeader.addEventListener('click', () => {
+                const isOpen = accStatsItem.classList.contains('open');
+                if (isOpen) accStatsItem.classList.remove('open');
+                else accStatsItem.classList.add('open');
             });
         }
     }
