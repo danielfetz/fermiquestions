@@ -153,11 +153,11 @@ button#stats-btn {
 
 .question-meta .meta-item {
     color: #333;
-    height: 58px;
+    height: 60px;
     text-align: center;
     background: #fff;
     min-width: 100px;
-    padding: 23px 8px 16px 0;
+    padding: 24px 8px 16px 0;
     border-width: 2px 0px 2px 2px;
     border-style: dashed;
     border-color: #e9ecef;
@@ -222,7 +222,7 @@ button#stats-btn {
     cursor: pointer;
     width: 100%;
     padding: 21px 8px 12px;
-    height: 58px;
+    height: 60px;
     margin-left: -8px;
     z-index: 4;
 }
@@ -236,7 +236,7 @@ button#stats-btn {
 .questions-list {
     max-height: 400px;
     overflow-y: auto;
-    margin: 20px 0;
+    margin: 16px 0;
 }
 
 .question-item {
@@ -539,17 +539,17 @@ button#stats-btn {
 }
 
 .feedback-button.high {
-    background-color: #e74c3c;
+    background-color: #fe4c4c;
     color: white;
 }
 
 .feedback-button.low {
-    background-color: #e74c3c;
+    background-color: #fe4c4c;
     color: white;
 }
 
 .feedback-button.close {
-    background-color: #f39c12;
+    background-color: #ffad00;
     color: white;
 }
 
@@ -663,7 +663,7 @@ button#stats-btn {
 /* Accordion inside Source modal */
 .accordion {
     text-align: left;
-    max-height: calc(90vh - 162px);
+    max-height: calc(90vh - 220px);
     overflow-y: auto;
     margin: 16px 0;
 }
@@ -680,6 +680,7 @@ button#stats-btn {
     width: 100%;
     text-align: left;
     background: #fff;
+    color: #333;
     border: none;
     padding: 14px 16px;
     font-family: 'Press Start 2P', monospace;
@@ -901,7 +902,7 @@ button#stats-btn {
         display: block;
         font-size: 2.125rem;
         padding: 0 8px;
-        height: 58px;
+        height: 60px;
     }
     .result-text {
         padding: 10px 0;
