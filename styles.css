@@ -837,6 +837,9 @@ button#stats-btn {
     .question-meta .meta-item {
         min-width: 108px;
     }
+    .game-container {
+        box-shadow: 0 0px 5px #8579790f;
+    }
 }
 
 /* Responsive Design */
