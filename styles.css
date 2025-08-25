@@ -239,7 +239,7 @@ button#stats-btn {
 .questions-list {
     max-height: 400px;
     overflow-y: auto;
-    margin: 20px 0;
+    margin: 16px 0;
 }
 
 .question-item {
@@ -542,17 +542,17 @@ button#stats-btn {
 }
 
 .feedback-button.high {
-    background-color: #e74c3c;
+    background-color: #fe4c4c;
     color: white;
 }
 
 .feedback-button.low {
-    background-color: #e74c3c;
+    background-color: #fe4c4c;
     color: white;
 }
 
 .feedback-button.close {
-    background-color: #f39c12;
+    background-color: #ffad00;
     color: white;
 }
 
@@ -677,6 +677,10 @@ button#stats-btn {
     background: #fff;
     margin-bottom: 12px;
     overflow: hidden;
+}
+
+#acc-initial-item {
+    margin-bottom: 0;
 }
 
 .accordion-header {
@@ -914,6 +918,10 @@ button#stats-btn {
     }
     .strategy-link {
         display: inline;
+    }
+    /* On mobile, hide inline average tries next to question, it still fetches from RPC so we might want to change that */
+    #avg-tries-inline {
+        display: none;
     }
 }
 
