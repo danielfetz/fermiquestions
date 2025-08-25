@@ -210,10 +210,7 @@ button#stats-btn {
     opacity: 1;
 }
 
-#avg-tries-inline {
-    min-width: 110px;
-    margin-left: -8px;
-}
+/* avg-tries-inline removed */
 
 .source-btn {
     background: white;
@@ -832,6 +829,14 @@ button#stats-btn {
         width: 100px;
         height: 100px;
     }
+    body {
+        background: repeating-linear-gradient(to bottom, rgb(0 0 0 / 1%) 0px, rgb(0 0 0 / 1%) 1px, transparent 2px, transparent 4px), linear-gradient(to bottom, rgb(16 163 127 / 5%) 0px, rgb(90 97 255 / 5%) 120px, rgb(232 240 242 / 37%) 200px, rgb(251 251 251) 290px, #f5f5f5 100%);
+        min-height: 100vh;   /* fallback */
+        min-height: 100dvh;
+    }
+    .question-meta .meta-item {
+        min-width: 108px;
+    }
 }
 
 /* Responsive Design */
@@ -920,10 +925,7 @@ button#stats-btn {
     .strategy-link {
         display: inline;
     }
-    /* On mobile, hide inline average tries next to question, it still fetches from RPC so we might want to change that */
-    #avg-tries-inline {
-        display: none;
-    }
+    /* avg-tries-inline removed */
 }
 
 /* Animation for new guesses
