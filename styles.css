@@ -643,7 +643,7 @@ button#stats-btn {
     border-radius: 12px;
     width: 90%;
     max-width: 400px;
-    max-height: calc(90vh + env(safe-area-inset-bottom));
+    max-height: calc(90vh - env(safe-area-inset-bottom));
     text-align: center;
     box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
     font-size: 0.8rem;
