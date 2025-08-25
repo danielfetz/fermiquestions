@@ -510,15 +510,6 @@ const fermiQuestions = [
         hint: "The FAA handles on average more than 44,000 flights per day.",
         date: "2025-08-22",
         image: "data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' width='100' height='100' viewBox='0 0 100 100'%3e%3crect width='100' height='100' fill='%23f8fafc'/%3e%3ctext x='50' y='62' font-size='40' text-anchor='middle' fill='%23374151'%3e✈️%3c/text%3e%3c/svg%3e"
-    },
-    {
-        question: "How many new cars did Toyota sell globally in 2024?",
-        answer: 10200000,
-        category: "",
-        explanation: "",
-        hint: "In 2024, Toyoto sold around 2.33 million cars in the US.",
-        date: "2025-08-23",
-        image: "data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' width='100' height='100' viewBox='0 0 100 100'%3e%3crect width='100' height='100' fill='%23f8fafc'/%3e%3ctext x='50' y='62' font-size='40' text-anchor='middle' fill='%23374151'%3e🚗️%3c/text%3e%3c/svg%3e"
     }
 ];
 
@@ -2201,6 +2192,16 @@ function setupEventListeners() {
             }
             sourceModal.style.display = 'block';
         });
+        // Accordion toggle for Source section
+        const accSourceItem = document.getElementById('acc-source-item');
+        const accSourceHeader = document.getElementById('acc-source-header');
+        if (accSourceHeader && accSourceItem) {
+            accSourceHeader.addEventListener('click', () => {
+                const isOpen = accSourceItem.classList.contains('open');
+                if (isOpen) accSourceItem.classList.remove('open');
+                else accSourceItem.classList.add('open');
+            });
+        }
     }
     
     // Close buttons
