@@ -1691,7 +1691,6 @@ function endGameDisplay() {
     if (questionMeta) {
         questionMeta.style.display = 'flex';
         if (streakInline) streakInline.textContent = `🔥 ${stats.currentStreak}`;
-        if (avgTriesInline) avgTriesInline.textContent = '';
     }
     
     // Set result message
