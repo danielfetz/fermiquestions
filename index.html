@@ -164,7 +164,17 @@
         <div class="modal" id="source-modal">
             <div class="modal-content">
                 <h2>Source</h2>
-                <div id="source-text"></div>
+                <div class="accordion" id="source-accordion">
+                    <div class="accordion-item open" id="acc-source-item">
+                        <button class="accordion-header" id="acc-source-header" aria-expanded="true" aria-controls="acc-source-panel">
+                            <span>Source</span>
+                            <span class="acc-arrow">></span>
+                        </button>
+                        <div class="accordion-panel" id="acc-source-panel">
+                            <div id="source-text"></div>
+                        </div>
+                    </div>
+                </div>
                 <div id="source-stats" style="margin-top: 12px;">
                     <p id="median-first-guess-text"></p>
                 </div>
