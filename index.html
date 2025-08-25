@@ -165,8 +165,8 @@
             <div class="modal-content">
                 <h2>Source</h2>
                 <div class="accordion" id="source-accordion">
-                    <div class="accordion-item open" id="acc-source-item">
-                        <button class="accordion-header" id="acc-source-header" aria-expanded="true" aria-controls="acc-source-panel">
+                    <div class="accordion-item" id="acc-source-item">
+                        <button class="accordion-header" id="acc-source-header" aria-expanded="false" aria-controls="acc-source-panel">
                             <span>Source</span>
                             <span class="acc-arrow">></span>
                         </button>
@@ -174,8 +174,8 @@
                             <div id="source-text"></div>
                         </div>
                     </div>
-                    <div class="accordion-item" id="acc-stats-item">
-                        <button class="accordion-header" id="acc-stats-header" aria-expanded="false" aria-controls="acc-stats-panel">
+                    <div class="accordion-item open" id="acc-stats-item">
+                        <button class="accordion-header" id="acc-stats-header" aria-expanded="true" aria-controls="acc-stats-panel">
                             <span>Stats</span>
                             <span class="acc-arrow">></span>
                         </button>
@@ -194,7 +194,15 @@
                                     <span class="stat-label">Avg Tries</span>
                                 </div>
                             </div>
-                            <div id="source-stats" style="margin-top: 0;">
+                        </div>
+                    </div>
+                    <div class="accordion-item open" id="acc-initial-item">
+                        <button class="accordion-header" id="acc-initial-header" aria-expanded="true" aria-controls="acc-initial-panel">
+                            <span>Initial guess</span>
+                            <span class="acc-arrow">></span>
+                        </button>
+                        <div class="accordion-panel" id="acc-initial-panel">
+                            <div id="source-initial" style="margin-top: 0;">
                                 <p id="median-first-guess-text"></p>
                                 <p id="first-guess-percentile-text"></p>
                             </div>
