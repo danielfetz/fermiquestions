@@ -442,6 +442,8 @@ button#stats-btn {
 /* Guesses Container */
 .guesses-container {
     margin-bottom: 20px;
+    position: relative;
+    z-index: 6;
 }
 
 .guess-row {
@@ -491,7 +493,6 @@ button#stats-btn {
 
 .feedback-button {
     position: relative;
-    z-index: 7;
 }
 
 /* Custom tooltip for feedback buttons */
