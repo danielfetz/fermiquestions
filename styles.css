@@ -491,6 +491,7 @@ button#stats-btn {
 
 .feedback-button {
     position: relative;
+    z-index: 7;
 }
 
 /* Custom tooltip for feedback buttons */
