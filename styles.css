@@ -153,11 +153,11 @@ button#stats-btn {
 
 .question-meta .meta-item {
     color: #333;
-    height: 60px;
+    height: 64px;
     text-align: center;
     background: #fff;
     min-width: 100px;
-    padding: 24px 8px 16px 0;
+    padding: 26px 8px 16px 0;
     border-width: 2px 0px 2px 2px;
     border-style: dashed;
     border-color: #e9ecef;
@@ -222,7 +222,7 @@ button#stats-btn {
     cursor: pointer;
     width: 100%;
     padding: 21px 8px 12px;
-    height: 60px;
+    height: 64px;
     margin-left: -8px;
     z-index: 4;
 }
@@ -443,7 +443,7 @@ button#stats-btn {
 .guesses-container {
     margin-bottom: 20px;
     position: relative;
-    z-index: 6;
+    z-index: 6; /* ensure tooltips above .question-box (z-index:5) */
 }
 
 .guess-row {
@@ -838,9 +838,6 @@ button#stats-btn {
     }
     .question-meta .meta-item {
         min-width: 108px;
-    }
-    .game-container {
-        box-shadow: 0 0px 5px #8579790f;
     }
 }
 
