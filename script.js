@@ -606,7 +606,7 @@ const fermiQuestions = [
         question: "How many people worldwide speak English as a native or second language?",
         answer: 1528000000,
         category: "",
-        explanation: "https://en.wikipedia.org/wiki/List_of_languages_by_total_number_of_speakers",
+        explanation: "<a>https://en.wikipedia.org/wiki/List_of_languages_by_total_number_of_speakers</a>",
         hint: "There are around 390 million native English speakers in the world.",
         date: "2025-08-27",
         image: "data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' width='100' height='100' viewBox='0 0 100 100'%3e%3crect width='100' height='100' fill='%23f8fafc'/%3e%3ctext x='50' y='62' font-size='40' text-anchor='middle' fill='%23374151'%3e💬%3c/text%3e%3c/svg%3e"
