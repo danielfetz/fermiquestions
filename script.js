@@ -531,7 +531,7 @@ const fermiQuestions = [
         image: "data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' width='100' height='100' viewBox='0 0 100 100'%3e%3crect width='100' height='100' fill='%23f8fafc'/%3e%3ctext x='50' y='62' font-size='40' text-anchor='middle' fill='%23374151'%3e🪖%3c/text%3e%3c/svg%3e"
     },
     {
-        question: "How many airports are there in the US, including small private airstrips and other types?",
+        question: "How many airports are there in the US, including private airfields?",
         answer: 19482,
         category: "",
         explanation: "",
@@ -619,6 +619,15 @@ const fermiQuestions = [
         hint: "There are around 390 million native English speakers in the world.",
         date: "2025-08-27",
         image: "data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' width='100' height='100' viewBox='0 0 100 100'%3e%3crect width='100' height='100' fill='%23f8fafc'/%3e%3ctext x='50' y='62' font-size='40' text-anchor='middle' fill='%23374151'%3e💬%3c/text%3e%3c/svg%3e"
+    },
+    {
+        question: "What percentage of the Earth's land surface is covered by forest?",
+        answer: 31,
+        category: "",
+        explanation: "",
+        hint: "Around 76% of the Earth's land surface is habitable.",
+        date: "2025-08-28",
+        image: "data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' width='100' height='100' viewBox='0 0 100 100'%3e%3crect width='100' height='100' fill='%23f8fafc'/%3e%3ctext x='50' y='62' font-size='40' text-anchor='middle' fill='%23374151'%3e🌲%3c/text%3e%3c/svg%3e"
     },
     {
         question: "What percentage of the Earth's land surface is covered by forest?",
