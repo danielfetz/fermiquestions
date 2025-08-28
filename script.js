@@ -321,7 +321,7 @@ const fermiQuestions = [
         explanation: "",
         hint: "Appx. 45.5% of the world's Jewish population lives in Israel.",
         date: "2025-07-25",
-        image: "data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' width='100' height='100' viewBox='0 0 100 100'%3e%3crect width='100' height='100' fill='%23f8fafc'/%3e%3ctext x='50' y='62' font-size='40' text-anchor='middle' fill='%23374151'%3e✡️%3c/text%3e%3c/svg%3e"
+        image: "data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' width='100' height='100' viewBox='0 0 100 100'%3e%3crect width='100' height='100' fill='%23fff8dc'/%3e%3ctext x='50' y='62' font-size='40' text-anchor='middle' fill='%236b46c1'%3e✡️%3c/text%3e%3c/svg%3e"
     },
     {
         question: "How many McDonald's restaurants exist worldwide?",
@@ -531,7 +531,7 @@ const fermiQuestions = [
         image: "data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' width='100' height='100' viewBox='0 0 100 100'%3e%3crect width='100' height='100' fill='%23f8fafc'/%3e%3ctext x='50' y='62' font-size='40' text-anchor='middle' fill='%23374151'%3e🪖%3c/text%3e%3c/svg%3e"
     },
     {
-        question: "How many airports are there in the US, including small private airstrips and other types?",
+        question: "How many airports are there in the US?",
         answer: 19482,
         category: "",
         explanation: "",
@@ -592,33 +592,6 @@ const fermiQuestions = [
         hint: "Dell was the third-largest PC vendor in 2024, selling 39.5 million units.",
         date: "2025-08-25",
         image: "data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' width='100' height='100' viewBox='0 0 100 100'%3e%3crect width='100' height='100' fill='%23f8fafc'/%3e%3ctext x='50' y='62' font-size='40' text-anchor='middle' fill='%23374151'%3e💻%3c/text%3e%3c/svg%3e"
-    },
-    {
-        question: "How many waiters and waitresses are there in the US?",
-        answer: 2280000,
-        category: "",
-        explanation: "",
-        hint: "Per capita food-away-from-home expenditure was $4,306 in 2024.",
-        date: "2025-08-26",
-        image: "data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' width='100' height='100' viewBox='0 0 100 100'%3e%3crect width='100' height='100' fill='%23f8fafc'/%3e%3ctext x='50' y='62' font-size='40' text-anchor='middle' fill='%23374151'%3e🍽️%3c/text%3e%3c/svg%3e"
-    },
-    {
-        question: "How many people worldwide speak English as a native or second language?",
-        answer: 1528000000,
-        category: "",
-        explanation: "",
-        hint: "There are around 390 million native English speakers in the world.",
-        date: "2025-08-27",
-        image: "data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' width='100' height='100' viewBox='0 0 100 100'%3e%3crect width='100' height='100' fill='%23f8fafc'/%3e%3ctext x='50' y='62' font-size='40' text-anchor='middle' fill='%23374151'%3e💬%3c/text%3e%3c/svg%3e"
-    },
-    {
-        question: "What percentage of the Earth's land surface is covered by forest?",
-        answer: 31,
-        category: "",
-        explanation: "",
-        hint: "Around 76% of the Earth's land surface is habitable.",
-        date: "2025-08-28",
-        image: "data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' width='100' height='100' viewBox='0 0 100 100'%3e%3crect width='100' height='100' fill='%23f8fafc'/%3e%3ctext x='50' y='62' font-size='40' text-anchor='middle' fill='%23374151'%3e🌲%3c/text%3e%3c/svg%3e"
     }
 ];
 
@@ -681,15 +654,26 @@ function initGame() {
     
     loadStats();
     loadCompletedQuestions();
-    
-    // Try to load saved game state first, then start new game if no saved state
-    const restoredFromSave = loadCurrentGameState();
-    if (!restoredFromSave) {
-        startNewGame();
+
+    // If URL has a specific question date, navigate to it first
+    let navigatedFromURL = false;
+    const initialRouteDate = parseURL();
+    if (initialRouteDate) {
+        navigatedFromURL = navigateToQuestion(initialRouteDate);
     }
-    
+
+    // If no route navigation occurred, try restoring saved state; else start new
+    let restoredFromSave = false;
+    if (!navigatedFromURL) {
+        restoredFromSave = loadCurrentGameState();
+        if (!restoredFromSave) {
+            startNewGame();
+        }
+    }
+
     setupEventListeners();
-    initRouting(restoredFromSave);
+    // Always initialize routing; allow it to handle future navigations
+    initRouting(false);
 }
 
 // Update current streak display
@@ -926,7 +910,7 @@ function submitGuess() {
                 const currentRow = guessRows[currentGuess - 1];
                 const feedbackButton = currentRow.querySelector('.feedback-button');
                 feedbackButton.classList.add('show-tooltip');
-                setTimeout(() => feedbackButton.classList.remove('show-tooltip'), 3200);
+                setTimeout(() => feedbackButton.classList.remove('show-tooltip'), 2800);
                 localStorage.setItem('fermiTooltipTutorialShown', '1');
             }
         } catch (e) {
