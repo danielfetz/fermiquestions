@@ -637,6 +637,15 @@ const fermiQuestions = [
         hint: "The Louvre Museum had 8.9 million visitors in 2023.",
         date: "2025-08-29",
         image: "data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' width='100' height='100' viewBox='0 0 100 100'%3e%3crect width='100' height='100' fill='%23f8fafc'/%3e%3ctext x='50' y='62' font-size='40' text-anchor='middle' fill='%23374151'%3e🎢%3c/text%3e%3c/svg%3e"
+    },
+    {
+        question: "How many people globally were aged 80 or older in 2021?",
+        answer: 155000000,
+        category: "",
+        explanation: "",
+        hint: "The UN estimates that 459 million people will be aged 80 or older by 2050.",
+        date: "2025-08-30",
+        image: "data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' width='100' height='100' viewBox='0 0 100 100'%3e%3crect width='100' height='100' fill='%23f8fafc'/%3e%3ctext x='50' y='62' font-size='40' text-anchor='middle' fill='%23374151'%3e👵%3c/text%3e%3c/svg%3e"
     }
 ];
 
