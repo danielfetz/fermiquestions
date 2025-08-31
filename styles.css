@@ -163,6 +163,20 @@ button#stats-btn {
     border-color: #e9ecef;
     border-radius: 0 16px 0;
     position: relative;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+}
+
+.streak-emoji { 
+    display: inline-block; 
+    line-height: 1; 
+    transform: translateY(1px); 
+}
+.streak-count { 
+    display: inline-block; 
+    line-height: 1; 
 }
 
 /* Tooltips for inline meta items (appear below) */
