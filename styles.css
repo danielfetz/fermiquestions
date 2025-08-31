@@ -606,7 +606,7 @@ button#stats-btn {
     min-width: 0;
     width: 100%;
     padding: 18.5px 15px;
-    -webkit-tap-highlight-color: transparent;
+    border-radius: 15px;
 }
 
 #guess-input::placeholder {
