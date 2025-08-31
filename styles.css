@@ -930,9 +930,11 @@ button#stats-btn {
     .question-meta .meta-item {
         padding: 25.75px 12px 16px 0;
         font-size: 0.78rem;
+        height: 63px;
     }
     .source-btn {
         font-size: 0.78rem;
+        height: 63px;
     }
 }
 
