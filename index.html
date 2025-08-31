@@ -4,12 +4,12 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
     <meta name="theme-color" content="#f4f8fa">
-    <title>Fermi Questions - A Wordle-style game</title>
-    <meta name="description" content="A Wordle-style game for Fermi questions. Guess the answer to estimation questions in 6 or less tries.">
+    <title>Fermi Questions</title>
+    <meta name="description" content="A Wordle-style game for Fermi questions.">
     <link rel="canonical" href="https://www.fermiquestions.org">
     <link rel="stylesheet" href="styles.css">
     <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
-    <script defer data-domain="fermiquestions.org" data-api="https://fermiquestions.daniel-fetz.workers.dev/fermiquestions/event" src="https://fermiquestions.daniel-fetz.workers.dev/fermiquestions/script.hash.js"></script>
+    <script defer data-domain="fermiquestions.org" src="https://plausible.io/js/script.hash.js"></script>
     <!-- Supabase client library -->
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 </head>
@@ -52,7 +52,10 @@
             </div>
             <!-- Inline info shown only after game ends -->
             <div class="question-meta" id="question-meta" style="display: none;">
-                <span class="meta-item" id="streak-inline" tabindex="0" data-tooltip="Win streak">🔥 0</span>
+                <span class="meta-item" tabindex="0" data-tooltip="Win streak">
+                    <span class="streak-emoji" aria-hidden="true">🔥</span>
+                    <span class="streak-count" id="streak-inline">0</span>
+                </span>
                 <button id="source-btn" class="source-btn">Source & Stats <span class="arrow">></span></button>
             </div>
         </div>
