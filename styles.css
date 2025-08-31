@@ -166,13 +166,13 @@ button#stats-btn {
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    gap: 6px;
+    gap: 12px;
 }
 
 .streak-emoji { 
     display: inline-block; 
     line-height: 1; 
-    transform: translateY(1px); 
+    transform: translateY(-3px); 
 }
 .streak-count { 
     display: inline-block; 
