@@ -531,7 +531,7 @@ const fermiQuestions = [
         image: "data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' width='100' height='100' viewBox='0 0 100 100'%3e%3crect width='100' height='100' fill='%23f8fafc'/%3e%3ctext x='50' y='62' font-size='40' text-anchor='middle' fill='%23374151'%3e🪖%3c/text%3e%3c/svg%3e"
     },
     {
-        question: "How many airports are there in the US, including small private airstrips?",
+        question: "How many airports are there in the US, including small private airstrips and other types?",
         answer: 19482,
         category: "",
         explanation: "",
@@ -628,33 +628,6 @@ const fermiQuestions = [
         hint: "Around 76% of the Earth's land surface is habitable.",
         date: "2025-08-28",
         image: "data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' width='100' height='100' viewBox='0 0 100 100'%3e%3crect width='100' height='100' fill='%23f8fafc'/%3e%3ctext x='50' y='62' font-size='40' text-anchor='middle' fill='%23374151'%3e🌲%3c/text%3e%3c/svg%3e"
-    },
-    {
-        question: "How many visitors did Disneyland Paris have in 2023?",
-        answer: 16100000,
-        category: "",
-        explanation: "",
-        hint: "The Louvre Museum had 8.9 million visitors in 2023.",
-        date: "2025-08-29",
-        image: "data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' width='100' height='100' viewBox='0 0 100 100'%3e%3crect width='100' height='100' fill='%23f8fafc'/%3e%3ctext x='50' y='62' font-size='40' text-anchor='middle' fill='%23374151'%3e🎢%3c/text%3e%3c/svg%3e"
-    },
-    {
-        question: "How many people worldwide were 80 years or older in 2021?",
-        answer: 155000000,
-        category: "",
-        explanation: "",
-        hint: "The UN estimates that 459 million people will be aged 80 or older by 2050.",
-        date: "2025-08-30",
-        image: "data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' width='100' height='100' viewBox='0 0 100 100'%3e%3crect width='100' height='100' fill='%23f8fafc'/%3e%3ctext x='50' y='62' font-size='40' text-anchor='middle' fill='%23374151'%3e👵%3c/text%3e%3c/svg%3e"
-    },
-    {
-        question: "How many pharmacies are there in the UK?",
-        answer: 13822,
-        category: "",
-        explanation: "",
-        hint: "There are around 1300 pharmacies in Scotland alone.",
-        date: "2025-08-31",
-        image: "data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' width='100' height='100' viewBox='0 0 100 100'%3e%3crect width='100' height='100' fill='%23f8fafc'/%3e%3ctext x='50' y='62' font-size='40' text-anchor='middle' fill='%23374151'%3e💊%3c/text%3e%3c/svg%3e"
     }
 ];
 
@@ -965,16 +938,26 @@ function submitGuess() {
             showFeedback(currentGuess - 1, isHigh ? 'high' : 'low', isHigh ? '↓' : '↑');
         }
 
-        // Tutorial: auto-show tooltip on the first ever miss
+        // Tutorial: auto-show tooltip on first-ever misses
         try {
-            const tutorialShown = localStorage.getItem('fermiTooltipTutorialShown');
-            if (!tutorialShown) {
-                const guessRows = guessesContainer.querySelectorAll('.guess-row');
-                const currentRow = guessRows[currentGuess - 1];
-                const feedbackButton = currentRow.querySelector('.feedback-button');
-                feedbackButton.classList.add('show-tooltip');
-                setTimeout(() => feedbackButton.classList.remove('show-tooltip'), 3200);
-                localStorage.setItem('fermiTooltipTutorialShown', '1');
+            const guessRows = guessesContainer.querySelectorAll('.guess-row');
+            const currentRow = guessRows[currentGuess - 1];
+            const feedbackButton = currentRow.querySelector('.feedback-button');
+
+            if (isClose) {
+                const shownClose = localStorage.getItem('fermiTooltipTutorialCloseShown');
+                if (!shownClose) {
+                    feedbackButton.classList.add('show-tooltip');
+                    setTimeout(() => feedbackButton.classList.remove('show-tooltip'), 3200);
+                    localStorage.setItem('fermiTooltipTutorialCloseShown', '1');
+                }
+            } else {
+                const shownBasic = localStorage.getItem('fermiTooltipTutorialBasicShown');
+                if (!shownBasic) {
+                    feedbackButton.classList.add('show-tooltip');
+                    setTimeout(() => feedbackButton.classList.remove('show-tooltip'), 3200);
+                    localStorage.setItem('fermiTooltipTutorialBasicShown', '1');
+                }
             }
         } catch (e) {
             // ignore storage errors
@@ -1082,9 +1065,9 @@ function showFeedback(guessIndex, type, symbol) {
     } else if (type === 'close') {
         // Use the direction symbol to choose appropriate text
         if (symbol === '↑') {
-            feedbackButton.setAttribute('data-tooltip', 'Too low! You need to go higher ↑');
+            feedbackButton.setAttribute('data-tooltip', 'Too low, but within ±50% of the correct answer!');
         } else if (symbol === '↓') {
-            feedbackButton.setAttribute('data-tooltip', 'Too high! You need to go lower ↓');
+            feedbackButton.setAttribute('data-tooltip', 'Too high, but within ±50% of the correct answer!');
         } else {
             feedbackButton.removeAttribute('data-tooltip');
         }
