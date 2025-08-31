@@ -144,7 +144,7 @@ button#stats-btn {
 /* Question meta row (shown after game ends) */
 .question-meta {
     position: relative;
-    z-index: 1;
+    z-index: 8; /* above .guesses-container (z-index:6) so tooltips render on top */
     display: flex;
     align-items: center;
     margin-top: -12px;
@@ -156,10 +156,10 @@ button#stats-btn {
     height: 64px;
     text-align: center;
     background: #fff;
-    min-width: 112px;
-    padding: 26px 12px 16px 0;
+    min-width: 100px;
+    padding: 26px 8px 16px 0;
     border-width: 2px 0px 2px 2px;
-    border-style: solid;
+    border-style: dashed;
     border-color: #e9ecef;
     border-radius: 0 16px 0;
     position: relative;
@@ -221,9 +221,9 @@ button#stats-btn {
     color: #333;
     cursor: pointer;
     width: 100%;
-    padding: 21px 6px 12px;
+    padding: 21px 8px 12px;
     height: 64px;
-    margin-left: -12px;
+    margin-left: -8px;
     z-index: 4;
 }
 
@@ -836,6 +836,9 @@ button#stats-btn {
         min-height: 100vh;   /* fallback */
         min-height: 100dvh;
     }
+    .question-meta .meta-item {
+        min-width: 108px;
+    }
     .game-container {
         box-shadow: 0 0px 5px #8579790f;
     }
@@ -881,7 +884,7 @@ button#stats-btn {
         background: white;
     }
     .feedback-button::after {
-        width: 98px;
+        width: 90px;
         white-space: normal;
     }
     .guesses-container {
@@ -927,7 +930,13 @@ button#stats-btn {
     .strategy-link {
         display: inline;
     }
-    /* avg-tries-inline removed */
+    .question-meta .meta-item {
+        padding: 25.75px 12px 16px 0;
+        font-size: 0.78rem;
+    }
+    .source-btn {
+        font-size: 0.78rem;
+    }
 }
 
 /* Animation for new guesses
