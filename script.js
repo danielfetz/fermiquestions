@@ -387,7 +387,7 @@ const fermiQuestions = [
         image: "data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' width='100' height='100' viewBox='0 0 100 100'%3e%3crect width='100' height='100' fill='%23fef7cd'/%3e%3ctext x='50' y='62' font-size='40' text-anchor='middle' fill='%23a16207'%3e👥%3c/text%3e%3c/svg%3e"
     },
     {
-        question: "How many new cars were sold in the US in 2024?",
+        question: "How many new cars were sold in the United States in 2024?",
         answer: 15900000,
         category: "",
         explanation: "",
@@ -396,7 +396,7 @@ const fermiQuestions = [
         image: "data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' width='100' height='100' viewBox='0 0 100 100'%3e%3crect width='100' height='100' fill='%23eff6ff'/%3e%3ctext x='50' y='62' font-size='40' text-anchor='middle' fill='%232563eb'%3e🚙%3c/text%3e%3c/svg%3e"
     },
     {
-        question: "How many veterinarians are there in the US?",
+        question: "How many veterinarians are there in the United States?",
         answer: 130415,
         category: "",
         explanation: "",
@@ -450,7 +450,7 @@ const fermiQuestions = [
         image: "data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' width='100' height='100' viewBox='0 0 100 100'%3e%3crect width='100' height='100' fill='%23f0f8ff'/%3e%3ctext x='50' y='62' font-size='40' text-anchor='middle' fill='%234169e1'%3e✈️%3c/text%3e%3c/svg%3e"
     },
     {
-        question: "How many printed books has Amazon sold in the US last year?",
+        question: "How many printed books has Amazon sold in the United States in 2024?",
         answer: 308000000,
         category: "",
         explanation: "",
@@ -468,7 +468,7 @@ const fermiQuestions = [
         image: "data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' width='100' height='100' viewBox='0 0 100 100'%3e%3crect width='100' height='100' fill='%23fffbeb'/%3e%3ctext x='50' y='62' font-size='40' text-anchor='middle' fill='%23d97706'%3e👶%3c/text%3e%3c/svg%3e"
     },
     {
-        question: "How many air traffic controllers are there in the US?",
+        question: "How many air traffic controllers are there in the United States?",
         answer: 14264,
         category: "",
         explanation: "",
@@ -486,7 +486,7 @@ const fermiQuestions = [
         image: "data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' width='100' height='100' viewBox='0 0 100 100'%3e%3crect width='100' height='100' fill='%23f8fafc'/%3e%3ctext x='50' y='62' font-size='40' text-anchor='middle' fill='%23374151'%3e🐑%3c/text%3e%3c/svg%3e"
     },
     {
-        question: "How many dentists work in the UK?",
+        question: "How many dentists work in the United Kingdom?",
         answer: 45580,
         category: "",
         explanation: "",
@@ -504,7 +504,7 @@ const fermiQuestions = [
         image: "data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' width='100' height='100' viewBox='0 0 100 100'%3e%3crect width='100' height='100' fill='%23f8fafc'/%3e%3ctext x='50' y='62' font-size='40' text-anchor='middle' fill='%23374151'%3e👩‍🏫%3c/text%3e%3c/svg%3e"
     },
     {
-        question: "How many weddings took place in the US in 2022?",
+        question: "How many weddings took place in the United States in 2022?",
         answer: 2070000,
         category: "",
         explanation: "",
@@ -513,7 +513,7 @@ const fermiQuestions = [
         image: "data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' width='100' height='100' viewBox='0 0 100 100'%3e%3crect width='100' height='100' fill='%23f8fafc'/%3e%3ctext x='50' y='62' font-size='40' text-anchor='middle' fill='%23374151'%3e💍%3c/text%3e%3c/svg%3e"
     },
     {
-        question: "How many police officers are there across the EU?",
+        question: "How many police officers are there across the European Union?",
         answer: 1537588,
         category: "",
         explanation: "",
@@ -540,7 +540,7 @@ const fermiQuestions = [
         image: "data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' width='100' height='100' viewBox='0 0 100 100'%3e%3crect width='100' height='100' fill='%23f8fafc'/%3e%3ctext x='50' y='62' font-size='40' text-anchor='middle' fill='%23374151'%3e🛫%3c/text%3e%3c/svg%3e"
     },
     {
-        question: "How many lawyers are there in the US?",
+        question: "How many lawyers are there in the United States?",
         answer: 1322649,
         category: "",
         explanation: "",
@@ -549,7 +549,7 @@ const fermiQuestions = [
         image: "data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' width='100' height='100' viewBox='0 0 100 100'%3e%3crect width='100' height='100' fill='%23f8fafc'/%3e%3ctext x='50' y='62' font-size='40' text-anchor='middle' fill='%23374151'%3e🏛️%3c/text%3e%3c/svg%3e"
     },
     {
-        question: "How many horses are there in the US?",
+        question: "How many horses are there in the United States?",
         answer: 6700000,
         category: "",
         explanation: "",
@@ -585,7 +585,7 @@ const fermiQuestions = [
         image: "data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' width='100' height='100' viewBox='0 0 100 100'%3e%3crect width='100' height='100' fill='%23f8fafc'/%3e%3ctext x='50' y='62' font-size='40' text-anchor='middle' fill='%23374151'%3e🚗️%3c/text%3e%3c/svg%3e"
     },
     {
-        question: "How many golf courses are there in the US?",
+        question: "How many golf courses are there in the United States?",
         answer: 15963,
         category: "",
         explanation: "",
@@ -603,7 +603,7 @@ const fermiQuestions = [
         image: "data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' width='100' height='100' viewBox='0 0 100 100'%3e%3crect width='100' height='100' fill='%23f8fafc'/%3e%3ctext x='50' y='62' font-size='40' text-anchor='middle' fill='%23374151'%3e💻%3c/text%3e%3c/svg%3e"
     },
     {
-        question: "How many waiters and waitresses are there in the US?",
+        question: "How many waiters and waitresses are there in the United States?",
         answer: 2280000,
         category: "",
         explanation: "",
@@ -648,7 +648,7 @@ const fermiQuestions = [
         image: "data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' width='100' height='100' viewBox='0 0 100 100'%3e%3crect width='100' height='100' fill='%23f8fafc'/%3e%3ctext x='50' y='62' font-size='40' text-anchor='middle' fill='%23374151'%3e👵%3c/text%3e%3c/svg%3e"
     },
     {
-        question: "How many pharmacies are there in the UK?",
+        question: "How many pharmacies are there in the United Kingdom?",
         answer: 13822,
         category: "",
         explanation: "",
@@ -657,7 +657,7 @@ const fermiQuestions = [
         image: "data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' width='100' height='100' viewBox='0 0 100 100'%3e%3crect width='100' height='100' fill='%23f8fafc'/%3e%3ctext x='50' y='62' font-size='40' text-anchor='middle' fill='%23374151'%3e💊%3c/text%3e%3c/svg%3e"
     },
     {
-        question: "How many electricians are there in the US?",
+        question: "How many electricians are there in the United States?",
         answer: 818700,
         category: "",
         explanation: "",
