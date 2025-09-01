@@ -664,6 +664,15 @@ const fermiQuestions = [
         hint: "In 2024, roughly 1.02 million single-family homes finished construction in the US.",
         date: "2025-09-01",
         image: "data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' width='100' height='100' viewBox='0 0 100 100'%3e%3crect width='100' height='100' fill='%23f8fafc'/%3e%3ctext x='50' y='62' font-size='40' text-anchor='middle' fill='%23374151'%3e🔌%3c/text%3e%3c/svg%3e"
+    },
+    {
+        question: "How much revenue in US dollars did Reddit make in the first half of 2025?",
+        answer: 892000000,
+        category: "",
+        explanation: "",
+        hint: "Reddit's revenue per daily active user was $4.53 in the second quarter of 2025.",
+        date: "2025-09-02",
+        image: "data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' width='100' height='100' viewBox='0 0 100 100'%3e%3crect width='100' height='100' fill='%23f8fafc'/%3e%3ctext x='50' y='62' font-size='40' text-anchor='middle' fill='%23374151'%3e💰%3c/text%3e%3c/svg%3e"
     }
 ];
 
