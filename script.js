@@ -711,9 +711,7 @@ const statsBtn = document.getElementById('stats-btn');
 const helpModal = document.getElementById('help-modal');
 const statsModal = document.getElementById('stats-modal');
 const questionsModal = document.getElementById('questions-modal');
-const strategyModal = document.getElementById('strategy-modal');
 const strategyTipsBtn = document.getElementById('strategy-tips-btn');
-const closeStrategyBtn = document.getElementById('close-strategy-btn');
 // Hint modal elements
 const hintModal = document.getElementById('hint-modal');
 const hintModalBtn = document.getElementById('hint-modal-btn');
@@ -1413,11 +1411,6 @@ function startNewGameFromModal() {
 // Show help modal
 function showHelp() {
     helpModal.style.display = 'block';
-}
-
-// Show strategy modal
-function showStrategy() {
-    if (strategyModal) strategyModal.style.display = 'block';
 }
 
 // Show stats modal
@@ -2425,14 +2418,31 @@ function setupEventListeners() {
             });
         }
     }
+
+    // Help modal accordion toggles
+    const accStrategyItem = document.getElementById('acc-strategy-item');
+    const accStrategyHeader = document.getElementById('acc-strategy-header');
+    const accRulesItem = document.getElementById('acc-rules-item');
+    const accRulesHeader = document.getElementById('acc-rules-header');
+    if (accStrategyHeader && accStrategyItem) {
+        accStrategyHeader.addEventListener('click', () => {
+            const isOpen = accStrategyItem.classList.contains('open');
+            if (isOpen) accStrategyItem.classList.remove('open');
+            else accStrategyItem.classList.add('open');
+        });
+    }
+    if (accRulesHeader && accRulesItem) {
+        accRulesHeader.addEventListener('click', () => {
+            const isOpen = accRulesItem.classList.contains('open');
+            if (isOpen) accRulesItem.classList.remove('open');
+            else accRulesItem.classList.add('open');
+        });
+    }
     
     // Close buttons
     closeHelpBtn.addEventListener('click', () => closeModal(helpModal));
     closeStatsBtn.addEventListener('click', () => closeModal(statsModal));
     closeQuestionsBtn.addEventListener('click', () => closeModal(questionsModal));
-    if (closeStrategyBtn) {
-        closeStrategyBtn.addEventListener('click', () => closeModal(strategyModal));
-    }
     if (closeHintBtn) {
         closeHintBtn.addEventListener('click', () => closeModal(hintModal));
     }
@@ -2442,7 +2452,7 @@ function setupEventListeners() {
     shareStatsBtn.addEventListener('click', shareStats);
         
     // Close modals when clicking outside (desktop + mobile)
-    [helpModal, statsModal, questionsModal, strategyModal, hintModal, sourceModal].forEach(modal => {
+    [helpModal, statsModal, questionsModal, hintModal, sourceModal].forEach(modal => {
         ['click', 'touchend'].forEach(event => {
             modal.addEventListener(event, e => e.target === modal && closeModal(modal));
         });
