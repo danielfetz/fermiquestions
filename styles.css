@@ -588,14 +588,14 @@ button#stats-btn {
     gap: 10px;
 }
 
-.calibration-note {
+.modal-content p.calibration-note {
     font-size: 0.7rem;
-    margin-bottom: 8px;
+    margin: 16px 0 8px;
 }
 
-.calibration-description {
+.modal-content p.calibration-description {
     font-size: 0.625rem;
-    margin-top: 8px;
+    margin: 8px 0 0;
 }
 
 .calibration-chart-wrapper {
@@ -866,7 +866,7 @@ button#stats-btn {
 .dist-bar-container {
     flex: 1;
     height: 20px;
-    background-color: #e0e0e0;
+    background-color: #f5f5f5;
     border-radius: 10px;
     overflow: hidden;
 }
