@@ -625,10 +625,6 @@ button#stats-btn {
     display: none;
 }
 
-#confidence-input::placeholder {
-    color: #999;
-}
-
 .submit-btn {
     width: 110px;
     height: 54px;

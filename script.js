@@ -1038,7 +1038,7 @@ function submitGuess() {
             stats.calibrationData.push({ confidence: confPercent / 100, correct: isCorrect });
             saveStats();
         }
-        confidenceInput.value = '';
+        confidenceInput.value = '50';
     }
     
     // Save current game state after each guess
@@ -1566,11 +1566,13 @@ function updateCalibrationChart() {
 
     ctx.fillStyle = '#333';
     ctx.font = '10px sans-serif';
-    ctx.fillText('Confidence', paddingLeft + width / 2 - 20, canvas.height - 2);
+    const xLabel = 'Declared confidence (%)';
+    ctx.fillText(xLabel, paddingLeft + (width - ctx.measureText(xLabel).width) / 2, canvas.height - 2);
     ctx.save();
-    ctx.translate(10, paddingTop + height / 2 + 20);
+    const yLabel = 'Actual accuracy (%)';
+    ctx.translate(10, paddingTop + (height + ctx.measureText(yLabel).width) / 2);
     ctx.rotate(-Math.PI / 2);
-    ctx.fillText('Actual', 0, 0);
+    ctx.fillText(yLabel, 0, 0);
     ctx.restore();
 }
 
@@ -1667,7 +1669,9 @@ function setCalibrationEnabled(enabled) {
 function updateConfidenceInputVisibility() {
     if (confidenceInput) {
         confidenceInput.style.display = calibrationEnabled ? 'block' : 'none';
-        if (!calibrationEnabled) {
+        if (calibrationEnabled) {
+            confidenceInput.value = '50';
+        } else {
             confidenceInput.value = '';
         }
     }
