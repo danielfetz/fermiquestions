@@ -588,6 +588,16 @@ button#stats-btn {
     gap: 10px;
 }
 
+.calibration-note {
+    font-size: 0.7rem;
+    margin-bottom: 8px;
+}
+
+.calibration-description {
+    font-size: 0.625rem;
+    margin-top: 8px;
+}
+
 .calibration-chart-wrapper {
     overflow-x: auto;
 }
@@ -644,11 +654,13 @@ button#stats-btn {
 
 #confidence-input {
     margin: 0 8px 0 0;
-    width: 70px;
+    width: 72px;
+    height: 100%;
     padding: 18.5px 0;
     background: none;
     border: none;
     border-left: 2px solid #eaecf0;
+    border-radius: 0;
     font-size: 0.8rem;
     font-family: 'Press Start 2P', monospace;
     outline: none;

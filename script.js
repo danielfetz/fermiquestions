@@ -1535,16 +1535,6 @@ function updateCalibrationChart() {
     if (firstOnly) {
         data = data.filter(d => d.guessNumber === 1);
     }
-    if (data.length === 0) {
-        const text = document.createElementNS('http://www.w3.org/2000/svg', 'text');
-        text.setAttribute('x', 10);
-        text.setAttribute('y', 20);
-        text.setAttribute('fill', '#666');
-        text.setAttribute('font-size', '12');
-        text.textContent = 'No data';
-        svg.appendChild(text);
-        return;
-    }
 
     const bins = Array.from({ length: 10 }, () => ({ total: 0, correct: 0 }));
     data.forEach(d => {
@@ -1652,26 +1642,6 @@ function updateCalibrationChart() {
         }, { passive: true });
         svg.appendChild(circle);
     });
-
-    // Axis labels
-    const xAxisLabel = document.createElementNS(ns, 'text');
-    xAxisLabel.setAttribute('x', paddingLeft + plotWidth / 2);
-    xAxisLabel.setAttribute('y', height - 10);
-    xAxisLabel.setAttribute('text-anchor', 'middle');
-    xAxisLabel.setAttribute('font-size', '10');
-    xAxisLabel.textContent = 'Confidence';
-    svg.appendChild(xAxisLabel);
-
-    const yAxisLabel = document.createElementNS(ns, 'text');
-    const yLabelX = paddingLeft - 40;
-    const yLabelY = paddingTop + plotHeight / 2;
-    yAxisLabel.setAttribute('x', yLabelX);
-    yAxisLabel.setAttribute('y', yLabelY);
-    yAxisLabel.setAttribute('text-anchor', 'middle');
-    yAxisLabel.setAttribute('font-size', '10');
-    yAxisLabel.setAttribute('transform', `rotate(-90 ${yLabelX} ${yLabelY})`);
-    yAxisLabel.textContent = 'Accuracy';
-    svg.appendChild(yAxisLabel);
 }
 
 // Close modals
