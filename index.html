@@ -103,13 +103,14 @@
         <div class="input-section" id="input-section">
             <div class="input-row">
                 <div class="input-container">
-                    <input 
-                        type="text" 
-                        id="guess-input" 
-                        placeholder="Enter a guess..." 
+                    <input
+                        type="text"
+                        id="guess-input"
+                        placeholder="Enter a guess..."
                         inputmode="numeric"
                         pattern="[0-9,]*"
                     >
+                    <input type="number" id="confidence-input" placeholder="Conf%" min="0" max="100">
                 </div>
                 <button id="submit-btn" class="submit-btn">Submit</button>
             </div>
@@ -139,6 +140,9 @@
                 <p>After each guess, you'll see if your answer was too high or too low. An arrow pointing down means that the correct answer is below your guess.</p>
                 <p>The color of the arrows shows how close you are: orange indicates your guess is within ±50% of the answer, red means it is further away</p>
                 <p>You win if your guess is within ±20% of the correct answer.</p>
+                <label class="calibration-toggle">
+                    <input type="checkbox" id="prob-calibration-checkbox"> Enable probability calibration
+                </label>
                 <button id="close-help-btn" class="close-btn">Close</button>
             </div>
         </div>
@@ -291,6 +295,17 @@
                                 <div class="dist-bar" id="dist-6" style="width: 0%"></div>
                             </div>
                             <span class="dist-count" id="count-6">0</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="accordion" id="stats-accordion">
+                    <div class="accordion-item" id="acc-calibration-item">
+                        <button class="accordion-header" id="acc-calibration-header" aria-expanded="false" aria-controls="acc-calibration-panel">
+                            <span>Probability Calibration</span>
+                            <span class="acc-arrow">></span>
+                        </button>
+                        <div class="accordion-panel" id="acc-calibration-panel">
+                            <canvas id="calibration-chart" width="300" height="200"></canvas>
                         </div>
                     </div>
                 </div>
