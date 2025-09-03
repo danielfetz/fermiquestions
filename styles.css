@@ -629,7 +629,6 @@ button#stats-btn {
     height: 54px;
     display: flex;
     align-items: center;
-    gap: 8px;
     border-radius: 15px;
     flex: 1;
     border: 2px solid #eaecf0;
@@ -644,7 +643,7 @@ button#stats-btn {
     outline: none;
     min-width: 0;
     width: 100%;
-    padding: 18.5px 15px;
+    padding: 18.5px 0px 18.5px 15px;
     border-radius: 15px;
 }
 
@@ -660,10 +659,11 @@ button#stats-btn {
     border: none;
     border-left: 2px solid #eaecf0;
     border-radius: 0;
+    color: #333;
     font-size: 0.8rem;
     font-family: 'Press Start 2P', monospace;
     outline: none;
-    text-align: right;
+    text-align: center;
     display: none;
 }
 
