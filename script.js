@@ -1611,7 +1611,7 @@ function updateCalibrationChart() {
         xLabel.setAttribute('y', height - paddingBottom + 15);
         xLabel.setAttribute('text-anchor', 'end');
         xLabel.setAttribute('font-size', '10');
-        xLabel.setAttribute('transform', `rotate(-45 ${x} ${height - paddingBottom + 15})`);
+        xLabel.setAttribute('transform', `rotate(-45 ${x + 2} ${height - paddingBottom + 20})`);
         xLabel.textContent = `${i}%`;
         svg.appendChild(xLabel);
 
@@ -1625,7 +1625,7 @@ function updateCalibrationChart() {
 
         const yLabel = document.createElementNS(ns, 'text');
         yLabel.setAttribute('x', paddingLeft - 8);
-        yLabel.setAttribute('y', y + 3);
+        yLabel.setAttribute('y', y + 6);
         yLabel.setAttribute('text-anchor', 'end');
         yLabel.setAttribute('font-size', '10');
         yLabel.textContent = `${i}%`;

@@ -582,6 +582,10 @@ button#stats-btn {
 
 .calibration-options {
     margin-bottom: 10px;
+    font-size: 0.7rem;
+    display: flex;
+    flex-flow: column;
+    gap: 10px;
 }
 
 .chart-tooltip {
@@ -631,14 +635,16 @@ button#stats-btn {
 }
 
 #confidence-input {
-    width: 60px;
+    margin: 0 8px 0 0;
+    width: 72px;
+    padding: 18.5px 0;
     background: none;
     border: none;
+    border-left: 2px solid #eaecf0;
     font-size: 0.8rem;
     font-family: 'Press Start 2P', monospace;
     outline: none;
     text-align: right;
-    padding: 18.5px 10px 18.5px 0;
     display: none;
 }
 
