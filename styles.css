@@ -580,6 +580,10 @@ button#stats-btn {
     margin-top: 20px;
 }
 
+.calibration-options {
+    margin-bottom: 10px;
+}
+
 .input-row {
     display: flex;
     align-items: center;

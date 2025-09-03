@@ -741,6 +741,7 @@ const shareStatsBtn = document.getElementById('share-stats-btn');
 const medianFirstGuessText = document.getElementById('median-first-guess-text');
 const firstGuessPercentileText = document.getElementById('first-guess-percentile-text');
 const calibrationCheckbox = document.getElementById('prob-calibration-checkbox');
+const firstGuessCheckbox = document.getElementById('first-guess-checkbox');
 
 // Initialize game
 function initGame() {
@@ -1035,7 +1036,7 @@ function submitGuess() {
     if (calibrationEnabled && confidenceInput) {
         const confPercent = isNaN(confidenceValue) ? null : Math.max(0, Math.min(100, confidenceValue));
         if (confPercent !== null) {
-            stats.calibrationData.push({ confidence: confPercent / 100, correct: isCorrect });
+            stats.calibrationData.push({ confidence: confPercent / 100, correct: isCorrect, guessNumber: currentGuess });
             saveStats();
         }
         confidenceInput.value = '50';
@@ -1511,7 +1512,11 @@ function updateCalibrationChart() {
     const width = svg.viewBox.baseVal?.width || svg.width.baseVal.value || 300;
     const height = svg.viewBox.baseVal?.height || svg.height.baseVal.value || 200;
 
-    const data = stats.calibrationData || [];
+    const firstOnly = firstGuessCheckbox && firstGuessCheckbox.checked;
+    let data = stats.calibrationData || [];
+    if (firstOnly) {
+        data = data.filter(d => d.guessNumber === 1);
+    }
     if (data.length === 0) {
         const text = document.createElementNS('http://www.w3.org/2000/svg', 'text');
         text.setAttribute('x', 10);
@@ -2533,6 +2538,12 @@ function setupEventListeners() {
     if (calibrationCheckbox) {
         calibrationCheckbox.addEventListener('change', (e) => {
             setCalibrationEnabled(e.target.checked);
+        });
+    }
+
+    if (firstGuessCheckbox) {
+        firstGuessCheckbox.addEventListener('change', () => {
+            updateCalibrationChart();
         });
     }
     
