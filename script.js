@@ -740,7 +740,7 @@ const shareBtn = document.getElementById('share-btn');
 const shareStatsBtn = document.getElementById('share-stats-btn');
 const medianFirstGuessText = document.getElementById('median-first-guess-text');
 const firstGuessPercentileText = document.getElementById('first-guess-percentile-text');
-const calibrationCheckbox = document.getElementById('prob-calibration-checkbox');
+const calibrationCheckboxes = document.querySelectorAll('.prob-calibration-checkbox');
 const firstGuessCheckbox = document.getElementById('first-guess-checkbox');
 const calibrationChart = document.getElementById('calibration-chart');
 const calibrationTooltip = document.getElementById('calibration-tooltip');
@@ -1557,8 +1557,8 @@ function updateCalibrationChart() {
         }
     });
 
-    const paddingLeft = 30,
-        paddingBottom = 30,
+    const paddingLeft = 50,
+        paddingBottom = 60,
         paddingTop = 20,
         paddingRight = 20;
     const plotWidth = width - paddingLeft - paddingRight;
@@ -1655,18 +1655,18 @@ function updateCalibrationChart() {
     // Axis labels
     const xAxisLabel = document.createElementNS(ns, 'text');
     xAxisLabel.setAttribute('x', paddingLeft + plotWidth / 2);
-    xAxisLabel.setAttribute('y', height - 5);
+    xAxisLabel.setAttribute('y', height - 10);
     xAxisLabel.setAttribute('text-anchor', 'middle');
     xAxisLabel.setAttribute('font-size', '10');
     xAxisLabel.textContent = 'Declared confidence (%)';
     svg.appendChild(xAxisLabel);
 
     const yAxisLabel = document.createElementNS(ns, 'text');
-    yAxisLabel.setAttribute('x', 15);
+    yAxisLabel.setAttribute('x', 20);
     yAxisLabel.setAttribute('y', paddingTop + plotHeight / 2);
     yAxisLabel.setAttribute('text-anchor', 'middle');
     yAxisLabel.setAttribute('font-size', '10');
-    yAxisLabel.setAttribute('transform', `rotate(-90 15 ${paddingTop + plotHeight / 2})`);
+    yAxisLabel.setAttribute('transform', `rotate(-90 20 ${paddingTop + plotHeight / 2})`);
     yAxisLabel.textContent = 'Actual accuracy (%)';
     svg.appendChild(yAxisLabel);
 }
@@ -1749,15 +1749,18 @@ function loadCompletedQuestions() {
 
 function loadCalibrationSetting() {
     calibrationEnabled = localStorage.getItem('fermiCalibrationEnabled') === 'true';
-    if (calibrationCheckbox) {
-        calibrationCheckbox.checked = calibrationEnabled;
-    }
+    calibrationCheckboxes.forEach(cb => {
+        cb.checked = calibrationEnabled;
+    });
     updateConfidenceInputVisibility();
 }
 
 function setCalibrationEnabled(enabled) {
     calibrationEnabled = enabled;
     localStorage.setItem('fermiCalibrationEnabled', enabled ? 'true' : 'false');
+    calibrationCheckboxes.forEach(cb => {
+        cb.checked = enabled;
+    });
     updateConfidenceInputVisibility();
 }
 
@@ -2559,9 +2562,11 @@ function setupEventListeners() {
     // Questions history button (question category)
     questionCategory.addEventListener('click', showQuestionsHistory);
 
-    if (calibrationCheckbox) {
-        calibrationCheckbox.addEventListener('change', (e) => {
-            setCalibrationEnabled(e.target.checked);
+    if (calibrationCheckboxes.length) {
+        calibrationCheckboxes.forEach(cb => {
+            cb.addEventListener('change', (e) => {
+                setCalibrationEnabled(e.target.checked);
+            });
         });
     }
 
@@ -2659,6 +2664,26 @@ function setupEventListeners() {
                 else accInitialItem.classList.add('open');
             });
         }
+    }
+
+    const accStatsGridItem = document.getElementById('acc-statsgrid-item');
+    const accStatsGridHeader = document.getElementById('acc-statsgrid-header');
+    if (accStatsGridHeader && accStatsGridItem) {
+        accStatsGridHeader.addEventListener('click', () => {
+            const isOpen = accStatsGridItem.classList.contains('open');
+            if (isOpen) accStatsGridItem.classList.remove('open');
+            else accStatsGridItem.classList.add('open');
+        });
+    }
+
+    const accDistributionItem = document.getElementById('acc-distribution-item');
+    const accDistributionHeader = document.getElementById('acc-distribution-header');
+    if (accDistributionHeader && accDistributionItem) {
+        accDistributionHeader.addEventListener('click', () => {
+            const isOpen = accDistributionItem.classList.contains('open');
+            if (isOpen) accDistributionItem.classList.remove('open');
+            else accDistributionItem.classList.add('open');
+        });
     }
 
     const accCalibrationItem = document.getElementById('acc-calibration-item');
