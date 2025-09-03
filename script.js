@@ -1528,6 +1528,7 @@ function updateCalibrationChart() {
 
     const width = svg.viewBox.baseVal?.width || svg.width.baseVal.value || 300;
     const height = svg.viewBox.baseVal?.height || svg.height.baseVal.value || 200;
+    svg.setAttribute('overflow', 'visible');
 
     const firstOnly = firstGuessCheckbox && firstGuessCheckbox.checked;
     let data = stats.calibrationData || [];
@@ -1608,9 +1609,9 @@ function updateCalibrationChart() {
         const xLabel = document.createElementNS(ns, 'text');
         xLabel.setAttribute('x', x);
         xLabel.setAttribute('y', height - paddingBottom + 15);
-        xLabel.setAttribute('text-anchor', 'start');
+        xLabel.setAttribute('text-anchor', 'end');
         xLabel.setAttribute('font-size', '10');
-        xLabel.setAttribute('transform', `rotate(45 ${x} ${height - paddingBottom + 15})`);
+        xLabel.setAttribute('transform', `rotate(-45 ${x} ${height - paddingBottom + 15})`);
         xLabel.textContent = `${i}%`;
         svg.appendChild(xLabel);
 
@@ -1662,11 +1663,13 @@ function updateCalibrationChart() {
     svg.appendChild(xAxisLabel);
 
     const yAxisLabel = document.createElementNS(ns, 'text');
-    yAxisLabel.setAttribute('x', 20);
-    yAxisLabel.setAttribute('y', paddingTop + plotHeight / 2);
+    const yLabelX = paddingLeft - 40;
+    const yLabelY = paddingTop + plotHeight / 2;
+    yAxisLabel.setAttribute('x', yLabelX);
+    yAxisLabel.setAttribute('y', yLabelY);
     yAxisLabel.setAttribute('text-anchor', 'middle');
     yAxisLabel.setAttribute('font-size', '10');
-    yAxisLabel.setAttribute('transform', `rotate(-90 20 ${paddingTop + plotHeight / 2})`);
+    yAxisLabel.setAttribute('transform', `rotate(-90 ${yLabelX} ${yLabelY})`);
     yAxisLabel.textContent = 'Actual accuracy (%)';
     svg.appendChild(yAxisLabel);
 }
