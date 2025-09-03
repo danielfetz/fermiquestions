@@ -664,7 +664,7 @@ button#stats-btn {
     font-size: 0.8rem;
     font-family: 'Press Start 2P', monospace;
     outline: none;
-    text-align: center;
+    text-align: right;
     display: none;
 }
 
