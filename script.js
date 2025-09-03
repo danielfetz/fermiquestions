@@ -300,8 +300,11 @@ let stats = {
         4: 0,
         5: 0,
         6: 0
-    }
+    },
+    calibrationData: []
 };
+
+let calibrationEnabled = false;
 
 // Database of Fermi questions with dates
 const fermiQuestions = [
@@ -706,6 +709,7 @@ const resultEmoji = document.getElementById('result-emoji');
 const correctAnswer = document.getElementById('correct-answer');
 const guessesContainer = document.getElementById('guesses-container');
 const guessInput = document.getElementById('guess-input');
+const confidenceInput = document.getElementById('confidence-input');
 const submitBtn = document.getElementById('submit-btn');
 const inputSection = document.getElementById('input-section');
 const newGameSection = document.getElementById('new-game-section');
@@ -736,14 +740,20 @@ const shareBtn = document.getElementById('share-btn');
 const shareStatsBtn = document.getElementById('share-stats-btn');
 const medianFirstGuessText = document.getElementById('median-first-guess-text');
 const firstGuessPercentileText = document.getElementById('first-guess-percentile-text');
+const calibrationCheckboxes = document.querySelectorAll('.prob-calibration-checkbox');
+const firstGuessCheckbox = document.getElementById('first-guess-checkbox');
+const calibrationChart = document.getElementById('calibration-chart');
+const calibrationTooltip = document.getElementById('calibration-tooltip');
+const calibrationNote = document.querySelector('.calibration-note');
 
 // Initialize game
 function initGame() {
     // Initialize Supabase first
     initSupabase();
-    
+
     loadStats();
     loadCompletedQuestions();
+    loadCalibrationSetting();
 
     // If URL has a specific question date, navigate to it first
     let navigatedFromURL = false;
@@ -956,14 +966,15 @@ function getGuessText(guessNumber) {
 // Submit a guess
 function submitGuess() {
     const guessValue = parseInt(guessInput.value.replace(/[^\d]/g, ''));
-    
+    const confidenceValue = confidenceInput ? parseInt(confidenceInput.value) : null;
+
     if (isNaN(guessValue) || guessValue < 0) {
         alert('Please enter a valid positive number!');
         return;
     }
-    
+
     currentGuess++;
-    
+
     // Add guess to display
     addGuessToDisplay(guessValue);
     
@@ -1024,6 +1035,15 @@ function submitGuess() {
     
     // Clear input
     guessInput.value = '';
+
+    if (calibrationEnabled && confidenceInput) {
+        const confPercent = isNaN(confidenceValue) ? null : Math.max(0, Math.min(100, confidenceValue));
+        if (confPercent !== null) {
+            stats.calibrationData.push({ confidence: confPercent / 100, correct: isCorrect, guessNumber: currentGuess });
+            saveStats();
+        }
+        confidenceInput.value = '50';
+    }
     
     // Save current game state after each guess
     saveCurrentGameState();
@@ -1482,6 +1502,152 @@ function updateStatsDisplay() {
             barElement.style.width = `${percentage}%`;
         }
     }
+
+    updateCalibrationChart();
+}
+
+function showCalibrationTooltip(evt, sampleSize, declared, actual) {
+    if (!calibrationTooltip) return;
+    const x = (evt.clientX || 0) + 10;
+    const y = (evt.clientY || 0) + 10;
+    calibrationTooltip.style.left = `${x}px`;
+    calibrationTooltip.style.top = `${y}px`;
+    calibrationTooltip.innerHTML = `Sample Size: ${sampleSize}<br>Declared: ${declared}%<br>Actual: ${Math.round(actual)}%`;
+    calibrationTooltip.style.display = 'block';
+}
+
+function hideCalibrationTooltip() {
+    if (calibrationTooltip) calibrationTooltip.style.display = 'none';
+}
+
+function updateCalibrationChart() {
+    const svg = calibrationChart;
+    if (!svg) return;
+
+    hideCalibrationTooltip();
+    while (svg.firstChild) svg.removeChild(svg.firstChild);
+
+    const width = svg.viewBox.baseVal?.width || svg.width.baseVal.value || 300;
+    const height = svg.viewBox.baseVal?.height || svg.height.baseVal.value || 200;
+    svg.setAttribute('overflow', 'visible');
+
+    const firstOnly = firstGuessCheckbox && firstGuessCheckbox.checked;
+    let data = stats.calibrationData || [];
+    if (firstOnly) {
+        data = data.filter(d => d.guessNumber === 1);
+    }
+
+    const bins = Array.from({ length: 10 }, () => ({ total: 0, correct: 0 }));
+    data.forEach(d => {
+        let conf = typeof d.confidence === 'number' ? d.confidence : parseFloat(d.confidence);
+        if (isNaN(conf)) return;
+        conf = Math.max(0, Math.min(1, conf));
+        const idx = Math.min(9, Math.round(conf * 10) - 1);
+        if (idx >= 0) {
+            bins[idx].total++;
+            if (d.correct) bins[idx].correct++;
+        }
+    });
+
+    const paddingLeft = 50,
+        paddingBottom = 60,
+        paddingTop = 20,
+        paddingRight = 20;
+    const plotWidth = width - paddingLeft - paddingRight;
+    const plotHeight = height - paddingTop - paddingBottom;
+
+    const ns = 'http://www.w3.org/2000/svg';
+
+    const hasData = bins.some(bin => bin.total > 0);
+    if (calibrationNote) {
+        calibrationNote.style.display = hasData ? 'none' : 'block';
+    }
+
+    // Axes
+    const xAxis = document.createElementNS(ns, 'line');
+    xAxis.setAttribute('x1', paddingLeft);
+    xAxis.setAttribute('y1', height - paddingBottom);
+    xAxis.setAttribute('x2', width - paddingRight);
+    xAxis.setAttribute('y2', height - paddingBottom);
+    xAxis.setAttribute('stroke', '#ccc');
+    svg.appendChild(xAxis);
+
+    const yAxis = document.createElementNS(ns, 'line');
+    yAxis.setAttribute('x1', paddingLeft);
+    yAxis.setAttribute('y1', height - paddingBottom);
+    yAxis.setAttribute('x2', paddingLeft);
+    yAxis.setAttribute('y2', paddingTop);
+    yAxis.setAttribute('stroke', '#ccc');
+    svg.appendChild(yAxis);
+
+    // Diagonal line
+    const diag = document.createElementNS(ns, 'line');
+    diag.setAttribute('x1', paddingLeft);
+    diag.setAttribute('y1', height - paddingBottom);
+    diag.setAttribute('x2', width - paddingRight);
+    diag.setAttribute('y2', paddingTop);
+    diag.setAttribute('stroke', '#eee');
+    svg.appendChild(diag);
+
+    // Ticks and labels
+    for (let i = 10; i <= 100; i += 10) {
+        const x = paddingLeft + (i / 100) * plotWidth;
+        const y = height - paddingBottom - (i / 100) * plotHeight;
+
+        const xTick = document.createElementNS(ns, 'line');
+        xTick.setAttribute('x1', x);
+        xTick.setAttribute('y1', height - paddingBottom);
+        xTick.setAttribute('x2', x);
+        xTick.setAttribute('y2', height - paddingBottom + 5);
+        xTick.setAttribute('stroke', '#ccc');
+        svg.appendChild(xTick);
+
+        const xLabel = document.createElementNS(ns, 'text');
+        xLabel.setAttribute('x', x + 2);
+        xLabel.setAttribute('y', height - paddingBottom + 20);
+        xLabel.setAttribute('text-anchor', 'end');
+        xLabel.setAttribute('font-size', '10');
+        xLabel.setAttribute('transform', `rotate(-45 ${x} ${height - paddingBottom + 15})`);
+        xLabel.textContent = `${i}%`;
+        svg.appendChild(xLabel);
+
+        const yTick = document.createElementNS(ns, 'line');
+        yTick.setAttribute('x1', paddingLeft - 5);
+        yTick.setAttribute('y1', y);
+        yTick.setAttribute('x2', paddingLeft);
+        yTick.setAttribute('y2', y);
+        yTick.setAttribute('stroke', '#ccc');
+        svg.appendChild(yTick);
+
+        const yLabel = document.createElementNS(ns, 'text');
+        yLabel.setAttribute('x', paddingLeft - 8);
+        yLabel.setAttribute('y', y + 6);
+        yLabel.setAttribute('text-anchor', 'end');
+        yLabel.setAttribute('font-size', '10');
+        yLabel.textContent = `${i}%`;
+        svg.appendChild(yLabel);
+    }
+
+    // Calibration points
+    bins.forEach((bin, i) => {
+        if (!bin.total) return;
+        const x = paddingLeft + ((i + 1) / 10) * plotWidth;
+        const ratio = bin.correct / bin.total;
+        const y = height - paddingBottom - ratio * plotHeight;
+        const circle = document.createElementNS(ns, 'circle');
+        circle.setAttribute('cx', x);
+        circle.setAttribute('cy', y);
+        circle.setAttribute('r', 3);
+        circle.setAttribute('fill', '#3498db');
+        circle.addEventListener('mouseenter', (e) => showCalibrationTooltip(e, bin.total, (i + 1) * 10, ratio * 100));
+        circle.addEventListener('mouseleave', hideCalibrationTooltip);
+        circle.addEventListener('click', (e) => showCalibrationTooltip(e, bin.total, (i + 1) * 10, ratio * 100));
+        circle.addEventListener('touchstart', (e) => {
+            const t = e.touches[0];
+            if (t) showCalibrationTooltip(t, bin.total, (i + 1) * 10, ratio * 100);
+        }, { passive: true });
+        svg.appendChild(circle);
+    });
 }
 
 // Close modals
@@ -1516,7 +1682,8 @@ function loadStats() {
                     4: 0,
                     5: 0,
                     6: 0
-                }
+                },
+                calibrationData: loadedStats.calibrationData || []
             };
         } catch (error) {
             console.error('Error loading stats:', error);
@@ -1534,7 +1701,8 @@ function loadStats() {
                     4: 0,
                     5: 0,
                     6: 0
-                }
+                },
+                calibrationData: []
             };
         }
     }
@@ -1554,6 +1722,43 @@ function loadCompletedQuestions() {
         } catch (error) {
             console.error('Error loading completed questions:', error);
             completedQuestions = {}; // Reset to default on error
+        }
+    }
+}
+
+function loadCalibrationSetting() {
+    calibrationEnabled = localStorage.getItem('fermiCalibrationEnabled') === 'true';
+    calibrationCheckboxes.forEach(cb => {
+        cb.checked = calibrationEnabled;
+    });
+    updateConfidenceInputVisibility();
+}
+
+function setCalibrationEnabled(enabled) {
+    calibrationEnabled = enabled;
+    localStorage.setItem('fermiCalibrationEnabled', enabled ? 'true' : 'false');
+    calibrationCheckboxes.forEach(cb => {
+        cb.checked = enabled;
+    });
+    updateConfidenceInputVisibility();
+}
+
+function updateConfidenceInputVisibility() {
+    if (confidenceInput) {
+        confidenceInput.style.display = calibrationEnabled ? 'block' : 'none';
+        if (calibrationEnabled) {
+            confidenceInput.value = '50';
+        } else {
+            confidenceInput.value = '';
+        }
+    }
+    if (submitBtn) {
+        if (calibrationEnabled && isSmallDevice()) {
+            submitBtn.style.width = '54px';
+            submitBtn.textContent = '>';
+        } else {
+            submitBtn.style.width = '';
+            submitBtn.textContent = 'Submit';
         }
     }
 }
@@ -2344,6 +2549,20 @@ function setupEventListeners() {
     
     // Questions history button (question category)
     questionCategory.addEventListener('click', showQuestionsHistory);
+
+    if (calibrationCheckboxes.length) {
+        calibrationCheckboxes.forEach(cb => {
+            cb.addEventListener('change', (e) => {
+                setCalibrationEnabled(e.target.checked);
+            });
+        });
+    }
+
+    if (firstGuessCheckbox) {
+        firstGuessCheckbox.addEventListener('change', () => {
+            updateCalibrationChart();
+        });
+    }
     
     // Source button opens explanation modal
     if (sourceBtn && sourceModal) {
@@ -2434,6 +2653,36 @@ function setupEventListeners() {
             });
         }
     }
+
+    const accStatsGridItem = document.getElementById('acc-statsgrid-item');
+    const accStatsGridHeader = document.getElementById('acc-statsgrid-header');
+    if (accStatsGridHeader && accStatsGridItem) {
+        accStatsGridHeader.addEventListener('click', () => {
+            const isOpen = accStatsGridItem.classList.contains('open');
+            if (isOpen) accStatsGridItem.classList.remove('open');
+            else accStatsGridItem.classList.add('open');
+        });
+    }
+
+    const accDistributionItem = document.getElementById('acc-distribution-item');
+    const accDistributionHeader = document.getElementById('acc-distribution-header');
+    if (accDistributionHeader && accDistributionItem) {
+        accDistributionHeader.addEventListener('click', () => {
+            const isOpen = accDistributionItem.classList.contains('open');
+            if (isOpen) accDistributionItem.classList.remove('open');
+            else accDistributionItem.classList.add('open');
+        });
+    }
+
+    const accCalibrationItem = document.getElementById('acc-calibration-item');
+    const accCalibrationHeader = document.getElementById('acc-calibration-header');
+    if (accCalibrationHeader && accCalibrationItem) {
+        accCalibrationHeader.addEventListener('click', () => {
+            const isOpen = accCalibrationItem.classList.contains('open');
+            if (isOpen) accCalibrationItem.classList.remove('open');
+            else accCalibrationItem.classList.add('open');
+        });
+    }
     
     // Close buttons
     closeHelpBtn.addEventListener('click', () => closeModal(helpModal));
@@ -2470,5 +2719,14 @@ function setupEventListeners() {
     }
 }
 
+if (calibrationChart) {
+    calibrationChart.addEventListener('mouseleave', hideCalibrationTooltip);
+}
+
+document.addEventListener('click', (e) => {
+    if (!e.target.closest('#calibration-chart')) hideCalibrationTooltip();
+});
+
 // Initialize the game when the page loads
-document.addEventListener('DOMContentLoaded', initGame); 
+window.addEventListener('resize', updateConfidenceInputVisibility);
+document.addEventListener('DOMContentLoaded', initGame);
