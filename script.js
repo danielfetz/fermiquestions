@@ -1607,11 +1607,11 @@ function updateCalibrationChart() {
         svg.appendChild(xTick);
 
         const xLabel = document.createElementNS(ns, 'text');
-        xLabel.setAttribute('x', x);
-        xLabel.setAttribute('y', height - paddingBottom + 15);
+        xLabel.setAttribute('x', x + 2);
+        xLabel.setAttribute('y', height - paddingBottom + 20);
         xLabel.setAttribute('text-anchor', 'end');
         xLabel.setAttribute('font-size', '10');
-        xLabel.setAttribute('transform', `rotate(-45 ${x + 2} ${height - paddingBottom + 20})`);
+        xLabel.setAttribute('transform', `rotate(-45 ${x} ${height - paddingBottom + 15})`);
         xLabel.textContent = `${i}%`;
         svg.appendChild(xLabel);
 
@@ -1659,7 +1659,7 @@ function updateCalibrationChart() {
     xAxisLabel.setAttribute('y', height - 10);
     xAxisLabel.setAttribute('text-anchor', 'middle');
     xAxisLabel.setAttribute('font-size', '10');
-    xAxisLabel.textContent = 'Declared confidence (%)';
+    xAxisLabel.textContent = 'Confidence';
     svg.appendChild(xAxisLabel);
 
     const yAxisLabel = document.createElementNS(ns, 'text');
@@ -1670,7 +1670,7 @@ function updateCalibrationChart() {
     yAxisLabel.setAttribute('text-anchor', 'middle');
     yAxisLabel.setAttribute('font-size', '10');
     yAxisLabel.setAttribute('transform', `rotate(-90 ${yLabelX} ${yLabelY})`);
-    yAxisLabel.textContent = 'Actual accuracy (%)';
+    yAxisLabel.textContent = 'Accuracy';
     svg.appendChild(yAxisLabel);
 }
 
