@@ -588,6 +588,14 @@ button#stats-btn {
     gap: 10px;
 }
 
+.calibration-chart-wrapper {
+    overflow-x: auto;
+}
+
+#calibration-chart {
+    display: block;
+}
+
 .chart-tooltip {
     position: fixed;
     background: rgba(0, 0, 0, 0.8);
@@ -783,8 +791,8 @@ button#stats-btn {
 .stats-grid {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
-    gap: 15px;
-    margin: 25px 0;
+    gap: 12px 8px;
+    margin: 8px 0;
 }
 
 .stats-grid-accordion {
@@ -814,7 +822,7 @@ button#stats-btn {
 
 /* Guess Distribution */
 .guess-distribution {
-    margin: 25px 0;
+    margin: 8px 0 12px;
 }
 
 .guess-distribution h3 {
@@ -853,7 +861,7 @@ button#stats-btn {
 
 .dist-bar {
     height: 100%;
-    background-color: #27ae60;
+    background-color: #3498db;
     border-radius: 10px;
     transition: width 0.3s ease;
     min-width: 20px;

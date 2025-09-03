@@ -270,8 +270,8 @@
                             </div>
                         </div>
                     </div>
-                    <div class="accordion-item open" id="acc-distribution-item">
-                        <button class="accordion-header" id="acc-distribution-header" aria-expanded="true" aria-controls="acc-distribution-panel">
+                    <div class="accordion-item" id="acc-distribution-item">
+                        <button class="accordion-header" id="acc-distribution-header" aria-expanded="false" aria-controls="acc-distribution-panel">
                             <span>Guess Distribution</span>
                             <span class="acc-arrow">></span>
                         </button>
@@ -324,8 +324,8 @@
                             </div>
                         </div>
                     </div>
-                    <div class="accordion-item" id="acc-calibration-item">
-                        <button class="accordion-header" id="acc-calibration-header" aria-expanded="false" aria-controls="acc-calibration-panel">
+                    <div class="accordion-item open" id="acc-calibration-item">
+                        <button class="accordion-header" id="acc-calibration-header" aria-expanded="true" aria-controls="acc-calibration-panel">
                             <span>Probability Calibration</span>
                             <span class="acc-arrow">></span>
                         </button>
@@ -338,7 +338,9 @@
                                     <input type="checkbox" id="first-guess-checkbox"> Only count first guesses
                                 </label>
                             </div>
-                            <svg id="calibration-chart" width="300" height="200"></svg>
+                            <div class="calibration-chart-wrapper">
+                                <svg id="calibration-chart" width="300" height="200"></svg>
+                            </div>
                             <div id="calibration-tooltip" class="chart-tooltip"></div>
                         </div>
                     </div>
