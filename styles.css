@@ -584,6 +584,19 @@ button#stats-btn {
     margin-bottom: 10px;
 }
 
+.chart-tooltip {
+    position: fixed;
+    background: rgba(0, 0, 0, 0.8);
+    color: #fff;
+    padding: 4px 8px;
+    border-radius: 4px;
+    font-size: 0.625rem;
+    pointer-events: none;
+    display: none;
+    z-index: 1000;
+    white-space: nowrap;
+}
+
 .input-row {
     display: flex;
     align-items: center;

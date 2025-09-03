@@ -742,6 +742,8 @@ const medianFirstGuessText = document.getElementById('median-first-guess-text');
 const firstGuessPercentileText = document.getElementById('first-guess-percentile-text');
 const calibrationCheckbox = document.getElementById('prob-calibration-checkbox');
 const firstGuessCheckbox = document.getElementById('first-guess-checkbox');
+const calibrationChart = document.getElementById('calibration-chart');
+const calibrationTooltip = document.getElementById('calibration-tooltip');
 
 // Initialize game
 function initGame() {
@@ -1503,10 +1505,25 @@ function updateStatsDisplay() {
     updateCalibrationChart();
 }
 
+function showCalibrationTooltip(evt, sampleSize, declared, actual) {
+    if (!calibrationTooltip) return;
+    const x = (evt.clientX || 0) + 10;
+    const y = (evt.clientY || 0) + 10;
+    calibrationTooltip.style.left = `${x}px`;
+    calibrationTooltip.style.top = `${y}px`;
+    calibrationTooltip.innerHTML = `Sample Size: ${sampleSize}<br>Declared: ${declared}%<br>Actual: ${Math.round(actual)}%`;
+    calibrationTooltip.style.display = 'block';
+}
+
+function hideCalibrationTooltip() {
+    if (calibrationTooltip) calibrationTooltip.style.display = 'none';
+}
+
 function updateCalibrationChart() {
-    const svg = document.getElementById('calibration-chart');
+    const svg = calibrationChart;
     if (!svg) return;
 
+    hideCalibrationTooltip();
     while (svg.firstChild) svg.removeChild(svg.firstChild);
 
     const width = svg.viewBox.baseVal?.width || svg.width.baseVal.value || 300;
@@ -1625,6 +1642,13 @@ function updateCalibrationChart() {
         circle.setAttribute('cy', y);
         circle.setAttribute('r', 3);
         circle.setAttribute('fill', '#3498db');
+        circle.addEventListener('mouseenter', (e) => showCalibrationTooltip(e, bin.total, (i + 1) * 10, ratio * 100));
+        circle.addEventListener('mouseleave', hideCalibrationTooltip);
+        circle.addEventListener('click', (e) => showCalibrationTooltip(e, bin.total, (i + 1) * 10, ratio * 100));
+        circle.addEventListener('touchstart', (e) => {
+            const t = e.touches[0];
+            if (t) showCalibrationTooltip(t, bin.total, (i + 1) * 10, ratio * 100);
+        }, { passive: true });
         svg.appendChild(circle);
     });
 
@@ -2682,5 +2706,13 @@ function setupEventListeners() {
     }
 }
 
+if (calibrationChart) {
+    calibrationChart.addEventListener('mouseleave', hideCalibrationTooltip);
+}
+
+document.addEventListener('click', (e) => {
+    if (!e.target.closest('#calibration-chart')) hideCalibrationTooltip();
+});
+
 // Initialize the game when the page loads
-document.addEventListener('DOMContentLoaded', initGame); 
+document.addEventListener('DOMContentLoaded', initGame);
