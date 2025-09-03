@@ -300,8 +300,11 @@ let stats = {
         4: 0,
         5: 0,
         6: 0
-    }
+    },
+    calibrationData: []
 };
+
+let calibrationEnabled = false;
 
 // Database of Fermi questions with dates
 const fermiQuestions = [
@@ -706,6 +709,7 @@ const resultEmoji = document.getElementById('result-emoji');
 const correctAnswer = document.getElementById('correct-answer');
 const guessesContainer = document.getElementById('guesses-container');
 const guessInput = document.getElementById('guess-input');
+const confidenceInput = document.getElementById('confidence-input');
 const submitBtn = document.getElementById('submit-btn');
 const inputSection = document.getElementById('input-section');
 const newGameSection = document.getElementById('new-game-section');
@@ -736,14 +740,16 @@ const shareBtn = document.getElementById('share-btn');
 const shareStatsBtn = document.getElementById('share-stats-btn');
 const medianFirstGuessText = document.getElementById('median-first-guess-text');
 const firstGuessPercentileText = document.getElementById('first-guess-percentile-text');
+const calibrationCheckbox = document.getElementById('prob-calibration-checkbox');
 
 // Initialize game
 function initGame() {
     // Initialize Supabase first
     initSupabase();
-    
+
     loadStats();
     loadCompletedQuestions();
+    loadCalibrationSetting();
 
     // If URL has a specific question date, navigate to it first
     let navigatedFromURL = false;
@@ -956,14 +962,15 @@ function getGuessText(guessNumber) {
 // Submit a guess
 function submitGuess() {
     const guessValue = parseInt(guessInput.value.replace(/[^\d]/g, ''));
-    
+    const confidenceValue = confidenceInput ? parseInt(confidenceInput.value) : null;
+
     if (isNaN(guessValue) || guessValue < 0) {
         alert('Please enter a valid positive number!');
         return;
     }
-    
+
     currentGuess++;
-    
+
     // Add guess to display
     addGuessToDisplay(guessValue);
     
@@ -1024,6 +1031,15 @@ function submitGuess() {
     
     // Clear input
     guessInput.value = '';
+
+    if (calibrationEnabled && confidenceInput) {
+        const confPercent = isNaN(confidenceValue) ? null : Math.max(0, Math.min(100, confidenceValue));
+        if (confPercent !== null) {
+            stats.calibrationData.push({ confidence: confPercent / 100, correct: isCorrect });
+            saveStats();
+        }
+        confidenceInput.value = '';
+    }
     
     // Save current game state after each guess
     saveCurrentGameState();
@@ -1482,6 +1498,80 @@ function updateStatsDisplay() {
             barElement.style.width = `${percentage}%`;
         }
     }
+
+    updateCalibrationChart();
+}
+
+function updateCalibrationChart() {
+    const canvas = document.getElementById('calibration-chart');
+    if (!canvas) return;
+    const ctx = canvas.getContext('2d');
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+    const data = stats.calibrationData || [];
+    if (data.length === 0) {
+        ctx.fillStyle = '#666';
+        ctx.font = '12px sans-serif';
+        ctx.fillText('No data', 10, 20);
+        return;
+    }
+
+    const bins = Array.from({ length: 10 }, () => ({ total: 0, correct: 0 }));
+    data.forEach(d => {
+        let conf = typeof d.confidence === 'number' ? d.confidence : parseFloat(d.confidence);
+        if (isNaN(conf)) return;
+        conf = Math.max(0, Math.min(1, conf));
+        const idx = Math.min(9, Math.floor(conf * 10));
+        bins[idx].total++;
+        if (d.correct) bins[idx].correct++;
+    });
+
+    const paddingLeft = 30,
+        paddingBottom = 20,
+        paddingTop = 20,
+        paddingRight = 20;
+    const width = canvas.width - paddingLeft - paddingRight;
+    const height = canvas.height - paddingTop - paddingBottom;
+
+    ctx.strokeStyle = '#ccc';
+    ctx.beginPath();
+    ctx.moveTo(paddingLeft, canvas.height - paddingBottom);
+    ctx.lineTo(canvas.width - paddingRight, canvas.height - paddingBottom);
+    ctx.lineTo(paddingLeft, paddingTop);
+    ctx.stroke();
+
+    ctx.strokeStyle = '#eee';
+    ctx.beginPath();
+    ctx.moveTo(paddingLeft, canvas.height - paddingBottom);
+    ctx.lineTo(canvas.width - paddingRight, paddingTop);
+    ctx.stroke();
+
+    ctx.strokeStyle = '#3498db';
+    ctx.beginPath();
+    bins.forEach((bin, i) => {
+        const x = paddingLeft + ((i + 0.5) / 10) * width;
+        const y = canvas.height - paddingBottom - (bin.total ? (bin.correct / bin.total) * height : 0);
+        if (i === 0) ctx.moveTo(x, y); else ctx.lineTo(x, y);
+    });
+    ctx.stroke();
+
+    ctx.fillStyle = '#3498db';
+    bins.forEach((bin, i) => {
+        const x = paddingLeft + ((i + 0.5) / 10) * width;
+        const y = canvas.height - paddingBottom - (bin.total ? (bin.correct / bin.total) * height : 0);
+        ctx.beginPath();
+        ctx.arc(x, y, 3, 0, Math.PI * 2);
+        ctx.fill();
+    });
+
+    ctx.fillStyle = '#333';
+    ctx.font = '10px sans-serif';
+    ctx.fillText('Confidence', paddingLeft + width / 2 - 20, canvas.height - 2);
+    ctx.save();
+    ctx.translate(10, paddingTop + height / 2 + 20);
+    ctx.rotate(-Math.PI / 2);
+    ctx.fillText('Actual', 0, 0);
+    ctx.restore();
 }
 
 // Close modals
@@ -1516,7 +1606,8 @@ function loadStats() {
                     4: 0,
                     5: 0,
                     6: 0
-                }
+                },
+                calibrationData: loadedStats.calibrationData || []
             };
         } catch (error) {
             console.error('Error loading stats:', error);
@@ -1534,7 +1625,8 @@ function loadStats() {
                     4: 0,
                     5: 0,
                     6: 0
-                }
+                },
+                calibrationData: []
             };
         }
     }
@@ -1554,6 +1646,29 @@ function loadCompletedQuestions() {
         } catch (error) {
             console.error('Error loading completed questions:', error);
             completedQuestions = {}; // Reset to default on error
+        }
+    }
+}
+
+function loadCalibrationSetting() {
+    calibrationEnabled = localStorage.getItem('fermiCalibrationEnabled') === 'true';
+    if (calibrationCheckbox) {
+        calibrationCheckbox.checked = calibrationEnabled;
+    }
+    updateConfidenceInputVisibility();
+}
+
+function setCalibrationEnabled(enabled) {
+    calibrationEnabled = enabled;
+    localStorage.setItem('fermiCalibrationEnabled', enabled ? 'true' : 'false');
+    updateConfidenceInputVisibility();
+}
+
+function updateConfidenceInputVisibility() {
+    if (confidenceInput) {
+        confidenceInput.style.display = calibrationEnabled ? 'block' : 'none';
+        if (!calibrationEnabled) {
+            confidenceInput.value = '';
         }
     }
 }
@@ -2344,6 +2459,12 @@ function setupEventListeners() {
     
     // Questions history button (question category)
     questionCategory.addEventListener('click', showQuestionsHistory);
+
+    if (calibrationCheckbox) {
+        calibrationCheckbox.addEventListener('change', (e) => {
+            setCalibrationEnabled(e.target.checked);
+        });
+    }
     
     // Source button opens explanation modal
     if (sourceBtn && sourceModal) {
@@ -2433,6 +2554,16 @@ function setupEventListeners() {
                 else accInitialItem.classList.add('open');
             });
         }
+    }
+
+    const accCalibrationItem = document.getElementById('acc-calibration-item');
+    const accCalibrationHeader = document.getElementById('acc-calibration-header');
+    if (accCalibrationHeader && accCalibrationItem) {
+        accCalibrationHeader.addEventListener('click', () => {
+            const isOpen = accCalibrationItem.classList.contains('open');
+            if (isOpen) accCalibrationItem.classList.remove('open');
+            else accCalibrationItem.classList.add('open');
+        });
     }
     
     // Close buttons
