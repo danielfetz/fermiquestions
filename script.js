@@ -744,6 +744,7 @@ const calibrationCheckboxes = document.querySelectorAll('.prob-calibration-check
 const firstGuessCheckbox = document.getElementById('first-guess-checkbox');
 const calibrationChart = document.getElementById('calibration-chart');
 const calibrationTooltip = document.getElementById('calibration-tooltip');
+const calibrationNote = document.querySelector('.calibration-note');
 
 // Initialize game
 function initGame() {
@@ -1557,6 +1558,11 @@ function updateCalibrationChart() {
 
     const ns = 'http://www.w3.org/2000/svg';
 
+    const hasData = bins.some(bin => bin.total > 0);
+    if (calibrationNote) {
+        calibrationNote.style.display = hasData ? 'none' : 'block';
+    }
+
     // Axes
     const xAxis = document.createElementNS(ns, 'line');
     xAxis.setAttribute('x1', paddingLeft);
@@ -1744,6 +1750,15 @@ function updateConfidenceInputVisibility() {
             confidenceInput.value = '50';
         } else {
             confidenceInput.value = '';
+        }
+    }
+    if (submitBtn) {
+        if (calibrationEnabled && isSmallDevice()) {
+            submitBtn.style.width = '54px';
+            submitBtn.textContent = '>';
+        } else {
+            submitBtn.style.width = '';
+            submitBtn.textContent = 'Submit';
         }
     }
 }
@@ -2713,4 +2728,5 @@ document.addEventListener('click', (e) => {
 });
 
 // Initialize the game when the page loads
+window.addEventListener('resize', updateConfidenceInputVisibility);
 document.addEventListener('DOMContentLoaded', initGame);
