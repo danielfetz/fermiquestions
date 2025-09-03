@@ -1586,8 +1586,9 @@ function updateCalibrationChart() {
         const xLabel = document.createElementNS(ns, 'text');
         xLabel.setAttribute('x', x);
         xLabel.setAttribute('y', height - paddingBottom + 15);
-        xLabel.setAttribute('text-anchor', 'middle');
+        xLabel.setAttribute('text-anchor', 'start');
         xLabel.setAttribute('font-size', '10');
+        xLabel.setAttribute('transform', `rotate(45 ${x} ${height - paddingBottom + 15})`);
         xLabel.textContent = `${i}%`;
         svg.appendChild(xLabel);
 
@@ -1608,24 +1609,11 @@ function updateCalibrationChart() {
         svg.appendChild(yLabel);
     }
 
-    // Calibration curve
-    const points = [];
+    // Calibration points
     bins.forEach((bin, i) => {
+        if (!bin.total) return;
         const x = paddingLeft + ((i + 1) / 10) * plotWidth;
-        const ratio = bin.total ? (bin.correct / bin.total) : 0;
-        const y = height - paddingBottom - ratio * plotHeight;
-        points.push(`${x},${y}`);
-    });
-
-    const polyline = document.createElementNS(ns, 'polyline');
-    polyline.setAttribute('points', points.join(' '));
-    polyline.setAttribute('fill', 'none');
-    polyline.setAttribute('stroke', '#3498db');
-    svg.appendChild(polyline);
-
-    bins.forEach((bin, i) => {
-        const x = paddingLeft + ((i + 1) / 10) * plotWidth;
-        const ratio = bin.total ? (bin.correct / bin.total) : 0;
+        const ratio = bin.correct / bin.total;
         const y = height - paddingBottom - ratio * plotHeight;
         const circle = document.createElementNS(ns, 'circle');
         circle.setAttribute('cx', x);
