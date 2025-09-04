@@ -653,9 +653,10 @@ button#stats-btn {
 #confidence-input {
     margin: 0 10px 0 0;
     height: 100%;
-    width: 72px;
+    width: 60px;
     padding: 18.5px 0;
-    background: none;
+    padding-right: 2px;
+    -webkit-padding-end: 2px;
     border: none;
     border-left: 2px solid #eaecf0;
     border-radius: 0;
@@ -664,8 +665,7 @@ button#stats-btn {
     font-family: 'Press Start 2P', monospace;
     outline: none;
     text-align: right;
-    gap: 0px;
-    padding-inline: 0;
+    padding-inline-start: 0;
     display: none;
 }
 
@@ -682,10 +682,18 @@ button#stats-btn {
     cursor: pointer;
     transition: background-color 0.2s;
     white-space: nowrap;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
 
 .submit-btn:hover {
     background-color: #2e86c1;
+}
+
+.submit-btn svg {
+    width: 24px;
+    height: 24px;
 }
 
 .submit-btn:disabled {
