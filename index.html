@@ -79,8 +79,10 @@
 
         <!-- Hint (hidden by default) -->
         <div class="hint-container" id="hint-container" style="display: none;">
-            <div class="hint-text" id="hint-text"></div>
-            <button id="hint-modal-btn" class="hint-link" aria-controls="hint-modal" aria-haspopup="dialog">Show hint <span class="arrow">></span></button>
+            <button id="hint-modal-btn" class="hint-link" aria-controls="hint-text" aria-expanded="false">Show hint <span class="arrow">></span></button>
+            <div class="hint-text" id="hint-text">
+                <span class="hint-label">Hint: </span><span id="hint-body"></span>
+            </div>
         </div>
 
         <!-- Game Result (hidden by default) -->
@@ -166,14 +168,6 @@
             </div>
         </div>
 
-        <!-- Hint Modal -->
-        <div class="modal" id="hint-modal">
-            <div class="modal-content">
-                <h2>Hint</h2>
-                <p id="hint-modal-text"></p>
-                <button id="close-hint-btn" class="close-btn">Close</button>
-            </div>
-        </div>
 
         <!-- Source/Explanation Modal -->
         <div class="modal" id="source-modal">

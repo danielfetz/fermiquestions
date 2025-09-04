@@ -706,6 +706,7 @@ const currentStreakDisplay = document.getElementById('current-streak-display');
 const guessCounter = document.getElementById('guess-counter');
 const hintContainer = document.getElementById('hint-container');
 const hintText = document.getElementById('hint-text');
+const hintBody = document.getElementById('hint-body');
 const questionMeta = document.getElementById('question-meta');
 const streakInline = document.getElementById('streak-inline');
 const sourceBtn = document.getElementById('source-btn');
@@ -740,11 +741,8 @@ const questionsModal = document.getElementById('questions-modal');
 const strategyModal = document.getElementById('strategy-modal');
 const strategyTipsBtn = document.getElementById('strategy-tips-btn');
 const closeStrategyBtn = document.getElementById('close-strategy-btn');
-// Hint modal elements
-const hintModal = document.getElementById('hint-modal');
+// Hint elements
 const hintModalBtn = document.getElementById('hint-modal-btn');
-const hintModalText = document.getElementById('hint-modal-text');
-const closeHintBtn = document.getElementById('close-hint-btn');
 const questionsList = document.getElementById('questions-list');
 const closeHelpBtn = document.getElementById('close-help-btn');
 const closeStatsBtn = document.getElementById('close-stats-btn');
@@ -1302,21 +1300,24 @@ function triggerConfetti(durationMs = 1200, particleCount = 80) {
 // Show hint after 2rd guess
 function showHint() {
     if (currentQuestion.hint) {
-        // Inline hint text always includes a "Hint: " prefix (it's hidden on mobile via CSS)
-        hintText.textContent = `Hint: ${currentQuestion.hint}`;
+        hintBody.textContent = currentQuestion.hint;
         guessCounter.style.display = 'none';
         hintContainer.style.display = 'block';
-        triggerShake(hintContainer);
-        // Also update modal hint text
-        if (hintModalText) {
-            hintModalText.textContent = currentQuestion.hint;
+        hintContainer.classList.remove('open');
+        if (hintModalBtn) {
+            hintModalBtn.setAttribute('aria-expanded', 'false');
         }
+        triggerShake(hintContainer);
     }
 }
 
 // Hide hint
 function hideHint() {
     hintContainer.style.display = 'none';
+    hintContainer.classList.remove('open');
+    if (hintModalBtn) {
+        hintModalBtn.setAttribute('aria-expanded', 'false');
+    }
 }
 
 // End the game
@@ -2553,14 +2554,17 @@ function setupEventListeners() {
         strategyTipsBtn.addEventListener('click', showHelp);
     }
 
-    // Hint modal trigger (mobile)
-    if (hintModalBtn && hintModal) {
+    // Hint accordion toggle (mobile)
+    if (hintModalBtn && hintContainer) {
         hintModalBtn.addEventListener('click', () => {
-            // Ensure latest hint is shown
-            if (currentQuestion && currentQuestion.hint && hintModalText) {
-                hintModalText.textContent = currentQuestion.hint;
+            const isOpen = hintContainer.classList.contains('open');
+            if (isOpen) {
+                hintContainer.classList.remove('open');
+                hintModalBtn.setAttribute('aria-expanded', 'false');
+            } else {
+                hintContainer.classList.add('open');
+                hintModalBtn.setAttribute('aria-expanded', 'true');
             }
-            hintModal.style.display = 'block';
         });
     }
     
@@ -2708,16 +2712,13 @@ function setupEventListeners() {
     if (closeStrategyBtn) {
         closeStrategyBtn.addEventListener('click', () => closeModal(strategyModal));
     }
-    if (closeHintBtn) {
-        closeHintBtn.addEventListener('click', () => closeModal(hintModal));
-    }
 
     // Share buttons
     shareBtn.addEventListener('click', shareGame);
     shareStatsBtn.addEventListener('click', shareStats);
         
     // Close modals when clicking outside (desktop + mobile)
-    [helpModal, statsModal, questionsModal, strategyModal, hintModal, sourceModal].forEach(modal => {
+    [helpModal, statsModal, questionsModal, strategyModal, sourceModal].forEach(modal => {
         ['click', 'touchend'].forEach(event => {
             modal.addEventListener(event, e => e.target === modal && closeModal(modal));
         });
