@@ -373,6 +373,10 @@ button#stats-btn {
     font-size: 0.85rem;
 }
 
+#hint-text::before {
+    content: "Hint: ";
+}
+
 /* Hint accordion trigger (mobile) */
 .hint-link {
     display: none;
@@ -1004,6 +1008,9 @@ button#stats-btn {
     /* On mobile, hide inline hint text and show the button */
     #hint-text {
         display: none;
+    }
+    #hint-text::before {
+        content: '';
     }
     .hint-link {
         display: inline;

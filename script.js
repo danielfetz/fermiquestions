@@ -1299,8 +1299,8 @@ function triggerConfetti(durationMs = 1200, particleCount = 80) {
 // Show hint after 2rd guess
 function showHint() {
     if (currentQuestion.hint) {
-        // Inline hint text always includes a "Hint: " prefix (it's hidden on mobile via CSS)
-        hintText.textContent = `Hint: ${currentQuestion.hint}`;
+        // Display only the hint text; "Hint:" label is handled via CSS on desktop
+        hintText.textContent = currentQuestion.hint;
         guessCounter.style.display = 'none';
         hintContainer.style.display = 'block';
         hintContainer.classList.remove('open');
