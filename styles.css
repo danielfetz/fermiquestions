@@ -1017,6 +1017,10 @@ button#stats-btn {
         font-size: 0.78rem;
         height: 63px;
     }
+    #confidence-input {
+    margin: 0 8px 0 0;
+    width: 70px;
+    }
 }
 
 /* Animation for new guesses
