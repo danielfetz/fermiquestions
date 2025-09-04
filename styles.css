@@ -373,10 +373,6 @@ button#stats-btn {
     font-size: 0.85rem;
 }
 
-.hint-label {
-    font-weight: bold;
-}
-
 /* Hint accordion trigger (mobile) */
 .hint-link {
     display: none;
@@ -1017,7 +1013,8 @@ button#stats-btn {
     }
     .hint-container.open #hint-text {
         display: block;
-        padding: 18.75px;
+        padding: 14px;
+        font-size: 0.8rem;
         border-top: 2px solid #e9ecef;
         background: white;
     }
