@@ -391,6 +391,15 @@ button#stats-btn {
     transform: rotate(90deg);
 }
 
+.hint-container.open #hint-text {
+    display: block;
+    margin-top: 12px;
+}
+
+.hint-container.open .hint-link .arrow {
+    transform: rotate(270deg);
+}
+
 /* Game Result */
 .game-result {
     text-align: center;
