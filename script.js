@@ -1757,9 +1757,10 @@ function setCalibrationEnabled(enabled) {
 
 function updateConfidenceInputVisibility() {
     if (confidenceInput) {
+        const prevValue = confidenceInput.value;
         confidenceInput.style.display = calibrationEnabled ? 'block' : 'none';
         if (calibrationEnabled) {
-            confidenceInput.value = '50';
+            confidenceInput.value = prevValue || '50';
         } else {
             confidenceInput.value = '';
         }
