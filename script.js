@@ -976,6 +976,9 @@ function getGuessText(guessNumber) {
 function submitGuess() {
     const guessValue = parseInt(guessInput.value.replace(/[^\d]/g, ''));
     const confidenceValue = confidenceInput ? parseInt(confidenceInput.value) : null;
+    const confPercent = (calibrationEnabled && confidenceInput && !isNaN(confidenceValue))
+        ? Math.max(0, Math.min(100, confidenceValue))
+        : null;
 
     if (isNaN(guessValue) || guessValue < 0) {
         alert('Please enter a valid positive number!');
@@ -1046,7 +1049,6 @@ function submitGuess() {
     guessInput.value = '';
 
     if (calibrationEnabled && confidenceInput) {
-        const confPercent = isNaN(confidenceValue) ? null : Math.max(0, Math.min(100, confidenceValue));
         if (confPercent !== null) {
             stats.calibrationData.push({ confidence: confPercent / 100, correct: isCorrect, guessNumber: currentGuess });
             saveStats();
@@ -1067,6 +1069,7 @@ function submitGuess() {
             is_correct: isCorrect,
             is_close: isClose,
             is_high: isHigh,
+            confidence_percent: confPercent,
             timestamp: new Date().toISOString()
         };
         
