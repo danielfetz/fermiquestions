@@ -1018,8 +1018,9 @@ button#stats-btn {
         height: 63px;
     }
     #confidence-input {
-    margin: 0 8px 0 0;
-    width: 70px;
+        margin: 0 8px 0 0;
+        width: 70px;
+        padding-left: 4px;
     }
 }
 
