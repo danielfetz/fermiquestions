@@ -667,6 +667,13 @@ button#stats-btn {
     display: none;
 }
 
+/* iOS-specific fix */
+@supports (-webkit-touch-callout: none) {
+  select {
+    padding-right: 4px; /* Much tighter on iOS */
+  }
+}
+
 .submit-btn {
     width: 110px;
     height: 54px;
