@@ -758,6 +758,9 @@ const firstGuessCheckbox = document.getElementById('first-guess-checkbox');
 const calibrationChart = document.getElementById('calibration-chart');
 const calibrationTooltip = document.getElementById('calibration-tooltip');
 const calibrationNote = document.querySelector('.calibration-note');
+const calibrationBanner = document.getElementById('calibration-banner');
+const enableCalibrationBtn = document.getElementById('enable-calibration-btn');
+const calibrationBannerClose = document.getElementById('calibration-banner-close');
 
 // Initialize game
 function initGame() {
@@ -765,8 +768,9 @@ function initGame() {
     initSupabase();
 
     loadStats();
-    loadCompletedQuestions();
+   loadCompletedQuestions();
     loadCalibrationSetting();
+    initCalibrationBanner();
 
     // If URL has a specific question date, navigate to it first
     let navigatedFromURL = false;
@@ -1748,6 +1752,7 @@ function loadCalibrationSetting() {
         cb.checked = calibrationEnabled;
     });
     updateConfidenceInputVisibility();
+    updateCalibrationBannerVisibility();
 }
 
 function setCalibrationEnabled(enabled) {
@@ -1757,6 +1762,7 @@ function setCalibrationEnabled(enabled) {
         cb.checked = enabled;
     });
     updateConfidenceInputVisibility();
+    updateCalibrationBannerVisibility();
 }
 
 function updateConfidenceInputVisibility() {
@@ -1778,6 +1784,30 @@ function updateConfidenceInputVisibility() {
             submitBtn.textContent = 'Submit';
         }
     }
+}
+
+function updateCalibrationBannerVisibility() {
+    if (!calibrationBanner) return;
+    const closed = localStorage.getItem('fermiCalibrationBannerClosed') === 'true';
+    calibrationBanner.style.display = (!closed && !calibrationEnabled) ? 'block' : 'none';
+}
+
+function initCalibrationBanner() {
+    if (!calibrationBanner) return;
+    if (calibrationBannerClose) {
+        calibrationBannerClose.addEventListener('click', () => {
+            calibrationBanner.style.display = 'none';
+            localStorage.setItem('fermiCalibrationBannerClosed', 'true');
+        });
+    }
+    if (enableCalibrationBtn) {
+        enableCalibrationBtn.addEventListener('click', () => {
+            setCalibrationEnabled(true);
+            localStorage.setItem('fermiCalibrationBannerClosed', 'true');
+            calibrationBanner.style.display = 'none';
+        });
+    }
+    updateCalibrationBannerVisibility();
 }
 
 // Save current game state to localStorage and Supabase (per question)
