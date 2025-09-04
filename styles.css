@@ -664,14 +664,9 @@ button#stats-btn {
     font-family: 'Press Start 2P', monospace;
     outline: none;
     text-align: right;
+    gap: 0px;
+    padding-inline: 0;
     display: none;
-}
-
-/* iOS-specific fix */
-@supports (-webkit-touch-callout: none) {
-  select {
-    padding-right: 4px; /* Much tighter on iOS */
-  }
 }
 
 .submit-btn {
