@@ -706,6 +706,7 @@ const currentStreakDisplay = document.getElementById('current-streak-display');
 const guessCounter = document.getElementById('guess-counter');
 const hintContainer = document.getElementById('hint-container');
 const hintText = document.getElementById('hint-text');
+const hintBody = document.getElementById('hint-body');
 const questionMeta = document.getElementById('question-meta');
 const streakInline = document.getElementById('streak-inline');
 const sourceBtn = document.getElementById('source-btn');
@@ -1299,8 +1300,7 @@ function triggerConfetti(durationMs = 1200, particleCount = 80) {
 // Show hint after 2rd guess
 function showHint() {
     if (currentQuestion.hint) {
-        // Display only the hint text; "Hint:" label is handled via CSS on desktop
-        hintText.textContent = currentQuestion.hint;
+        hintBody.textContent = currentQuestion.hint;
         guessCounter.style.display = 'none';
         hintContainer.style.display = 'block';
         hintContainer.classList.remove('open');

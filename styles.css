@@ -373,8 +373,8 @@ button#stats-btn {
     font-size: 0.85rem;
 }
 
-#hint-text::before {
-    content: "Hint: ";
+.hint-label {
+    font-weight: bold;
 }
 
 /* Hint accordion trigger (mobile) */
@@ -1009,8 +1009,8 @@ button#stats-btn {
     #hint-text {
         display: none;
     }
-    #hint-text::before {
-        content: '';
+    .hint-label {
+        display: none;
     }
     .hint-link {
         display: inline;
