@@ -365,25 +365,30 @@ button#stats-btn {
 }
 
 /* Hint Container */
+
 .hint-container {
     text-align: center;
     margin-bottom: 20px;
     line-height: 1.5;
     font-size: 0.85rem;
-}
-
-/* Hint modal trigger button (mobile) */
-.hint-link {
-    display: none;
     background: white;
     border: 2px solid #e9ecef;
+    border-radius: 15px;
+    overflow: hidden;
+}
+
+/* Hint accordion trigger (mobile) */
+.hint-link {
+    display: none;
+    background: transparent;
+    border: none;
     font-family: 'Press Start 2P', monospace;
     font-size: 0.82rem;
     padding: 18.75px;
     width: 100%;
-    border-radius: 15px;
     color: #333;
     -webkit-tap-highlight-color: transparent;
+    cursor: pointer;
 }
 
 .hint-link .arrow {
@@ -393,7 +398,9 @@ button#stats-btn {
 
 .hint-container.open #hint-text {
     display: block;
-    margin-top: 12px;
+    padding: 18.75px;
+    border-top: 2px solid #e9ecef;
+    background: white;
 }
 
 .hint-container.open .hint-link .arrow {
