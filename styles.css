@@ -653,8 +653,9 @@ button#stats-btn {
 #confidence-input {
     margin: 0 10px 0 0;
     height: 100%;
-    width: 60px;
+    width: 72px;
     padding: 18.5px 0;
+    background: none;
     padding-right: 2px;
     -webkit-padding-end: 2px;
     border: none;
