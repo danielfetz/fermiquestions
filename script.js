@@ -116,39 +116,36 @@ async function saveStatsToSupabase(statsData) {
     }
 }
 
-// Fetch average guesses for a question from Supabase
+// Fetch average guesses for a question from Supabase using RPC
 async function fetchAverageGuesses(questionDate) {
     if (!supabase) return null;
     
     try {
-        // Query all completed games for this question
+        // Call the RPC function for server-side aggregation
         const { data, error } = await supabase
-            .from('game_sessions')
-            .select('total_guesses, won')
-            .eq('question_date', questionDate)
-            .not('completed_at', 'is', null);
+            .rpc('avg_guesses_for_date', { q_date: questionDate });
         
         if (error) {
             console.error('Error fetching average guesses:', error);
             return null;
         }
         
+        // The RPC returns an array with one row
         if (!data || data.length === 0) {
             return null;
         }
         
-        // Calculate average, counting losses as 7 guesses
-        const totalGuesses = data.reduce((sum, game) => {
-            const guessCount = game.won ? game.total_guesses : 7;
-            return sum + guessCount;
-        }, 0);
+        const result = data[0];
         
-        const average = totalGuesses / data.length;
+        // Return null if no players have completed this question yet
+        if (!result || result.total_players === 0) {
+            return null;
+        }
         
         return {
-            average: average,
-            totalPlayers: data.length,
-            winRate: Math.round((data.filter(g => g.won).length / data.length) * 100)
+            average: parseFloat(result.average),
+            totalPlayers: result.total_players,
+            winRate: result.win_rate
         };
     } catch (error) {
         console.error('Error with average guesses fetch:', error);
@@ -456,13 +453,22 @@ const fermiQuestions = [
         image: "data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' width='100' height='100' viewBox='0 0 100 100'%3e%3crect width='100' height='100' fill='%23f8fafc'/%3e%3ctext x='50' y='62' font-size='40' text-anchor='middle' fill='%23374151'%3e🐴%3c/text%3e%3c/svg%3e"
     },
     {
-        question: "How much revenue did Meta/Facebook make on an average day in 2024? (in $)",
+        question: "How much revenue in US dollars did Meta/Facebook make per day in 2024?",
         answer: 450000000,
         category: "",
         explanation: "",
-        hint: "In December 2024, Meta's family of apps reached 3.35 billion people daily.",
+        hint: "In December 2024, Meta's apps reached 3.35 billion people daily.",
         date: "2025-08-21",
         image: "data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' width='100' height='100' viewBox='0 0 100 100'%3e%3crect width='100' height='100' fill='%23f8fafc'/%3e%3ctext x='50' y='62' font-size='40' text-anchor='middle' fill='%23374151'%3e📱%3c/text%3e%3c/svg%3e"
+    },
+    {
+        question: "How many passengers fly in and out of US airports every day?",
+        answer: 3000000,
+        category: "",
+        explanation: "",
+        hint: "The FAA handles on average more than 44,000 flights per day.",
+        date: "2025-08-22",
+        image: "data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' width='100' height='100' viewBox='0 0 100 100'%3e%3crect width='100' height='100' fill='%23f8fafc'/%3e%3ctext x='50' y='62' font-size='40' text-anchor='middle' fill='%23374151'%3e✈️%3c/text%3e%3c/svg%3e"
     }
 ];
 
@@ -757,7 +763,7 @@ function submitGuess() {
                 const currentRow = guessRows[currentGuess - 1];
                 const feedbackButton = currentRow.querySelector('.feedback-button');
                 feedbackButton.classList.add('show-tooltip');
-                setTimeout(() => feedbackButton.classList.remove('show-tooltip'), 4000);
+                setTimeout(() => feedbackButton.classList.remove('show-tooltip'), 2800);
                 localStorage.setItem('fermiTooltipTutorialShown', '1');
             }
         } catch (e) {
