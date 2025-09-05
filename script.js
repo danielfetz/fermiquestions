@@ -2565,15 +2565,6 @@ function setupEventListeners() {
             input.value = formattedValue;
         }
     });
-
-    // Keep keyboard open when selecting confidence on mobile
-    if (confidenceInput) {
-        confidenceInput.addEventListener('change', () => {
-            if (isSmallDevice()) {
-                setTimeout(() => guessInput.focus(), 0);
-            }
-        });
-    }
     
     // Help button
     helpBtn.addEventListener('click', showHelp);
