@@ -2542,7 +2542,7 @@ function setupEventListeners() {
     guessInput.addEventListener('input', (e) => {
         const input = e.target;
         const value = input.value.replace(/[^\d]/g, ''); // Keep only digits
-        
+
         if (value === '') {
             input.value = '';
         } else {
@@ -2551,7 +2551,41 @@ function setupEventListeners() {
             input.value = formattedValue;
         }
     });
-    
+
+    // Ensure keyboard closes before opening confidence menu on mobile
+    if (confidenceInput && guessInput) {
+        const getViewportHeight = () => window.visualViewport ? window.visualViewport.height : window.innerHeight;
+
+        const openConfidencePicker = (e) => {
+            if (document.activeElement !== guessInput) return;
+
+            e.preventDefault();
+            const startHeight = getViewportHeight();
+            guessInput.blur();
+
+            let checks = 0;
+            const waitForKeyboardClose = () => {
+                const currentHeight = getViewportHeight();
+                if (currentHeight - startHeight > 50 || checks > 10) {
+                    confidenceInput.focus({ preventScroll: true });
+                    if (typeof confidenceInput.showPicker === 'function') {
+                        confidenceInput.showPicker();
+                    } else {
+                        confidenceInput.click();
+                    }
+                } else {
+                    checks++;
+                    setTimeout(waitForKeyboardClose, 50);
+                }
+            };
+
+            setTimeout(waitForKeyboardClose, 50);
+        };
+
+        confidenceInput.addEventListener('touchend', openConfidencePicker, { passive: false });
+        confidenceInput.addEventListener('click', openConfidencePicker);
+    }
+
     // Help button
     helpBtn.addEventListener('click', showHelp);
     
