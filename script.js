@@ -729,6 +729,7 @@ const correctAnswer = document.getElementById('correct-answer');
 const guessesContainer = document.getElementById('guesses-container');
 const guessInput = document.getElementById('guess-input');
 const confidenceInput = document.getElementById('confidence-input');
+let guessInputScrollPos = 0;
 const submitBtn = document.getElementById('submit-btn');
 const sendIcon = `\
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
@@ -2537,7 +2538,20 @@ function setupEventListeners() {
             submitGuess();
         }
     });
-    
+
+    // Preserve scroll position while keyboard is open (mobile)
+    guessInput.addEventListener('focus', () => {
+        if (isSmallDevice()) {
+            guessInputScrollPos = window.scrollY;
+        }
+    });
+
+    guessInput.addEventListener('blur', () => {
+        if (isSmallDevice() && document.activeElement !== confidenceInput) {
+            window.scrollTo(0, guessInputScrollPos);
+        }
+    });
+
     // Format input with commas as user types
     guessInput.addEventListener('input', (e) => {
         const input = e.target;
@@ -2551,6 +2565,15 @@ function setupEventListeners() {
             input.value = formattedValue;
         }
     });
+
+    // Keep keyboard open when selecting confidence on mobile
+    if (confidenceInput) {
+        confidenceInput.addEventListener('change', () => {
+            if (isSmallDevice()) {
+                setTimeout(() => guessInput.focus(), 0);
+            }
+        });
+    }
     
     // Help button
     helpBtn.addEventListener('click', showHelp);
