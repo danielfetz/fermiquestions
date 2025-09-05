@@ -2548,7 +2548,13 @@ function setupEventListeners() {
 
     guessInput.addEventListener('blur', () => {
         if (isSmallDevice() && document.activeElement !== confidenceInput) {
-            setTimeout(() => window.scrollTo(0, guessInputScrollPos), 100);
+            setTimeout(() => {
+                window.scrollTo({
+                    top: guessInputScrollPos,
+                    left: 0,
+                    behavior: 'smooth'
+                });
+            }, 100);
         }
     });
 
