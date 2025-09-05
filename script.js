@@ -2556,7 +2556,8 @@ function setupEventListeners() {
     if (confidenceInput) {
         confidenceInput.addEventListener('change', () => {
             if (guessInput) {
-                guessInput.focus();
+                // Delay refocus until after the select menu closes
+                setTimeout(() => guessInput.focus(), 100);
             }
         });
     }
