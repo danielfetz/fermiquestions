@@ -2557,15 +2557,20 @@ function setupEventListeners() {
         const openConfidencePicker = (e) => {
             if (document.activeElement === guessInput) {
                 e.preventDefault();
-                guessInput.blur();
-                setTimeout(() => {
+                const openPicker = () => {
                     confidenceInput.focus({ preventScroll: true });
                     if (typeof confidenceInput.showPicker === 'function') {
                         confidenceInput.showPicker();
                     } else {
                         confidenceInput.click();
                     }
-                }, 100);
+                };
+                guessInput.addEventListener(
+                    'blur',
+                    () => setTimeout(openPicker, 0),
+                    { once: true }
+                );
+                guessInput.blur();
             }
         };
         confidenceInput.addEventListener('touchstart', openConfidencePicker, { passive: false });
