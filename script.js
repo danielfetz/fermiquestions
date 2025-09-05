@@ -2554,43 +2554,28 @@ function setupEventListeners() {
 
     // Ensure keyboard closes before opening confidence menu on mobile
     if (confidenceInput && guessInput) {
-        let initialViewportHeight = window.innerHeight;
-        let pendingOpen = false;
+        const openConfidencePicker = (e) => {
+            if (document.activeElement !== guessInput) return;
 
-        const checkViewportAndOpen = () => {
-            if (!pendingOpen) return;
-            const currentHeight = window.innerHeight;
-            const heightDifference = Math.abs(currentHeight - initialViewportHeight);
-            if (heightDifference < 50) {
-                pendingOpen = false;
-                // Allow viewport to settle after keyboard closes before opening picker
-                setTimeout(() => {
+            e.preventDefault();
+            const keyboardHeight = window.innerHeight;
+            guessInput.blur();
+
+            const waitForKeyboardClose = () => {
+                if (window.innerHeight >= keyboardHeight + 50) {
                     confidenceInput.focus({ preventScroll: true });
                     if (typeof confidenceInput.showPicker === 'function') {
                         confidenceInput.showPicker();
                     } else {
                         confidenceInput.click();
                     }
-                }, 100);
-            } else {
-                setTimeout(checkViewportAndOpen, 50);
-            }
-        };
+                } else {
+                    requestAnimationFrame(waitForKeyboardClose);
+                }
+            };
 
-        const openConfidencePicker = (e) => {
-            if (document.activeElement === guessInput) {
-                e.preventDefault();
-                guessInput.blur();
-                pendingOpen = true;
-                checkViewportAndOpen();
-            }
+            requestAnimationFrame(waitForKeyboardClose);
         };
-
-        window.addEventListener('resize', () => {
-            if (!pendingOpen) {
-                initialViewportHeight = window.innerHeight;
-            }
-        });
 
         confidenceInput.addEventListener('touchend', openConfidencePicker, { passive: false });
         confidenceInput.addEventListener('click', openConfidencePicker);
