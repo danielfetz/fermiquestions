@@ -2542,7 +2542,7 @@ function setupEventListeners() {
     guessInput.addEventListener('input', (e) => {
         const input = e.target;
         const value = input.value.replace(/[^\d]/g, ''); // Keep only digits
-        
+
         if (value === '') {
             input.value = '';
         } else {
@@ -2551,6 +2551,24 @@ function setupEventListeners() {
             input.value = formattedValue;
         }
     });
+
+    // Handle confidence selector without forcing keyboard to reopen
+    if (confidenceInput) {
+        let wasGuessFocused = false;
+
+        ['mousedown', 'touchstart'].forEach(evt => {
+            confidenceInput.addEventListener(evt, () => {
+                wasGuessFocused = (document.activeElement === guessInput);
+            });
+        });
+
+        confidenceInput.addEventListener('change', () => {
+            if (wasGuessFocused) {
+                guessInput.focus();
+            }
+            wasGuessFocused = false;
+        });
+    }
     
     // Help button
     helpBtn.addEventListener('click', showHelp);
