@@ -2554,15 +2554,19 @@ function setupEventListeners() {
 
     // Ensure keyboard closes before opening confidence menu on mobile
     if (confidenceInput && guessInput) {
+        const getViewportHeight = () => window.visualViewport ? window.visualViewport.height : window.innerHeight;
+
         const openConfidencePicker = (e) => {
             if (document.activeElement !== guessInput) return;
 
             e.preventDefault();
-            const keyboardHeight = window.innerHeight;
+            const startHeight = getViewportHeight();
             guessInput.blur();
 
+            let checks = 0;
             const waitForKeyboardClose = () => {
-                if (window.innerHeight >= keyboardHeight + 50) {
+                const currentHeight = getViewportHeight();
+                if (currentHeight - startHeight > 50 || checks > 10) {
                     confidenceInput.focus({ preventScroll: true });
                     if (typeof confidenceInput.showPicker === 'function') {
                         confidenceInput.showPicker();
@@ -2570,11 +2574,12 @@ function setupEventListeners() {
                         confidenceInput.click();
                     }
                 } else {
-                    requestAnimationFrame(waitForKeyboardClose);
+                    checks++;
+                    setTimeout(waitForKeyboardClose, 50);
                 }
             };
 
-            requestAnimationFrame(waitForKeyboardClose);
+            setTimeout(waitForKeyboardClose, 50);
         };
 
         confidenceInput.addEventListener('touchend', openConfidencePicker, { passive: false });
