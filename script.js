@@ -2554,55 +2554,19 @@ function setupEventListeners() {
 
     // Keep guess input focused when picking a confidence value so the keyboard stays open
     if (confidenceInput && guessInput) {
-        const useCustomMenu = () => isSmallDevice() && 'ontouchstart' in window;
-
-        if (useCustomMenu()) {
-            // Build a lightweight menu so selecting confidence doesn't blur the guess input
-            const menu = document.createElement('div');
-            menu.id = 'confidence-menu';
-            menu.style.display = 'none';
-
-            const hideMenu = () => {
-                menu.style.display = 'none';
-            };
-
-            Array.from(confidenceInput.options).forEach(opt => {
-                const btn = document.createElement('button');
-                btn.type = 'button';
-                btn.textContent = opt.textContent;
-                btn.addEventListener('click', () => {
-                    confidenceInput.value = opt.value;
-                    confidenceInput.dispatchEvent(new Event('change', { bubbles: true }));
-                    hideMenu();
-                    guessInput.focus();
-                });
-                menu.appendChild(btn);
-            });
-
-            document.body.appendChild(menu);
-
-            const showMenu = (e) => {
+        const handlePointerDown = (e) => {
+            if (isSmallDevice() && 'showPicker' in confidenceInput) {
                 e.preventDefault();
-                const rect = confidenceInput.getBoundingClientRect();
-                menu.style.left = `${rect.left + window.scrollX}px`;
-                menu.style.top = `${rect.bottom + window.scrollY}px`;
-                menu.style.display = 'block';
-                // Ensure guess input keeps focus so keyboard stays visible
-                guessInput.focus();
-            };
+                guessInput.focus({ preventScroll: true });
+                confidenceInput.showPicker();
+            }
+        };
 
-            confidenceInput.addEventListener('mousedown', showMenu);
-            confidenceInput.addEventListener('touchstart', showMenu);
-
-            document.addEventListener('click', (e) => {
-                if (menu.style.display === 'block' && !menu.contains(e.target) && e.target !== confidenceInput) {
-                    hideMenu();
-                }
-            });
-        } else {
-            // Desktop: simply refocus the guess input after a selection
-            confidenceInput.addEventListener('change', () => guessInput.focus());
-        }
+        confidenceInput.addEventListener('pointerdown', handlePointerDown);
+        confidenceInput.addEventListener('change', () => {
+            // Refocus after choosing a confidence so typing can continue
+            setTimeout(() => guessInput.focus({ preventScroll: true }), 0);
+        });
     }
 
     // Help button
