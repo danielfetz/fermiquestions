@@ -2542,7 +2542,7 @@ function setupEventListeners() {
     guessInput.addEventListener('input', (e) => {
         const input = e.target;
         const value = input.value.replace(/[^\d]/g, ''); // Keep only digits
-        
+
         if (value === '') {
             input.value = '';
         } else {
@@ -2551,7 +2551,48 @@ function setupEventListeners() {
             input.value = formattedValue;
         }
     });
-    
+
+    // Ensure keyboard closes before opening confidence menu on mobile
+    if (confidenceInput && guessInput) {
+        let initialViewportHeight = window.innerHeight;
+        let pendingOpen = false;
+
+        const checkViewportAndOpen = () => {
+            if (!pendingOpen) return;
+            const currentHeight = window.innerHeight;
+            const heightDifference = Math.abs(currentHeight - initialViewportHeight);
+            if (heightDifference < 50) {
+                pendingOpen = false;
+                confidenceInput.focus({ preventScroll: true });
+                if (typeof confidenceInput.showPicker === 'function') {
+                    confidenceInput.showPicker();
+                } else {
+                    confidenceInput.click();
+                }
+            } else {
+                setTimeout(checkViewportAndOpen, 50);
+            }
+        };
+
+        const openConfidencePicker = (e) => {
+            if (document.activeElement === guessInput) {
+                e.preventDefault();
+                guessInput.blur();
+                pendingOpen = true;
+                checkViewportAndOpen();
+            }
+        };
+
+        window.addEventListener('resize', () => {
+            if (!pendingOpen) {
+                initialViewportHeight = window.innerHeight;
+            }
+        });
+
+        confidenceInput.addEventListener('touchend', openConfidencePicker, { passive: false });
+        confidenceInput.addEventListener('click', openConfidencePicker);
+    }
+
     // Help button
     helpBtn.addEventListener('click', showHelp);
     
