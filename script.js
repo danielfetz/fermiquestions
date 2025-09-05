@@ -2563,12 +2563,15 @@ function setupEventListeners() {
             const heightDifference = Math.abs(currentHeight - initialViewportHeight);
             if (heightDifference < 50) {
                 pendingOpen = false;
-                confidenceInput.focus({ preventScroll: true });
-                if (typeof confidenceInput.showPicker === 'function') {
-                    confidenceInput.showPicker();
-                } else {
-                    confidenceInput.click();
-                }
+                // Allow viewport to settle after keyboard closes before opening picker
+                setTimeout(() => {
+                    confidenceInput.focus({ preventScroll: true });
+                    if (typeof confidenceInput.showPicker === 'function') {
+                        confidenceInput.showPicker();
+                    } else {
+                        confidenceInput.click();
+                    }
+                }, 100);
             } else {
                 setTimeout(checkViewportAndOpen, 50);
             }
