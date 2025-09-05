@@ -2557,23 +2557,18 @@ function setupEventListeners() {
         const openConfidencePicker = (e) => {
             if (document.activeElement === guessInput) {
                 e.preventDefault();
-                const openPicker = () => {
+                guessInput.blur();
+                setTimeout(() => {
                     confidenceInput.focus({ preventScroll: true });
                     if (typeof confidenceInput.showPicker === 'function') {
                         confidenceInput.showPicker();
                     } else {
                         confidenceInput.click();
                     }
-                };
-                guessInput.addEventListener(
-                    'blur',
-                    () => setTimeout(openPicker, 0),
-                    { once: true }
-                );
-                guessInput.blur();
+                }, 100);
             }
         };
-        confidenceInput.addEventListener('touchstart', openConfidencePicker, { passive: false });
+        confidenceInput.addEventListener('touchend', openConfidencePicker, { passive: false });
     }
 
     // Help button
