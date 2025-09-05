@@ -2552,13 +2552,20 @@ function setupEventListeners() {
         }
     });
 
-    // Refocus guess input after selecting confidence so the mobile keyboard stays open
-    if (confidenceInput) {
-        confidenceInput.addEventListener('change', () => {
-            if (guessInput) {
-                // Delay refocus until after the select menu closes
-                setTimeout(() => guessInput.focus(), 100);
+    // Keep guess input focused when picking a confidence value so the keyboard stays open
+    if (confidenceInput && guessInput) {
+        const openPickerWithoutBlur = (e) => {
+            if (document.activeElement === guessInput && confidenceInput.showPicker) {
+                e.preventDefault();
+                confidenceInput.showPicker();
             }
+        };
+
+        confidenceInput.addEventListener('mousedown', openPickerWithoutBlur);
+        confidenceInput.addEventListener('touchstart', openPickerWithoutBlur);
+        confidenceInput.addEventListener('change', () => {
+            // Ensure the guess input regains focus after a selection is made
+            guessInput.focus();
         });
     }
 
