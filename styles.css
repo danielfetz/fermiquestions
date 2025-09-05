@@ -1071,3 +1071,26 @@ button#stats-btn {
 .shake {
     animation: shake 0.5s ease-in-out;
 }
+
+/* Custom confidence menu used on mobile to keep keyboard open */
+#confidence-menu {
+    position: absolute;
+    background: #fff;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+    z-index: 1000;
+}
+
+#confidence-menu button {
+    display: block;
+    width: 100%;
+    padding: 8px 12px;
+    background: none;
+    border: none;
+    text-align: left;
+}
+
+#confidence-menu button:hover {
+    background: #f0f0f0;
+}
