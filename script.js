@@ -2552,46 +2552,78 @@ function setupEventListeners() {
         }
     });
 
-    // Ensure keyboard closes before opening confidence menu on mobile
-    if (confidenceInput && guessInput) {
-        let initialViewportHeight = window.innerHeight;
-        let pendingOpen = false;
-
-        const checkViewportAndOpen = () => {
-            if (!pendingOpen) return;
-            const currentHeight = window.innerHeight;
-            const heightDifference = Math.abs(currentHeight - initialViewportHeight);
-            if (heightDifference < 50) {
-                pendingOpen = false;
-                confidenceInput.focus({ preventScroll: true });
-                if (typeof confidenceInput.showPicker === 'function') {
-                    confidenceInput.showPicker();
-                } else {
-                    confidenceInput.click();
-                }
-            } else {
-                setTimeout(checkViewportAndOpen, 50);
-            }
-        };
-
-        const openConfidencePicker = (e) => {
-            if (document.activeElement === guessInput) {
-                e.preventDefault();
-                guessInput.blur();
-                pendingOpen = true;
-                checkViewportAndOpen();
-            }
-        };
-
-        window.addEventListener('resize', () => {
-            if (!pendingOpen) {
-                initialViewportHeight = window.innerHeight;
-            }
-        });
-
-        confidenceInput.addEventListener('touchend', openConfidencePicker, { passive: false });
-        confidenceInput.addEventListener('click', openConfidencePicker);
-    }
+// Ensure keyboard closes before opening confidence menu on mobile
+if (confidenceInput && guessInput) {
+    let initialViewportHeight = window.innerHeight;
+    let pendingOpen = false;
+    let pollCount = 0;
+    const MAX_POLLS = 100; // 5 seconds max (100 * 50ms)
+    
+    const checkViewportAndOpen = () => {
+        if (!pendingOpen) return;
+        
+        pollCount++;
+        
+        // Safety timeout - stop polling after 5 seconds
+        if (pollCount > MAX_POLLS) {
+            console.warn('Viewport polling timeout - forcing select open');
+            pendingOpen = false;
+            pollCount = 0;
+            openSelectMenu();
+            return;
+        }
+        
+        const currentHeight = window.innerHeight;
+        const heightDifference = Math.abs(currentHeight - initialViewportHeight);
+        
+        if (heightDifference < 50) {
+            pendingOpen = false;
+            pollCount = 0;
+            openSelectMenu();
+        } else {
+            setTimeout(checkViewportAndOpen, 50);
+        }
+    };
+    
+    const openSelectMenu = () => {
+        confidenceInput.focus({ preventScroll: true });
+        if (typeof confidenceInput.showPicker === 'function') {
+            confidenceInput.showPicker();
+        } else {
+            confidenceInput.click();
+        }
+    };
+    
+    const openConfidencePicker = (e) => {
+        // Prevent multiple rapid triggers
+        if (pendingOpen) return;
+        
+        if (document.activeElement === guessInput) {
+            e.preventDefault();
+            guessInput.blur();
+            pendingOpen = true;
+            pollCount = 0;
+            
+            // Small initial delay before starting to poll
+            setTimeout(checkViewportAndOpen, 100);
+        }
+    };
+    
+    // Update initial height when page is stable
+    const updateInitialHeight = () => {
+        if (!pendingOpen && document.activeElement.tagName !== 'INPUT') {
+            initialViewportHeight = window.innerHeight;
+        }
+    };
+    
+    window.addEventListener('resize', updateInitialHeight);
+    
+    // Ensure we have the right initial height after page load
+    window.addEventListener('load', updateInitialHeight);
+    
+    confidenceInput.addEventListener('touchend', openConfidencePicker, { passive: false });
+    confidenceInput.addEventListener('click', openConfidencePicker);
+}
 
     // Help button
     helpBtn.addEventListener('click', showHelp);
