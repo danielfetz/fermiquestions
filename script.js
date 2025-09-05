@@ -2552,6 +2552,14 @@ function setupEventListeners() {
         }
     });
 
+    if (confidenceInput) {
+        confidenceInput.addEventListener('change', () => {
+            if (isSmallDevice()) {
+                guessInput.focus();
+            }
+        });
+    }
+
     // Format input with commas as user types
     guessInput.addEventListener('input', (e) => {
         const input = e.target;
