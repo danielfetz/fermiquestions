@@ -2546,8 +2546,8 @@ function setupEventListeners() {
         }
     });
 
-    guessInput.addEventListener('blur', (e) => {
-        if (isSmallDevice() && e.relatedTarget !== confidenceInput) {
+    guessInput.addEventListener('blur', () => {
+        if (isSmallDevice() && document.activeElement !== confidenceInput) {
             window.scrollTo(0, guessInputScrollPos);
         }
     });
