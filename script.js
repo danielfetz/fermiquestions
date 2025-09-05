@@ -2542,7 +2542,7 @@ function setupEventListeners() {
     guessInput.addEventListener('input', (e) => {
         const input = e.target;
         const value = input.value.replace(/[^\d]/g, ''); // Keep only digits
-        
+
         if (value === '') {
             input.value = '';
         } else {
@@ -2551,7 +2551,16 @@ function setupEventListeners() {
             input.value = formattedValue;
         }
     });
-    
+
+    // Refocus guess input after selecting confidence so the mobile keyboard stays open
+    if (confidenceInput) {
+        confidenceInput.addEventListener('change', () => {
+            if (guessInput) {
+                guessInput.focus();
+            }
+        });
+    }
+
     // Help button
     helpBtn.addEventListener('click', showHelp);
     
