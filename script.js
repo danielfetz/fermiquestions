@@ -2588,6 +2588,24 @@ function setupEventListeners() {
         }
     });
 
+    // On mobile, tapping the confidence selector while the keyboard is open
+    // can cause the dropdown to misalign because the viewport resizes when
+    // the keyboard hides. To avoid this, blur the guess input first and then
+    // reopen the select after the keyboard is dismissed.
+    if (confidenceInput && guessInput) {
+        const handleConfidenceTouch = (e) => {
+            if (!isSmallDevice()) return;
+            if (document.activeElement !== guessInput) return;
+            e.preventDefault();
+            guessInput.blur();
+            setTimeout(() => {
+                confidenceInput.focus();
+                confidenceInput.click();
+            }, 300);
+        };
+        confidenceInput.addEventListener('touchstart', handleConfidenceTouch, { passive: false });
+    }
+
     // Help button
     helpBtn.addEventListener('click', showHelp);
     
