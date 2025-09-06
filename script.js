@@ -2588,6 +2588,24 @@ function setupEventListeners() {
         }
     });
 
+    // On mobile, ensure confidence select opens after keyboard closes
+    if (confidenceInput) {
+        confidenceInput.addEventListener('touchstart', (e) => {
+            // Prevent immediate native handling so we can close the keyboard first
+            e.preventDefault();
+            // Close the numeric keyboard from the guess input
+            guessInput.blur();
+            // Wait for viewport to adjust, then show the picker
+            setTimeout(() => {
+                if (typeof confidenceInput.showPicker === 'function') {
+                    confidenceInput.showPicker();
+                } else {
+                    confidenceInput.focus();
+                }
+            }, 100);
+        });
+    }
+
     // Help button
     helpBtn.addEventListener('click', showHelp);
     
