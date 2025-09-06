@@ -2631,6 +2631,39 @@ function setupEventListeners() {
             updateConfidenceInputVisibility();
         });
     }
+
+    // When the guess input is focused on mobile devices, opening the
+    // confidence selector immediately can position its dropdown based on the
+    // pre-keyboard layout. Blur the guess input first and show the picker after
+    // a short delay so the dropdown is positioned correctly once the keyboard
+    // is hidden.
+    if (confidenceInput && guessInput) {
+        const handleConfidenceOpen = (e) => {
+            if (!isSmallDevice()) return;
+            if (document.activeElement === guessInput) {
+                e.preventDefault();
+                guessInput.blur();
+                setTimeout(() => {
+                    confidenceInput.scrollIntoView({ block: 'center' });
+                    // Some browsers don't support showPicker; fall back to
+                    // programmatically clicking the select to open it.
+                    try {
+                        if (typeof confidenceInput.showPicker === 'function') {
+                            confidenceInput.showPicker();
+                        } else {
+                            confidenceInput.focus();
+                            confidenceInput.click();
+                        }
+                    } catch (_) {
+                        confidenceInput.focus();
+                        confidenceInput.click();
+                    }
+                }, 100);
+            }
+        };
+        confidenceInput.addEventListener('mousedown', handleConfidenceOpen);
+        confidenceInput.addEventListener('touchstart', handleConfidenceOpen, { passive: false });
+    }
     
     // Source button opens explanation modal
     if (sourceBtn && sourceModal) {
