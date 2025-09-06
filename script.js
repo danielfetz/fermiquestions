@@ -775,6 +775,21 @@ const calibrationChart = document.getElementById('calibration-chart');
 const calibrationTooltip = document.getElementById('calibration-tooltip');
 const calibrationNote = document.querySelector('.calibration-note');
 
+// Ensure mobile select opens after keyboard closes to avoid mispositioned dropdown
+if (confidenceInput && guessInput) {
+    confidenceInput.addEventListener('touchstart', (e) => {
+        if (document.activeElement === guessInput) {
+            e.preventDefault();
+            // Close the mobile keyboard and wait before opening the select
+            guessInput.blur();
+            setTimeout(() => {
+                confidenceInput.focus();
+                confidenceInput.click();
+            }, 100);
+        }
+    });
+}
+
 // Initialize game
 function initGame() {
     // Initialize Supabase first
