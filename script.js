@@ -2631,6 +2631,27 @@ function setupEventListeners() {
             updateConfidenceInputVisibility();
         });
     }
+
+    // When the guess input is focused on small devices, opening the confidence
+    // selector immediately can position its dropdown using the layout before the
+    // keyboard is hidden. Blur the guess input first so the keyboard closes
+    // before the browser shows the select's picker.
+    if (confidenceInput && guessInput) {
+        const closeKeyboardForPicker = () => {
+            if (!isSmallDevice()) return;
+            if (document.activeElement === guessInput) {
+                guessInput.blur();
+                // Allow layout to update before focusing the select which will
+                // trigger the native picker.
+                requestAnimationFrame(() => {
+                    confidenceInput.scrollIntoView({ block: 'center' });
+                    confidenceInput.focus();
+                });
+            }
+        };
+        // pointerdown covers both mouse and touch interactions
+        confidenceInput.addEventListener('pointerdown', closeKeyboardForPicker);
+    }
     
     // Source button opens explanation modal
     if (sourceBtn && sourceModal) {
