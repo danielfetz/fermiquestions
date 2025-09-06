@@ -2588,6 +2588,36 @@ function setupEventListeners() {
         }
     });
 
+    if (confidenceInput && guessInput) {
+  const handleConfidenceOpen = (e) => {
+    if (!isSmallDevice()) return;
+    if (document.activeElement === guessInput) {
+      e.preventDefault();
+      guessInput.blur();
+      setTimeout(() => {
+        confidenceInput.scrollIntoView({ block: 'center' });
+        
+        // Temporarily change size to show options
+        const originalSize = confidenceInput.size;
+        confidenceInput.size = Math.min(confidenceInput.options.length, 5);
+        confidenceInput.focus();
+        
+        // Restore size when user interacts or leaves
+        const restoreSize = () => {
+          confidenceInput.size = originalSize;
+          confidenceInput.removeEventListener('change', restoreSize);
+          confidenceInput.removeEventListener('blur', restoreSize);
+        };
+        
+        confidenceInput.addEventListener('change', restoreSize);
+        confidenceInput.addEventListener('blur', restoreSize);
+      }, 100);
+    }
+  };
+  confidenceInput.addEventListener('mousedown', handleConfidenceOpen);
+  confidenceInput.addEventListener('touchstart', handleConfidenceOpen, { passive: false });
+}
+
     // Help button
     helpBtn.addEventListener('click', showHelp);
     
