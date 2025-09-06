@@ -1119,6 +1119,7 @@ function submitGuess() {
 
     // Hide confidence input after first guess if needed
     updateConfidenceInputVisibility();
+    applySubmitButtonState();
 }
 
 // Add guess to display
@@ -1802,14 +1803,17 @@ function updateConfidenceInputVisibility() {
             confidenceInput.value = '';
         }
     }
-    if (submitBtn) {
-        if (showConfidence && isSmallDevice()) {
-            submitBtn.style.width = '54px';
-            submitBtn.innerHTML = sendIcon;
-        } else {
-            submitBtn.style.width = '';
-            submitBtn.textContent = 'Submit';
-        }
+    applySubmitButtonState();
+}
+
+function applySubmitButtonState() {
+    if (!submitBtn) return;
+    if (calibrationEnabled && isSmallDevice()) {
+        submitBtn.style.width = '54px';
+        submitBtn.innerHTML = sendIcon;
+    } else {
+        submitBtn.style.width = '';
+        submitBtn.textContent = 'Submit';
     }
 }
 
