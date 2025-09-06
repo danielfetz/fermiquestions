@@ -2634,27 +2634,23 @@ function setupEventListeners() {
 
     // When the guess input is focused on mobile devices, opening the
     // confidence selector immediately can position its dropdown based on the
-    // pre-keyboard layout. Blur the guess input first and show the picker after
-    // a short delay so the dropdown is positioned correctly once the keyboard
-    // is hidden.
+    // pre-keyboard layout. Blur the guess input first so the keyboard hides
+    // before the native picker opens, avoiding misplacement of the dropdown.
     if (confidenceInput && guessInput) {
-        const handleConfidenceOpen = (e) => {
+        const handleConfidenceOpen = () => {
             if (!isSmallDevice()) return;
             if (document.activeElement === guessInput) {
-                e.preventDefault();
                 guessInput.blur();
-                setTimeout(() => {
+                // Scroll the select into view so it remains centered after the
+                // keyboard closes. The native picker will open from the user's
+                // original tap without needing a synthetic click.
+                requestAnimationFrame(() => {
                     confidenceInput.scrollIntoView({ block: 'center' });
-                    // Focus then trigger a synthetic click to open the
-                    // native picker. This avoids relying on showPicker(),
-                    // which isn't supported on all browsers.
-                    confidenceInput.focus();
-                    confidenceInput.click();
-                }, 100);
+                });
             }
         };
         confidenceInput.addEventListener('mousedown', handleConfidenceOpen);
-        confidenceInput.addEventListener('touchstart', handleConfidenceOpen, { passive: false });
+        confidenceInput.addEventListener('touchstart', handleConfidenceOpen);
     }
     
     // Source button opens explanation modal
