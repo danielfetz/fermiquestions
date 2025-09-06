@@ -2645,10 +2645,18 @@ function setupEventListeners() {
                 guessInput.blur();
                 setTimeout(() => {
                     confidenceInput.scrollIntoView({ block: 'center' });
-                    if (typeof confidenceInput.showPicker === 'function') {
-                        confidenceInput.showPicker();
-                    } else {
+                    // Some browsers don't support showPicker; fall back to
+                    // programmatically clicking the select to open it.
+                    try {
+                        if (typeof confidenceInput.showPicker === 'function') {
+                            confidenceInput.showPicker();
+                        } else {
+                            confidenceInput.focus();
+                            confidenceInput.click();
+                        }
+                    } catch (_) {
                         confidenceInput.focus();
+                        confidenceInput.click();
                     }
                 }, 100);
             }
