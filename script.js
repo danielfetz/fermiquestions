@@ -888,11 +888,14 @@ function startNewGame() {
     guessInput.value = '';
     guessInput.disabled = false;
     submitBtn.disabled = false;
-    
+
     // Auto-focus only on non-touch devices (desktop)
     if (!('ontouchstart' in window) && !navigator.maxTouchPoints) {
         guessInput.focus();
     }
+
+    // Reset confidence input for new game
+    updateConfidenceInputVisibility();
 
     // Update URL to reflect the current question (only if not already navigating)
     if (!isNavigating) {
@@ -1113,6 +1116,9 @@ function submitGuess() {
     if (gameOver) {
         endGame();
     }
+
+    // Hide confidence input after first guess if needed
+    updateConfidenceInputVisibility();
 }
 
 // Add guess to display
@@ -1779,17 +1785,20 @@ function setCalibrationEnabled(enabled) {
 }
 
 function updateConfidenceInputVisibility() {
+    const firstOnlyActive = firstGuessCheckbox && firstGuessCheckbox.checked;
+    const showConfidence = calibrationEnabled && (!firstOnlyActive || currentGuess === 0);
+
     if (confidenceInput) {
         const prevValue = confidenceInput.value;
-        confidenceInput.style.display = calibrationEnabled ? 'block' : 'none';
-        if (calibrationEnabled) {
+        confidenceInput.style.display = showConfidence ? 'block' : 'none';
+        if (showConfidence) {
             confidenceInput.value = prevValue || '50';
         } else {
             confidenceInput.value = '';
         }
     }
     if (submitBtn) {
-        if (calibrationEnabled && isSmallDevice()) {
+        if (showConfidence && isSmallDevice()) {
             submitBtn.style.width = '54px';
             submitBtn.innerHTML = sendIcon;
         } else {
@@ -1939,7 +1948,10 @@ function loadCurrentGameState() {
                 setTimeout(() => guessInput.focus(), 100);
             }
         }
-            
+
+            // Ensure confidence input visibility matches current state
+            updateConfidenceInputVisibility();
+
             return true;
         } catch (error) {
             console.error('Error loading saved game state for', question.date, ':', error);
@@ -2283,7 +2295,10 @@ function selectQuestion(question) {
             startFreshQuestion();
         }
     }
-    
+
+    // Adjust confidence input based on current guess
+    updateConfidenceInputVisibility();
+
     // Simple scroll to top to ensure good positioning
     window.scrollTo(0, 0);
 
@@ -2313,16 +2328,19 @@ function selectQuestion(question) {
         
         // Reset input
         guessInput.value = '';
-        guessInput.disabled = false;
-        submitBtn.disabled = false;
-        
-        // Clear guesses
-        clearGuesses();
-        
-        // Auto-focus on desktop only
-        if (!('ontouchstart' in window) && !navigator.maxTouchPoints) {
-            guessInput.focus();
-        }
+       guessInput.disabled = false;
+       submitBtn.disabled = false;
+
+       // Clear guesses
+       clearGuesses();
+
+       // Auto-focus on desktop only
+       if (!('ontouchstart' in window) && !navigator.maxTouchPoints) {
+           guessInput.focus();
+       }
+
+        // Show confidence input for first guess only
+        updateConfidenceInputVisibility();
     }
 }
 
@@ -2641,6 +2659,7 @@ function setupEventListeners() {
     if (firstGuessCheckbox) {
         firstGuessCheckbox.addEventListener('change', () => {
             updateCalibrationChart();
+            updateConfidenceInputVisibility();
         });
     }
     
