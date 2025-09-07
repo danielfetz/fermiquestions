@@ -785,6 +785,7 @@ const firstGuessCheckbox = document.getElementById('first-guess-checkbox');
 const calibrationChart = document.getElementById('calibration-chart');
 const calibrationTooltip = document.getElementById('calibration-tooltip');
 const calibrationNote = document.querySelector('.calibration-note');
+const calibrationBanner = document.getElementById('calibration-banner');
 
 // Initialize game
 function initGame() {
@@ -1482,8 +1483,9 @@ function endGame() {
     } else {
         newGameBtnInline.textContent = 'Play more';
         newGameBtnInline.onclick = startNewGame;
-    }    
+    }
     updateStreakDisplay(); // Update streak display when game ends
+    window.scrollTo(0, 0);
 }
 
 // Start a new game
@@ -1779,6 +1781,11 @@ function loadCompletedQuestions() {
     }
 }
 
+function updateCalibrationBanner() {
+    if (!calibrationBanner) return;
+    calibrationBanner.style.display = calibrationEnabled ? 'none' : 'block';
+}
+
 function loadCalibrationSetting() {
     calibrationEnabled = localStorage.getItem('fermiCalibrationEnabled') === 'true';
     calibrationCheckboxes.forEach(cb => {
@@ -1790,6 +1797,7 @@ function loadCalibrationSetting() {
     }
     updateConfidenceInputVisibility();
     updateCalibrationChart();
+    updateCalibrationBanner();
 }
 
 function setCalibrationEnabled(enabled) {
@@ -1799,6 +1807,7 @@ function setCalibrationEnabled(enabled) {
         cb.checked = enabled;
     });
     updateConfidenceInputVisibility();
+    updateCalibrationBanner();
 }
 
 function updateConfidenceInputVisibility() {
@@ -2128,6 +2137,7 @@ function endGameDisplay() {
         newGameBtnInline.textContent = 'Play more';
         newGameBtnInline.onclick = startNewGame;
     }
+    window.scrollTo(0, 0);
 }
 
 // Show questions history modal
