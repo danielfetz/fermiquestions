@@ -721,6 +721,15 @@ const fermiQuestions = [
         hint: "The number of baptized Catholics was around 1.4 billion in 2022.",
         date: "2025-09-07",
         image: "data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' width='100' height='100' viewBox='0 0 100 100'%3e%3crect width='100' height='100' fill='%23f8fafc'/%3e%3ctext x='50' y='62' font-size='40' text-anchor='middle' fill='%23374151'%3e⛪️%3c/text%3e%3c/svg%3e"
+    },
+    {
+        question: "How many US dollars are spent on gasoline per day in the United States?",
+        answer: 1130000000,
+        category: "",
+        explanation: "",
+        hint: "In August 2025, the average US price for gasoline was $3.13 per gallon/$0.83 per liter.",
+        date: "2025-09-08",
+        image: "data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' width='100' height='100' viewBox='0 0 100 100'%3e%3crect width='100' height='100' fill='%23f8fafc'/%3e%3ctext x='50' y='62' font-size='40' text-anchor='middle' fill='%23374151'%3e⛽️%3c/text%3e%3c/svg%3e"
     }
 ];
 
