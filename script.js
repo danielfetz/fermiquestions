@@ -703,6 +703,24 @@ const fermiQuestions = [
         hint: "Around 749,000 babies were born in the United Kingdom in 2006.",
         date: "2025-09-05",
         image: "data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' width='100' height='100' viewBox='0 0 100 100'%3e%3crect width='100' height='100' fill='%23f8fafc'/%3e%3ctext x='50' y='62' font-size='40' text-anchor='middle' fill='%23374151'%3e🏛️%3c/text%3e%3c/svg%3e"
+    },
+    {
+        question: "How many cars were produced in China in 2024?",
+        answer: 27480000,
+        category: "",
+        explanation: "",
+        hint: "China exported 4.96 million cars in 2024.",
+        date: "2025-09-06",
+        image: "data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' width='100' height='100' viewBox='0 0 100 100'%3e%3crect width='100' height='100' fill='%23f8fafc'/%3e%3ctext x='50' y='62' font-size='40' text-anchor='middle' fill='%23374151'%3e🚗%3c/text%3e%3c/svg%3e"
+    },
+    {
+        question: "How many Catholic priests are there worldwide?",
+        answer: 407000,
+        category: "",
+        explanation: "",
+        hint: "The number of baptized Catholics was around 1.4 billion in 2022.",
+        date: "2025-09-07",
+        image: "data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' width='100' height='100' viewBox='0 0 100 100'%3e%3crect width='100' height='100' fill='%23f8fafc'/%3e%3ctext x='50' y='62' font-size='40' text-anchor='middle' fill='%23374151'%3e⛪️%3c/text%3e%3c/svg%3e"
     }
 ];
 
@@ -729,6 +747,8 @@ const correctAnswer = document.getElementById('correct-answer');
 const guessesContainer = document.getElementById('guesses-container');
 const guessInput = document.getElementById('guess-input');
 const confidenceInput = document.getElementById('confidence-input');
+const confidenceButton = document.getElementById('confidence-button');
+const confidenceMenu = document.getElementById('confidence-menu');
 const submitBtn = document.getElementById('submit-btn');
 const sendIcon = `\
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
@@ -879,11 +899,14 @@ function startNewGame() {
     guessInput.value = '';
     guessInput.disabled = false;
     submitBtn.disabled = false;
-    
+
     // Auto-focus only on non-touch devices (desktop)
     if (!('ontouchstart' in window) && !navigator.maxTouchPoints) {
         guessInput.focus();
     }
+
+    // Reset confidence input for new game
+    updateConfidenceInputVisibility();
 
     // Update URL to reflect the current question (only if not already navigating)
     if (!isNavigating) {
@@ -1104,6 +1127,10 @@ function submitGuess() {
     if (gameOver) {
         endGame();
     }
+
+    // Hide confidence input after first guess if needed
+    updateConfidenceInputVisibility();
+    applySubmitButtonState();
 }
 
 // Add guess to display
@@ -1757,7 +1784,12 @@ function loadCalibrationSetting() {
     calibrationCheckboxes.forEach(cb => {
         cb.checked = calibrationEnabled;
     });
+    const savedFirstOnly = localStorage.getItem('fermiFirstGuessOnly');
+    if (firstGuessCheckbox && savedFirstOnly !== null) {
+        firstGuessCheckbox.checked = savedFirstOnly === 'true';
+    }
     updateConfidenceInputVisibility();
+    updateCalibrationChart();
 }
 
 function setCalibrationEnabled(enabled) {
@@ -1770,23 +1802,42 @@ function setCalibrationEnabled(enabled) {
 }
 
 function updateConfidenceInputVisibility() {
-    if (confidenceInput) {
+    const firstOnlyActive = firstGuessCheckbox && firstGuessCheckbox.checked;
+    const showConfidence = calibrationEnabled && (!firstOnlyActive || currentGuess === 0);
+
+    if (confidenceInput && confidenceButton) {
         const prevValue = confidenceInput.value;
-        confidenceInput.style.display = calibrationEnabled ? 'block' : 'none';
-        if (calibrationEnabled) {
-            confidenceInput.value = prevValue || '50';
+        if (showConfidence) {
+            const val = prevValue || '50';
+            confidenceInput.value = val;
+            confidenceButton.textContent = val + '%';
         } else {
             confidenceInput.value = '';
+            confidenceMenu && confidenceMenu.classList.remove('open');
+            confidenceButton.setAttribute('aria-expanded', 'false');
+        }
+
+        if (isSmallDevice()) {
+            confidenceInput.style.display = 'none';
+            confidenceButton.style.display = showConfidence ? 'block' : 'none';
+        } else {
+            confidenceInput.style.display = showConfidence ? 'block' : 'none';
+            confidenceButton.style.display = 'none';
+            confidenceMenu && confidenceMenu.classList.remove('open');
+            confidenceButton.setAttribute('aria-expanded', 'false');
         }
     }
-    if (submitBtn) {
-        if (calibrationEnabled && isSmallDevice()) {
-            submitBtn.style.width = '54px';
-            submitBtn.innerHTML = sendIcon;
-        } else {
-            submitBtn.style.width = '';
-            submitBtn.textContent = 'Submit';
-        }
+    applySubmitButtonState();
+}
+
+function applySubmitButtonState() {
+    if (!submitBtn) return;
+    if (calibrationEnabled && isSmallDevice()) {
+        submitBtn.style.width = '54px';
+        submitBtn.innerHTML = sendIcon;
+    } else {
+        submitBtn.style.width = '';
+        submitBtn.textContent = 'Submit';
     }
 }
 
@@ -1930,7 +1981,10 @@ function loadCurrentGameState() {
                 setTimeout(() => guessInput.focus(), 100);
             }
         }
-            
+
+            // Ensure confidence input visibility matches current state
+            updateConfidenceInputVisibility();
+
             return true;
         } catch (error) {
             console.error('Error loading saved game state for', question.date, ':', error);
@@ -2274,7 +2328,10 @@ function selectQuestion(question) {
             startFreshQuestion();
         }
     }
-    
+
+    // Adjust confidence input based on current guess
+    updateConfidenceInputVisibility();
+
     // Simple scroll to top to ensure good positioning
     window.scrollTo(0, 0);
 
@@ -2304,16 +2361,19 @@ function selectQuestion(question) {
         
         // Reset input
         guessInput.value = '';
-        guessInput.disabled = false;
-        submitBtn.disabled = false;
-        
-        // Clear guesses
-        clearGuesses();
-        
-        // Auto-focus on desktop only
-        if (!('ontouchstart' in window) && !navigator.maxTouchPoints) {
-            guessInput.focus();
-        }
+       guessInput.disabled = false;
+       submitBtn.disabled = false;
+
+       // Clear guesses
+       clearGuesses();
+
+       // Auto-focus on desktop only
+       if (!('ontouchstart' in window) && !navigator.maxTouchPoints) {
+           guessInput.focus();
+       }
+
+        // Show confidence input for first guess only
+        updateConfidenceInputVisibility();
     }
 }
 
@@ -2542,7 +2602,7 @@ function setupEventListeners() {
     guessInput.addEventListener('input', (e) => {
         const input = e.target;
         const value = input.value.replace(/[^\d]/g, ''); // Keep only digits
-        
+
         if (value === '') {
             input.value = '';
         } else {
@@ -2551,7 +2611,7 @@ function setupEventListeners() {
             input.value = formattedValue;
         }
     });
-    
+
     // Help button
     helpBtn.addEventListener('click', showHelp);
     
@@ -2590,8 +2650,69 @@ function setupEventListeners() {
 
     if (firstGuessCheckbox) {
         firstGuessCheckbox.addEventListener('change', () => {
+            localStorage.setItem('fermiFirstGuessOnly', firstGuessCheckbox.checked ? 'true' : 'false');
             updateCalibrationChart();
+            updateConfidenceInputVisibility();
         });
+    }
+
+    // Mobile-only custom confidence dropdown
+    if (confidenceButton && confidenceMenu && guessInput) {
+        const menuButtons = confidenceMenu.querySelectorAll('button[data-value]');
+
+        const updateSelected = (value) => {
+            menuButtons.forEach((btn) => {
+                btn.classList.toggle('selected', btn.getAttribute('data-value') === String(value));
+            });
+        };
+
+        const openMenu = () => {
+            confidenceMenu.classList.add('open');
+            confidenceButton.setAttribute('aria-expanded', 'true');
+            const current = confidenceInput.value || confidenceButton.textContent.replace('%', '');
+            updateSelected(current);
+        };
+
+        const closeMenu = () => {
+            confidenceMenu.classList.remove('open');
+            confidenceButton.setAttribute('aria-expanded', 'false');
+        };
+
+        const toggleMenu = (e) => {
+            if (!isSmallDevice()) return;
+            if (confidenceMenu.classList.contains('open')) {
+                closeMenu();
+            } else if (document.activeElement === guessInput) {
+                e.preventDefault();
+                guessInput.blur();
+                setTimeout(() => {
+                    confidenceButton.scrollIntoView({ block: 'center' });
+                    openMenu();
+                }, 100);
+            } else {
+                openMenu();
+            }
+        };
+
+        confidenceButton.addEventListener('click', toggleMenu);
+
+        confidenceMenu.addEventListener('click', (e) => {
+            if (e.target.matches('button[data-value]')) {
+                const value = e.target.getAttribute('data-value');
+                confidenceInput.value = value;
+                confidenceButton.textContent = value + '%';
+                updateSelected(value);
+                closeMenu();
+            }
+        });
+
+        document.addEventListener('click', (e) => {
+            if (confidenceMenu.classList.contains('open') && !confidenceMenu.contains(e.target) && e.target !== confidenceButton) {
+                closeMenu();
+            }
+        });
+
+        updateSelected(confidenceInput.value);
     }
     
     // Source button opens explanation modal

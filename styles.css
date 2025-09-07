@@ -654,7 +654,7 @@ button#stats-btn {
 #confidence-input {
     margin: 0 10px 0 0;
     height: 100%;
-    width: 72px;
+    width: 71px;
     padding: 18.5px 0;
     background: none;
     padding-right: 0px;
@@ -669,6 +669,85 @@ button#stats-btn {
     text-align: right;
     padding-inline-start: 0;
     display: none;
+}
+
+.confidence-wrapper {
+    position: relative;
+}
+
+#confidence-button {
+    margin: 0 10px 0 0;
+    height: 100%;
+    width: 71px;
+    padding: 18.5px 0;
+    background: none;
+    padding-right: 18px;
+    border: none;
+    border-left: 2px solid #eaecf0;
+    color: #333;
+    font-size: 0.8rem;
+    font-family: 'Press Start 2P', monospace;
+    text-align: right;
+    padding-inline-start: 0;
+    display: none;
+    cursor: pointer;
+    position: relative;
+}
+
+#confidence-button::after {
+    content: '>';
+    position: absolute;
+    right: 4px;
+    top: 50%;
+    transform: translateY(-50%) rotate(90deg);
+    font-size: 0.6rem;
+    pointer-events: none;
+}
+
+.confidence-menu {
+    position: absolute;
+    bottom: calc(100% + 20px);
+    left: 50%;
+    transform: translateX(-50%);
+    width: 213px;
+    background: #fff;
+    border: 1px solid #eaecef;
+    border-radius: 12px;
+    box-shadow: 0 0 6px rgba(0, 0, 0, 0.1);
+    display: none;
+    flex-direction: column;
+    overflow: hidden;
+    font-family: 'Press Start 2P', monospace;
+    z-index: 1000;
+}
+
+.confidence-menu.open {
+    display: flex;
+}
+
+.confidence-menu button {
+    padding: 14px 24px 14px 34px;
+    background: none;
+    border: none;
+    color: #333;
+    font-size: 0.8rem;
+    font-family: 'Press Start 2P', monospace;
+    cursor: pointer;
+    position: relative;
+    text-align: left;
+}
+
+.confidence-menu button:not(:last-child) {
+    border-bottom: 1px solid #eaecef;
+}
+
+.confidence-menu button.selected::after {
+    content: '✓';
+    position: absolute;
+    left: 10px;
+    top: 50%;
+    transform: translateY(-50%);
+    font-size: 1.2rem;
 }
 
 .submit-btn {
@@ -1014,7 +1093,7 @@ button#stats-btn {
     .hint-container.open #hint-text {
         display: block;
         padding: 14px;
-        font-size: 0.8rem;
+        font-size: 0.78rem;
         border-top: 2px solid #e9ecef;
         background: white;
     }
@@ -1037,7 +1116,7 @@ button#stats-btn {
         font-size: 0.78rem;
         height: 63px;
     }
-    #confidence-input {
+    #confidence-button {
         margin: 0 8px 0 0;
         width: 70px;
         padding-left: 4px;
