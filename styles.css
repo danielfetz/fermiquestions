@@ -744,7 +744,7 @@ button#stats-btn {
 .confidence-menu button.selected::after {
     content: '✓';
     position: absolute;
-    right: 10px;
+    left: 10px;
     top: 50%;
     transform: translateY(-50%);
     font-size: 1.2rem;
