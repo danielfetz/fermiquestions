@@ -747,6 +747,8 @@ const correctAnswer = document.getElementById('correct-answer');
 const guessesContainer = document.getElementById('guesses-container');
 const guessInput = document.getElementById('guess-input');
 const confidenceInput = document.getElementById('confidence-input');
+const confidenceButton = document.getElementById('confidence-button');
+const confidenceMenu = document.getElementById('confidence-menu');
 const submitBtn = document.getElementById('submit-btn');
 const sendIcon = `\
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
@@ -1803,13 +1805,26 @@ function updateConfidenceInputVisibility() {
     const firstOnlyActive = firstGuessCheckbox && firstGuessCheckbox.checked;
     const showConfidence = calibrationEnabled && (!firstOnlyActive || currentGuess === 0);
 
-    if (confidenceInput) {
+    if (confidenceInput && confidenceButton) {
         const prevValue = confidenceInput.value;
-        confidenceInput.style.display = showConfidence ? 'block' : 'none';
         if (showConfidence) {
-            confidenceInput.value = prevValue || '50';
+            const val = prevValue || '50';
+            confidenceInput.value = val;
+            confidenceButton.textContent = val + '%';
         } else {
             confidenceInput.value = '';
+            confidenceMenu && confidenceMenu.classList.remove('open');
+            confidenceButton.setAttribute('aria-expanded', 'false');
+        }
+
+        if (isSmallDevice()) {
+            confidenceInput.style.display = 'none';
+            confidenceButton.style.display = showConfidence ? 'block' : 'none';
+        } else {
+            confidenceInput.style.display = showConfidence ? 'block' : 'none';
+            confidenceButton.style.display = 'none';
+            confidenceMenu && confidenceMenu.classList.remove('open');
+            confidenceButton.setAttribute('aria-expanded', 'false');
         }
     }
     applySubmitButtonState();
@@ -2641,29 +2656,63 @@ function setupEventListeners() {
         });
     }
 
-    // When the guess input is focused on mobile devices, opening the
-    // confidence selector immediately can position its dropdown based on the
-    // pre-keyboard layout. Blur the guess input first and show the picker after
-    // a short delay so the dropdown is positioned correctly once the keyboard
-    // is hidden.
-    if (confidenceInput && guessInput) {
-        const handleConfidenceOpen = (e) => {
+    // Mobile-only custom confidence dropdown
+    if (confidenceButton && confidenceMenu && guessInput) {
+        const menuButtons = confidenceMenu.querySelectorAll('button[data-value]');
+
+        const updateSelected = (value) => {
+            menuButtons.forEach((btn) => {
+                btn.classList.toggle('selected', btn.getAttribute('data-value') === String(value));
+            });
+        };
+
+        const openMenu = () => {
+            confidenceMenu.classList.add('open');
+            confidenceButton.setAttribute('aria-expanded', 'true');
+            const current = confidenceInput.value || confidenceButton.textContent.replace('%', '');
+            updateSelected(current);
+        };
+
+        const closeMenu = () => {
+            confidenceMenu.classList.remove('open');
+            confidenceButton.setAttribute('aria-expanded', 'false');
+        };
+
+        const toggleMenu = (e) => {
             if (!isSmallDevice()) return;
-            if (document.activeElement === guessInput) {
+            if (confidenceMenu.classList.contains('open')) {
+                closeMenu();
+            } else if (document.activeElement === guessInput) {
                 e.preventDefault();
                 guessInput.blur();
                 setTimeout(() => {
-                    confidenceInput.scrollIntoView({ block: 'center' });
-                    // Focus then trigger a synthetic click to open the
-                    // native picker. This avoids relying on showPicker(),
-                    // which isn't supported on all browsers.
-                    confidenceInput.focus();
-                    confidenceInput.click();
+                    confidenceButton.scrollIntoView({ block: 'center' });
+                    openMenu();
                 }, 100);
+            } else {
+                openMenu();
             }
         };
-        confidenceInput.addEventListener('mousedown', handleConfidenceOpen);
-        confidenceInput.addEventListener('touchstart', handleConfidenceOpen, { passive: false });
+
+        confidenceButton.addEventListener('click', toggleMenu);
+
+        confidenceMenu.addEventListener('click', (e) => {
+            if (e.target.matches('button[data-value]')) {
+                const value = e.target.getAttribute('data-value');
+                confidenceInput.value = value;
+                confidenceButton.textContent = value + '%';
+                updateSelected(value);
+                closeMenu();
+            }
+        });
+
+        document.addEventListener('click', (e) => {
+            if (confidenceMenu.classList.contains('open') && !confidenceMenu.contains(e.target) && e.target !== confidenceButton) {
+                closeMenu();
+            }
+        });
+
+        updateSelected(confidenceInput.value);
     }
     
     // Source button opens explanation modal
