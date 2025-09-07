@@ -723,7 +723,7 @@ const fermiQuestions = [
         image: "data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' width='100' height='100' viewBox='0 0 100 100'%3e%3crect width='100' height='100' fill='%23f8fafc'/%3e%3ctext x='50' y='62' font-size='40' text-anchor='middle' fill='%23374151'%3e⛪️%3c/text%3e%3c/svg%3e"
     },
     {
-        question: "How many US dollars are spent in total on gasoline per day in the US?",
+        question: "How many US dollars in total are spent on gasoline per day in the US?",
         answer: 1130000000,
         category: "",
         explanation: "",
