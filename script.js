@@ -2694,8 +2694,7 @@ function setupEventListeners() {
             }
         };
 
-        confidenceButton.addEventListener('mousedown', toggleMenu);
-        confidenceButton.addEventListener('touchstart', toggleMenu, { passive: false });
+        confidenceButton.addEventListener('click', toggleMenu);
 
         confidenceMenu.addEventListener('click', (e) => {
             if (e.target.matches('button[data-value]')) {
