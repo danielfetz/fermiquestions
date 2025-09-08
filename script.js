@@ -272,6 +272,82 @@ async function fetchFirstGuessPercentile(questionDate) {
     }
 }
 
+// Fetch comments for a question
+async function fetchComments(questionDate) {
+    if (!supabase) return [];
+    try {
+        const { data, error } = await supabase
+            .from('comments')
+            .select('id, content, created_at')
+            .eq('question_date', questionDate)
+            .order('created_at', { ascending: true });
+        if (error || !data) return [];
+        return data;
+    } catch (e) {
+        console.error('Error fetching comments:', e);
+        return [];
+    }
+}
+
+// Add a comment
+async function addComment(questionDate, content) {
+    if (!supabase || !currentUserId) return;
+    try {
+        await supabase
+            .from('comments')
+            .insert({
+                user_id: currentUserId,
+                question_date: questionDate,
+                content,
+                created_at: new Date().toISOString()
+            });
+    } catch (e) {
+        console.error('Error adding comment:', e);
+    }
+}
+
+// Load comments and update display
+async function loadComments() {
+    if (!currentQuestion) return;
+    const comments = await fetchComments(currentQuestion.date);
+    renderComments(comments);
+    if (commentCountEl) commentCountEl.textContent = comments.length;
+}
+
+function renderComments(comments) {
+    if (!commentsList) return;
+    commentsList.innerHTML = '';
+    if (!comments || comments.length === 0) {
+        const empty = document.createElement('p');
+        empty.textContent = 'No comments yet';
+        commentsList.appendChild(empty);
+        return;
+    }
+    comments.forEach(c => {
+        const div = document.createElement('div');
+        div.className = 'comment';
+        div.textContent = c.content;
+        commentsList.appendChild(div);
+    });
+}
+
+async function updateCommentCount() {
+    if (!currentQuestion || !commentCountEl) return;
+    const comments = await fetchComments(currentQuestion.date);
+    commentCountEl.textContent = comments.length;
+}
+
+function openComments() {
+    if (!commentsSection) return;
+    loadComments();
+    commentsSection.classList.add('open');
+}
+
+function closeComments() {
+    if (!commentsSection) return;
+    commentsSection.classList.remove('open');
+}
+
 // Update the average tries display in the inline meta row
 // Inline avg display removed entirely
 
@@ -735,7 +811,6 @@ const hintContainer = document.getElementById('hint-container');
 const hintText = document.getElementById('hint-text');
 const hintBody = document.getElementById('hint-body');
 const questionMeta = document.getElementById('question-meta');
-const streakInline = document.getElementById('streak-inline');
 const sourceBtn = document.getElementById('source-btn');
 const sourceModal = document.getElementById('source-modal');
 const sourceText = document.getElementById('source-text');
@@ -785,6 +860,13 @@ const firstGuessCheckbox = document.getElementById('first-guess-checkbox');
 const calibrationChart = document.getElementById('calibration-chart');
 const calibrationTooltip = document.getElementById('calibration-tooltip');
 const calibrationNote = document.querySelector('.calibration-note');
+const commentsBtn = document.getElementById('comments-btn');
+const commentsSection = document.getElementById('comments-section');
+const commentsBackBtn = document.getElementById('comments-back-btn');
+const commentsList = document.getElementById('comments-list');
+const commentInput = document.getElementById('comment-input');
+const commentSubmitBtn = document.getElementById('comment-submit-btn');
+const commentCountEl = document.getElementById('comment-count');
 
 // Initialize game
 function initGame() {
@@ -848,6 +930,8 @@ function updateQuestionDisplay(question) {
     } else {
         questionImageContainer.style.display = 'none';
     }
+
+    updateCommentCount();
 }
 
 // Start a new game
@@ -2841,6 +2925,19 @@ function setupEventListeners() {
     closeQuestionsBtn.addEventListener('click', () => closeModal(questionsModal));
     if (closeStrategyBtn) {
         closeStrategyBtn.addEventListener('click', () => closeModal(strategyModal));
+    }
+
+    // Comment buttons
+    if (commentsBtn) commentsBtn.addEventListener('click', openComments);
+    if (commentsBackBtn) commentsBackBtn.addEventListener('click', closeComments);
+    if (commentSubmitBtn) {
+        commentSubmitBtn.addEventListener('click', async () => {
+            const text = commentInput.value.trim();
+            if (!text) return;
+            await addComment(currentQuestion.date, text);
+            commentInput.value = '';
+            await loadComments();
+        });
     }
 
     // Share buttons

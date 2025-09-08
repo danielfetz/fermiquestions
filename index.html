@@ -52,11 +52,26 @@
             </div>
             <!-- Inline info shown only after game ends -->
             <div class="question-meta" id="question-meta" style="display: none;">
-                <span class="meta-item" tabindex="0" data-tooltip="Win streak">
-                    <span class="streak-emoji" aria-hidden="true">🔥</span>
-                    <span class="streak-count" id="streak-inline">0</span>
-                </span>
+                <button class="meta-item" id="comments-btn" data-tooltip="Comments">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#333" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                        <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>
+                    </svg>
+                    <span id="comment-count">0</span>
+                </button>
                 <button id="source-btn" class="source-btn">Source & Stats <span class="arrow">></span></button>
+            </div>
+        </div>
+
+        <!-- Comments Section -->
+        <div class="comments-section" id="comments-section">
+            <div class="comments-header">
+                <button class="icon-button" id="comments-back-btn">&larr;</button>
+                <h2>Comments</h2>
+            </div>
+            <div class="comments-list" id="comments-list"></div>
+            <div class="comments-input">
+                <textarea id="comment-input" placeholder="Add a comment..."></textarea>
+                <button id="comment-submit-btn" class="icon-button">Post</button>
             </div>
         </div>
 
