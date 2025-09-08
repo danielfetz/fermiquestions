@@ -279,7 +279,7 @@ async function fetchComments(questionDate) {
     try {
         const { data, error } = await supabase
             .from('comments')
-            .select('id, content, created_at')
+            .select('id, content, guess_count, created_at')
             .eq('question_date', questionDate)
             .order('created_at', { ascending: true });
         if (error || !data) return [];
@@ -293,6 +293,7 @@ async function fetchComments(questionDate) {
 // Add a comment
 async function addComment(questionDate, content) {
     if (!supabase || !currentUserId) return;
+    const guessCount = getGuessCountForComment();
     try {
         await supabase
             .from('comments')
@@ -300,11 +301,22 @@ async function addComment(questionDate, content) {
                 user_id: currentUserId,
                 question_date: questionDate,
                 content,
+                guess_count: guessCount,
                 created_at: new Date().toISOString()
             });
     } catch (e) {
         console.error('Error adding comment:', e);
     }
+}
+
+function getGuessCountForComment() {
+    if (!currentQuestion) return null;
+    const completed = completedQuestions[currentQuestion.date];
+    if (completed && typeof completed.guesses === 'number') {
+        return completed.guesses;
+    }
+    if (gameOver) return currentGuess;
+    return null;
 }
 
 // Load comments and update display
@@ -327,7 +339,20 @@ function renderComments(comments) {
     comments.forEach(c => {
         const div = document.createElement('div');
         div.className = 'comment';
-        div.textContent = c.content;
+
+        const textEl = document.createElement('div');
+        textEl.className = 'comment-text';
+        textEl.textContent = c.content;
+        div.appendChild(textEl);
+
+        if (c.guess_count != null) {
+            const metaEl = document.createElement('div');
+            metaEl.className = 'comment-meta';
+            const tries = c.guess_count === 1 ? '1 try' : `${c.guess_count} tries`;
+            metaEl.textContent = tries;
+            div.appendChild(metaEl);
+        }
+
         commentsList.appendChild(div);
     });
 }
