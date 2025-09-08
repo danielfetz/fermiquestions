@@ -273,17 +273,32 @@ async function fetchFirstGuessPercentile(questionDate) {
     }
 }
 
-// Fetch comments for a question
+// Fetch comments for a question along with vote counts and the current user's vote
 async function fetchComments(questionDate) {
     if (!supabase) return [];
     try {
         const { data, error } = await supabase
             .from('comments')
-            .select('id, content, guess_count, created_at')
-            .eq('question_date', questionDate)
-            .order('created_at', { ascending: true });
+            .select('id, content, guess_count, created_at, upvotes, downvotes')
+            .eq('question_date', questionDate);
         if (error || !data) return [];
-        return data;
+
+        // Fetch the current user's votes for these comments
+        let voteMap = new Map();
+        if (currentUserId && data.length > 0) {
+            const ids = data.map(c => c.id);
+            const { data: votes } = await supabase
+                .from('comment_votes')
+                .select('comment_id, value')
+                .eq('user_id', currentUserId)
+                .in('comment_id', ids);
+            if (votes) {
+                votes.forEach(v => voteMap.set(v.comment_id, v.value));
+            }
+        }
+
+        // Attach user vote and return
+        return data.map(c => ({ ...c, user_vote: voteMap.get(c.id) || 0 }));
     } catch (e) {
         console.error('Error fetching comments:', e);
         return [];
@@ -309,6 +324,27 @@ async function addComment(questionDate, content) {
     }
 }
 
+// Vote on a comment: value = 1 (upvote), -1 (downvote), or 0 (remove)
+async function voteComment(commentId, value) {
+    if (!supabase || !currentUserId) return;
+    try {
+        if (value === 0) {
+            await supabase
+                .from('comment_votes')
+                .delete()
+                .eq('comment_id', commentId)
+                .eq('user_id', currentUserId);
+        } else {
+            await supabase
+                .from('comment_votes')
+                .upsert({ comment_id: commentId, user_id: currentUserId, value }, { onConflict: 'comment_id,user_id' });
+        }
+        await loadComments();
+    } catch (e) {
+        console.error('Error voting on comment:', e);
+    }
+}
+
 function getGuessCountForComment() {
     if (!currentQuestion) return null;
     const completed = completedQuestions[currentQuestion.date];
@@ -323,6 +359,11 @@ function getGuessCountForComment() {
 async function loadComments() {
     if (!currentQuestion) return;
     const comments = await fetchComments(currentQuestion.date);
+    comments.sort((a, b) => {
+        const scoreDiff = (b.upvotes - b.downvotes) - (a.upvotes - a.downvotes);
+        if (scoreDiff !== 0) return scoreDiff;
+        return new Date(a.created_at) - new Date(b.created_at);
+    });
     renderComments(comments);
     if (commentCountEl) commentCountEl.textContent = comments.length;
 }
@@ -339,6 +380,37 @@ function renderComments(comments) {
     comments.forEach(c => {
         const div = document.createElement('div');
         div.className = 'comment';
+
+        const votesEl = document.createElement('div');
+        votesEl.className = 'comment-votes';
+
+        const upBtn = document.createElement('button');
+        upBtn.className = 'vote-btn upvote';
+        upBtn.textContent = '▲';
+        if (c.user_vote === 1) upBtn.classList.add('active');
+
+        const scoreEl = document.createElement('span');
+        scoreEl.className = 'vote-score';
+        scoreEl.textContent = c.upvotes - c.downvotes;
+
+        const downBtn = document.createElement('button');
+        downBtn.className = 'vote-btn downvote';
+        downBtn.textContent = '▼';
+        if (c.user_vote === -1) downBtn.classList.add('active');
+
+        upBtn.addEventListener('click', () => {
+            const newVal = c.user_vote === 1 ? 0 : 1;
+            voteComment(c.id, newVal);
+        });
+        downBtn.addEventListener('click', () => {
+            const newVal = c.user_vote === -1 ? 0 : -1;
+            voteComment(c.id, newVal);
+        });
+
+        votesEl.appendChild(upBtn);
+        votesEl.appendChild(scoreEl);
+        votesEl.appendChild(downBtn);
+        div.appendChild(votesEl);
 
         const textEl = document.createElement('div');
         textEl.className = 'comment-text';

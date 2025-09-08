@@ -1184,6 +1184,9 @@ button#stats-btn {
 }
 
 .comment {
+    display: flex;
+    align-items: flex-start;
+    gap: 8px;
     margin-bottom: 12px;
     padding-bottom: 12px;
     border-bottom: 1px solid #e9ecef;
@@ -1199,6 +1202,31 @@ button#stats-btn {
     margin-top: 4px;
     color: #666;
     font-size: 0.75rem;
+}
+
+.comment-votes {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 2px;
+    font-size: 0.75rem;
+}
+
+.vote-btn {
+    background: none;
+    border: none;
+    cursor: pointer;
+    color: #666;
+    line-height: 1;
+}
+
+.vote-btn.active {
+    color: #333;
+    font-weight: bold;
+}
+
+.vote-score {
+    font-size: 0.8rem;
 }
 
 .comments-input {
