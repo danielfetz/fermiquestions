@@ -5,6 +5,7 @@ const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBh
 // Initialize Supabase client
 let supabase = null;
 let currentUserId = null;
+let commentsChannel = null;
 
 // Initialize Supabase with error handling
 function initSupabase() {
@@ -335,6 +336,27 @@ async function updateCommentCount() {
     if (!currentQuestion || !commentCountEl) return;
     const comments = await fetchComments(currentQuestion.date);
     commentCountEl.textContent = comments.length;
+}
+
+function subscribeToComments(questionDate) {
+    if (!supabase) return;
+    if (commentsChannel) {
+        supabase.removeChannel(commentsChannel);
+    }
+    commentsChannel = supabase
+        .channel(`comments-${questionDate}`)
+        .on('postgres_changes', {
+            event: '*',
+            schema: 'public',
+            table: 'comments',
+            filter: `question_date=eq.${questionDate}`
+        }, async () => {
+            await updateCommentCount();
+            if (commentsSection && commentsSection.classList.contains('open')) {
+                await loadComments();
+            }
+        })
+        .subscribe();
 }
 
 function openComments() {
@@ -932,6 +954,7 @@ function updateQuestionDisplay(question) {
     }
 
     updateCommentCount();
+    subscribeToComments(question.date);
 }
 
 // Start a new game
