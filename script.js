@@ -1528,7 +1528,6 @@ function endGame() {
     gameResult.style.display = 'block';
     if (questionMeta) {
         questionMeta.style.display = 'flex';
-        if (streakInline) streakInline.textContent = `${stats.currentStreak}`;
     }
     
     // Set result message
@@ -2173,7 +2172,6 @@ function endGameDisplay() {
     gameResult.style.display = 'block';
     if (questionMeta) {
         questionMeta.style.display = 'flex';
-        if (streakInline) streakInline.textContent = `${stats.currentStreak}`;
     }
     
     // Set result message
