@@ -5,6 +5,7 @@ const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBh
 // Initialize Supabase client
 let supabase = null;
 let currentUserId = null;
+let commentsChannel = null;
 
 // Initialize Supabase with error handling
 function initSupabase() {
@@ -270,6 +271,232 @@ async function fetchFirstGuessPercentile(questionDate) {
     } catch (e) {
         return null;
     }
+}
+
+// Fetch comments for a question along with vote counts and the current user's vote
+async function fetchComments(questionDate) {
+    if (!supabase) return [];
+    try {
+        const { data, error } = await supabase
+            .from('comments')
+            .select('id, content, guess_count, created_at, upvotes, downvotes')
+            .eq('question_date', questionDate);
+        if (error || !data) return [];
+
+        // Fetch the current user's votes for these comments
+        let voteMap = new Map();
+        if (currentUserId && data.length > 0) {
+            const ids = data.map(c => c.id);
+            const { data: votes } = await supabase
+                .from('comment_votes')
+                .select('comment_id, value')
+                .eq('user_id', currentUserId)
+                .in('comment_id', ids);
+            if (votes) {
+                votes.forEach(v => voteMap.set(v.comment_id, v.value));
+            }
+        }
+
+        // Attach user vote and return
+        return data.map(c => ({ ...c, user_vote: voteMap.get(c.id) || 0 }));
+    } catch (e) {
+        console.error('Error fetching comments:', e);
+        return [];
+    }
+}
+
+// Add a comment
+async function addComment(questionDate, content) {
+    if (!supabase || !currentUserId) return;
+    const guessCount = getGuessCountForComment();
+    try {
+        await supabase
+            .from('comments')
+            .insert({
+                user_id: currentUserId,
+                question_date: questionDate,
+                content,
+                guess_count: guessCount,
+                created_at: new Date().toISOString()
+            });
+    } catch (e) {
+        console.error('Error adding comment:', e);
+    }
+}
+
+// Ensure we have an authenticated (possibly anonymous) user before voting
+async function ensureUser() {
+    if (currentUserId || !supabase) return currentUserId;
+    try {
+        const { data: { session } } = await supabase.auth.getSession();
+        if (session?.user) {
+            currentUserId = session.user.id;
+            return currentUserId;
+        }
+        const { data, error } = await supabase.auth.signInAnonymously();
+        if (error) return null;
+        currentUserId = data.user?.id || null;
+        return currentUserId;
+    } catch {
+        return null;
+    }
+}
+
+// Vote on a comment: value = 1 (upvote), -1 (downvote), or 0 (remove)
+async function voteComment(commentId, value) {
+    if (!supabase) return;
+    if (!(await ensureUser())) return;
+    try {
+        if (value === 0) {
+            await supabase
+                .from('comment_votes')
+                .delete()
+                .eq('comment_id', commentId)
+                .eq('user_id', currentUserId);
+        } else {
+            await supabase
+                .from('comment_votes')
+                .upsert({ comment_id: commentId, user_id: currentUserId, value }, { onConflict: 'comment_id,user_id' });
+        }
+    } catch (e) {
+        console.error('Error voting on comment:', e);
+    }
+}
+
+function getGuessCountForComment() {
+    if (!currentQuestion) return null;
+    const completed = completedQuestions[currentQuestion.date];
+    if (completed && typeof completed.guesses === 'number') {
+        return completed.guesses;
+    }
+    if (gameOver) return currentGuess;
+    return null;
+}
+
+// Load comments and update display
+async function loadComments() {
+    if (!currentQuestion) return;
+    const comments = await fetchComments(currentQuestion.date);
+    comments.sort((a, b) => {
+        const scoreDiff = (b.upvotes - b.downvotes) - (a.upvotes - a.downvotes);
+        if (scoreDiff !== 0) return scoreDiff;
+        return new Date(a.created_at) - new Date(b.created_at);
+    });
+    renderComments(comments);
+    if (commentCountEl) commentCountEl.textContent = comments.length;
+}
+
+function renderComments(comments) {
+    if (!commentsList) return;
+    commentsList.innerHTML = '';
+    if (!comments || comments.length === 0) {
+        const empty = document.createElement('p');
+        empty.textContent = 'No comments yet';
+        commentsList.appendChild(empty);
+        return;
+    }
+    comments.forEach(c => {
+        const div = document.createElement('div');
+        div.className = 'comment';
+
+        const votesEl = document.createElement('div');
+        votesEl.className = 'comment-votes';
+
+        const upBtn = document.createElement('button');
+        upBtn.className = 'vote-btn upvote';
+        upBtn.textContent = '▲';
+        if (c.user_vote === 1) upBtn.classList.add('active');
+
+        const scoreEl = document.createElement('span');
+        scoreEl.className = 'vote-score';
+        scoreEl.textContent = c.upvotes - c.downvotes;
+
+        const downBtn = document.createElement('button');
+        downBtn.className = 'vote-btn downvote';
+        downBtn.textContent = '▼';
+        if (c.user_vote === -1) downBtn.classList.add('active');
+
+        upBtn.addEventListener('click', async () => {
+            const oldVal = c.user_vote;
+            const newVal = c.user_vote === 1 ? 0 : 1;
+            c.user_vote = newVal;
+            if (oldVal === 1) c.upvotes--; else if (oldVal === -1) c.downvotes--;
+            if (newVal === 1) c.upvotes++; else if (newVal === -1) c.downvotes++;
+            scoreEl.textContent = c.upvotes - c.downvotes;
+            upBtn.classList.toggle('active', c.user_vote === 1);
+            downBtn.classList.toggle('active', c.user_vote === -1);
+            await voteComment(c.id, newVal);
+        });
+        downBtn.addEventListener('click', async () => {
+            const oldVal = c.user_vote;
+            const newVal = c.user_vote === -1 ? 0 : -1;
+            c.user_vote = newVal;
+            if (oldVal === 1) c.upvotes--; else if (oldVal === -1) c.downvotes--;
+            if (newVal === 1) c.upvotes++; else if (newVal === -1) c.downvotes++;
+            scoreEl.textContent = c.upvotes - c.downvotes;
+            upBtn.classList.toggle('active', c.user_vote === 1);
+            downBtn.classList.toggle('active', c.user_vote === -1);
+            await voteComment(c.id, newVal);
+        });
+
+        votesEl.appendChild(upBtn);
+        votesEl.appendChild(scoreEl);
+        votesEl.appendChild(downBtn);
+        div.appendChild(votesEl);
+
+        const textEl = document.createElement('div');
+        textEl.className = 'comment-text';
+        textEl.textContent = c.content;
+        div.appendChild(textEl);
+
+        if (c.guess_count != null) {
+            const metaEl = document.createElement('div');
+            metaEl.className = 'comment-meta';
+            const tries = c.guess_count === 1 ? '1 try' : `${c.guess_count} tries`;
+            metaEl.textContent = tries;
+            div.appendChild(metaEl);
+        }
+
+        commentsList.appendChild(div);
+    });
+}
+
+async function updateCommentCount() {
+    if (!currentQuestion || !commentCountEl) return;
+    const comments = await fetchComments(currentQuestion.date);
+    commentCountEl.textContent = comments.length;
+}
+
+function subscribeToComments(questionDate) {
+    if (!supabase) return;
+    if (commentsChannel) {
+        supabase.removeChannel(commentsChannel);
+    }
+    commentsChannel = supabase
+        .channel(`comments-${questionDate}`)
+        .on('postgres_changes', {
+            event: '*',
+            schema: 'public',
+            table: 'comments',
+            filter: `question_date=eq.${questionDate}`
+        }, async () => {
+            await updateCommentCount();
+            if (commentsSection && commentsSection.classList.contains('open')) {
+                await loadComments();
+            }
+        })
+        .subscribe();
+}
+
+function openComments() {
+    if (!commentsSection) return;
+    loadComments();
+    commentsSection.classList.add('open');
+}
+
+function closeComments() {
+    if (!commentsSection) return;
+    commentsSection.classList.remove('open');
 }
 
 // Update the average tries display in the inline meta row
@@ -735,7 +962,6 @@ const hintContainer = document.getElementById('hint-container');
 const hintText = document.getElementById('hint-text');
 const hintBody = document.getElementById('hint-body');
 const questionMeta = document.getElementById('question-meta');
-const streakInline = document.getElementById('streak-inline');
 const sourceBtn = document.getElementById('source-btn');
 const sourceModal = document.getElementById('source-modal');
 const sourceText = document.getElementById('source-text');
@@ -785,6 +1011,13 @@ const firstGuessCheckbox = document.getElementById('first-guess-checkbox');
 const calibrationChart = document.getElementById('calibration-chart');
 const calibrationTooltip = document.getElementById('calibration-tooltip');
 const calibrationNote = document.querySelector('.calibration-note');
+const commentsBtn = document.getElementById('comments-btn');
+const commentsSection = document.getElementById('comments-section');
+const commentsBackBtn = document.getElementById('comments-back-btn');
+const commentsList = document.getElementById('comments-list');
+const commentInput = document.getElementById('comment-input');
+const commentSubmitBtn = document.getElementById('comment-submit-btn');
+const commentCountEl = document.getElementById('comment-count');
 
 // Initialize game
 function initGame() {
@@ -848,6 +1081,9 @@ function updateQuestionDisplay(question) {
     } else {
         questionImageContainer.style.display = 'none';
     }
+
+    updateCommentCount();
+    subscribeToComments(question.date);
 }
 
 // Start a new game
@@ -1444,7 +1680,6 @@ function endGame() {
     gameResult.style.display = 'block';
     if (questionMeta) {
         questionMeta.style.display = 'flex';
-        if (streakInline) streakInline.textContent = `${stats.currentStreak}`;
     }
     
     // Set result message
@@ -2089,7 +2324,6 @@ function endGameDisplay() {
     gameResult.style.display = 'block';
     if (questionMeta) {
         questionMeta.style.display = 'flex';
-        if (streakInline) streakInline.textContent = `${stats.currentStreak}`;
     }
     
     // Set result message
@@ -2841,6 +3075,19 @@ function setupEventListeners() {
     closeQuestionsBtn.addEventListener('click', () => closeModal(questionsModal));
     if (closeStrategyBtn) {
         closeStrategyBtn.addEventListener('click', () => closeModal(strategyModal));
+    }
+
+    // Comment buttons
+    if (commentsBtn) commentsBtn.addEventListener('click', openComments);
+    if (commentsBackBtn) commentsBackBtn.addEventListener('click', closeComments);
+    if (commentSubmitBtn) {
+        commentSubmitBtn.addEventListener('click', async () => {
+            const text = commentInput.value.trim();
+            if (!text) return;
+            await addComment(currentQuestion.date, text);
+            commentInput.value = '';
+            await loadComments();
+        });
     }
 
     // Share buttons
