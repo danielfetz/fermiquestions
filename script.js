@@ -423,12 +423,19 @@ function renderComments(comments) {
         downBtn.textContent = '▼';
         if (c.user_vote === -1) downBtn.classList.add('active');
 
+        function applyVoteChange(oldVal, newVal) {
+            if (oldVal === newVal) return;
+            if (oldVal === 1) c.upvotes--;
+            else if (oldVal === -1) c.downvotes--;
+            if (newVal === 1) c.upvotes++;
+            else if (newVal === -1) c.downvotes++;
+        }
+
         upBtn.addEventListener('click', async () => {
             const oldVal = c.user_vote;
             const newVal = c.user_vote === 1 ? 0 : 1;
             c.user_vote = newVal;
-            if (oldVal === 1) c.upvotes--; else if (oldVal === -1) c.downvotes--;
-            if (newVal === 1) c.upvotes++; else if (newVal === -1) c.downvotes++;
+            applyVoteChange(oldVal, newVal);
             scoreEl.textContent = c.upvotes - c.downvotes;
             upBtn.classList.toggle('active', c.user_vote === 1);
             downBtn.classList.toggle('active', c.user_vote === -1);
@@ -438,8 +445,7 @@ function renderComments(comments) {
             const oldVal = c.user_vote;
             const newVal = c.user_vote === -1 ? 0 : -1;
             c.user_vote = newVal;
-            if (oldVal === 1) c.upvotes--; else if (oldVal === -1) c.downvotes--;
-            if (newVal === 1) c.upvotes++; else if (newVal === -1) c.downvotes++;
+            applyVoteChange(oldVal, newVal);
             scoreEl.textContent = c.upvotes - c.downvotes;
             upBtn.classList.toggle('active', c.user_vote === 1);
             downBtn.classList.toggle('active', c.user_vote === -1);
