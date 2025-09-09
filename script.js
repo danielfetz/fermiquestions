@@ -273,32 +273,17 @@ async function fetchFirstGuessPercentile(questionDate) {
     }
 }
 
-// Fetch comments for a question along with vote counts and the current user's vote
+// Fetch comments for a question
 async function fetchComments(questionDate) {
     if (!supabase) return [];
     try {
         const { data, error } = await supabase
             .from('comments')
-            .select('id, content, guess_count, created_at, upvotes, downvotes')
-            .eq('question_date', questionDate);
+            .select('id, content, guess_count, created_at')
+            .eq('question_date', questionDate)
+            .order('created_at', { ascending: true });
         if (error || !data) return [];
-
-        // Fetch the current user's votes for these comments
-        let voteMap = new Map();
-        if (currentUserId && data.length > 0) {
-            const ids = data.map(c => c.id);
-            const { data: votes } = await supabase
-                .from('comment_votes')
-                .select('comment_id, value')
-                .eq('user_id', currentUserId)
-                .in('comment_id', ids);
-            if (votes) {
-                votes.forEach(v => voteMap.set(v.comment_id, v.value));
-            }
-        }
-
-        // Attach user vote and return
-        return data.map(c => ({ ...c, user_vote: voteMap.get(c.id) || 0 }));
+        return data;
     } catch (e) {
         console.error('Error fetching comments:', e);
         return [];
@@ -310,7 +295,7 @@ async function addComment(questionDate, content) {
     if (!supabase || !currentUserId) return;
     const guessCount = getGuessCountForComment();
     try {
-        const { data, error } = await supabase
+        await supabase
             .from('comments')
             .insert({
                 user_id: currentUserId,
@@ -318,56 +303,9 @@ async function addComment(questionDate, content) {
                 content,
                 guess_count: guessCount,
                 created_at: new Date().toISOString()
-            })
-            .select('id') // return the inserted id
-            .single();
-
-        if (!error && data?.id) {
-            // Auto-upvote own comment
-            await voteComment(data.id, 1);
-        }
+            });
     } catch (e) {
         console.error('Error adding comment:', e);
-    }
-}
-
-// Ensure we have an authenticated (possibly anonymous) user before voting
-async function ensureUser() {
-    if (currentUserId || !supabase) return currentUserId;
-    try {
-        const { data: { session } } = await supabase.auth.getSession();
-        if (session?.user) {
-            currentUserId = session.user.id;
-            return currentUserId;
-        }
-        const { data, error } = await supabase.auth.signInAnonymously();
-        if (error) return null;
-        currentUserId = data.user?.id || null;
-        return currentUserId;
-    } catch {
-        return null;
-    }
-}
-
-// Vote on a comment: value = 1 (upvote), -1 (downvote), or 0 (remove)
-async function voteComment(commentId, value) {
-    if (!supabase) return;
-    if (!(await ensureUser())) return;
-    try {
-        if (value === 0) {
-            await supabase
-                .from('comment_votes')
-                .delete()
-                .eq('comment_id', commentId)
-                .eq('user_id', currentUserId);
-        } else {
-            await supabase
-                .from('comment_votes')
-                .upsert({ comment_id: commentId, user_id: currentUserId, value }, { onConflict: 'comment_id,user_id' });
-        }
-    } catch (e) {
-        console.error('Error voting on comment:', e);
-        throw e;
     }
 }
 
@@ -385,11 +323,6 @@ function getGuessCountForComment() {
 async function loadComments() {
     if (!currentQuestion) return;
     const comments = await fetchComments(currentQuestion.date);
-    comments.sort((a, b) => {
-        const scoreDiff = (b.upvotes - b.downvotes) - (a.upvotes - a.downvotes);
-        if (scoreDiff !== 0) return scoreDiff;
-        return new Date(a.created_at) - new Date(b.created_at);
-    });
     renderComments(comments);
     if (commentCountEl) commentCountEl.textContent = comments.length;
 }
@@ -403,79 +336,9 @@ function renderComments(comments) {
         commentsList.appendChild(empty);
         return;
     }
-
-    const applyVoteChange = (comment, oldVal, newVal) => {
-        if (oldVal === newVal) return;
-        if (oldVal === 1) comment.upvotes--; else if (oldVal === -1) comment.downvotes--;
-        if (newVal === 1) comment.upvotes++; else if (newVal === -1) comment.downvotes++;
-    };
-
     comments.forEach(c => {
         const div = document.createElement('div');
         div.className = 'comment';
-
-        const votesEl = document.createElement('div');
-        votesEl.className = 'comment-votes';
-
-        const upBtn = document.createElement('button');
-        upBtn.className = 'vote-btn upvote';
-        upBtn.textContent = '▲';
-        if (c.user_vote === 1) upBtn.classList.add('active');
-
-        const scoreEl = document.createElement('span');
-        scoreEl.className = 'vote-score';
-        scoreEl.textContent = c.upvotes - c.downvotes;
-
-        const downBtn = document.createElement('button');
-        downBtn.className = 'vote-btn downvote';
-        downBtn.textContent = '▼';
-        if (c.user_vote === -1) downBtn.classList.add('active');
-
-        upBtn.addEventListener('click', async () => {
-            const oldVal = c.user_vote;
-            const newVal = c.user_vote === 1 ? 0 : 1;
-            if (oldVal === newVal) return;
-            c.user_vote = newVal;
-            applyVoteChange(c, oldVal, newVal);
-            scoreEl.textContent = c.upvotes - c.downvotes;
-            upBtn.classList.toggle('active', c.user_vote === 1);
-            downBtn.classList.toggle('active', c.user_vote === -1);
-            try {
-                await voteComment(c.id, newVal);
-            } catch (e) {
-                // rollback on error
-                applyVoteChange(c, newVal, oldVal);
-                c.user_vote = oldVal;
-                scoreEl.textContent = c.upvotes - c.downvotes;
-                upBtn.classList.toggle('active', c.user_vote === 1);
-                downBtn.classList.toggle('active', c.user_vote === -1);
-            }
-        });
-        downBtn.addEventListener('click', async () => {
-            const oldVal = c.user_vote;
-            const newVal = c.user_vote === -1 ? 0 : -1;
-            if (oldVal === newVal) return;
-            c.user_vote = newVal;
-            applyVoteChange(c, oldVal, newVal);
-            scoreEl.textContent = c.upvotes - c.downvotes;
-            upBtn.classList.toggle('active', c.user_vote === 1);
-            downBtn.classList.toggle('active', c.user_vote === -1);
-            try {
-                await voteComment(c.id, newVal);
-            } catch (e) {
-                // rollback on error
-                applyVoteChange(c, newVal, oldVal);
-                c.user_vote = oldVal;
-                scoreEl.textContent = c.upvotes - c.downvotes;
-                upBtn.classList.toggle('active', c.user_vote === 1);
-                downBtn.classList.toggle('active', c.user_vote === -1);
-            }
-        });
-
-        votesEl.appendChild(upBtn);
-        votesEl.appendChild(scoreEl);
-        votesEl.appendChild(downBtn);
-        div.appendChild(votesEl);
 
         const textEl = document.createElement('div');
         textEl.className = 'comment-text';
