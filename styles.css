@@ -1205,12 +1205,21 @@ button#stats-btn {
     padding: 12px;
     border-top: 1px solid #e9ecef;
     display: flex;
-    gap: 8px;
+    gap: 10px;
+    align-items: center;
 }
 
 .comments-input textarea {
     flex: 1;
     resize: none;
+    min-height: 54px;
+    background: none;
+    border: 2px solid #eaecf0;
+    border-radius: 15px;
+    font-family: 'Press Start 2P', monospace;
+    font-size: 0.8rem;
+    padding: 18.5px 15px;
+    outline: none;
 }
 
 @media (max-width: 768px) {
