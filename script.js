@@ -366,7 +366,7 @@ function renderComments(comments) {
         metaEl.className = 'comment-meta';
         const timeAgo = formatTimeAgo(c.created_at);
         if (c.guess_count != null) {
-            const tries = c.guess_count === 1 ? '1 try' : `${c.guess_count} tries`;
+            const tries = `${c.guess_count}/6 tries`;
             metaEl.textContent = `${tries} · ${timeAgo}`;
         } else {
             metaEl.textContent = timeAgo;
