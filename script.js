@@ -279,9 +279,9 @@ async function fetchComments(questionDate) {
     try {
         const { data, error } = await supabase
             .from('comments')
-            .select('id, content, guess_count, created_at')
+            .select('id, content, guess_count, won, created_at')
             .eq('question_date', questionDate)
-            .order('created_at', { ascending: true });
+            .order('created_at', { ascending: false });
         if (error || !data) return [];
         return data;
     } catch (e) {
@@ -294,6 +294,8 @@ async function fetchComments(questionDate) {
 async function addComment(questionDate, content) {
     if (!supabase || !currentUserId) return;
     const guessCount = getGuessCountForComment();
+    const completed = completedQuestions[currentQuestion.date];
+    const won = completed ? completed.won : gameWon;
     try {
         await supabase
             .from('comments')
@@ -302,6 +304,7 @@ async function addComment(questionDate, content) {
                 question_date: questionDate,
                 content,
                 guess_count: guessCount,
+                won,
                 created_at: new Date().toISOString()
             });
     } catch (e) {
@@ -317,6 +320,23 @@ function getGuessCountForComment() {
     }
     if (gameOver) return currentGuess;
     return null;
+}
+
+function formatTimeAgo(dateString) {
+    const now = new Date();
+    const date = new Date(dateString);
+    const diffMs = now - date;
+    const diffMinutes = Math.floor(diffMs / 60000);
+    if (diffMinutes < 1) return 'just now';
+    if (diffMinutes < 60) {
+        return diffMinutes === 1 ? '1 minute ago' : `${diffMinutes} minutes ago`;
+    }
+    const diffHours = Math.floor(diffMinutes / 60);
+    if (diffHours < 24) {
+        return diffHours === 1 ? '1 hour ago' : `${diffHours} hours ago`;
+    }
+    const diffDays = Math.floor(diffHours / 24);
+    return diffDays === 1 ? '1 day ago' : `${diffDays} days ago`;
 }
 
 // Load comments and update display
@@ -345,13 +365,18 @@ function renderComments(comments) {
         textEl.textContent = c.content;
         div.appendChild(textEl);
 
-        if (c.guess_count != null) {
-            const metaEl = document.createElement('div');
-            metaEl.className = 'comment-meta';
-            const tries = c.guess_count === 1 ? '1 try' : `${c.guess_count} tries`;
-            metaEl.textContent = tries;
-            div.appendChild(metaEl);
+        const metaEl = document.createElement('div');
+        metaEl.className = 'comment-meta';
+        const timeAgo = formatTimeAgo(c.created_at);
+        if (c.won === false) {
+            metaEl.textContent = `Lost · ${timeAgo}`;
+        } else if (c.guess_count != null) {
+            const tries = `${c.guess_count}/6 tries`;
+            metaEl.textContent = `${tries} · ${timeAgo}`;
+        } else {
+            metaEl.textContent = timeAgo;
         }
+        div.appendChild(metaEl);
 
         commentsList.appendChild(div);
     });
