@@ -361,9 +361,21 @@ async function voteComment(commentId, value) {
                 .eq('comment_id', commentId)
                 .eq('user_id', currentUserId);
         } else {
-            await supabase
+            // Try update first (existing row)
+            const { data: updData, error: updErr } = await supabase
                 .from('comment_votes')
-                .upsert({ comment_id: commentId, user_id: currentUserId, value }, { onConflict: 'comment_id,user_id' });
+                .update({ value })
+                .eq('comment_id', commentId)
+                .eq('user_id', currentUserId)
+                .select('comment_id')
+                .single();
+
+            if (updErr) {
+                // If no row to update, insert
+                await supabase
+                    .from('comment_votes')
+                    .insert({ comment_id: commentId, user_id: currentUserId, value });
+            }
         }
     } catch (e) {
         console.error('Error voting on comment:', e);
@@ -423,19 +435,12 @@ function renderComments(comments) {
         downBtn.textContent = '▼';
         if (c.user_vote === -1) downBtn.classList.add('active');
 
-        function applyVoteChange(oldVal, newVal) {
-            if (oldVal === newVal) return;
-            if (oldVal === 1) c.upvotes--;
-            else if (oldVal === -1) c.downvotes--;
-            if (newVal === 1) c.upvotes++;
-            else if (newVal === -1) c.downvotes++;
-        }
-
         upBtn.addEventListener('click', async () => {
             const oldVal = c.user_vote;
             const newVal = c.user_vote === 1 ? 0 : 1;
             c.user_vote = newVal;
-            applyVoteChange(oldVal, newVal);
+            if (oldVal === 1) c.upvotes--; else if (oldVal === -1) c.downvotes--;
+            if (newVal === 1) c.upvotes++; else if (newVal === -1) c.downvotes++;
             scoreEl.textContent = c.upvotes - c.downvotes;
             upBtn.classList.toggle('active', c.user_vote === 1);
             downBtn.classList.toggle('active', c.user_vote === -1);
@@ -445,7 +450,8 @@ function renderComments(comments) {
             const oldVal = c.user_vote;
             const newVal = c.user_vote === -1 ? 0 : -1;
             c.user_vote = newVal;
-            applyVoteChange(oldVal, newVal);
+            if (oldVal === 1) c.upvotes--; else if (oldVal === -1) c.downvotes--;
+            if (newVal === 1) c.upvotes++; else if (newVal === -1) c.downvotes++;
             scoreEl.textContent = c.upvotes - c.downvotes;
             upBtn.classList.toggle('active', c.user_vote === 1);
             downBtn.classList.toggle('active', c.user_vote === -1);
