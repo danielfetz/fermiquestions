@@ -310,7 +310,7 @@ async function addComment(questionDate, content) {
     if (!supabase || !currentUserId) return;
     const guessCount = getGuessCountForComment();
     try {
-        await supabase
+        const { data, error } = await supabase
             .from('comments')
             .insert({
                 user_id: currentUserId,
@@ -318,7 +318,14 @@ async function addComment(questionDate, content) {
                 content,
                 guess_count: guessCount,
                 created_at: new Date().toISOString()
-            });
+            })
+            .select('id') // return the inserted id
+            .single();
+
+        if (!error && data?.id) {
+            // Auto-upvote own comment
+            await voteComment(data.id, 1);
+        }
     } catch (e) {
         console.error('Error adding comment:', e);
     }
