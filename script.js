@@ -6,7 +6,6 @@ const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBh
 let supabase = null;
 let currentUserId = null;
 let commentsChannel = null;
-let commentVotesChannel = null;
 
 // Initialize Supabase with error handling
 function initSupabase() {
@@ -350,21 +349,32 @@ async function ensureUser() {
     }
 }
 
-// Vote on a comment: value = 1 (upvote), -1 (downvote), or 0 (remove)
-async function voteComment(commentId, value) {
+// Vote on a comment by applying the appropriate database mutation
+// oldValue: the user's previous vote (1, -1, or 0)
+// newValue: the vote they want to apply now
+async function voteComment(commentId, oldValue, newValue) {
     if (!supabase) return;
     if (!(await ensureUser())) return;
     try {
-        if (value === 0) {
+        if (newValue === 0) {
+            // Remove existing vote
             await supabase
                 .from('comment_votes')
                 .delete()
                 .eq('comment_id', commentId)
                 .eq('user_id', currentUserId);
-        } else {
+        } else if (oldValue === 0) {
+            // Fresh vote
             await supabase
                 .from('comment_votes')
-                .upsert({ comment_id: commentId, user_id: currentUserId, value }, { onConflict: 'comment_id,user_id' });
+                .insert({ comment_id: commentId, user_id: currentUserId, value: newValue });
+        } else {
+            // Switching vote direction
+            await supabase
+                .from('comment_votes')
+                .update({ value: newValue })
+                .eq('comment_id', commentId)
+                .eq('user_id', currentUserId);
         }
     } catch (e) {
         console.error('Error voting on comment:', e);
@@ -439,13 +449,13 @@ function renderComments(comments) {
             const oldVal = c.user_vote;
             const newVal = c.user_vote === 1 ? 0 : 1;
             applyVoteChange(oldVal, newVal);
-            await voteComment(c.id, newVal);
+            await voteComment(c.id, oldVal, newVal);
         });
         downBtn.addEventListener('click', async () => {
             const oldVal = c.user_vote;
             const newVal = c.user_vote === -1 ? 0 : -1;
             applyVoteChange(oldVal, newVal);
-            await voteComment(c.id, newVal);
+            await voteComment(c.id, oldVal, newVal);
         });
 
         votesEl.appendChild(upBtn);
@@ -497,25 +507,6 @@ function subscribeToComments(questionDate) {
         .subscribe();
 }
 
-function subscribeToCommentVotes(questionDate) {
-    if (!supabase) return;
-    if (commentVotesChannel) {
-        supabase.removeChannel(commentVotesChannel);
-    }
-    commentVotesChannel = supabase
-        .channel(`comment-votes-${questionDate}`)
-        .on('postgres_changes', {
-            event: '*',
-            schema: 'public',
-            table: 'comment_votes'
-        }, async () => {
-            await updateCommentCount();
-            if (commentsSection && commentsSection.classList.contains('open')) {
-                await loadComments();
-            }
-        })
-        .subscribe();
-}
 
 function openComments() {
     if (!commentsSection) return;
@@ -1113,7 +1104,6 @@ function updateQuestionDisplay(question) {
 
     updateCommentCount();
     subscribeToComments(question.date);
-    subscribeToCommentVotes(question.date);
 }
 
 // Start a new game
