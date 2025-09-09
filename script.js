@@ -6,6 +6,7 @@ const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBh
 let supabase = null;
 let currentUserId = null;
 let commentsChannel = null;
+let commentVotesChannel = null;
 
 // Initialize Supabase with error handling
 function initSupabase() {
@@ -423,26 +424,27 @@ function renderComments(comments) {
         downBtn.textContent = '▼';
         if (c.user_vote === -1) downBtn.classList.add('active');
 
-        upBtn.addEventListener('click', async () => {
-            const oldVal = c.user_vote;
-            const newVal = c.user_vote === 1 ? 0 : 1;
+        function applyVoteChange(oldVal, newVal) {
+            const deltaUp = (newVal === 1 ? 1 : 0) - (oldVal === 1 ? 1 : 0);
+            const deltaDown = (newVal === -1 ? 1 : 0) - (oldVal === -1 ? 1 : 0);
+            c.upvotes += deltaUp;
+            c.downvotes += deltaDown;
             c.user_vote = newVal;
-            if (oldVal === 1) c.upvotes--; else if (oldVal === -1) c.downvotes--;
-            if (newVal === 1) c.upvotes++; else if (newVal === -1) c.downvotes++;
             scoreEl.textContent = c.upvotes - c.downvotes;
             upBtn.classList.toggle('active', c.user_vote === 1);
             downBtn.classList.toggle('active', c.user_vote === -1);
+        }
+
+        upBtn.addEventListener('click', async () => {
+            const oldVal = c.user_vote;
+            const newVal = c.user_vote === 1 ? 0 : 1;
+            applyVoteChange(oldVal, newVal);
             await voteComment(c.id, newVal);
         });
         downBtn.addEventListener('click', async () => {
             const oldVal = c.user_vote;
             const newVal = c.user_vote === -1 ? 0 : -1;
-            c.user_vote = newVal;
-            if (oldVal === 1) c.upvotes--; else if (oldVal === -1) c.downvotes--;
-            if (newVal === 1) c.upvotes++; else if (newVal === -1) c.downvotes++;
-            scoreEl.textContent = c.upvotes - c.downvotes;
-            upBtn.classList.toggle('active', c.user_vote === 1);
-            downBtn.classList.toggle('active', c.user_vote === -1);
+            applyVoteChange(oldVal, newVal);
             await voteComment(c.id, newVal);
         });
 
@@ -486,6 +488,26 @@ function subscribeToComments(questionDate) {
             schema: 'public',
             table: 'comments',
             filter: `question_date=eq.${questionDate}`
+        }, async () => {
+            await updateCommentCount();
+            if (commentsSection && commentsSection.classList.contains('open')) {
+                await loadComments();
+            }
+        })
+        .subscribe();
+}
+
+function subscribeToCommentVotes(questionDate) {
+    if (!supabase) return;
+    if (commentVotesChannel) {
+        supabase.removeChannel(commentVotesChannel);
+    }
+    commentVotesChannel = supabase
+        .channel(`comment-votes-${questionDate}`)
+        .on('postgres_changes', {
+            event: '*',
+            schema: 'public',
+            table: 'comment_votes'
         }, async () => {
             await updateCommentCount();
             if (commentsSection && commentsSection.classList.contains('open')) {
@@ -1091,6 +1113,7 @@ function updateQuestionDisplay(question) {
 
     updateCommentCount();
     subscribeToComments(question.date);
+    subscribeToCommentVotes(question.date);
 }
 
 // Start a new game
