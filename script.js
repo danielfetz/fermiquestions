@@ -349,21 +349,32 @@ async function ensureUser() {
     }
 }
 
-// Vote on a comment: value = 1 (upvote), -1 (downvote), or 0 (remove)
-async function voteComment(commentId, value) {
+// Vote on a comment by applying the appropriate database mutation
+// oldValue: the user's previous vote (1, -1, or 0)
+// newValue: the vote they want to apply now
+async function voteComment(commentId, oldValue, newValue) {
     if (!supabase) return;
     if (!(await ensureUser())) return;
     try {
-        if (value === 0) {
+        if (newValue === 0) {
+            // Remove existing vote
             await supabase
                 .from('comment_votes')
                 .delete()
                 .eq('comment_id', commentId)
                 .eq('user_id', currentUserId);
-        } else {
+        } else if (oldValue === 0) {
+            // Fresh vote
             await supabase
                 .from('comment_votes')
-                .upsert({ comment_id: commentId, user_id: currentUserId, value }, { onConflict: 'comment_id,user_id' });
+                .insert({ comment_id: commentId, user_id: currentUserId, value: newValue });
+        } else {
+            // Switching vote direction
+            await supabase
+                .from('comment_votes')
+                .update({ value: newValue })
+                .eq('comment_id', commentId)
+                .eq('user_id', currentUserId);
         }
     } catch (e) {
         console.error('Error voting on comment:', e);
@@ -423,27 +434,28 @@ function renderComments(comments) {
         downBtn.textContent = '▼';
         if (c.user_vote === -1) downBtn.classList.add('active');
 
-        upBtn.addEventListener('click', async () => {
-            const oldVal = c.user_vote;
-            const newVal = c.user_vote === 1 ? 0 : 1;
+        function applyVoteChange(oldVal, newVal) {
+            const deltaUp = (newVal === 1 ? 1 : 0) - (oldVal === 1 ? 1 : 0);
+            const deltaDown = (newVal === -1 ? 1 : 0) - (oldVal === -1 ? 1 : 0);
+            c.upvotes += deltaUp;
+            c.downvotes += deltaDown;
             c.user_vote = newVal;
-            if (oldVal === 1) c.upvotes--; else if (oldVal === -1) c.downvotes--;
-            if (newVal === 1) c.upvotes++; else if (newVal === -1) c.downvotes++;
             scoreEl.textContent = c.upvotes - c.downvotes;
             upBtn.classList.toggle('active', c.user_vote === 1);
             downBtn.classList.toggle('active', c.user_vote === -1);
-            await voteComment(c.id, newVal);
+        }
+
+        upBtn.addEventListener('click', async () => {
+            const oldVal = c.user_vote;
+            const newVal = c.user_vote === 1 ? 0 : 1;
+            applyVoteChange(oldVal, newVal);
+            await voteComment(c.id, oldVal, newVal);
         });
         downBtn.addEventListener('click', async () => {
             const oldVal = c.user_vote;
             const newVal = c.user_vote === -1 ? 0 : -1;
-            c.user_vote = newVal;
-            if (oldVal === 1) c.upvotes--; else if (oldVal === -1) c.downvotes--;
-            if (newVal === 1) c.upvotes++; else if (newVal === -1) c.downvotes++;
-            scoreEl.textContent = c.upvotes - c.downvotes;
-            upBtn.classList.toggle('active', c.user_vote === 1);
-            downBtn.classList.toggle('active', c.user_vote === -1);
-            await voteComment(c.id, newVal);
+            applyVoteChange(oldVal, newVal);
+            await voteComment(c.id, oldVal, newVal);
         });
 
         votesEl.appendChild(upBtn);
@@ -494,6 +506,7 @@ function subscribeToComments(questionDate) {
         })
         .subscribe();
 }
+
 
 function openComments() {
     if (!commentsSection) return;
