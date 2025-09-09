@@ -324,9 +324,28 @@ async function addComment(questionDate, content) {
     }
 }
 
+// Ensure we have an authenticated (possibly anonymous) user before voting
+async function ensureUser() {
+    if (currentUserId || !supabase) return currentUserId;
+    try {
+        const { data: { session } } = await supabase.auth.getSession();
+        if (session?.user) {
+            currentUserId = session.user.id;
+            return currentUserId;
+        }
+        const { data, error } = await supabase.auth.signInAnonymously();
+        if (error) return null;
+        currentUserId = data.user?.id || null;
+        return currentUserId;
+    } catch {
+        return null;
+    }
+}
+
 // Vote on a comment: value = 1 (upvote), -1 (downvote), or 0 (remove)
 async function voteComment(commentId, value) {
-    if (!supabase || !currentUserId) return;
+    if (!supabase) return;
+    if (!(await ensureUser())) return;
     try {
         if (value === 0) {
             await supabase
@@ -339,7 +358,6 @@ async function voteComment(commentId, value) {
                 .from('comment_votes')
                 .upsert({ comment_id: commentId, user_id: currentUserId, value }, { onConflict: 'comment_id,user_id' });
         }
-        await loadComments();
     } catch (e) {
         console.error('Error voting on comment:', e);
     }
@@ -398,13 +416,27 @@ function renderComments(comments) {
         downBtn.textContent = '▼';
         if (c.user_vote === -1) downBtn.classList.add('active');
 
-        upBtn.addEventListener('click', () => {
+        upBtn.addEventListener('click', async () => {
+            const oldVal = c.user_vote;
             const newVal = c.user_vote === 1 ? 0 : 1;
-            voteComment(c.id, newVal);
+            c.user_vote = newVal;
+            if (oldVal === 1) c.upvotes--; else if (oldVal === -1) c.downvotes--;
+            if (newVal === 1) c.upvotes++; else if (newVal === -1) c.downvotes++;
+            scoreEl.textContent = c.upvotes - c.downvotes;
+            upBtn.classList.toggle('active', c.user_vote === 1);
+            downBtn.classList.toggle('active', c.user_vote === -1);
+            await voteComment(c.id, newVal);
         });
-        downBtn.addEventListener('click', () => {
+        downBtn.addEventListener('click', async () => {
+            const oldVal = c.user_vote;
             const newVal = c.user_vote === -1 ? 0 : -1;
-            voteComment(c.id, newVal);
+            c.user_vote = newVal;
+            if (oldVal === 1) c.upvotes--; else if (oldVal === -1) c.downvotes--;
+            if (newVal === 1) c.upvotes++; else if (newVal === -1) c.downvotes++;
+            scoreEl.textContent = c.upvotes - c.downvotes;
+            upBtn.classList.toggle('active', c.user_vote === 1);
+            downBtn.classList.toggle('active', c.user_vote === -1);
+            await voteComment(c.id, newVal);
         });
 
         votesEl.appendChild(upBtn);
