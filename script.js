@@ -279,7 +279,7 @@ async function fetchComments(questionDate) {
     try {
         const { data, error } = await supabase
             .from('comments')
-            .select('id, content, guess_count, created_at')
+            .select('id, content, guess_count, won, created_at')
             .eq('question_date', questionDate)
             .order('created_at', { ascending: false });
         if (error || !data) return [];
@@ -294,6 +294,8 @@ async function fetchComments(questionDate) {
 async function addComment(questionDate, content) {
     if (!supabase || !currentUserId) return;
     const guessCount = getGuessCountForComment();
+    const completed = completedQuestions[currentQuestion.date];
+    const won = completed ? completed.won : gameWon;
     try {
         await supabase
             .from('comments')
@@ -302,6 +304,7 @@ async function addComment(questionDate, content) {
                 question_date: questionDate,
                 content,
                 guess_count: guessCount,
+                won,
                 created_at: new Date().toISOString()
             });
     } catch (e) {
@@ -365,7 +368,9 @@ function renderComments(comments) {
         const metaEl = document.createElement('div');
         metaEl.className = 'comment-meta';
         const timeAgo = formatTimeAgo(c.created_at);
-        if (c.guess_count != null) {
+        if (c.won === false) {
+            metaEl.textContent = `Lost · ${timeAgo}`;
+        } else if (c.guess_count != null) {
             const tries = `${c.guess_count}/6 tries`;
             metaEl.textContent = `${tries} · ${timeAgo}`;
         } else {
