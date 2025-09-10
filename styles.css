@@ -1014,6 +1014,9 @@ button#stats-btn {
         background: repeating-linear-gradient(to bottom, rgb(0 0 0 / 1%) 0px, rgb(0 0 0 / 1%) 1px, transparent 2px, transparent 4px), linear-gradient(to bottom, rgb(16 163 127 / 5%) 0px, rgb(90 97 255 / 5%) 120px, rgb(0 204 255 / 2%) 200px, rgba(255, 255, 255, 0.95) 290px, #ffffff 100%);
         padding: 0px 18px;
     }
+    body.no-scroll {
+    overflow: hidden;
+    }
     .icon-button {
         background: #f4f8fa;
     }
@@ -1128,6 +1131,13 @@ button#stats-btn {
         width: 70px;
         padding-left: 4px;
     }
+    .comments-section {
+        position: fixed;
+        left: 0;
+        bottom: 0;
+        border-radius: 18px 18px 0 0;
+        box-shadow: 0 -2px 10px rgba(0,0,0,0.1);
+    }
 }
 
 /* Animation for new guesses
@@ -1232,14 +1242,4 @@ button#stats-btn {
     padding: 18.5px 15px;
     outline: none;
     line-height: 1.4;
-}
-
-@media (max-width: 768px) {
-    .comments-section {
-        position: fixed;
-        left: 0;
-        bottom: 0;
-        border-radius: 18px 18px 0 0;
-        box-shadow: 0 -2px 10px rgba(0,0,0,0.1);
-    }
 }
