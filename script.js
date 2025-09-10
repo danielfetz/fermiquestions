@@ -341,6 +341,13 @@ function formatTimeAgo(dateString) {
 
 // Load comments and update display
 async function loadComments() {
+    if (!commentsList) return;
+    // Clear immediately to avoid showing comments from previous questions
+    commentsList.innerHTML = '';
+    const loading = document.createElement('p');
+    loading.textContent = 'Loading comments...';
+    commentsList.appendChild(loading);
+
     if (!currentQuestion) return;
     const comments = await fetchComments(currentQuestion.date);
     renderComments(comments);
@@ -1029,6 +1036,10 @@ function updateQuestionDisplay(question) {
     } else {
         questionImageContainer.style.display = 'none';
     }
+
+    // Clear any comments from a previous question immediately
+    if (commentsList) commentsList.innerHTML = '';
+    if (commentCountEl) commentCountEl.textContent = '0';
 
     updateCommentCount();
     subscribeToComments(question.date);
