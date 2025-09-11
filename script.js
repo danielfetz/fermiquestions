@@ -907,7 +907,17 @@ const fermiQuestions = [
         hint: "The US alone covers around 6.6% of Earth's land area.",
         date: "2025-09-11",
         image: "data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' width='100' height='100' viewBox='0 0 100 100'%3e%3crect width='100' height='100' fill='%23f8fafc'/%3e%3ctext x='50' y='62' font-size='40' text-anchor='middle' fill='%23374151'%3e🌎%3c/text%3e%3c/svg%3e"
+    },
+    {
+        question: "How many oil tankers with a capacity of at least 55,000 metric tons are there?",
+        answer: 3219,
+        category: "",
+        explanation: "",
+        hint: "OPEC produced 28 million barrels (4.4 billion liters) of crude oil per day in August 2025.",
+        date: "2025-09-12",
+        image: "data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' width='100' height='100' viewBox='0 0 100 100'%3e%3crect width='100' height='100' fill='%23f8fafc'/%3e%3ctext x='50' y='62' font-size='40' text-anchor='middle' fill='%23374151'%3e🛢️%3c/text%3e%3c/svg%3e"
     }
+];
 ];
 
 // DOM elements
