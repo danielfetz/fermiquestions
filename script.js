@@ -916,6 +916,15 @@ const fermiQuestions = [
         hint: "OPEC produced 28 million barrels (4.4 billion liters) of crude oil per day in August 2025.",
         date: "2025-09-12",
         image: "data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' width='100' height='100' viewBox='0 0 100 100'%3e%3crect width='100' height='100' fill='%23f8fafc'/%3e%3ctext x='50' y='62' font-size='40' text-anchor='middle' fill='%23374151'%3e🛢️%3c/text%3e%3c/svg%3e"
+    },
+    {
+        question: "How many professional judges does Germany have across all court levels?",
+        answer: 20793,
+        category: "",
+        explanation: "",
+        hint: "In 2021, German courts convicted around 662,100 defendants by final judgment.",
+        date: "2025-09-13",
+        image: "data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' width='100' height='100' viewBox='0 0 100 100'%3e%3crect width='100' height='100' fill='%23f8fafc'/%3e%3ctext x='50' y='62' font-size='40' text-anchor='middle' fill='%23374151'%3e👨‍⚖️️%3c/text%3e%3c/svg%3e"
     }
 ];
 
