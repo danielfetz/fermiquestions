@@ -2271,9 +2271,9 @@ function restoreGuessesDisplay(savedGuesses) {
                         feedbackButton.title = '';
                     } else if (guess.feedbackType === 'close') {
                         if (guess.feedbackSymbol === '↑') {
-                            feedbackButton.setAttribute('data-tooltip', 'Too low!');
+                            feedbackButton.setAttribute('data-tooltip', 'Too low, but within ±50% of the correct answer!');
                         } else if (guess.feedbackSymbol === '↓') {
-                            feedbackButton.setAttribute('data-tooltip', 'Too high!');
+                            feedbackButton.setAttribute('data-tooltip', 'Too high, but within ±50% of the correct answer!');
                         } else {
                             feedbackButton.removeAttribute('data-tooltip');
                         }
