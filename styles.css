@@ -691,8 +691,7 @@ button#stats-btn {
     position: relative;
 }
 
-#confidence-button::after {
-    content: '>';
+#confidence-button .confidence-caret {
     position: absolute;
     right: 4px;
     top: 50%;

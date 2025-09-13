@@ -2818,10 +2818,6 @@ function setupEventListeners() {
             localStorage.getItem('fermiConfidenceTooltipShown') !== 'true'
         ) {
             localStorage.setItem('fermiConfidenceTooltipShown', 'true');
-            confidenceButton.setAttribute(
-                'data-tooltip',
-                'Choose how confident you are that your answer is correct'
-            );
             confidenceButton.classList.add('show-tooltip');
             setTimeout(() => confidenceButton.classList.remove('show-tooltip'), 3000);
         }
