@@ -1704,6 +1704,16 @@ function startNewGameFromModal() {
 
 // Show help modal
 function showHelp() {
+    document.querySelectorAll('#help-accordion .accordion-item').forEach(item => {
+        const header = item.querySelector('.accordion-header');
+        if (item.id === 'acc-overview-item') {
+            item.classList.add('open');
+            header.setAttribute('aria-expanded', 'true');
+        } else {
+            item.classList.remove('open');
+            header.setAttribute('aria-expanded', 'false');
+        }
+    });
     helpModal.style.display = 'block';
 }
 

@@ -180,16 +180,14 @@
             <div class="modal-content">
                 <h2>How to Play</h2>
                 <div class="accordion" id="help-accordion">
-                    <div class="accordion-item open" id="acc-overview-item">
-                        <button class="accordion-header" id="acc-overview-header" aria-expanded="true" aria-controls="acc-overview-panel">
-                            <span>Overview</span>
+                    <div class="accordion-item" id="acc-calibration-help-item">
+                        <button class="accordion-header" id="acc-calibration-help-header" aria-expanded="false" aria-controls="acc-calibration-help-panel">
+                            <span>Probability Calibration</span>
                             <span class="acc-arrow">></span>
                         </button>
-                        <div class="accordion-panel" id="acc-overview-panel">
-                            <p>Guess the answer to estimation questions in 6 or less tries.</p>
-                            <p>After each guess, you'll see if your answer was too high or too low. An arrow pointing down means that the correct answer is below your guess.</p>
-                            <p>The color of the arrows shows how close you are: orange indicates your guess is within ±50% of the answer, red means it is further away</p>
-                            <p>You win if your guess is within ±20% of the correct answer.</p>
+                        <div class="accordion-panel" id="acc-calibration-help-panel">
+                            <p>Enable probability calibration mode to log your confidence with each guess and track how well your probabilities match reality. A calibration chart showing whether you're over- or under-confident is available on the stats page.</p>
+                            <label><input type="checkbox" id="prob-calibration-checkbox-help" class="prob-calibration-checkbox"> Enable probability calibration mode</label>
                         </div>
                     </div>
                     <div class="accordion-item" id="acc-strategy-item">
@@ -203,14 +201,16 @@
                             <p>Population a little over 100M → about 50M households. Roughly 80% own a car → 40M cars. If cars are replaced about every 10 years, that means roughly 4M new cars sold per year.</p>
                         </div>
                     </div>
-                    <div class="accordion-item" id="acc-calibration-help-item">
-                        <button class="accordion-header" id="acc-calibration-help-header" aria-expanded="false" aria-controls="acc-calibration-help-panel">
-                            <span>Probability Calibration</span>
+                    <div class="accordion-item open" id="acc-overview-item">
+                        <button class="accordion-header" id="acc-overview-header" aria-expanded="true" aria-controls="acc-overview-panel">
+                            <span>Overview</span>
                             <span class="acc-arrow">></span>
                         </button>
-                        <div class="accordion-panel" id="acc-calibration-help-panel">
-                            <p>Enable probability calibration mode to log your confidence with each guess and track how well your probabilities match reality. A calibration chart showing whether you're over- or under-confident is available on the stats page.</p>
-                            <label><input type="checkbox" id="prob-calibration-checkbox-help" class="prob-calibration-checkbox"> Enable probability calibration mode</label>
+                        <div class="accordion-panel" id="acc-overview-panel">
+                            <p>Guess the answer to estimation questions in 6 or less tries.</p>
+                            <p>After each guess, you'll see if your answer was too high or too low. An arrow pointing down means that the correct answer is below your guess.</p>
+                            <p>The color of the arrows shows how close you are: orange indicates your guess is within ±50% of the answer, red means it is further away</p>
+                            <p>You win if your guess is within ±20% of the correct answer.</p>
                         </div>
                     </div>
                 </div>
