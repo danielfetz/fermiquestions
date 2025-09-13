@@ -2078,6 +2078,7 @@ function maybeShowConfidenceTooltip() {
         localStorage.setItem('confidenceTooltipDismissed', 'true');
         confidenceButton.removeEventListener('click', dismiss);
         document.removeEventListener('click', dismiss);
+        document.removeEventListener('mousedown', dismiss);
         document.removeEventListener('keydown', dismiss);
         document.removeEventListener('input', dismiss);
         document.removeEventListener('touchstart', dismiss);
@@ -2087,6 +2088,7 @@ function maybeShowConfidenceTooltip() {
     confidenceTooltipInitialized = true;
     confidenceButton.addEventListener('click', dismiss, { once: true });
     document.addEventListener('click', dismiss, { once: true });
+    document.addEventListener('mousedown', dismiss, { once: true });
     document.addEventListener('keydown', dismiss, { once: true });
     document.addEventListener('input', dismiss, { once: true });
     document.addEventListener('touchstart', dismiss, { once: true });
