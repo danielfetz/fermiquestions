@@ -723,6 +723,7 @@ button#stats-btn {
     line-height: 1.4;
     font-family: 'Press Start 2P', monospace;
     z-index: 1000;
+    pointer-events: none;
 }
 
 .confidence-tooltip::before {
@@ -734,17 +735,6 @@ button#stats-btn {
     border-width: 6px;
     border-style: solid;
     border-color: #333 transparent transparent transparent;
-}
-
-.confidence-tooltip .tooltip-close {
-    position: absolute;
-    top: 4px;
-    right: 6px;
-    background: none;
-    border: none;
-    color: #fff;
-    font-size: 0.7rem;
-    cursor: pointer;
 }
 
 .submit-btn {

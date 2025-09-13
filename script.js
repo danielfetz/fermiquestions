@@ -963,7 +963,6 @@ const confidenceInput = document.getElementById('confidence-input');
 const confidenceButton = document.getElementById('confidence-button');
 const confidenceMenu = document.getElementById('confidence-menu');
 const confidenceTooltip = document.getElementById('confidence-tooltip');
-const confidenceTooltipClose = document.getElementById('confidence-tooltip-close');
 const submitBtn = document.getElementById('submit-btn');
 const sendIcon = `\
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
@@ -2077,14 +2076,14 @@ function maybeShowConfidenceTooltip() {
     const dismiss = () => {
         confidenceTooltip.style.display = 'none';
         localStorage.setItem('confidenceTooltipDismissed', 'true');
-        confidenceButton.removeEventListener('click', dismiss);
-        confidenceTooltipClose && confidenceTooltipClose.removeEventListener('click', dismiss);
+        document.removeEventListener('click', dismiss);
+        document.removeEventListener('keydown', dismiss);
     };
 
     confidenceTooltip.style.display = 'block';
     confidenceTooltipInitialized = true;
-    confidenceButton.addEventListener('click', dismiss, { once: true });
-    confidenceTooltipClose && confidenceTooltipClose.addEventListener('click', dismiss, { once: true });
+    document.addEventListener('click', dismiss);
+    document.addEventListener('keydown', dismiss);
 }
 
 // Save current game state to localStorage and Supabase (per question)
