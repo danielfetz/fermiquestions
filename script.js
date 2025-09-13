@@ -454,7 +454,8 @@ let stats = {
     calibrationData: []
 };
 
-let calibrationEnabled = false;
+// Enable probability calibration mode by default
+let calibrationEnabled = true;
 
 // Database of Fermi questions with dates
 const fermiQuestions = [
@@ -1985,7 +1986,13 @@ function loadCompletedQuestions() {
 }
 
 function loadCalibrationSetting() {
-    calibrationEnabled = localStorage.getItem('fermiCalibrationEnabled') === 'true';
+    const stored = localStorage.getItem('fermiCalibrationEnabled');
+    if (stored === null) {
+        calibrationEnabled = true;
+        localStorage.setItem('fermiCalibrationEnabled', 'true');
+    } else {
+        calibrationEnabled = stored === 'true';
+    }
     calibrationCheckboxes.forEach(cb => {
         cb.checked = calibrationEnabled;
     });
@@ -2802,8 +2809,23 @@ function setupEventListeners() {
         }
     });
     
-    // Format input with commas as user types
+    // Format input with commas as user types and show confidence tooltip once
     guessInput.addEventListener('input', (e) => {
+        if (
+            calibrationEnabled &&
+            confidenceButton &&
+            confidenceButton.style.display !== 'none' &&
+            localStorage.getItem('fermiConfidenceTooltipShown') !== 'true'
+        ) {
+            localStorage.setItem('fermiConfidenceTooltipShown', 'true');
+            confidenceButton.setAttribute(
+                'data-tooltip',
+                'Choose how confident you are that your answer is correct'
+            );
+            confidenceButton.classList.add('show-tooltip');
+            setTimeout(() => confidenceButton.classList.remove('show-tooltip'), 3000);
+        }
+
         const input = e.target;
         const value = input.value.replace(/[^\d]/g, ''); // Keep only digits
 
