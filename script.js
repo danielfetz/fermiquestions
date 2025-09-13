@@ -1988,7 +1988,7 @@ function loadCalibrationSetting() {
     const storedCalibration = localStorage.getItem('fermiCalibrationEnabled');
     calibrationEnabled = storedCalibration !== 'false';
     calibrationCheckboxes.forEach(cb => {
-        cb.checked = !calibrationEnabled;
+        cb.checked = calibrationEnabled;
     });
     const savedFirstOnly = localStorage.getItem('fermiFirstGuessOnly');
     if (firstGuessCheckbox && savedFirstOnly !== null) {
@@ -2002,7 +2002,7 @@ function setCalibrationEnabled(enabled) {
     calibrationEnabled = enabled;
     localStorage.setItem('fermiCalibrationEnabled', enabled ? 'true' : 'false');
     calibrationCheckboxes.forEach(cb => {
-        cb.checked = !enabled;
+        cb.checked = enabled;
     });
     updateConfidenceInputVisibility();
 }
@@ -2848,7 +2848,7 @@ function setupEventListeners() {
     if (calibrationCheckboxes.length) {
         calibrationCheckboxes.forEach(cb => {
             cb.addEventListener('change', (e) => {
-                setCalibrationEnabled(!e.target.checked);
+                setCalibrationEnabled(e.target.checked);
             });
         });
     }
