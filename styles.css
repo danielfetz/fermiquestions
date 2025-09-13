@@ -170,6 +170,7 @@ button#stats-btn {
     gap: 12px;
     font-family: 'Press Start 2P', monospace;
     font-size: 0.8rem;
+    cursor: pointer;
 }
 
 .streak-emoji { 
@@ -1008,7 +1009,6 @@ button#stats-btn {
     padding: 18.5px 15px;
     outline: none;
     line-height: 1.4;
-    cursor: pointer;
 }
 
 /* Large screens (>768px) - Show images side by side */
