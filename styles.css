@@ -722,9 +722,29 @@ button#stats-btn {
     font-size: 0.675rem;
     line-height: 1.4;
     font-family: 'Press Start 2P', monospace;
-    display: none;
     z-index: 1000;
-    pointer-events: none;
+}
+
+.confidence-tooltip::before {
+    content: '';
+    position: absolute;
+    top: 100%;
+    left: 50%;
+    transform: translateX(-50%);
+    border-width: 6px;
+    border-style: solid;
+    border-color: #333 transparent transparent transparent;
+}
+
+.confidence-tooltip .tooltip-close {
+    position: absolute;
+    top: 4px;
+    right: 6px;
+    background: none;
+    border: none;
+    color: #fff;
+    font-size: 0.7rem;
+    cursor: pointer;
 }
 
 .submit-btn {
