@@ -711,26 +711,20 @@ button#stats-btn {
 
 .confidence-tooltip {
     position: absolute;
-    bottom: calc(100% + 8px);
+    bottom: calc(100% + 12px);
     left: 50%;
     transform: translateX(-50%);
     width: 200px;
     background: #333;
     color: #fff;
-    padding: 8px 12px;
-    border-radius: 4px;
-    font-size: 0.7rem;
-    line-height: 1.2;
+    padding: 10px 14px;
+    border-radius: 8px;
+    font-size: 0.675rem;
+    line-height: 1.4;
     font-family: 'Press Start 2P', monospace;
     display: none;
     z-index: 1000;
-}
-
-.confidence-tooltip .tooltip-close {
-    position: absolute;
-    top: 2px;
-    right: 4px;
-    cursor: pointer;
+    pointer-events: none;
 }
 
 .submit-btn {
