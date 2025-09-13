@@ -227,6 +227,12 @@ button#stats-btn {
     opacity: 1;
 }
 
+/* Hide tooltip pseudo-elements when no data-tooltip is present */
+.question-meta .meta-item:not([data-tooltip])::after,
+.question-meta .meta-item:not([data-tooltip])::before {
+    content: none;
+}
+
 /* avg-tries-inline removed */
 
 .source-btn {
@@ -1053,6 +1059,7 @@ button#stats-btn {
     padding: 18.5px 15px;
     outline: none;
     line-height: 1.4;
+    cursor: pointer;
 }
 
 /* Large screens (>768px) - Show images side by side */
