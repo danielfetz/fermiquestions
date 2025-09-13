@@ -455,6 +455,7 @@ let stats = {
 };
 
 let calibrationEnabled = true;
+let confidenceTooltipInitialized = false;
 
 // Database of Fermi questions with dates
 const fermiQuestions = [
@@ -961,6 +962,7 @@ const guessInput = document.getElementById('guess-input');
 const confidenceInput = document.getElementById('confidence-input');
 const confidenceButton = document.getElementById('confidence-button');
 const confidenceMenu = document.getElementById('confidence-menu');
+const confidenceTooltip = document.getElementById('confidence-tooltip');
 const submitBtn = document.getElementById('submit-btn');
 const sendIcon = `\
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
@@ -1031,6 +1033,7 @@ function initGame() {
     setupEventListeners();
     // Always initialize routing; allow it to handle future navigations
     initRouting(false);
+    maybeShowConfidenceTooltip();
 }
 
 // Update current streak display
@@ -2042,7 +2045,12 @@ function updateConfidenceInputVisibility() {
             confidenceButton.setAttribute('aria-expanded', 'false');
         }
     }
+    if (!showConfidence && confidenceTooltip) {
+        confidenceTooltip.style.display = 'none';
+        confidenceTooltipInitialized = false;
+    }
     applySubmitButtonState();
+    maybeShowConfidenceTooltip();
 }
 
 function applySubmitButtonState() {
@@ -2054,6 +2062,36 @@ function applySubmitButtonState() {
         submitBtn.style.width = '';
         submitBtn.textContent = 'Submit';
     }
+}
+
+function maybeShowConfidenceTooltip() {
+    if (!confidenceTooltip || !confidenceButton) return;
+    if (localStorage.getItem('confidenceTooltipDismissed') === 'true') {
+        confidenceTooltip.style.display = 'none';
+        return;
+    }
+    if (confidenceTooltipInitialized) return;
+    if (confidenceButton.style.display === 'none') return;
+
+    const dismiss = () => {
+        confidenceTooltip.style.display = 'none';
+        localStorage.setItem('confidenceTooltipDismissed', 'true');
+        confidenceButton.removeEventListener('click', dismiss);
+        document.removeEventListener('click', dismiss);
+        document.removeEventListener('mousedown', dismiss);
+        document.removeEventListener('keydown', dismiss);
+        document.removeEventListener('input', dismiss);
+        document.removeEventListener('touchstart', dismiss);
+    };
+
+    confidenceTooltip.style.display = 'block';
+    confidenceTooltipInitialized = true;
+    confidenceButton.addEventListener('click', dismiss, { once: true });
+    document.addEventListener('click', dismiss, { once: true });
+    document.addEventListener('mousedown', dismiss, { once: true });
+    document.addEventListener('keydown', dismiss, { once: true });
+    document.addEventListener('input', dismiss, { once: true });
+    document.addEventListener('touchstart', dismiss, { once: true });
 }
 
 // Save current game state to localStorage and Supabase (per question)

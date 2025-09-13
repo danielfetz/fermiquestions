@@ -709,6 +709,34 @@ button#stats-btn {
     font-size: 1.2rem;
 }
 
+.confidence-tooltip {
+    position: absolute;
+    bottom: calc(100% + 12px);
+    left: 50%;
+    transform: translateX(-50%);
+    width: 200px;
+    background: #333;
+    color: #fff;
+    padding: 10px 14px;
+    border-radius: 8px;
+    font-size: 0.675rem;
+    line-height: 1.4;
+    font-family: 'Press Start 2P', monospace;
+    z-index: 1000;
+    pointer-events: none;
+}
+
+.confidence-tooltip::before {
+    content: '';
+    position: absolute;
+    top: 100%;
+    left: 50%;
+    transform: translateX(-50%);
+    border-width: 6px;
+    border-style: solid;
+    border-color: #333 transparent transparent transparent;
+}
+
 .submit-btn {
     width: 110px;
     height: 54px;
