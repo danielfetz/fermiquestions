@@ -2067,23 +2067,22 @@ function applySubmitButtonState() {
 function maybeShowConfidenceTooltip() {
     if (confidenceTooltipInitialized) return;
     if (!confidenceTooltip || !confidenceButton) return;
-    if (localStorage.getItem('confidenceTooltipDismissed') === 'true') {
-        confidenceTooltip.style.display = 'none';
-        return;
-    }
+    if (localStorage.getItem('confidenceTooltipDismissed') === 'true') return;
     if (confidenceButton.style.display === 'none') return;
 
     const dismiss = () => {
         confidenceTooltip.style.display = 'none';
         localStorage.setItem('confidenceTooltipDismissed', 'true');
+        confidenceButton.removeEventListener('click', dismiss);
         document.removeEventListener('click', dismiss);
         document.removeEventListener('keydown', dismiss);
     };
 
     confidenceTooltip.style.display = 'block';
     confidenceTooltipInitialized = true;
-    document.addEventListener('click', dismiss);
-    document.addEventListener('keydown', dismiss);
+    confidenceButton.addEventListener('click', dismiss, { once: true });
+    document.addEventListener('click', dismiss, { once: true });
+    document.addEventListener('keydown', dismiss, { once: true });
 }
 
 // Save current game state to localStorage and Supabase (per question)
