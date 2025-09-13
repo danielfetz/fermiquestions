@@ -963,7 +963,6 @@ const confidenceInput = document.getElementById('confidence-input');
 const confidenceButton = document.getElementById('confidence-button');
 const confidenceMenu = document.getElementById('confidence-menu');
 const confidenceTooltip = document.getElementById('confidence-tooltip');
-const confidenceTooltipClose = document.getElementById('confidence-tooltip-close');
 const submitBtn = document.getElementById('submit-btn');
 const sendIcon = `\
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
@@ -2066,9 +2065,12 @@ function applySubmitButtonState() {
 }
 
 function maybeShowConfidenceTooltip() {
-    if (confidenceTooltipInitialized) return;
     if (!confidenceTooltip || !confidenceButton) return;
-    if (localStorage.getItem('confidenceTooltipDismissed') === 'true') return;
+    if (localStorage.getItem('confidenceTooltipDismissed') === 'true') {
+        confidenceTooltip.style.display = 'none';
+        return;
+    }
+    if (confidenceTooltipInitialized) return;
     if (confidenceButton.style.display === 'none') return;
 
     const dismiss = () => {
@@ -2079,7 +2081,6 @@ function maybeShowConfidenceTooltip() {
         document.removeEventListener('keydown', dismiss);
         document.removeEventListener('input', dismiss);
         document.removeEventListener('touchstart', dismiss);
-        confidenceTooltipClose && confidenceTooltipClose.removeEventListener('click', dismiss);
     };
 
     confidenceTooltip.style.display = 'block';
@@ -2089,7 +2090,6 @@ function maybeShowConfidenceTooltip() {
     document.addEventListener('keydown', dismiss, { once: true });
     document.addEventListener('input', dismiss, { once: true });
     document.addEventListener('touchstart', dismiss, { once: true });
-    confidenceTooltipClose && confidenceTooltipClose.addEventListener('click', dismiss, { once: true });
 }
 
 // Save current game state to localStorage and Supabase (per question)
