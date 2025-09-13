@@ -454,7 +454,7 @@ let stats = {
     calibrationData: []
 };
 
-let calibrationEnabled = false;
+let calibrationEnabled = true;
 
 // Database of Fermi questions with dates
 const fermiQuestions = [
