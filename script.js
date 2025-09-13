@@ -925,6 +925,15 @@ const fermiQuestions = [
         hint: "In 2021, German courts convicted around 662,100 defendants by final judgment.",
         date: "2025-09-13",
         image: "data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' width='100' height='100' viewBox='0 0 100 100'%3e%3crect width='100' height='100' fill='%23f8fafc'/%3e%3ctext x='50' y='62' font-size='40' text-anchor='middle' fill='%23374151'%3e👨‍⚖️️%3c/text%3e%3c/svg%3e"
+    },
+    {
+        question: "How many popes have there been in the Catholic Church?",
+        answer: 267,
+        category: "",
+        explanation: "",
+        hint: "St. Peter is recognized as the first pope and died around AD 64.",
+        date: "2025-09-14",
+        image: "data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' width='100' height='100' viewBox='0 0 100 100'%3e%3crect width='100' height='100' fill='%23f8fafc'/%3e%3ctext x='50' y='62' font-size='40' text-anchor='middle' fill='%23374151'%3e️⛪️%3c/text%3e%3c/svg%3e"
     }
 ];
 
