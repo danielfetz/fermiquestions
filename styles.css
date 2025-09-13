@@ -726,6 +726,18 @@ button#stats-btn {
     pointer-events: none;
 }
 
+.confidence-tooltip-close {
+    position: absolute;
+    top: 4px;
+    right: 6px;
+    background: none;
+    border: none;
+    color: #fff;
+    font-size: 0.7rem;
+    cursor: pointer;
+    pointer-events: auto;
+}
+
 .confidence-tooltip::before {
     content: '';
     position: absolute;
