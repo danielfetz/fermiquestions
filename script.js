@@ -1985,7 +1985,8 @@ function loadCompletedQuestions() {
 }
 
 function loadCalibrationSetting() {
-    calibrationEnabled = localStorage.getItem('fermiCalibrationEnabled') === 'true';
+    const storedCalibration = localStorage.getItem('fermiCalibrationEnabled');
+    calibrationEnabled = storedCalibration !== 'false';
     calibrationCheckboxes.forEach(cb => {
         cb.checked = calibrationEnabled;
     });
