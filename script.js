@@ -970,9 +970,7 @@ const statsBtn = document.getElementById('stats-btn');
 const helpModal = document.getElementById('help-modal');
 const statsModal = document.getElementById('stats-modal');
 const questionsModal = document.getElementById('questions-modal');
-const strategyModal = document.getElementById('strategy-modal');
 const strategyTipsBtn = document.getElementById('strategy-tips-btn');
-const closeStrategyBtn = document.getElementById('close-strategy-btn');
 // Hint elements
 const hintModalBtn = document.getElementById('hint-modal-btn');
 const questionsList = document.getElementById('questions-list');
@@ -1707,11 +1705,6 @@ function startNewGameFromModal() {
 // Show help modal
 function showHelp() {
     helpModal.style.display = 'block';
-}
-
-// Show strategy modal
-function showStrategy() {
-    if (strategyModal) strategyModal.style.display = 'block';
 }
 
 // Show stats modal
@@ -2986,73 +2979,27 @@ function setupEventListeners() {
             }
             sourceModal.style.display = 'block';
         });
-        // Accordion toggles
-        const accSourceItem = document.getElementById('acc-source-item');
-        const accSourceHeader = document.getElementById('acc-source-header');
-        const accStatsItem = document.getElementById('acc-stats-item');
-        const accStatsHeader = document.getElementById('acc-stats-header');
-        const accInitialItem = document.getElementById('acc-initial-item');
-        const accInitialHeader = document.getElementById('acc-initial-header');
-        if (accSourceHeader && accSourceItem) {
-            accSourceHeader.addEventListener('click', () => {
-                const isOpen = accSourceItem.classList.contains('open');
-                if (isOpen) accSourceItem.classList.remove('open');
-                else accSourceItem.classList.add('open');
-            });
-        }
-        if (accStatsHeader && accStatsItem) {
-            accStatsHeader.addEventListener('click', () => {
-                const isOpen = accStatsItem.classList.contains('open');
-                if (isOpen) accStatsItem.classList.remove('open');
-                else accStatsItem.classList.add('open');
-            });
-        }
-        if (accInitialHeader && accInitialItem) {
-            accInitialHeader.addEventListener('click', () => {
-                const isOpen = accInitialItem.classList.contains('open');
-                if (isOpen) accInitialItem.classList.remove('open');
-                else accInitialItem.classList.add('open');
-            });
-        }
     }
 
-    const accStatsGridItem = document.getElementById('acc-statsgrid-item');
-    const accStatsGridHeader = document.getElementById('acc-statsgrid-header');
-    if (accStatsGridHeader && accStatsGridItem) {
-        accStatsGridHeader.addEventListener('click', () => {
-            const isOpen = accStatsGridItem.classList.contains('open');
-            if (isOpen) accStatsGridItem.classList.remove('open');
-            else accStatsGridItem.classList.add('open');
+    // Accordion toggles
+    document.querySelectorAll('.accordion-header').forEach(header => {
+        header.addEventListener('click', () => {
+            const item = header.parentElement;
+            const isOpen = item.classList.contains('open');
+            if (isOpen) {
+                item.classList.remove('open');
+                header.setAttribute('aria-expanded', 'false');
+            } else {
+                item.classList.add('open');
+                header.setAttribute('aria-expanded', 'true');
+            }
         });
-    }
-
-    const accDistributionItem = document.getElementById('acc-distribution-item');
-    const accDistributionHeader = document.getElementById('acc-distribution-header');
-    if (accDistributionHeader && accDistributionItem) {
-        accDistributionHeader.addEventListener('click', () => {
-            const isOpen = accDistributionItem.classList.contains('open');
-            if (isOpen) accDistributionItem.classList.remove('open');
-            else accDistributionItem.classList.add('open');
-        });
-    }
-
-    const accCalibrationItem = document.getElementById('acc-calibration-item');
-    const accCalibrationHeader = document.getElementById('acc-calibration-header');
-    if (accCalibrationHeader && accCalibrationItem) {
-        accCalibrationHeader.addEventListener('click', () => {
-            const isOpen = accCalibrationItem.classList.contains('open');
-            if (isOpen) accCalibrationItem.classList.remove('open');
-            else accCalibrationItem.classList.add('open');
-        });
-    }
+    });
     
     // Close buttons
     closeHelpBtn.addEventListener('click', () => closeModal(helpModal));
     closeStatsBtn.addEventListener('click', () => closeModal(statsModal));
     closeQuestionsBtn.addEventListener('click', () => closeModal(questionsModal));
-    if (closeStrategyBtn) {
-        closeStrategyBtn.addEventListener('click', () => closeModal(strategyModal));
-    }
 
     // Comment buttons
     if (commentsBtn) commentsBtn.addEventListener('click', openComments);
@@ -3072,7 +3019,7 @@ function setupEventListeners() {
     shareStatsBtn.addEventListener('click', shareStats);
         
     // Close modals when clicking outside (desktop + mobile)
-    [helpModal, statsModal, questionsModal, strategyModal, sourceModal].forEach(modal => {
+    [helpModal, statsModal, questionsModal, sourceModal].forEach(modal => {
         ['click', 'touchend'].forEach(event => {
             modal.addEventListener(event, e => e.target === modal && closeModal(modal));
         });
