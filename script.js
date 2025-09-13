@@ -409,23 +409,15 @@ function subscribeToComments(questionDate) {
         .subscribe();
 }
 
-let bodyScrollY = 0;
-
 function openComments() {
     if (!commentsSection) return;
     loadComments();
-    bodyScrollY = window.scrollY;
-    document.body.style.position = 'fixed';
-    document.body.style.top = `-${bodyScrollY}px`;
     commentsSection.classList.add('open');
 }
 
 function closeComments() {
     if (!commentsSection) return;
     commentsSection.classList.remove('open');
-    document.body.style.position = '';
-    document.body.style.top = '';
-    window.scrollTo(0, bodyScrollY);
 }
 
 // Update the average tries display in the inline meta row

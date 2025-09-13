@@ -938,15 +938,17 @@ button#stats-btn {
 /* Comments section */
 .comments-section {
     display: none;
-    position: absolute;
+    position: fixed;
     top: 0;
     left: 0;
     width: 100%;
-    height: 100%;
+    height: 100vh;
     background: #fff;
     z-index: 1000;
     flex-direction: column;
     border-radius: 18px;
+    overflow: hidden;
+    overscroll-behavior: contain;
 }
 
 .comments-section.open {
