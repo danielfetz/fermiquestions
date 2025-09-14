@@ -581,29 +581,28 @@ button#stats-btn {
 .input-row {
     display: flex;
     align-items: center;
-    gap: 10px;
 }
 
 .input-container {
-    height: 54px;
     display: flex;
-    align-items: center;
+    flex-direction: column;
     border-radius: 15px;
     flex: 1;
     border: 2px solid #eaecf0;
+    overflow: hidden;
 }
 
 #guess-input {
-    flex: 1;
+    flex: none;
     background: none;
     border: none;
+    border-bottom: 2px solid #eaecf0;
     font-size: 0.8rem;
     font-family: 'Press Start 2P', monospace;
     outline: none;
-    min-width: 0;
     width: 100%;
-    padding: 18.5px 0px 18.5px 15px;
-    border-radius: 15px;
+    padding: 18.5px 15px;
+    border-radius: 13px 13px 0 0;
 }
 
 #guess-input::placeholder {
@@ -612,22 +611,53 @@ button#stats-btn {
 
 #confidence-input {
     margin: 0 10px 0 0;
-    height: 100%;
+    height: 36px;
     width: 71px;
-    padding: 18.5px 0;
+    padding: 0;
     background: none;
-    padding-right: 0px;
-    -webkit-padding-end: 0px;
-    border: none;
-    border-left: 2px solid #eaecf0;
-    border-radius: 0;
+    border: 2px solid #eaecf0;
     color: #333;
     font-size: 0.8rem;
     font-family: 'Press Start 2P', monospace;
     outline: none;
-    text-align: right;
-    padding-inline-start: 0;
+    text-align: center;
     display: none;
+    border-radius: 10px;
+    -webkit-padding-end: 0px;
+    padding-inline-start: 0;
+}
+
+.input-actions {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 8px 10px;
+    gap: 10px;
+}
+
+.quick-buttons {
+    display: flex;
+    gap: 6px;
+}
+
+.quick-btn {
+    background: #e9ecef;
+    border: 2px solid #eaecf0;
+    border-radius: 10px;
+    padding: 6px 8px;
+    font-family: 'Press Start 2P', monospace;
+    font-size: 0.7rem;
+    cursor: pointer;
+}
+
+.quick-btn:hover {
+    background: #dfe3e6;
+}
+
+.action-right {
+    display: flex;
+    align-items: center;
+    gap: 10px;
 }
 
 .confidence-wrapper {
@@ -676,27 +706,25 @@ button#stats-btn {
 
 #confidence-button {
     margin: 0 10px 0 0;
-    height: 100%;
+    height: 36px;
     width: 71px;
-    padding: 18.5px 0;
+    padding: 0;
     background: none;
-    padding-right: 18px;
-    border: none;
-    border-left: 2px solid #eaecf0;
+    border: 2px solid #eaecf0;
     color: #333;
     font-size: 0.8rem;
     font-family: 'Press Start 2P', monospace;
-    text-align: right;
-    padding-inline-start: 0;
+    text-align: center;
     display: none;
     cursor: pointer;
     position: relative;
+    border-radius: 10px;
 }
 
 #confidence-button::after {
     content: '>';
     position: absolute;
-    right: 4px;
+    right: 8px;
     top: 50%;
     transform: translateY(-50%) rotate(90deg);
     font-size: 0.6rem;
@@ -751,7 +779,7 @@ button#stats-btn {
 
 .submit-btn {
     width: 110px;
-    height: 54px;
+    height: 36px;
     background-color: #3498db;
     color: white;
     border: none;

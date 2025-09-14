@@ -963,6 +963,7 @@ const confidenceButton = document.getElementById('confidence-button');
 const confidenceMenu = document.getElementById('confidence-menu');
 const confidenceWrapper = document.querySelector('.confidence-wrapper');
 const submitBtn = document.getElementById('submit-btn');
+const quickButtons = document.querySelectorAll('.quick-btn');
 const sendIcon = `\
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
   <path d="M2 21L23 12L2 3v7l12 2L2 14v7z"/>
@@ -2845,6 +2846,16 @@ function setupEventListeners() {
             const formattedValue = formatNumber(number);
             input.value = formattedValue;
         }
+    });
+
+    quickButtons.forEach((btn) => {
+        btn.addEventListener('click', () => {
+            const increment = parseInt(btn.dataset.value, 10);
+            const current = parseInt(guessInput.value.replace(/[^\d]/g, ''), 10) || 0;
+            const newValue = current + increment;
+            guessInput.value = formatNumber(newValue);
+            guessInput.focus();
+        });
     });
 
     // Help button
