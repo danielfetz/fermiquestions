@@ -643,6 +643,7 @@ button#stats-btn {
     border: 2px solid #eaecf0;
     border-radius: 10px;
     padding: 8px 8px;
+    color: #333;
     font-family: 'Press Start 2P', monospace;
     font-size: 0.7rem;
     cursor: pointer;
