@@ -1003,6 +1003,20 @@ const commentInput = document.getElementById('comment-input');
 const commentSubmitBtn = document.getElementById('comment-submit-btn');
 const commentCountEl = document.getElementById('comment-count');
 
+// Calibration banner
+function initCalibrationBanner() {
+    const banner = document.getElementById('calibration-banner');
+    const closeBtn = document.getElementById('calibration-banner-close');
+    if (!banner || !closeBtn) return;
+    const dismissed = localStorage.getItem('calibrationBannerDismissed');
+    if (dismissed === 'true') return;
+    banner.style.display = 'flex';
+    closeBtn.addEventListener('click', () => {
+        banner.style.display = 'none';
+        localStorage.setItem('calibrationBannerDismissed', 'true');
+    });
+}
+
 // Initialize game
 function initGame() {
     // Initialize Supabase first
@@ -1011,6 +1025,7 @@ function initGame() {
     loadStats();
     loadCompletedQuestions();
     loadCalibrationSetting();
+    initCalibrationBanner();
 
     // If URL has a specific question date, navigate to it first
     let navigatedFromURL = false;
