@@ -645,12 +645,14 @@ button#stats-btn {
     padding: 10px 14px;
     border-radius: 8px;
     font-size: 0.675rem;
-    white-space: nowrap;
+    width: 100px;
+    white-space: normal;
     opacity: 0;
     pointer-events: none;
     transition: opacity 0.15s ease, transform 0.15s ease;
     z-index: 1000;
     line-height: 1.4;
+    text-align: center;
 }
 
 .confidence-wrapper::before {
