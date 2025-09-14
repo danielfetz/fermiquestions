@@ -2045,6 +2045,10 @@ function updateConfidenceInputVisibility() {
     const firstOnlyActive = firstGuessCheckbox && firstGuessCheckbox.checked;
     const showConfidence = calibrationEnabled && (!firstOnlyActive || currentGuess === 0);
 
+    if (confidenceWrapper) {
+        confidenceWrapper.style.display = showConfidence ? '' : 'none';
+    }
+
     if (confidenceInput && confidenceButton) {
         const prevValue = confidenceInput.value;
         if (showConfidence) {
