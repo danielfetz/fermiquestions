@@ -599,7 +599,7 @@ button#stats-btn {
     font-family: 'Press Start 2P', monospace;
     outline: none;
     width: 100%;
-    padding: 18.5px 15px 13.5px 15px;
+    padding: 19.5px 15px 14.5px 15px;
     border-radius: 13px 13px 0 0;
 }
 
@@ -608,12 +608,12 @@ button#stats-btn {
 }
 
 #confidence-input {
-    margin: 0 10px 0 0;
+    margin: 0;
     height: 36px;
     width: 71px;
     padding: 0;
     background: none;
-    border: 2px solid #eaecf0;
+    border: 0;
     color: #333;
     font-size: 0.8rem;
     font-family: 'Press Start 2P', monospace;
@@ -629,7 +629,7 @@ button#stats-btn {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: 0 10px 8px 10px;
+    padding: 0 12px 12px 12px;
     gap: 10px;
 }
 
@@ -642,7 +642,7 @@ button#stats-btn {
     background: #e9ecef;
     border: 2px solid #eaecf0;
     border-radius: 10px;
-    padding: 6px 8px;
+    padding: 8px 8px;
     font-family: 'Press Start 2P', monospace;
     font-size: 0.7rem;
     cursor: pointer;
@@ -706,7 +706,7 @@ button#stats-btn {
 }
 
 #confidence-button {
-    margin: 0 10px 0 0;
+    margin: 0;
     height: 36px;
     width: 71px;
     padding: 0;
@@ -725,7 +725,7 @@ button#stats-btn {
 #confidence-button::after {
     content: '>';
     position: absolute;
-    right: 8px;
+    right: 2px;
     top: 50%;
     transform: translateY(-50%) rotate(90deg);
     font-size: 0.6rem;
@@ -780,12 +780,12 @@ button#stats-btn {
 
 .submit-btn {
     width: 110px;
-    height: 36px;
+    height: 40px;
     background-color: #3498db;
     color: white;
     border: none;
     padding: 8px 12px;
-    border-radius: 15px;
+    border-radius: 12px;
     font-family: 'Press Start 2P', monospace;
     font-size: 0.8rem;
     cursor: pointer;
@@ -1231,9 +1231,9 @@ button#stats-btn {
         padding-left: 0;
     }
     #confidence-button {
-        margin: 0 8px 0 0;
+        margin: 0;
         width: 70px;
-        padding-left: 4px;
+        padding-left: 0;
     }
     .comments-section {
         position: fixed;
