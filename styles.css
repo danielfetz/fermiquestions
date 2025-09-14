@@ -1231,9 +1231,7 @@ button#stats-btn {
         padding-left: 0;
     }
     #confidence-button {
-        margin: 0;
         width: 70px;
-        padding-left: 0;
     }
     .comments-section {
         position: fixed;
