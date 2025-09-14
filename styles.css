@@ -634,6 +634,46 @@ button#stats-btn {
     position: relative;
 }
 
+.confidence-wrapper::after {
+    content: attr(data-tooltip);
+    position: absolute;
+    bottom: calc(100% + 12px);
+    left: 50%;
+    transform: translateX(-50%);
+    background: #333;
+    color: #fff;
+    padding: 10px 14px;
+    border-radius: 8px;
+    font-size: 0.675rem;
+    width: 100px;
+    white-space: normal;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.15s ease, transform 0.15s ease;
+    z-index: 1000;
+    line-height: 1.4;
+    text-align: center;
+}
+
+.confidence-wrapper::before {
+    content: '';
+    position: absolute;
+    bottom: 100%;
+    left: 50%;
+    transform: translateX(-50%);
+    border-width: 6px;
+    border-style: solid;
+    border-color: rgba(51, 51, 51, 0.95) transparent transparent transparent;
+    opacity: 0;
+    transition: opacity 0.15s ease;
+    z-index: 1000;
+}
+
+.confidence-wrapper.show-tooltip::after,
+.confidence-wrapper.show-tooltip::before {
+    opacity: 1;
+}
+
 #confidence-button {
     margin: 0 10px 0 0;
     height: 100%;
