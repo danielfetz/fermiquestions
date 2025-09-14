@@ -589,19 +589,17 @@ button#stats-btn {
     border-radius: 15px;
     flex: 1;
     border: 2px solid #eaecf0;
-    overflow: hidden;
 }
 
 #guess-input {
     flex: none;
     background: none;
     border: none;
-    border-bottom: 2px solid #eaecf0;
     font-size: 0.8rem;
     font-family: 'Press Start 2P', monospace;
     outline: none;
     width: 100%;
-    padding: 18.5px 15px;
+    padding: 18.5px 15px 13.5px 15px;
     border-radius: 13px 13px 0 0;
 }
 
@@ -631,7 +629,7 @@ button#stats-btn {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: 8px 10px;
+    padding: 0 10px 8px 10px;
     gap: 10px;
 }
 
