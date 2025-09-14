@@ -961,6 +961,7 @@ const guessInput = document.getElementById('guess-input');
 const confidenceInput = document.getElementById('confidence-input');
 const confidenceButton = document.getElementById('confidence-button');
 const confidenceMenu = document.getElementById('confidence-menu');
+const confidenceWrapper = document.querySelector('.confidence-wrapper');
 const submitBtn = document.getElementById('submit-btn');
 const sendIcon = `\
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
@@ -1003,18 +1004,23 @@ const commentInput = document.getElementById('comment-input');
 const commentSubmitBtn = document.getElementById('comment-submit-btn');
 const commentCountEl = document.getElementById('comment-count');
 
-// Calibration banner
-function initCalibrationBanner() {
-    const banner = document.getElementById('calibration-banner');
-    const closeBtn = document.getElementById('calibration-banner-close');
-    if (!banner || !closeBtn) return;
-    const dismissed = localStorage.getItem('calibrationBannerDismissed');
+
+// Confidence tooltip
+function initConfidenceTooltip() {
+    if (!confidenceWrapper) return;
+    const dismissed = localStorage.getItem('confidenceTooltipDismissed');
     if (dismissed === 'true') return;
-    banner.style.display = 'flex';
-    closeBtn.addEventListener('click', () => {
-        banner.style.display = 'none';
-        localStorage.setItem('calibrationBannerDismissed', 'true');
-    });
+    confidenceWrapper.classList.add('show-tooltip');
+    const hideTooltip = () => {
+        confidenceWrapper.classList.remove('show-tooltip');
+        localStorage.setItem('confidenceTooltipDismissed', 'true');
+        document.removeEventListener('mousedown', hideTooltip);
+        document.removeEventListener('keydown', hideTooltip);
+        document.removeEventListener('touchstart', hideTooltip);
+    };
+    document.addEventListener('mousedown', hideTooltip, { once: true });
+    document.addEventListener('keydown', hideTooltip, { once: true });
+    document.addEventListener('touchstart', hideTooltip, { once: true });
 }
 
 // Initialize game
@@ -1025,7 +1031,7 @@ function initGame() {
     loadStats();
     loadCompletedQuestions();
     loadCalibrationSetting();
-    initCalibrationBanner();
+    initConfidenceTooltip();
 
     // If URL has a specific question date, navigate to it first
     let navigatedFromURL = false;

@@ -32,10 +32,6 @@
                 </button>
             </div>
         </header>
-        <div id="calibration-banner" class="calibration-banner" style="display: none;">
-            <span class="banner-text">You can log your confidence with each guess. A calibration chart showing whether you're over- or underconfident is available on the stats page.</span>
-            <button id="calibration-banner-close" class="banner-close" aria-label="Close">×</button>
-        </div>
     <div class="game-container">
         <!-- Question Display -->
         <div class="question-container">
@@ -131,7 +127,7 @@
                         inputmode="numeric"
                         pattern="[0-9,]*"
                     >
-                    <div class="confidence-wrapper">
+                    <div class="confidence-wrapper" data-tooltip="How confident are you that your guess is correct?">
                         <select id="confidence-input">
                             <option value="10">10%</option>
                             <option value="20">20%</option>
