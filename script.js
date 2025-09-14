@@ -1722,9 +1722,12 @@ function endGame() {
         newGameBtnInline.onclick = showStats;
     } else {
         newGameBtnInline.textContent = 'Play more';
-        newGameBtnInline.onclick = startNewGame;
-    }    
+        newGameBtnInline.onclick = startNewGame;  
+    }
     updateStreakDisplay(); // Update streak display when game ends
+
+    // Simple scroll to top to ensure good positioning
+    window.scrollTo(0, 0);
 }
 
 // Start a new game
