@@ -127,35 +127,44 @@
                         inputmode="numeric"
                         pattern="[0-9,]*"
                     >
-                    <div class="confidence-wrapper" data-tooltip="How confident are you that your guess is correct?">
-                        <select id="confidence-input">
-                            <option value="10">10%</option>
-                            <option value="20">20%</option>
-                            <option value="30">30%</option>
-                            <option value="40">40%</option>
-                            <option value="50" selected>50%</option>
-                            <option value="60">60%</option>
-                            <option value="70">70%</option>
-                            <option value="80">80%</option>
-                            <option value="90">90%</option>
-                            <option value="100">100%</option>
-                        </select>
-                        <button id="confidence-button" type="button" aria-haspopup="listbox" aria-expanded="false">50%</button>
-                        <div id="confidence-menu" class="confidence-menu" role="listbox">
-                            <button type="button" data-value="10" role="option">10%</button>
-                            <button type="button" data-value="20" role="option">20%</button>
-                            <button type="button" data-value="30" role="option">30%</button>
-                            <button type="button" data-value="40" role="option">40%</button>
-                            <button type="button" data-value="50" role="option" class="selected">50%</button>
-                            <button type="button" data-value="60" role="option">60%</button>
-                            <button type="button" data-value="70" role="option">70%</button>
-                            <button type="button" data-value="80" role="option">80%</button>
-                            <button type="button" data-value="90" role="option">90%</button>
-                            <button type="button" data-value="100" role="option">100%</button>
+                    <div class="input-actions">
+                        <div class="quick-buttons">
+                            <button type="button" class="quick-btn" data-value="10000000">+10M</button>
+                            <button type="button" class="quick-btn" data-value="100000000">+100M</button>
+                            <button type="button" class="quick-btn" data-value="1000000000">+1B</button>
+                        </div>
+                        <div class="action-right">
+                            <div class="confidence-wrapper" data-tooltip="How confident are you that your guess is correct?">
+                                <select id="confidence-input">
+                                    <option value="10">10%</option>
+                                    <option value="20">20%</option>
+                                    <option value="30">30%</option>
+                                    <option value="40">40%</option>
+                                    <option value="50" selected>50%</option>
+                                    <option value="60">60%</option>
+                                    <option value="70">70%</option>
+                                    <option value="80">80%</option>
+                                    <option value="90">90%</option>
+                                    <option value="100">100%</option>
+                                </select>
+                                <button id="confidence-button" type="button" aria-haspopup="listbox" aria-expanded="false">50%</button>
+                                <div id="confidence-menu" class="confidence-menu" role="listbox">
+                                    <button type="button" data-value="10" role="option">10%</button>
+                                    <button type="button" data-value="20" role="option">20%</button>
+                                    <button type="button" data-value="30" role="option">30%</button>
+                                    <button type="button" data-value="40" role="option">40%</button>
+                                    <button type="button" data-value="50" role="option" class="selected">50%</button>
+                                    <button type="button" data-value="60" role="option">60%</button>
+                                    <button type="button" data-value="70" role="option">70%</button>
+                                    <button type="button" data-value="80" role="option">80%</button>
+                                    <button type="button" data-value="90" role="option">90%</button>
+                                    <button type="button" data-value="100" role="option">100%</button>
+                                </div>
+                            </div>
+                            <button id="submit-btn" class="submit-btn">Submit</button>
                         </div>
                     </div>
                 </div>
-                <button id="submit-btn" class="submit-btn">Submit</button>
             </div>
         </div>
 
