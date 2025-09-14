@@ -660,6 +660,9 @@ button#stats-btn {
 
 .confidence-wrapper {
     position: relative;
+    border: 2px solid #eaecf0;
+    border-radius: 12px;
+    padding: 0 8px;
 }
 
 .confidence-wrapper::after {
@@ -708,7 +711,7 @@ button#stats-btn {
     width: 71px;
     padding: 0;
     background: none;
-    border: 2px solid #eaecf0;
+    border: 0;
     color: #333;
     font-size: 0.8rem;
     font-family: 'Press Start 2P', monospace;
@@ -798,8 +801,8 @@ button#stats-btn {
 }
 
 .submit-btn svg {
-    width: 24px;
-    height: 24px;
+    width: 20px;
+    height: 20px;
 }
 
 .submit-btn:disabled {
@@ -1223,6 +1226,9 @@ button#stats-btn {
     .source-btn {
         font-size: 0.78rem;
         height: 63px;
+    }
+    .confidence-wrapper {
+        padding-left: 0;
     }
     #confidence-button {
         margin: 0 8px 0 0;
