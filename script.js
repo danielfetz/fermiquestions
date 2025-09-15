@@ -7,6 +7,9 @@ let supabase = null;
 let currentUserId = null;
 let commentsChannel = null;
 
+const MAX_CONFIDENCE_PERCENT = 99;
+const MAX_CONFIDENCE_FRACTION = MAX_CONFIDENCE_PERCENT / 100;
+
 // Initialize Supabase with error handling
 function initSupabase() {
     try {
@@ -1270,9 +1273,13 @@ function getGuessText(guessNumber) {
 function submitGuess() {
     const guessValue = parseInt(guessInput.value.replace(/[^\d]/g, ''));
     const confidenceValue = confidenceInput ? parseInt(confidenceInput.value) : null;
-    const confPercent = (calibrationEnabled && confidenceInput && !isNaN(confidenceValue))
-        ? Math.max(0, Math.min(100, confidenceValue))
-        : null;
+    let confPercent = null;
+    if (calibrationEnabled && confidenceInput) {
+        const sanitized = clampConfidencePercent(confidenceValue);
+        if (sanitized !== null) {
+            confPercent = sanitized;
+        }
+    }
 
     if (isNaN(guessValue) || guessValue < 0) {
         alert('Please enter a valid positive number!');
@@ -1344,10 +1351,14 @@ function submitGuess() {
 
     if (calibrationEnabled && confidenceInput) {
         if (confPercent !== null) {
-            stats.calibrationData.push({ confidence: confPercent / 100, correct: isCorrect, guessNumber: currentGuess });
+            stats.calibrationData.push({
+                confidence: confPercent / 100,
+                correct: isCorrect,
+                guessNumber: currentGuess
+            });
             saveStats();
         }
-        
+
     }
     
     // Save current game state after each guess
@@ -1848,12 +1859,17 @@ function updateCalibrationChart() {
         data = data.filter(d => d.guessNumber === 1);
     }
 
-    const bins = Array.from({ length: 10 }, () => ({ total: 0, correct: 0 }));
+    const declaredLevels = [10, 20, 30, 40, 50, 60, 70, 80, 90, MAX_CONFIDENCE_PERCENT];
+    const bins = declaredLevels.map(() => ({ total: 0, correct: 0 }));
     data.forEach(d => {
-        let conf = typeof d.confidence === 'number' ? d.confidence : parseFloat(d.confidence);
-        if (isNaN(conf)) return;
-        conf = Math.max(0, Math.min(1, conf));
-        const idx = Math.min(9, Math.round(conf * 10) - 1);
+        const confFraction = clampConfidenceFraction(d.confidence);
+        if (confFraction === null) return;
+        const confPercent = Math.round(confFraction * 100);
+        const normalized = Math.min(
+            MAX_CONFIDENCE_PERCENT,
+            Math.max(10, Math.round(confPercent / 10) * 10)
+        );
+        const idx = declaredLevels.indexOf(normalized);
         if (idx >= 0) {
             bins[idx].total++;
             if (d.correct) bins[idx].correct++;
@@ -1901,9 +1917,9 @@ function updateCalibrationChart() {
     svg.appendChild(diag);
 
     // Ticks and labels
-    for (let i = 10; i <= 100; i += 10) {
-        const x = paddingLeft + (i / 100) * plotWidth;
-        const y = height - paddingBottom - (i / 100) * plotHeight;
+    const xTickValues = declaredLevels;
+    xTickValues.forEach((value) => {
+        const x = paddingLeft + (value / 100) * plotWidth;
 
         const xTick = document.createElementNS(ns, 'line');
         xTick.setAttribute('x1', x);
@@ -1919,8 +1935,15 @@ function updateCalibrationChart() {
         xLabel.setAttribute('text-anchor', 'end');
         xLabel.setAttribute('font-size', '10');
         xLabel.setAttribute('transform', `rotate(-45 ${x} ${height - paddingBottom + 15})`);
-        xLabel.textContent = `${i}%`;
+        xLabel.textContent = `${value}%`;
         svg.appendChild(xLabel);
+    });
+
+    const yTickValues = Array.from(new Set([...declaredLevels, 100]))
+        .filter((value) => value !== MAX_CONFIDENCE_PERCENT)
+        .sort((a, b) => a - b);
+    yTickValues.forEach((value) => {
+        const y = height - paddingBottom - (value / 100) * plotHeight;
 
         const yTick = document.createElementNS(ns, 'line');
         yTick.setAttribute('x1', paddingLeft - 5);
@@ -1935,14 +1958,14 @@ function updateCalibrationChart() {
         yLabel.setAttribute('y', y + 6);
         yLabel.setAttribute('text-anchor', 'end');
         yLabel.setAttribute('font-size', '10');
-        yLabel.textContent = `${i}%`;
+        yLabel.textContent = `${value}%`;
         svg.appendChild(yLabel);
-    }
+    });
 
     // Calibration points
     bins.forEach((bin, i) => {
         if (!bin.total) return;
-        const x = paddingLeft + ((i + 1) / 10) * plotWidth;
+        const x = paddingLeft + (declaredLevels[i] / 100) * plotWidth;
         const ratio = bin.correct / bin.total;
         const y = height - paddingBottom - ratio * plotHeight;
         const circle = document.createElementNS(ns, 'circle');
@@ -1950,14 +1973,46 @@ function updateCalibrationChart() {
         circle.setAttribute('cy', y);
         circle.setAttribute('r', 3);
         circle.setAttribute('fill', '#3498db');
-        circle.addEventListener('mouseenter', (e) => showCalibrationTooltip(e, bin.total, (i + 1) * 10, ratio * 100));
+        const declaredPercent = declaredLevels[i];
+        circle.addEventListener('mouseenter', (e) => showCalibrationTooltip(e, bin.total, declaredPercent, ratio * 100));
         circle.addEventListener('mouseleave', hideCalibrationTooltip);
-        circle.addEventListener('click', (e) => showCalibrationTooltip(e, bin.total, (i + 1) * 10, ratio * 100));
+        circle.addEventListener('click', (e) => showCalibrationTooltip(e, bin.total, declaredPercent, ratio * 100));
         circle.addEventListener('touchstart', (e) => {
             const t = e.touches[0];
-            if (t) showCalibrationTooltip(t, bin.total, (i + 1) * 10, ratio * 100);
+            if (t) showCalibrationTooltip(t, bin.total, declaredPercent, ratio * 100);
         }, { passive: true });
         svg.appendChild(circle);
+    });
+}
+
+function clampConfidencePercent(value) {
+    if (value === null || value === undefined) return null;
+    let numeric = typeof value === 'number' ? value : parseFloat(value);
+    if (Number.isNaN(numeric)) return null;
+    if (numeric > MAX_CONFIDENCE_PERCENT && numeric <= 100) {
+        numeric = MAX_CONFIDENCE_PERCENT;
+    } else if (numeric <= 1 && numeric >= 0) {
+        numeric = numeric * 100;
+    }
+    return Math.max(0, Math.min(MAX_CONFIDENCE_PERCENT, numeric));
+}
+
+function clampConfidenceFraction(value) {
+    if (value === null || value === undefined) return null;
+    let numeric = typeof value === 'number' ? value : parseFloat(value);
+    if (Number.isNaN(numeric)) return null;
+    if (numeric > 1) {
+        numeric = numeric / 100;
+    }
+    return Math.max(0, Math.min(MAX_CONFIDENCE_FRACTION, numeric));
+}
+
+function normalizeCalibrationDataEntries(calibrationData) {
+    if (!Array.isArray(calibrationData)) return [];
+    return calibrationData.map(entry => {
+        if (!entry || typeof entry !== 'object') return entry;
+        const sanitizedConfidence = clampConfidenceFraction(entry.confidence);
+        return sanitizedConfidence === null ? entry : { ...entry, confidence: sanitizedConfidence };
     });
 }
 
@@ -2016,6 +2071,14 @@ function loadStats() {
                 calibrationData: []
             };
         }
+    }
+
+    const originalDataString = JSON.stringify(stats.calibrationData || []);
+    const normalizedData = normalizeCalibrationDataEntries(stats.calibrationData);
+    const normalizedDataString = JSON.stringify(normalizedData);
+    stats.calibrationData = normalizedData;
+    if (originalDataString !== normalizedDataString) {
+        saveStats();
     }
 }
 
