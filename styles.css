@@ -12,6 +12,10 @@ body {
     padding: 0 16px;
 }
 
+button {
+    touch-action: manipulation;
+}
+
 .game-container {
     max-width: 500px;
     margin: 0 auto;
