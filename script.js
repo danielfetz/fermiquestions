@@ -948,11 +948,11 @@ const fermiQuestions = [
         image: "data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' width='100' height='100' viewBox='0 0 100 100'%3e%3crect width='100' height='100' fill='%23f8fafc'/%3e%3ctext x='50' y='62' font-size='40' text-anchor='middle' fill='%23374151'%3e️🎡%3c/text%3e%3c/svg%3e"
     },
     {
-        question: "How much box office revenue in US dollars did the Harry Potter film series make?",
+        question: "How much revenue in US dollars did the Harry Potter film series make at the box office?",
         answer: 7700000000,
         category: "",
         explanation: "",
-        hint: "The eight Harry Potter films earned $2.39 billion at the US box office",
+        hint: "The eight Harry Potter films earned $2.39 billion at the US box office.",
         date: "2025-09-16",
         image: "data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' width='100' height='100' viewBox='0 0 100 100'%3e%3crect width='100' height='100' fill='%23f8fafc'/%3e%3ctext x='50' y='62' font-size='40' text-anchor='middle' fill='%23374151'%3e️🍿%3c/text%3e%3c/svg%3e"
     }
