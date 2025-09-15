@@ -478,9 +478,9 @@ button#stats-btn {
     transform: translateX(-50%);
     background: #333;
     color: #fff;
-    padding: 10px 14px;
+    padding: 12.5px 14px;
     border-radius: 8px;
-    font-size: 0.675rem;
+    font-size: 0.7rem;
     white-space: nowrap;
     opacity: 0;
     pointer-events: none;
