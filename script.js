@@ -1939,7 +1939,9 @@ function updateCalibrationChart() {
         svg.appendChild(xLabel);
     });
 
-    const yTickValues = Array.from(new Set([...declaredLevels, 100])).sort((a, b) => a - b);
+    const yTickValues = Array.from(new Set([...declaredLevels, 100]))
+        .filter((value) => value !== MAX_CONFIDENCE_PERCENT)
+        .sort((a, b) => a - b);
     yTickValues.forEach((value) => {
         const y = height - paddingBottom - (value / 100) * plotHeight;
 
