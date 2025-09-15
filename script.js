@@ -978,6 +978,14 @@ const sendIcon = `\
   <path d="M2 21L23 12L2 3v7l12 2L2 14v7z"/>
 </svg>`;
 const inputSection = document.getElementById('input-section');
+
+function resetConfidenceInput() {
+    if (confidenceInput) confidenceInput.value = '';
+    if (confidenceButton) confidenceButton.textContent = '..%';
+    if (confidenceMenu) {
+        confidenceMenu.querySelectorAll('.selected').forEach(btn => btn.classList.remove('selected'));
+    }
+}
 const newGameSection = document.getElementById('new-game-section');
 const newGameBtnInline = document.getElementById('new-game-btn-inline');
 const gameOverModal = document.getElementById('game-over-modal');
@@ -1157,6 +1165,7 @@ function startNewGame() {
     }
 
     // Reset confidence input for new game
+    resetConfidenceInput();
     updateConfidenceInputVisibility();
 
     // Update URL to reflect the current question (only if not already navigating)
@@ -1379,6 +1388,7 @@ function submitGuess() {
         endGame();
     }
 
+    resetConfidenceInput();
     // Hide confidence input after first guess if needed
     updateConfidenceInputVisibility();
     applySubmitButtonState();
@@ -2059,13 +2069,11 @@ function updateConfidenceInputVisibility() {
     }
 
     if (confidenceInput && confidenceButton) {
-        const prevValue = confidenceInput.value;
         if (showConfidence) {
-            const val = prevValue || '50';
-            confidenceInput.value = val;
-            confidenceButton.textContent = val + '%';
+            const val = confidenceInput.value;
+            confidenceButton.textContent = val ? val + '%' : '..%';
         } else {
-            confidenceInput.value = '';
+            resetConfidenceInput();
             confidenceMenu && confidenceMenu.classList.remove('open');
             confidenceButton.setAttribute('aria-expanded', 'false');
         }
