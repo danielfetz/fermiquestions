@@ -409,6 +409,8 @@ button#stats-btn {
 .new-game-section {
     text-align: center;
     gap: 10px;
+    background: white;
+    padding-top: 18px;
 }
 
 .new-game-btn-inline {
@@ -1137,7 +1139,11 @@ button#stats-btn {
         flex-direction: row;
         align-items: flex-start;
     }
-    
+
+    .question-box {
+        padding: 24px;
+    }
+
     .question-image-container {
         display: block !important; /* Override JavaScript hide for large screens */
         flex-shrink: 0;
