@@ -934,6 +934,15 @@ const fermiQuestions = [
         hint: "St. Peter is recognized as the first pope and died around AD 64.",
         date: "2025-09-14",
         image: "data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' width='100' height='100' viewBox='0 0 100 100'%3e%3crect width='100' height='100' fill='%23f8fafc'/%3e%3ctext x='50' y='62' font-size='40' text-anchor='middle' fill='%23374151'%3e️⛪️%3c/text%3e%3c/svg%3e"
+    },
+    {
+        question: "How many visitors does the London Eye observation wheel receive each year?",
+        answer: 3500000,
+        category: "",
+        explanation: "",
+        hint: "The London Eye has 32 capsules, each of which holds up to 25 passengers.",
+        date: "2025-09-15",
+        image: "data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' width='100' height='100' viewBox='0 0 100 100'%3e%3crect width='100' height='100' fill='%23f8fafc'/%3e%3ctext x='50' y='62' font-size='40' text-anchor='middle' fill='%23374151'%3e️🎡%3c/text%3e%3c/svg%3e"
     }
 ];
 
@@ -963,6 +972,7 @@ const confidenceButton = document.getElementById('confidence-button');
 const confidenceMenu = document.getElementById('confidence-menu');
 const confidenceWrapper = document.querySelector('.confidence-wrapper');
 const submitBtn = document.getElementById('submit-btn');
+const quickButtons = document.querySelectorAll('.quick-btn');
 const sendIcon = `\
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
   <path d="M2 21L23 12L2 3v7l12 2L2 14v7z"/>
@@ -1721,9 +1731,12 @@ function endGame() {
         newGameBtnInline.onclick = showStats;
     } else {
         newGameBtnInline.textContent = 'Play more';
-        newGameBtnInline.onclick = startNewGame;
-    }    
+        newGameBtnInline.onclick = startNewGame;  
+    }
     updateStreakDisplay(); // Update streak display when game ends
+
+    // Simple scroll to top to ensure good positioning
+    window.scrollTo(0, 0);
 }
 
 // Start a new game
@@ -2040,6 +2053,10 @@ function setCalibrationEnabled(enabled) {
 function updateConfidenceInputVisibility() {
     const firstOnlyActive = firstGuessCheckbox && firstGuessCheckbox.checked;
     const showConfidence = calibrationEnabled && (!firstOnlyActive || currentGuess === 0);
+
+    if (confidenceWrapper) {
+        confidenceWrapper.style.display = showConfidence ? '' : 'none';
+    }
 
     if (confidenceInput && confidenceButton) {
         const prevValue = confidenceInput.value;
@@ -2845,6 +2862,16 @@ function setupEventListeners() {
             const formattedValue = formatNumber(number);
             input.value = formattedValue;
         }
+    });
+
+    quickButtons.forEach((btn) => {
+        btn.addEventListener('click', () => {
+            const increment = parseInt(btn.dataset.value, 10);
+            const current = parseInt(guessInput.value.replace(/[^\d]/g, ''), 10) || 0;
+            const newValue = current + increment;
+            guessInput.value = formatNumber(newValue);
+            guessInput.focus();
+        });
     });
 
     // Help button
