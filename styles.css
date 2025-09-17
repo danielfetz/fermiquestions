@@ -309,9 +309,6 @@ button#stats-btn {
 }
 
 .strategy-link {
-    display: flex;
-    align-items: center;
-    justify-content: center;
     background: white;
     border: 2px solid #e9ecef;
     font-family: 'Press Start 2P', monospace;
@@ -322,7 +319,6 @@ button#stats-btn {
     color: #333;
     -webkit-tap-highlight-color: transparent;
     cursor: pointer;
-    margin-top: 12px;
 }
 
 .strategy-link .arrow {
@@ -345,9 +341,6 @@ button#stats-btn {
 
 /* Hint accordion trigger (mobile) */
 .hint-link {
-    display: flex;
-    align-items: center;
-    justify-content: center;
     background: transparent;
     border: none;
     font-family: 'Press Start 2P', monospace;
@@ -589,10 +582,8 @@ button#stats-btn {
     width: min(500px, calc(100% - 36px));
     bottom: calc(0px + env(safe-area-inset-bottom));
     z-index: 900;
-    padding-top: 18px;
     padding-bottom: 18px;
     margin-top: 0;
-    background: white;
 }
 
 .calibration-options {
@@ -1202,10 +1193,6 @@ button#stats-btn {
     .game-result {
         margin-bottom: 18px;
         font-size: 0.8rem;
-    }
-    /* On mobile, keep the strategy link flush with other elements */
-    .strategy-link {
-        margin-top: 0;
     }
     .question-meta .meta-item {
         padding: 25.75px 12px 16px 0;
