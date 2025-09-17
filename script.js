@@ -7,6 +7,9 @@ let supabase = null;
 let currentUserId = null;
 let commentsChannel = null;
 
+const MAX_CONFIDENCE_PERCENT = 99;
+const MAX_CONFIDENCE_FRACTION = MAX_CONFIDENCE_PERCENT / 100;
+
 // Initialize Supabase with error handling
 function initSupabase() {
     try {
@@ -934,6 +937,33 @@ const fermiQuestions = [
         hint: "St. Peter is recognized as the first pope and died around AD 64.",
         date: "2025-09-14",
         image: "data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' width='100' height='100' viewBox='0 0 100 100'%3e%3crect width='100' height='100' fill='%23f8fafc'/%3e%3ctext x='50' y='62' font-size='40' text-anchor='middle' fill='%23374151'%3e️⛪️%3c/text%3e%3c/svg%3e"
+    },
+    {
+        question: "How many visitors does the London Eye observation wheel receive each year?",
+        answer: 3500000,
+        category: "",
+        explanation: "",
+        hint: "The London Eye has 32 capsules, each of which holds up to 25 passengers.",
+        date: "2025-09-15",
+        image: "data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' width='100' height='100' viewBox='0 0 100 100'%3e%3crect width='100' height='100' fill='%23f8fafc'/%3e%3ctext x='50' y='62' font-size='40' text-anchor='middle' fill='%23374151'%3e️🎡%3c/text%3e%3c/svg%3e"
+    },
+    {
+        question: "How much revenue in US dollars did the Harry Potter film series make at the box office?",
+        answer: 7700000000,
+        category: "",
+        explanation: "",
+        hint: "The eight Harry Potter films earned $2.39 billion at the US box office.",
+        date: "2025-09-16",
+        image: "data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' width='100' height='100' viewBox='0 0 100 100'%3e%3crect width='100' height='100' fill='%23f8fafc'/%3e%3ctext x='50' y='62' font-size='40' text-anchor='middle' fill='%23374151'%3e️🍿%3c/text%3e%3c/svg%3e"
+    },
+    {
+        question: "How many MacBooks were sold worldwide in 2024?",
+        answer: 19700000,
+        category: "",
+        explanation: "",
+        hint: "25.9% of Apple's total revenue in 2024 came from Europe.",
+        date: "2025-09-17",
+        image: "data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' width='100' height='100' viewBox='0 0 100 100'%3e%3crect width='100' height='100' fill='%23f8fafc'/%3e%3ctext x='50' y='62' font-size='40' text-anchor='middle' fill='%23374151'%3e️💻%3c/text%3e%3c/svg%3e"
     }
 ];
 
@@ -963,11 +993,20 @@ const confidenceButton = document.getElementById('confidence-button');
 const confidenceMenu = document.getElementById('confidence-menu');
 const confidenceWrapper = document.querySelector('.confidence-wrapper');
 const submitBtn = document.getElementById('submit-btn');
+const quickButtons = document.querySelectorAll('.quick-btn');
 const sendIcon = `\
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
   <path d="M2 21L23 12L2 3v7l12 2L2 14v7z"/>
 </svg>`;
 const inputSection = document.getElementById('input-section');
+
+function resetConfidenceInput() {
+    if (confidenceInput) confidenceInput.value = '';
+    if (confidenceButton) confidenceButton.textContent = '..%';
+    if (confidenceMenu) {
+        confidenceMenu.querySelectorAll('.selected').forEach(btn => btn.classList.remove('selected'));
+    }
+}
 const newGameSection = document.getElementById('new-game-section');
 const newGameBtnInline = document.getElementById('new-game-btn-inline');
 const gameOverModal = document.getElementById('game-over-modal');
@@ -1147,6 +1186,7 @@ function startNewGame() {
     }
 
     // Reset confidence input for new game
+    resetConfidenceInput();
     updateConfidenceInputVisibility();
 
     // Update URL to reflect the current question (only if not already navigating)
@@ -1251,9 +1291,13 @@ function getGuessText(guessNumber) {
 function submitGuess() {
     const guessValue = parseInt(guessInput.value.replace(/[^\d]/g, ''));
     const confidenceValue = confidenceInput ? parseInt(confidenceInput.value) : null;
-    const confPercent = (calibrationEnabled && confidenceInput && !isNaN(confidenceValue))
-        ? Math.max(0, Math.min(100, confidenceValue))
-        : null;
+    let confPercent = null;
+    if (calibrationEnabled && confidenceInput) {
+        const sanitized = clampConfidencePercent(confidenceValue);
+        if (sanitized !== null) {
+            confPercent = sanitized;
+        }
+    }
 
     if (isNaN(guessValue) || guessValue < 0) {
         alert('Please enter a valid positive number!');
@@ -1325,10 +1369,14 @@ function submitGuess() {
 
     if (calibrationEnabled && confidenceInput) {
         if (confPercent !== null) {
-            stats.calibrationData.push({ confidence: confPercent / 100, correct: isCorrect, guessNumber: currentGuess });
+            stats.calibrationData.push({
+                confidence: confPercent / 100,
+                correct: isCorrect,
+                guessNumber: currentGuess
+            });
             saveStats();
         }
-        
+
     }
     
     // Save current game state after each guess
@@ -1369,6 +1417,7 @@ function submitGuess() {
         endGame();
     }
 
+    resetConfidenceInput();
     // Hide confidence input after first guess if needed
     updateConfidenceInputVisibility();
     applySubmitButtonState();
@@ -1721,9 +1770,12 @@ function endGame() {
         newGameBtnInline.onclick = showStats;
     } else {
         newGameBtnInline.textContent = 'Play more';
-        newGameBtnInline.onclick = startNewGame;
-    }    
+        newGameBtnInline.onclick = startNewGame;  
+    }
     updateStreakDisplay(); // Update streak display when game ends
+
+    // Simple scroll to top to ensure good positioning
+    window.scrollTo(0, 0);
 }
 
 // Start a new game
@@ -1825,12 +1877,17 @@ function updateCalibrationChart() {
         data = data.filter(d => d.guessNumber === 1);
     }
 
-    const bins = Array.from({ length: 10 }, () => ({ total: 0, correct: 0 }));
+    const declaredLevels = [10, 20, 30, 40, 50, 60, 70, 80, 90, MAX_CONFIDENCE_PERCENT];
+    const bins = declaredLevels.map(() => ({ total: 0, correct: 0 }));
     data.forEach(d => {
-        let conf = typeof d.confidence === 'number' ? d.confidence : parseFloat(d.confidence);
-        if (isNaN(conf)) return;
-        conf = Math.max(0, Math.min(1, conf));
-        const idx = Math.min(9, Math.round(conf * 10) - 1);
+        const confFraction = clampConfidenceFraction(d.confidence);
+        if (confFraction === null) return;
+        const confPercent = Math.round(confFraction * 100);
+        const normalized = Math.min(
+            MAX_CONFIDENCE_PERCENT,
+            Math.max(10, Math.round(confPercent / 10) * 10)
+        );
+        const idx = declaredLevels.indexOf(normalized);
         if (idx >= 0) {
             bins[idx].total++;
             if (d.correct) bins[idx].correct++;
@@ -1878,9 +1935,9 @@ function updateCalibrationChart() {
     svg.appendChild(diag);
 
     // Ticks and labels
-    for (let i = 10; i <= 100; i += 10) {
-        const x = paddingLeft + (i / 100) * plotWidth;
-        const y = height - paddingBottom - (i / 100) * plotHeight;
+    const xTickValues = declaredLevels;
+    xTickValues.forEach((value) => {
+        const x = paddingLeft + (value / 100) * plotWidth;
 
         const xTick = document.createElementNS(ns, 'line');
         xTick.setAttribute('x1', x);
@@ -1896,8 +1953,15 @@ function updateCalibrationChart() {
         xLabel.setAttribute('text-anchor', 'end');
         xLabel.setAttribute('font-size', '10');
         xLabel.setAttribute('transform', `rotate(-45 ${x} ${height - paddingBottom + 15})`);
-        xLabel.textContent = `${i}%`;
+        xLabel.textContent = `${value}%`;
         svg.appendChild(xLabel);
+    });
+
+    const yTickValues = Array.from(new Set([...declaredLevels, 100]))
+        .filter((value) => value !== MAX_CONFIDENCE_PERCENT)
+        .sort((a, b) => a - b);
+    yTickValues.forEach((value) => {
+        const y = height - paddingBottom - (value / 100) * plotHeight;
 
         const yTick = document.createElementNS(ns, 'line');
         yTick.setAttribute('x1', paddingLeft - 5);
@@ -1912,14 +1976,14 @@ function updateCalibrationChart() {
         yLabel.setAttribute('y', y + 6);
         yLabel.setAttribute('text-anchor', 'end');
         yLabel.setAttribute('font-size', '10');
-        yLabel.textContent = `${i}%`;
+        yLabel.textContent = `${value}%`;
         svg.appendChild(yLabel);
-    }
+    });
 
     // Calibration points
     bins.forEach((bin, i) => {
         if (!bin.total) return;
-        const x = paddingLeft + ((i + 1) / 10) * plotWidth;
+        const x = paddingLeft + (declaredLevels[i] / 100) * plotWidth;
         const ratio = bin.correct / bin.total;
         const y = height - paddingBottom - ratio * plotHeight;
         const circle = document.createElementNS(ns, 'circle');
@@ -1927,14 +1991,46 @@ function updateCalibrationChart() {
         circle.setAttribute('cy', y);
         circle.setAttribute('r', 3);
         circle.setAttribute('fill', '#3498db');
-        circle.addEventListener('mouseenter', (e) => showCalibrationTooltip(e, bin.total, (i + 1) * 10, ratio * 100));
+        const declaredPercent = declaredLevels[i];
+        circle.addEventListener('mouseenter', (e) => showCalibrationTooltip(e, bin.total, declaredPercent, ratio * 100));
         circle.addEventListener('mouseleave', hideCalibrationTooltip);
-        circle.addEventListener('click', (e) => showCalibrationTooltip(e, bin.total, (i + 1) * 10, ratio * 100));
+        circle.addEventListener('click', (e) => showCalibrationTooltip(e, bin.total, declaredPercent, ratio * 100));
         circle.addEventListener('touchstart', (e) => {
             const t = e.touches[0];
-            if (t) showCalibrationTooltip(t, bin.total, (i + 1) * 10, ratio * 100);
+            if (t) showCalibrationTooltip(t, bin.total, declaredPercent, ratio * 100);
         }, { passive: true });
         svg.appendChild(circle);
+    });
+}
+
+function clampConfidencePercent(value) {
+    if (value === null || value === undefined) return null;
+    let numeric = typeof value === 'number' ? value : parseFloat(value);
+    if (Number.isNaN(numeric)) return null;
+    if (numeric > MAX_CONFIDENCE_PERCENT && numeric <= 100) {
+        numeric = MAX_CONFIDENCE_PERCENT;
+    } else if (numeric <= 1 && numeric >= 0) {
+        numeric = numeric * 100;
+    }
+    return Math.max(0, Math.min(MAX_CONFIDENCE_PERCENT, numeric));
+}
+
+function clampConfidenceFraction(value) {
+    if (value === null || value === undefined) return null;
+    let numeric = typeof value === 'number' ? value : parseFloat(value);
+    if (Number.isNaN(numeric)) return null;
+    if (numeric > 1) {
+        numeric = numeric / 100;
+    }
+    return Math.max(0, Math.min(MAX_CONFIDENCE_FRACTION, numeric));
+}
+
+function normalizeCalibrationDataEntries(calibrationData) {
+    if (!Array.isArray(calibrationData)) return [];
+    return calibrationData.map(entry => {
+        if (!entry || typeof entry !== 'object') return entry;
+        const sanitizedConfidence = clampConfidenceFraction(entry.confidence);
+        return sanitizedConfidence === null ? entry : { ...entry, confidence: sanitizedConfidence };
     });
 }
 
@@ -1994,6 +2090,14 @@ function loadStats() {
             };
         }
     }
+
+    const originalDataString = JSON.stringify(stats.calibrationData || []);
+    const normalizedData = normalizeCalibrationDataEntries(stats.calibrationData);
+    const normalizedDataString = JSON.stringify(normalizedData);
+    stats.calibrationData = normalizedData;
+    if (originalDataString !== normalizedDataString) {
+        saveStats();
+    }
 }
 
 // Save completed questions to localStorage
@@ -2041,14 +2145,16 @@ function updateConfidenceInputVisibility() {
     const firstOnlyActive = firstGuessCheckbox && firstGuessCheckbox.checked;
     const showConfidence = calibrationEnabled && (!firstOnlyActive || currentGuess === 0);
 
+    if (confidenceWrapper) {
+        confidenceWrapper.style.display = showConfidence ? '' : 'none';
+    }
+
     if (confidenceInput && confidenceButton) {
-        const prevValue = confidenceInput.value;
         if (showConfidence) {
-            const val = prevValue || '50';
-            confidenceInput.value = val;
-            confidenceButton.textContent = val + '%';
+            const val = confidenceInput.value;
+            confidenceButton.textContent = val ? val + '%' : '..%';
         } else {
-            confidenceInput.value = '';
+            resetConfidenceInput();
             confidenceMenu && confidenceMenu.classList.remove('open');
             confidenceButton.setAttribute('aria-expanded', 'false');
         }
@@ -2845,6 +2951,16 @@ function setupEventListeners() {
             const formattedValue = formatNumber(number);
             input.value = formattedValue;
         }
+    });
+
+    quickButtons.forEach((btn) => {
+        btn.addEventListener('click', () => {
+            const increment = parseInt(btn.dataset.value, 10);
+            const current = parseInt(guessInput.value.replace(/[^\d]/g, ''), 10) || 0;
+            const newValue = current + increment;
+            guessInput.value = formatNumber(newValue);
+            guessInput.focus();
+        });
     });
 
     // Help button
