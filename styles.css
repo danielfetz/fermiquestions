@@ -387,10 +387,27 @@ button#stats-btn {
     margin-bottom: 20px;
     line-height: 1.5;
     font-size: 0.85rem;
+    border: 2px solid #e8ecee;
+    border-radius: 16px;
+    padding: 8.5px 18.5px;
+    background: white;
+}
+
+.result-container {
+    display: flex;
+    align-items: center;
+    gap: 8px;
 }
 
 .result-emoji {
-    display: none;
+    display: block;
+    font-size: 2.125rem;
+    padding: 0 8px;
+    height: 58px;
+}
+
+.result-text {
+    padding: 10px 0;
 }
 
 /* New Game Section */
@@ -1194,35 +1211,10 @@ button#stats-btn {
         margin-bottom: 18px;
     }
     .game-result {
-        border: 2px solid #e8ecee;
-        border-radius: 16px;
-        padding: 8.5px 18.5px;
-        background: white;
         margin-bottom: 18px;
         font-size: 0.8rem;
     }
-    .result-container {
-        display: flex;
-        align-items: center;
-        gap: 8px;
-    }
-    .result-emoji {
-        display: block;
-        font-size: 2.125rem;
-        padding: 0 8px;
-        height: 58px;
-    }
-    .result-text {
-        padding: 10px 0;
-    }
-    /* On mobile, hide inline hint text label */
-    .hint-label {
-        display: none;
-    }
-    /* On mobile, hide the streak label and show strategy link */
-    #current-streak-display {
-        display: none;
-    }
+    /* On mobile, keep the strategy link flush with other elements */
     .strategy-link {
         margin-top: 0;
     }

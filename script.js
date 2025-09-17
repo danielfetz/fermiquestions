@@ -972,7 +972,6 @@ const questionText = document.getElementById('question-text');
 const questionCategory = document.getElementById('question-category');
 const questionImage = document.getElementById('question-image');
 const questionImageContainer = document.getElementById('question-image-container');
-const currentStreakDisplay = document.getElementById('current-streak-display');
 const guessCounter = document.getElementById('guess-counter');
 const hintContainer = document.getElementById('hint-container');
 const hintText = document.getElementById('hint-text');
@@ -1093,11 +1092,6 @@ function initGame() {
     initRouting(false);
 }
 
-// Update current streak display
-function updateStreakDisplay() {
-    currentStreakDisplay.textContent = `Current streak: ${stats.currentStreak}`;
-}
-
 // Update question display including image
 function updateQuestionDisplay(question) {
     questionText.textContent = question.question;
@@ -1156,7 +1150,6 @@ function startNewGame() {
     
     // Update display
     updateQuestionDisplay(currentQuestion);
-    updateStreakDisplay();
     clearGuesses();
     
     // Update page title
@@ -1772,7 +1765,6 @@ function endGame() {
         newGameBtnInline.textContent = 'Play more';
         newGameBtnInline.onclick = startNewGame;  
     }
-    updateStreakDisplay(); // Update streak display when game ends
 
     // Simple scroll to top to ensure good positioning
     window.scrollTo(0, 0);
@@ -2287,7 +2279,6 @@ function loadCurrentGameState() {
             // Update display
             updateQuestionDisplay(currentQuestion);
             updatePageTitle(currentQuestion);
-            updateStreakDisplay();
             
             // Update URL to reflect the restored question
             updateURL(currentQuestion.date);
