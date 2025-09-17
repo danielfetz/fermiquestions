@@ -12,6 +12,10 @@ body {
     padding: 0 16px;
 }
 
+body.no-scroll {
+    overflow: hidden;
+}
+
 button {
     touch-action: manipulation;
 }
@@ -59,15 +63,14 @@ button {
 }
 
 .icon-button {
-    background: none;
-    border: none;
+    background: #fff;
     font-size: 1.1rem;
     font-family: 'Press Start 2P', monospace;
     color: #333;
     cursor: pointer;
     padding: 12px;
     border-radius: 12px;
-    border: 2px solid #dadfe1;
+    border: 2px solid #e9ecef;
     transition: background-color 0.2s;
 }
 
@@ -1148,6 +1151,11 @@ button#stats-btn {
         min-height: 100vh;   /* fallback */
         min-height: 100dvh;
     }
+
+    .comments-section {
+        border: 2px solid #eaecef;
+        height: calc(100vh - 93px);
+    }
 }
 
 /* Responsive Design */
@@ -1160,13 +1168,7 @@ button#stats-btn {
         padding: 0px 18px;
     }
     body.no-scroll {
-    overflow: hidden;
-    }
-    .icon-button {
-        background: #f4f8fa;
-    }
-    .comments-header .icon-button {
-        background: transparent;
+        overflow: hidden;
     }
     .game-header {
         padding: 18px 0;
