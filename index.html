@@ -52,7 +52,7 @@
             </div>
             <!-- Inline info shown only after game ends -->
             <div class="question-meta" id="question-meta" style="display: none;">
-                <button class="meta-item" id="comments-btn" data-tooltip="Comments">
+                <button class="meta-item" id="comments-btn">
                     <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#333" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
                         <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>
                     </svg>
@@ -127,35 +127,44 @@
                         inputmode="numeric"
                         pattern="[0-9,]*"
                     >
-                    <div class="confidence-wrapper">
-                        <select id="confidence-input">
-                            <option value="10">10%</option>
-                            <option value="20">20%</option>
-                            <option value="30">30%</option>
-                            <option value="40">40%</option>
-                            <option value="50" selected>50%</option>
-                            <option value="60">60%</option>
-                            <option value="70">70%</option>
-                            <option value="80">80%</option>
-                            <option value="90">90%</option>
-                            <option value="100">100%</option>
-                        </select>
-                        <button id="confidence-button" type="button" aria-haspopup="listbox" aria-expanded="false">50%</button>
-                        <div id="confidence-menu" class="confidence-menu" role="listbox">
-                            <button type="button" data-value="10" role="option">10%</button>
-                            <button type="button" data-value="20" role="option">20%</button>
-                            <button type="button" data-value="30" role="option">30%</button>
-                            <button type="button" data-value="40" role="option">40%</button>
-                            <button type="button" data-value="50" role="option" class="selected">50%</button>
-                            <button type="button" data-value="60" role="option">60%</button>
-                            <button type="button" data-value="70" role="option">70%</button>
-                            <button type="button" data-value="80" role="option">80%</button>
-                            <button type="button" data-value="90" role="option">90%</button>
-                            <button type="button" data-value="100" role="option">100%</button>
+                    <div class="input-actions">
+                        <div class="quick-buttons">
+                            <button type="button" class="quick-btn" data-value="1000000">+1M</button>
+                            <button type="button" class="quick-btn" data-value="1000000000">+1B</button>
+                        </div>
+                        <div class="action-right">
+                            <div class="confidence-wrapper" data-tooltip="How confident are you that your guess is correct?">
+                                <select id="confidence-input">
+                                    <option value="" selected>..%</option>
+                                    <option value="10">10%</option>
+                                    <option value="20">20%</option>
+                                    <option value="30">30%</option>
+                                    <option value="40">40%</option>
+                                    <option value="50">50%</option>
+                                    <option value="60">60%</option>
+                                    <option value="70">70%</option>
+                                    <option value="80">80%</option>
+                                    <option value="90">90%</option>
+                                    <option value="99">99%</option>
+                                </select>
+                                <button id="confidence-button" type="button" aria-haspopup="listbox" aria-expanded="false">..%</button>
+                                <div id="confidence-menu" class="confidence-menu" role="listbox">
+                                    <button type="button" data-value="10" role="option">10%</button>
+                                    <button type="button" data-value="20" role="option">20%</button>
+                                    <button type="button" data-value="30" role="option">30%</button>
+                                    <button type="button" data-value="40" role="option">40%</button>
+                                    <button type="button" data-value="50" role="option">50%</button>
+                                    <button type="button" data-value="60" role="option">60%</button>
+                                    <button type="button" data-value="70" role="option">70%</button>
+                                    <button type="button" data-value="80" role="option">80%</button>
+                                    <button type="button" data-value="90" role="option">90%</button>
+                                    <button type="button" data-value="99" role="option">99%</button>
+                                </div>
+                            </div>
+                            <button id="submit-btn" class="submit-btn">Submit</button>
                         </div>
                     </div>
                 </div>
-                <button id="submit-btn" class="submit-btn">Submit</button>
             </div>
         </div>
 
@@ -179,22 +188,43 @@
         <div class="modal" id="help-modal">
             <div class="modal-content">
                 <h2>How to Play</h2>
-                <p>Guess the answer to estimation questions in 6 or less tries.</p>
-                <p>After each guess, you'll see if your answer was too high or too low. An arrow pointing down means that the correct answer is below your guess.</p>
-                <p>The color of the arrows shows how close you are: orange indicates your guess is within ±50% of the answer, red means it is further away</p>
-                <p>You win if your guess is within ±20% of the correct answer.</p>
+                <div class="accordion" id="help-accordion">
+                    <div class="accordion-item" id="acc-calibration-help-item">
+                        <button class="accordion-header" id="acc-calibration-help-header" aria-expanded="false" aria-controls="acc-calibration-help-panel">
+                            <span>Probability Calibration</span>
+                            <span class="acc-arrow">></span>
+                        </button>
+                        <div class="accordion-panel" id="acc-calibration-help-panel">
+                            <p>When the probability calibration mode is enabled, you are able to log your confidence with each guess and track how well your probabilities match reality.</p>
+                            <p>A calibration chart showing whether you're over- or underconfident is available on the stats page.</p>
+                            <label><input type="checkbox" id="prob-calibration-checkbox-help" class="prob-calibration-checkbox" checked> Enable probability calibration mode</label>
+                        </div>
+                    </div>
+                    <div class="accordion-item" id="acc-strategy-item">
+                        <button class="accordion-header" id="acc-strategy-header" aria-expanded="false" aria-controls="acc-strategy-panel">
+                            <span>Strategy tip</span>
+                            <span class="acc-arrow">></span>
+                        </button>
+                        <div class="accordion-panel" id="acc-strategy-panel">
+                            <p>Make a Fermi estimate: break the problem into simple factors, choose round numbers, then multiply.</p>
+                            <p>Example: How many new cars are sold annually in Japan?</p>
+                            <p>Population a little over 100M -> about 50M households -> roughly 80% own a car -> 40M cars. If cars are replaced about every 10 years, that means roughly 4M new cars sold per year.</p>
+                        </div>
+                    </div>
+                    <div class="accordion-item open" id="acc-overview-item">
+                        <button class="accordion-header" id="acc-overview-header" aria-expanded="true" aria-controls="acc-overview-panel">
+                            <span>Overview</span>
+                            <span class="acc-arrow">></span>
+                        </button>
+                        <div class="accordion-panel" id="acc-overview-panel">
+                            <p>Guess the answer to estimation questions in 6 or less tries.</p>
+                            <p>After each guess, you'll see if your answer was too high or too low. An arrow pointing down means that the correct answer is below your guess.</p>
+                            <p>The color of the arrows shows how close you are: orange indicates your guess is within ±50% of the answer, red means it is further away</p>
+                            <p>You win if your guess is within ±20% of the correct answer.</p>
+                        </div>
+                    </div>
+                </div>
                 <button id="close-help-btn" class="close-btn">Close</button>
-            </div>
-        </div>
-
-        <!-- Strategy Tips Modal -->
-        <div class="modal" id="strategy-modal">
-            <div class="modal-content">
-                <h2>Strategy tips</h2>
-                <p>Make a Fermi estimate: break the problem into simple factors, choose round numbers, then multiply.</p>
-                <p>Example: How many pizzas are eaten in NYC per day?</p>
-                <p>Population ≈ 8M. About half eat pizza weekly → 4M people. Typical serving ≈ 2 slices per person per week → 8M slices/week. Per day ≈ 8M/7 ≈ 1.1M slices/day. ≈ 8 slices/pizza → ~140k pizzas/day.</p>
-                <button id="close-strategy-btn" class="close-btn">Close</button>
             </div>
         </div>
 
@@ -353,10 +383,10 @@
                         <div class="accordion-panel" id="acc-calibration-panel">
                             <div class="calibration-options">
                                 <label>
-                                    <input type="checkbox" id="prob-calibration-checkbox-stats" class="prob-calibration-checkbox"> Enable probability calibration mode
+                                    <input type="checkbox" id="prob-calibration-checkbox-stats" class="prob-calibration-checkbox" checked> Enable probability calibration mode
                                 </label>
                                 <label>
-                                    <input type="checkbox" id="first-guess-checkbox" checked> Only count first guesses
+                                    <input type="checkbox" id="first-guess-checkbox"> Only count first guesses
                                 </label>
                             </div>
                             <p class="calibration-note">No data yet</p>
