@@ -21,6 +21,7 @@ button {
     margin: 0 auto;
     border-radius: 18px;
     position: relative;
+    padding-bottom: 134px;
 }
 
 /* Header */
@@ -81,7 +82,7 @@ button#stats-btn {
 /* Question Container */
 .question-container {
     position: relative;
-    margin-bottom: 20px;
+    margin-bottom: 12px;
 }
 
 .question-box {
@@ -410,7 +411,6 @@ button#stats-btn {
 
 /* New Game Section */
 .new-game-section {
-    margin-top: 20px;
     text-align: center;
     gap: 10px;
 }
@@ -581,8 +581,18 @@ button#stats-btn {
 }
 
 /* Input Section */
-.input-section {
-    margin-top: 20px;
+.input-section,
+.new-game-section {
+    position: fixed;
+    left: 50%;
+    transform: translateX(-50%);
+    width: min(500px, calc(100% - 36px));
+    bottom: calc(0px + env(safe-area-inset-bottom));
+    z-index: 900;
+    padding-top: 18px;
+    padding-bottom: 18px;
+    margin-top: 0;
+    background: white;
 }
 
 .calibration-options {
@@ -634,6 +644,7 @@ button#stats-btn {
     border-radius: 15px;
     flex: 1;
     border: 2px solid #eaecf0;
+    background: white;
 }
 
 #guess-input {
@@ -1170,27 +1181,12 @@ button#stats-btn {
         padding: 18px 0;
     }
     .game-container {
-        padding: 0;
+        padding: 0 0 134px;
         border-radius: 18px;
-        margin-bottom: 134px; /* space for fixed input/new game area */
-    }
-    .question-container {
-        margin-bottom: 12px;
     }
     .question-box {
         border-radius: 16px;
         padding: 20px;
-    }
-    .input-section,
-    .new-game-section {
-        position: fixed;
-        width: min(500px, calc(100% - 36px));
-        bottom: calc(0px + env(safe-area-inset-bottom));
-        z-index: 900;
-        padding-top: 18px;
-        padding-bottom: 18px;
-        margin-top: 0;
-        background: white;
     }
     .feedback-button::after {
         width: 98px;
