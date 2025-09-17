@@ -171,7 +171,25 @@
         <!-- New Game Button (hidden by default) -->
         <div class="new-game-section" id="new-game-section" style="display: none;">
             <button id="share-btn" class="share-btn" style="display: none;">Share</button>
-            <button id="new-game-btn-inline" class="new-game-btn-inline">Play more</button>
+            <div id="new-game-inline-wrapper" class="new-game-inline-wrapper">
+                <button id="new-game-btn-inline" class="new-game-btn-inline" type="button">
+                    <span id="new-game-btn-label">Play more</span>
+                </button>
+                <button
+                    id="new-game-dropdown-toggle"
+                    class="new-game-dropdown-toggle"
+                    type="button"
+                    aria-haspopup="true"
+                    aria-expanded="false"
+                    aria-controls="new-game-dropdown-menu"
+                >
+                    <span class="visually-hidden">More options</span>
+                    <span class="dropdown-arrow">&gt;</span>
+                </button>
+                <div id="new-game-dropdown-menu" class="new-game-dropdown-menu" role="menu" aria-hidden="true">
+                    <button type="button" id="new-game-show-stats" role="menuitem">Show stats</button>
+                </div>
+            </div>
         </div>
 
         <!-- Game Over Modal -->

@@ -1009,6 +1009,11 @@ function resetConfidenceInput() {
 }
 const newGameSection = document.getElementById('new-game-section');
 const newGameBtnInline = document.getElementById('new-game-btn-inline');
+const newGameDropdownToggle = document.getElementById('new-game-dropdown-toggle');
+const newGameDropdownMenu = document.getElementById('new-game-dropdown-menu');
+const newGameShowStatsBtn = document.getElementById('new-game-show-stats');
+const newGameBtnLabel = document.getElementById('new-game-btn-label');
+let isNewGameDropdownOpen = false;
 const gameOverModal = document.getElementById('game-over-modal');
 const modalTitle = document.getElementById('modal-title');
 const modalMessage = document.getElementById('modal-message');
@@ -1042,6 +1047,72 @@ const commentsList = document.getElementById('comments-list');
 const commentInput = document.getElementById('comment-input');
 const commentSubmitBtn = document.getElementById('comment-submit-btn');
 const commentCountEl = document.getElementById('comment-count');
+
+
+function closeNewGameDropdown() {
+    if (newGameDropdownMenu) {
+        newGameDropdownMenu.classList.remove('open');
+        newGameDropdownMenu.setAttribute('aria-hidden', 'true');
+    }
+    if (newGameDropdownToggle) {
+        newGameDropdownToggle.setAttribute('aria-expanded', 'false');
+    }
+    if (isNewGameDropdownOpen) {
+        document.removeEventListener('pointerdown', handleNewGameDropdownOutsideClick);
+        document.removeEventListener('keydown', handleNewGameDropdownKeydown);
+    }
+    isNewGameDropdownOpen = false;
+}
+
+function openNewGameDropdown() {
+    if (!newGameDropdownMenu) return;
+    newGameDropdownMenu.classList.add('open');
+    newGameDropdownMenu.setAttribute('aria-hidden', 'false');
+    if (newGameDropdownToggle) {
+        newGameDropdownToggle.setAttribute('aria-expanded', 'true');
+    }
+    isNewGameDropdownOpen = true;
+    document.addEventListener('pointerdown', handleNewGameDropdownOutsideClick);
+    document.addEventListener('keydown', handleNewGameDropdownKeydown);
+    if (newGameShowStatsBtn) {
+        newGameShowStatsBtn.focus();
+    }
+}
+
+function handleNewGameDropdownOutsideClick(event) {
+    const target = event.target;
+    if (!newGameDropdownMenu) return;
+    if (newGameDropdownMenu.contains(target) || (newGameDropdownToggle && newGameDropdownToggle.contains(target))) {
+        return;
+    }
+    closeNewGameDropdown();
+}
+
+function handleNewGameDropdownKeydown(event) {
+    if (event.key === 'Escape') {
+        closeNewGameDropdown();
+        if (newGameDropdownToggle) {
+            newGameDropdownToggle.focus();
+        }
+    } else if (event.key === 'Tab') {
+        closeNewGameDropdown();
+    }
+}
+
+function updateNewGameButton(allQuestionsCompleted) {
+    if (!newGameBtnInline) return;
+
+    if (newGameBtnLabel) {
+        newGameBtnLabel.textContent = 'Play more';
+    } else {
+        newGameBtnInline.textContent = 'Play more';
+    }
+
+    newGameBtnInline.onclick = startNewGame;
+    newGameBtnInline.setAttribute('data-all-completed', allQuestionsCompleted ? 'true' : 'false');
+
+    closeNewGameDropdown();
+}
 
 
 // Confidence tooltip
@@ -1132,8 +1203,9 @@ function updateQuestionDisplay(question) {
 
 // Start a new game
 function startNewGame() {
+    closeNewGameDropdown();
     currentQuestion = getCurrentQuestion();
-    
+
     if (!currentQuestion) {
         console.error('No questions available');
         return;
@@ -1765,13 +1837,7 @@ function endGame() {
     shareBtn.style.display = 'block'; // Show share button after game ends
 
     // Update button text and functionality based on completion status
-    if (allCompleted) {
-        newGameBtnInline.textContent = 'Show stats';
-        newGameBtnInline.onclick = showStats;
-    } else {
-        newGameBtnInline.textContent = 'Play more';
-        newGameBtnInline.onclick = startNewGame;  
-    }
+    updateNewGameButton(allCompleted);
     updateStreakDisplay(); // Update streak display when game ends
 
     // Simple scroll to top to ensure good positioning
@@ -1791,6 +1857,7 @@ function showHelp() {
 
 // Show stats modal
 function showStats() {
+    closeNewGameDropdown();
     updateStatsDisplay();
     statsModal.style.display = 'block';
 }
@@ -2462,13 +2529,7 @@ function endGameDisplay() {
     shareBtn.style.display = 'block'; // Show share button after game ends
 
     // Update button text and functionality based on completion status
-    if (allCompleted) {
-        newGameBtnInline.textContent = 'Show stats';
-        newGameBtnInline.onclick = showStats;
-    } else {
-        newGameBtnInline.textContent = 'Play more';
-        newGameBtnInline.onclick = startNewGame;
-    }
+    updateNewGameButton(allCompleted);
 }
 
 // Show questions history modal
@@ -2968,7 +3029,31 @@ function setupEventListeners() {
     
     // Stats button
     statsBtn.addEventListener('click', showStats);
-    
+
+    if (newGameBtnInline) {
+        newGameBtnInline.addEventListener('click', () => {
+            closeNewGameDropdown();
+        });
+    }
+
+    if (newGameDropdownToggle && newGameDropdownMenu) {
+        newGameDropdownToggle.addEventListener('click', (event) => {
+            event.stopPropagation();
+            if (isNewGameDropdownOpen) {
+                closeNewGameDropdown();
+            } else {
+                openNewGameDropdown();
+            }
+        });
+    }
+
+    if (newGameShowStatsBtn) {
+        newGameShowStatsBtn.addEventListener('click', () => {
+            closeNewGameDropdown();
+            showStats();
+        });
+    }
+
     // Strategy tips (mobile link in guess counter)
     if (strategyTipsBtn) {
         strategyTipsBtn.addEventListener('click', showHelp);
