@@ -1021,6 +1021,7 @@ function resetConfidenceInput() {
 function updateFooterPositioning() {
     const sections = [inputSection, newGameSection];
     let shouldAddPadding = false;
+    const isMobileView = isSmallDevice();
 
     sections.forEach(section => {
         if (section) {
@@ -1031,6 +1032,11 @@ function updateFooterPositioning() {
     sections.forEach(section => {
         if (!section) return;
         if (section.offsetParent === null) return;
+        if (isMobileView) {
+            section.classList.add('sticky-footer');
+            shouldAddPadding = true;
+            return;
+        }
         const rect = section.getBoundingClientRect();
         if (rect.bottom > window.innerHeight) {
             section.classList.add('sticky-footer');
@@ -1554,7 +1560,10 @@ function formatNumber(num) {
 
 // Detect small devices for conditional animations
 function isSmallDevice() {
-    return window.matchMedia('(max-width: 768px)').matches;
+    if (typeof window.matchMedia === 'function') {
+        return window.matchMedia('(max-width: 768px)').matches;
+    }
+    return (window.innerWidth || document.documentElement.clientWidth || 0) <= 768;
 }
 
 // Briefly add a 'shake' animation class to an element (mobile only)
