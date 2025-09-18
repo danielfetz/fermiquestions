@@ -1042,6 +1042,16 @@ function updateFooterPositioning() {
         gameContainer.classList.toggle('has-sticky-footer', shouldAddPadding);
     }
 }
+
+let footerUpdateScheduled = false;
+function scheduleFooterPositioningUpdate() {
+    if (footerUpdateScheduled) return;
+    footerUpdateScheduled = true;
+    requestAnimationFrame(() => {
+        footerUpdateScheduled = false;
+        updateFooterPositioning();
+    });
+}
 const newGameBtnInline = document.getElementById('new-game-btn-inline');
 const gameOverModal = document.getElementById('game-over-modal');
 const modalTitle = document.getElementById('modal-title');
@@ -3022,6 +3032,7 @@ function setupEventListeners() {
                 hintContainer.classList.add('open');
                 hintModalBtn.setAttribute('aria-expanded', 'true');
             }
+            scheduleFooterPositioningUpdate();
         });
     }
     
@@ -3177,6 +3188,7 @@ function setupEventListeners() {
                 item.classList.add('open');
                 header.setAttribute('aria-expanded', 'true');
             }
+            scheduleFooterPositioningUpdate();
         });
     });
     
@@ -3233,4 +3245,5 @@ document.addEventListener('click', (e) => {
 // Initialize the game when the page loads
 window.addEventListener('resize', updateConfidenceInputVisibility);
 window.addEventListener('resize', updateFooterPositioning);
+window.addEventListener('scroll', scheduleFooterPositioningUpdate, { passive: true });
 document.addEventListener('DOMContentLoaded', initGame);
