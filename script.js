@@ -416,13 +416,11 @@ function openComments() {
     if (!commentsSection) return;
     loadComments();
     commentsSection.classList.add('open');
-    document.body.classList.add('no-scroll');
 }
 
 function closeComments() {
     if (!commentsSection) return;
     commentsSection.classList.remove('open');
-    document.body.classList.remove('no-scroll');
 }
 
 // Update the average tries display in the inline meta row

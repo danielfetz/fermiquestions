@@ -1012,15 +1012,17 @@ button#stats-btn {
 /* Comments section */
 .comments-section {
     display: none;
-    position: absolute;
+    position: fixed;
     top: 0;
     left: 0;
     width: 100%;
-    height: 100%;
+    height: 100vh;
     background: #fff;
     z-index: 1000;
     flex-direction: column;
     border-radius: 18px;
+    overflow: hidden;
+    overscroll-behavior: contain;
 }
 
 .comments-section.open {
@@ -1119,9 +1121,6 @@ button#stats-btn {
     body {
         background: repeating-linear-gradient(to bottom, rgb(0 0 0 / 1%) 0px, rgb(0 0 0 / 1%) 1px, transparent 2px, transparent 4px), linear-gradient(to bottom, rgb(16 163 127 / 5%) 0px, rgb(90 97 255 / 5%) 120px, rgb(0 204 255 / 2%) 200px, rgba(255, 255, 255, 0.95) 290px, #ffffff 100%);
         padding: 0px 18px;
-    }
-    body.no-scroll {
-    overflow: hidden;
     }
     .icon-button {
         background: #f4f8fa;
