@@ -438,6 +438,8 @@ let completedQuestions = {}; // Changed from array to object to track win/loss s
 
 // URL Routing state
 let isNavigating = false;
+let currentView = 'welcome';
+let todaysQuestion = null;
 
 // Statistics
 let stats = {
@@ -977,6 +979,19 @@ const fermiQuestions = [
 ];
 
 // DOM elements
+const welcomeScreen = document.getElementById('welcome-screen');
+const gameView = document.getElementById('game-view');
+const calendarView = document.getElementById('calendar-view');
+const playDailyBtn = document.getElementById('play-daily-btn');
+const calendarLinkBtn = document.getElementById('calendar-link-btn');
+const homeBtn = document.getElementById('home-btn');
+const calendarBtn = document.getElementById('calendar-btn');
+const dailyChallengeQuestionEl = document.getElementById('daily-challenge-question');
+const dailyChallengeDateEl = document.getElementById('daily-challenge-date');
+const dailyChallengeStatusEl = document.getElementById('daily-challenge-status');
+const dailyChallengeImageContainer = document.getElementById('daily-challenge-image-container');
+const dailyChallengeImageEl = document.getElementById('daily-challenge-image');
+const calendarMonthsContainer = document.getElementById('calendar-months');
 const questionText = document.getElementById('question-text');
 const questionCategory = document.getElementById('question-category');
 const questionImage = document.getElementById('question-image');
@@ -1080,25 +1095,39 @@ function initGame() {
     loadCalibrationSetting();
     initConfidenceTooltip();
 
-    // If URL has a specific question date, navigate to it first
-    let navigatedFromURL = false;
-    const initialRouteDate = parseURL();
-    if (initialRouteDate) {
-        navigatedFromURL = navigateToQuestion(initialRouteDate);
+    const initialRoute = parseURL();
+    let navigatedFromRoute = false;
+
+    if (initialRoute.view === 'game' && initialRoute.date) {
+        navigatedFromRoute = navigateToQuestion(initialRoute.date);
     }
 
-    // If no route navigation occurred, try restoring saved state; else start new
-    let restoredFromSave = false;
-    if (!navigatedFromURL) {
-        restoredFromSave = loadCurrentGameState();
+    if (!navigatedFromRoute) {
+        const restoredFromSave = loadCurrentGameState();
         if (!restoredFromSave) {
-            startNewGame();
+            startNewGame(true);
         }
+    }
+
+    refreshDailyChallengeSummary();
+    renderCalendar();
+
+    if (navigatedFromRoute) {
+        setActiveView('game', { skipURLUpdate: true, force: true });
+    } else if (initialRoute.view === 'calendar') {
+        setActiveView('calendar', { skipURLUpdate: true, force: true });
+    } else if (initialRoute.view === 'game' && initialRoute.date) {
+        setActiveView('game', { skipURLUpdate: true, force: true });
+        if (currentQuestion) {
+            updateURL(currentQuestion.date);
+        }
+    } else {
+        setActiveView('welcome', { force: true });
     }
 
     setupEventListeners();
     // Always initialize routing; allow it to handle future navigations
-    initRouting(false);
+    initRouting(true);
 }
 
 // Update question display including image
@@ -1134,9 +1163,9 @@ function updateQuestionDisplay(question) {
 }
 
 // Start a new game
-function startNewGame() {
+function startNewGame(skipURLUpdate = false) {
     currentQuestion = getCurrentQuestion();
-    
+
     if (!currentQuestion) {
         console.error('No questions available');
         return;
@@ -1192,9 +1221,12 @@ function startNewGame() {
     updateConfidenceInputVisibility();
 
     // Update URL to reflect the current question (only if not already navigating)
-    if (!isNavigating) {
+    if (!isNavigating && !skipURLUpdate && currentView === 'game') {
         updateURL(currentQuestion.date);
     }
+
+    refreshDailyChallengeSummary();
+    renderCalendar();
 }
 
 // Get current date in YYYY-MM-DD format
@@ -1241,13 +1273,270 @@ function getCurrentQuestion() {
 // Get question display text
 function getQuestionDisplayText(question) {
     const today = getCurrentDate();
-    
+
     if (question.date === today) {
         return "Question of the Day";
     } else {
         const formattedDate = formatDateForDisplay(question.date);
         return `${formattedDate} <span class='arrow'>></span>`;
     }
+}
+
+function getTodaysQuestion() {
+    return getQuestionForDate(getCurrentDate());
+}
+
+function refreshDailyChallengeSummary() {
+    if (!dailyChallengeQuestionEl || !dailyChallengeDateEl) return;
+
+    const todayQuestion = getTodaysQuestion();
+    todaysQuestion = todayQuestion || null;
+
+    if (!todayQuestion) {
+        dailyChallengeQuestionEl.textContent = 'No daily challenge is available right now.';
+        dailyChallengeDateEl.textContent = '';
+        if (dailyChallengeStatusEl) {
+            dailyChallengeStatusEl.textContent = '';
+            dailyChallengeStatusEl.classList.remove('status-won', 'status-lost');
+        }
+        if (dailyChallengeImageContainer) {
+            dailyChallengeImageContainer.style.display = 'none';
+        }
+        if (playDailyBtn) {
+            playDailyBtn.disabled = true;
+            playDailyBtn.textContent = 'Unavailable';
+        }
+        return;
+    }
+
+    const todayDate = getCurrentDate();
+    const formattedDate = todayQuestion.date === todayDate
+        ? 'Today'
+        : formatDateForDisplay(todayQuestion.date);
+
+    dailyChallengeDateEl.textContent = formattedDate;
+    dailyChallengeQuestionEl.textContent = todayQuestion.question;
+
+    if (dailyChallengeImageContainer) {
+        if (todayQuestion.image) {
+            dailyChallengeImageContainer.style.display = 'flex';
+            if (dailyChallengeImageEl) {
+                dailyChallengeImageEl.src = todayQuestion.image;
+                dailyChallengeImageEl.alt = `Image for ${todayQuestion.question}`;
+            }
+        } else {
+            dailyChallengeImageContainer.style.display = 'none';
+        }
+    }
+
+    if (playDailyBtn) {
+        playDailyBtn.disabled = false;
+    }
+
+    if (dailyChallengeStatusEl) {
+        dailyChallengeStatusEl.classList.remove('status-won', 'status-lost');
+    }
+
+    const completed = completedQuestions[todayQuestion.date];
+    if (completed) {
+        if (dailyChallengeStatusEl) {
+            dailyChallengeStatusEl.textContent = completed.won ? 'Completed · ✔' : 'Completed · ✘';
+            dailyChallengeStatusEl.classList.add(completed.won ? 'status-won' : 'status-lost');
+        }
+        if (playDailyBtn) {
+            playDailyBtn.textContent = 'Review';
+        }
+    } else {
+        if (dailyChallengeStatusEl) {
+            dailyChallengeStatusEl.textContent = 'Ready to play';
+        }
+        if (playDailyBtn) {
+            playDailyBtn.textContent = 'Play';
+        }
+    }
+}
+
+function updateHash(newHash) {
+    if (window.location.hash !== newHash) {
+        window.history.pushState(null, '', newHash);
+    }
+}
+
+function setActiveView(view, options = {}) {
+    const { skipURLUpdate = false, force = false } = options;
+    if (!force && currentView === view) {
+        if (view === 'calendar') {
+            renderCalendar();
+        } else if (view === 'welcome') {
+            refreshDailyChallengeSummary();
+        }
+        return;
+    }
+
+    currentView = view;
+
+    if (welcomeScreen) {
+        welcomeScreen.classList.toggle('active', view === 'welcome');
+    }
+    if (gameView) {
+        gameView.classList.toggle('active', view === 'game');
+    }
+    if (calendarView) {
+        calendarView.classList.toggle('active', view === 'calendar');
+    }
+
+    if (!skipURLUpdate) {
+        if (view === 'welcome') {
+            updateHash('#/welcome');
+        } else if (view === 'calendar') {
+            updateHash('#/calendar');
+        }
+    }
+
+    if (view === 'calendar') {
+        renderCalendar();
+    } else if (view === 'welcome') {
+        refreshDailyChallengeSummary();
+    } else if (view === 'game') {
+        if (guessInput && !('ontouchstart' in window) && !navigator.maxTouchPoints) {
+            setTimeout(() => guessInput.focus(), 150);
+        }
+    }
+}
+
+function renderCalendar() {
+    if (!calendarMonthsContainer) return;
+
+    const today = getCurrentDate();
+    const activeQuestionDate = currentQuestion ? currentQuestion.date : null;
+    const sortedQuestions = [...fermiQuestions].sort((a, b) => a.date.localeCompare(b.date));
+
+    if (sortedQuestions.length === 0) {
+        calendarMonthsContainer.innerHTML = '<p class="calendar-note">No questions available yet.</p>';
+        return;
+    }
+
+    const questionsByMonth = new Map();
+    sortedQuestions.forEach((question) => {
+        const monthKey = question.date.slice(0, 7);
+        if (!questionsByMonth.has(monthKey)) {
+            questionsByMonth.set(monthKey, []);
+        }
+        questionsByMonth.get(monthKey).push(question);
+    });
+
+    calendarMonthsContainer.innerHTML = '';
+    const dayLabels = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+
+    questionsByMonth.forEach((monthQuestions, monthKey) => {
+        const monthContainer = document.createElement('div');
+        monthContainer.className = 'calendar-month';
+
+        const monthHeader = document.createElement('h3');
+        const monthDate = new Date(`${monthKey}-01T00:00:00`);
+        monthHeader.textContent = monthDate.toLocaleDateString('en-GB', { month: 'long', year: 'numeric' });
+        monthContainer.appendChild(monthHeader);
+
+        const grid = document.createElement('div');
+        grid.className = 'calendar-grid';
+
+        dayLabels.forEach((label) => {
+            const labelCell = document.createElement('div');
+            labelCell.className = 'calendar-day-label';
+            labelCell.textContent = label;
+            grid.appendChild(labelCell);
+        });
+
+        const questionByDay = new Map();
+        monthQuestions.forEach((question) => {
+            const dayNumber = parseInt(question.date.slice(8, 10), 10);
+            questionByDay.set(dayNumber, question);
+        });
+
+        const firstDayIndex = monthDate.getDay();
+        for (let i = 0; i < firstDayIndex; i++) {
+            const emptyCell = document.createElement('div');
+            emptyCell.className = 'calendar-cell empty';
+            grid.appendChild(emptyCell);
+        }
+
+        const daysInMonth = new Date(monthDate.getFullYear(), monthDate.getMonth() + 1, 0).getDate();
+        for (let day = 1; day <= daysInMonth; day++) {
+            const questionForDay = questionByDay.get(day);
+            if (!questionForDay) {
+                const emptyCell = document.createElement('div');
+                emptyCell.className = 'calendar-cell empty';
+                grid.appendChild(emptyCell);
+                continue;
+            }
+
+            const cell = document.createElement('button');
+            cell.type = 'button';
+            cell.className = 'calendar-cell';
+            cell.dataset.date = questionForDay.date;
+
+            const isFuture = questionForDay.date > today;
+            const completed = completedQuestions[questionForDay.date];
+            const isActive = activeQuestionDate === questionForDay.date;
+
+            let labelText = String(day);
+            if (completed) {
+                const won = !!completed.won;
+                labelText = won ? '✔' : '✘';
+                cell.classList.add(won ? 'won' : 'lost');
+            } else if (isFuture) {
+                cell.classList.add('future');
+            } else if (questionForDay.date === today) {
+                cell.classList.add('today');
+            }
+
+            if (isActive) {
+                cell.classList.add('active');
+                cell.setAttribute('aria-current', 'date');
+            } else {
+                cell.removeAttribute('aria-current');
+            }
+
+            cell.textContent = labelText;
+
+            const accessibleParts = [formatDateForDisplay(questionForDay.date)];
+            if (completed) {
+                accessibleParts.push(completed.won ? 'completed successfully' : 'completed without success');
+            } else if (isFuture) {
+                accessibleParts.push('unavailable');
+            } else {
+                accessibleParts.push('available');
+            }
+            if (isActive) {
+                accessibleParts.push('currently selected');
+            }
+            cell.setAttribute('aria-label', accessibleParts.join(', '));
+
+            let titleText = accessibleParts[0];
+            if (completed && typeof completed.guesses === 'number') {
+                const statusText = completed.won ? 'Won' : 'Lost';
+                titleText += ` · ${statusText}`;
+                if (completed.won) {
+                    titleText += ` in ${completed.guesses}/6`;
+                }
+            }
+            cell.title = titleText;
+
+            if (isFuture) {
+                cell.disabled = true;
+            } else {
+                cell.disabled = false;
+                cell.addEventListener('click', () => {
+                    navigateToQuestion(questionForDay.date);
+                });
+            }
+
+            grid.appendChild(cell);
+        }
+
+        monthContainer.appendChild(grid);
+        calendarMonthsContainer.appendChild(monthContainer);
+    });
 }
 
 // Clear previous guesses
@@ -2104,6 +2393,8 @@ function loadStats() {
 // Save completed questions to localStorage
 function saveCompletedQuestions() {
     localStorage.setItem('fermiCompletedQuestions', JSON.stringify(completedQuestions));
+    renderCalendar();
+    refreshDailyChallengeSummary();
 }
 
 // Load completed questions from localStorage
@@ -2295,34 +2586,34 @@ function loadCurrentGameState() {
             // Clear guesses container and restore saved guesses
             clearGuesses();
             restoreGuessesDisplay(gameState.guesses);
-            
-                    // Update game state display
-        if (gameOver) {
-            endGameDisplay(); // Call display updates without stats/completion logic
-        } else {
-            // Show input section for continuing the game
-            guessCounter.style.display = 'block';
-            gameResult.style.display = 'none';
-            inputSection.style.display = 'block';
-            newGameSection.style.display = 'none';
-            shareBtn.style.display = 'none';
-            
-            // Check if hint should be shown (2+ guesses and not won)
-            if (currentGuess >= 2 && !gameWon && currentQuestion.hint) {
-                showHint();
+
+            // Update game state display
+            if (gameOver) {
+                endGameDisplay(); // Call display updates without stats/completion logic
             } else {
-                hideHint();
+                // Show input section for continuing the game
+                guessCounter.style.display = 'block';
+                gameResult.style.display = 'none';
+                inputSection.style.display = 'block';
+                newGameSection.style.display = 'none';
+                shareBtn.style.display = 'none';
+
+                // Check if hint should be shown (2+ guesses and not won)
+                if (currentGuess >= 2 && !gameWon && currentQuestion.hint) {
+                    showHint();
+                } else {
+                    hideHint();
+                }
+
+                // Enable input
+                guessInput.disabled = false;
+                submitBtn.disabled = false;
+
+                // Auto-focus on desktop only
+                if (!('ontouchstart' in window) && !navigator.maxTouchPoints) {
+                    setTimeout(() => guessInput.focus(), 100);
+                }
             }
-            
-            // Enable input
-            guessInput.disabled = false;
-            submitBtn.disabled = false;
-            
-            // Auto-focus on desktop only
-            if (!('ontouchstart' in window) && !navigator.maxTouchPoints) {
-                setTimeout(() => guessInput.focus(), 100);
-            }
-        }
 
             // Ensure confidence input visibility matches current state
             updateConfidenceInputVisibility();
@@ -2361,7 +2652,7 @@ function restoreGuessesDisplay(savedGuesses) {
             guessField.classList.remove('empty');
             
             // Restore feedback
-                if (guess.feedbackType !== 'none') {
+            if (guess.feedbackType !== 'none') {
                 if (guess.feedbackType === 'correct') {
                     // Use the same checkmark SVG from showFeedback function
                     feedbackButton.innerHTML = `
@@ -2389,32 +2680,38 @@ function restoreGuessesDisplay(savedGuesses) {
                 } else {
                     feedbackButton.textContent = guess.feedbackSymbol;
                 }
-                
-                    feedbackButton.className = `feedback-button ${guess.feedbackType}`;
 
-                    // Set tooltip titles for low/high feedback
-                    if (guess.feedbackType === 'low') {
-                        feedbackButton.setAttribute('data-tooltip', 'Too low! You need to go higher ↑');
-                        feedbackButton.title = '';
-                    } else if (guess.feedbackType === 'high') {
-                        feedbackButton.setAttribute('data-tooltip', 'Too high! You need to go lower ↓');
-                        feedbackButton.title = '';
-                    } else if (guess.feedbackType === 'close') {
-                        if (guess.feedbackSymbol === '↑') {
-                            feedbackButton.setAttribute('data-tooltip', 'Too low, but within ±50% of the correct answer!');
-                        } else if (guess.feedbackSymbol === '↓') {
-                            feedbackButton.setAttribute('data-tooltip', 'Too high, but within ±50% of the correct answer!');
-                        } else {
-                            feedbackButton.removeAttribute('data-tooltip');
-                        }
-                        feedbackButton.title = '';
-                    } else if (guess.feedbackType === 'correct') {
-                        feedbackButton.setAttribute('data-tooltip', "You're within ±20% of the correct answer!");
-                        feedbackButton.title = '';
+                feedbackButton.className = `feedback-button ${guess.feedbackType}`;
+
+                // Set tooltip titles for low/high feedback
+                if (guess.feedbackType === 'low') {
+                    feedbackButton.setAttribute('data-tooltip', 'Too low! You need to go higher ↑');
+                    feedbackButton.title = '';
+                } else if (guess.feedbackType === 'high') {
+                    feedbackButton.setAttribute('data-tooltip', 'Too high! You need to go lower ↓');
+                    feedbackButton.title = '';
+                } else if (guess.feedbackType === 'close') {
+                    if (guess.feedbackSymbol === '↑') {
+                        feedbackButton.setAttribute('data-tooltip', 'Too low, but within ±50% of the correct answer!');
+                    } else if (guess.feedbackSymbol === '↓') {
+                        feedbackButton.setAttribute('data-tooltip', 'Too high, but within ±50% of the correct answer!');
                     } else {
                         feedbackButton.removeAttribute('data-tooltip');
-                        feedbackButton.title = '';
                     }
+                    feedbackButton.title = '';
+                } else if (guess.feedbackType === 'correct') {
+                    feedbackButton.setAttribute('data-tooltip', "You're within ±20% of the correct answer!");
+                    feedbackButton.title = '';
+                } else {
+                    feedbackButton.removeAttribute('data-tooltip');
+                    feedbackButton.title = '';
+                }
+            } else {
+                feedbackButton.className = 'feedback-button';
+                feedbackButton.innerHTML = '';
+                feedbackButton.textContent = '';
+                feedbackButton.removeAttribute('data-tooltip');
+                feedbackButton.title = '';
             }
         }
     });
@@ -2677,10 +2974,13 @@ function selectQuestion(question) {
     window.scrollTo(0, 0);
 
     // Update URL without triggering navigation
-    if (!isNavigating) {
+    if (!isNavigating && currentView === 'game') {
         updateURL(question.date);
     }
-    
+
+    refreshDailyChallengeSummary();
+    renderCalendar();
+
     function startFreshQuestion() {
         // Reset game state for new question
         currentGuess = 0;
@@ -2702,16 +3002,16 @@ function selectQuestion(question) {
         
         // Reset input
         guessInput.value = '';
-       guessInput.disabled = false;
-       submitBtn.disabled = false;
+        guessInput.disabled = false;
+        submitBtn.disabled = false;
 
-       // Clear guesses
-       clearGuesses();
+        // Clear guesses
+        clearGuesses();
 
-       // Auto-focus on desktop only
-       if (!('ontouchstart' in window) && !navigator.maxTouchPoints) {
-           guessInput.focus();
-       }
+        // Auto-focus on desktop only
+        if (!('ontouchstart' in window) && !navigator.maxTouchPoints) {
+            guessInput.focus();
+        }
 
         // Show confidence input for first guess only
         updateConfidenceInputVisibility();
@@ -2842,6 +3142,7 @@ function shareStats() {
 
 // Update the URL to reflect the current question
 function updateURL(questionDate) {
+    if (currentView !== 'game') return;
     const newURL = `#/${questionDate}`;
     if (window.location.hash !== newURL) {
         window.history.pushState(null, '', newURL);
@@ -2850,22 +3151,28 @@ function updateURL(questionDate) {
 
 // Parse the current URL and return the question date
 function parseURL() {
-    const hash = window.location.hash;
-    
-    // Check if URL matches pattern #/question/YYYY-MM-DD
+    const hash = window.location.hash || '';
+
+    if (hash === '#/calendar') {
+        return { view: 'calendar' };
+    }
+
     const questionMatch = hash.match(/^#\/(\d{4}-\d{2}-\d{2})$/);
     if (questionMatch) {
-        return questionMatch[1];
+        return { view: 'game', date: questionMatch[1] };
     }
-    
-    // Default to current date if no valid route
-    return null;
+
+    if (hash === '#/welcome' || hash === '#/' || hash === '#') {
+        return { view: 'welcome' };
+    }
+
+    return { view: 'welcome' };
 }
 
 // Navigate to a specific question by date
 function navigateToQuestion(questionDate) {
     const question = getQuestionForDate(questionDate);
-    
+
     if (question) {
         // Check if the question is available (not future-dated)
         const today = getCurrentDate();
@@ -2873,10 +3180,14 @@ function navigateToQuestion(questionDate) {
             isNavigating = true;
             selectQuestion(question);
             isNavigating = false;
+            setActiveView('game', { skipURLUpdate: true, force: true });
+            if (currentQuestion) {
+                updateURL(currentQuestion.date);
+            }
             return true;
         }
     }
-    
+
     // If question not found or not available, redirect to current question
     navigateToCurrentQuestion();
     return false;
@@ -2889,41 +3200,54 @@ function navigateToCurrentQuestion() {
         isNavigating = true;
         selectQuestion(defaultQuestion);
         isNavigating = false;
+        setActiveView('game', { skipURLUpdate: true, force: true });
+        if (currentQuestion) {
+            updateURL(currentQuestion.date);
+        }
+    } else {
+        setActiveView('welcome', { force: true });
     }
 }
 
 // Handle browser back/forward navigation
 function handlePopState() {
-    const questionDate = parseURL();
-    
-    if (questionDate) {
-        navigateToQuestion(questionDate);
-    } else {
-        navigateToCurrentQuestion();
+    const route = parseURL();
+
+    if (route.view === 'calendar') {
+        setActiveView('calendar', { skipURLUpdate: true, force: true });
+        return;
     }
+
+    if (route.view === 'game' && route.date) {
+        if (!navigateToQuestion(route.date)) {
+            navigateToCurrentQuestion();
+        }
+        return;
+    }
+
+    setActiveView('welcome', { skipURLUpdate: true, force: true });
 }
 
 // Initialize routing
 function initRouting(skipInitialNavigation = false) {
     // Handle browser navigation
     window.addEventListener('popstate', handlePopState);
-    
+
     // Skip initial navigation if we restored from saved state
     if (skipInitialNavigation) {
         return;
     }
-    
+
     // Handle initial page load
-    const questionDate = parseURL();
-    if (questionDate) {
-        // Try to navigate to the question from URL
-        if (!navigateToQuestion(questionDate)) {
-            // If navigation failed, update URL to reflect actual question
-            updateURL(currentQuestion.date);
+    const route = parseURL();
+    if (route.view === 'calendar') {
+        setActiveView('calendar', { skipURLUpdate: true, force: true });
+    } else if (route.view === 'game' && route.date) {
+        if (!navigateToQuestion(route.date)) {
+            navigateToCurrentQuestion();
         }
     } else {
-        // No specific question in URL, update URL to show current question
-        updateURL(currentQuestion.date);
+        setActiveView('welcome', { force: true });
     }
 }
 
@@ -2963,9 +3287,38 @@ function setupEventListeners() {
         });
     });
 
+    if (playDailyBtn) {
+        playDailyBtn.addEventListener('click', () => {
+            const todayQuestion = todaysQuestion || getTodaysQuestion();
+            if (todayQuestion) {
+                navigateToQuestion(todayQuestion.date);
+            } else {
+                navigateToCurrentQuestion();
+            }
+        });
+    }
+
+    if (calendarLinkBtn) {
+        calendarLinkBtn.addEventListener('click', () => {
+            setActiveView('calendar');
+        });
+    }
+
+    if (homeBtn) {
+        homeBtn.addEventListener('click', () => {
+            setActiveView('welcome');
+        });
+    }
+
+    if (calendarBtn) {
+        calendarBtn.addEventListener('click', () => {
+            setActiveView('calendar');
+        });
+    }
+
     // Help button
     helpBtn.addEventListener('click', showHelp);
-    
+
     // Stats button
     statsBtn.addEventListener('click', showStats);
     
