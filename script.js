@@ -1020,13 +1020,22 @@ function resetConfidenceInput() {
 
 function updateFooterPositioning() {
     const sections = [inputSection, newGameSection];
-    let shouldAddPadding = false;
 
     sections.forEach(section => {
         if (section) {
             section.classList.remove('sticky-footer');
         }
     });
+
+    const allowSticky = !isSmallDevice();
+    if (!allowSticky) {
+        if (gameContainer) {
+            gameContainer.classList.remove('has-sticky-footer');
+        }
+        return;
+    }
+
+    let shouldAddPadding = false;
 
     sections.forEach(section => {
         if (!section) return;
@@ -1041,6 +1050,16 @@ function updateFooterPositioning() {
     if (gameContainer) {
         gameContainer.classList.toggle('has-sticky-footer', shouldAddPadding);
     }
+}
+
+let footerUpdateScheduled = false;
+function scheduleFooterPositioningUpdate() {
+    if (footerUpdateScheduled) return;
+    footerUpdateScheduled = true;
+    requestAnimationFrame(() => {
+        footerUpdateScheduled = false;
+        updateFooterPositioning();
+    });
 }
 const newGameBtnInline = document.getElementById('new-game-btn-inline');
 const gameOverModal = document.getElementById('game-over-modal');
@@ -3022,6 +3041,7 @@ function setupEventListeners() {
                 hintContainer.classList.add('open');
                 hintModalBtn.setAttribute('aria-expanded', 'true');
             }
+            scheduleFooterPositioningUpdate();
         });
     }
     
@@ -3177,6 +3197,7 @@ function setupEventListeners() {
                 item.classList.add('open');
                 header.setAttribute('aria-expanded', 'true');
             }
+            scheduleFooterPositioningUpdate();
         });
     });
     
