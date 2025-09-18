@@ -1020,13 +1020,22 @@ function resetConfidenceInput() {
 
 function updateFooterPositioning() {
     const sections = [inputSection, newGameSection];
-    let shouldAddPadding = false;
 
     sections.forEach(section => {
         if (section) {
             section.classList.remove('sticky-footer');
         }
     });
+
+    const allowSticky = !isSmallDevice();
+    if (!allowSticky) {
+        if (gameContainer) {
+            gameContainer.classList.remove('has-sticky-footer');
+        }
+        return;
+    }
+
+    let shouldAddPadding = false;
 
     sections.forEach(section => {
         if (!section) return;
