@@ -585,8 +585,7 @@ button#stats-btn {
 /* Input Section */
 .input-section,
 .new-game-section {
-    width: min(500px, calc(100% - 36px));
-    margin: 20px auto 0;
+    margin-top: 20px;
     padding-bottom: 18px;
 }
 

@@ -3245,5 +3245,4 @@ document.addEventListener('click', (e) => {
 // Initialize the game when the page loads
 window.addEventListener('resize', updateConfidenceInputVisibility);
 window.addEventListener('resize', updateFooterPositioning);
-window.addEventListener('scroll', scheduleFooterPositioningUpdate, { passive: true });
 document.addEventListener('DOMContentLoaded', initGame);
