@@ -1007,6 +1007,8 @@ const sendIcon = `\
   <path d="M2 21L23 12L2 3v7l12 2L2 14v7z"/>
 </svg>`;
 const inputSection = document.getElementById('input-section');
+const newGameSection = document.getElementById('new-game-section');
+const gameContainer = document.querySelector('.game-container');
 
 function resetConfidenceInput() {
     if (confidenceInput) confidenceInput.value = '';
@@ -1015,7 +1017,41 @@ function resetConfidenceInput() {
         confidenceMenu.querySelectorAll('.selected').forEach(btn => btn.classList.remove('selected'));
     }
 }
-const newGameSection = document.getElementById('new-game-section');
+
+function updateFooterPositioning() {
+    const sections = [inputSection, newGameSection];
+    let shouldAddPadding = false;
+
+    sections.forEach(section => {
+        if (section) {
+            section.classList.remove('sticky-footer');
+        }
+    });
+
+    sections.forEach(section => {
+        if (!section) return;
+        if (section.offsetParent === null) return;
+        const rect = section.getBoundingClientRect();
+        if (rect.bottom > window.innerHeight) {
+            section.classList.add('sticky-footer');
+            shouldAddPadding = true;
+        }
+    });
+
+    if (gameContainer) {
+        gameContainer.classList.toggle('has-sticky-footer', shouldAddPadding);
+    }
+}
+
+let footerUpdateScheduled = false;
+function scheduleFooterPositioningUpdate() {
+    if (footerUpdateScheduled) return;
+    footerUpdateScheduled = true;
+    requestAnimationFrame(() => {
+        footerUpdateScheduled = false;
+        updateFooterPositioning();
+    });
+}
 const newGameBtnInline = document.getElementById('new-game-btn-inline');
 const gameOverModal = document.getElementById('game-over-modal');
 const modalTitle = document.getElementById('modal-title');
@@ -1099,18 +1135,19 @@ function initGame() {
     setupEventListeners();
     // Always initialize routing; allow it to handle future navigations
     initRouting(false);
+    updateFooterPositioning();
 }
 
 // Update question display including image
 function updateQuestionDisplay(question) {
     questionText.textContent = question.question;
     questionCategory.innerHTML = getQuestionDisplayText(question); // Use innerHTML to allow <span>
-    
+
     // Update question image
     if (question.image) {
         // Hide container initially while loading
         questionImageContainer.style.display = 'none';
-        
+
         // Create a new image element to test loading
         const testImg = new Image();
         testImg.onload = function() {
@@ -1118,19 +1155,24 @@ function updateQuestionDisplay(question) {
             questionImage.src = question.image;
             questionImage.alt = `Image for ${question.question}`;
             questionImageContainer.style.display = 'block';
+            updateFooterPositioning();
         };
         testImg.onerror = function() {
             // Image failed to load, hide container
             console.log('Failed to load image:', question.image);
             questionImageContainer.style.display = 'none';
+            updateFooterPositioning();
         };
         testImg.src = question.image;
+        updateFooterPositioning();
     } else {
         questionImageContainer.style.display = 'none';
+        updateFooterPositioning();
     }
 
     updateCommentCount();
     subscribeToComments(question.date);
+    updateFooterPositioning();
 }
 
 // Start a new game
@@ -1174,6 +1216,7 @@ function startNewGame() {
     inputSection.style.display = 'block';
     newGameSection.style.display = 'none';
     shareBtn.style.display = 'none'; // Hide share button for new game
+    updateFooterPositioning();
     // Nudge attention to the counter on initial start (mobile only)
     triggerShake(guessCounter);
     
@@ -1777,6 +1820,7 @@ function endGame() {
 
     // Simple scroll to top to ensure good positioning
     window.scrollTo(0, 0);
+    updateFooterPositioning();
 }
 
 // Start a new game
@@ -2322,6 +2366,7 @@ function loadCurrentGameState() {
             if (!('ontouchstart' in window) && !navigator.maxTouchPoints) {
                 setTimeout(() => guessInput.focus(), 100);
             }
+            updateFooterPositioning();
         }
 
             // Ensure confidence input visibility matches current state
@@ -2469,6 +2514,7 @@ function endGameDisplay() {
         newGameBtnInline.textContent = 'Play more';
         newGameBtnInline.onclick = startNewGame;
     }
+    updateFooterPositioning();
 }
 
 // Show questions history modal
@@ -2715,6 +2761,7 @@ function selectQuestion(question) {
 
         // Show confidence input for first guess only
         updateConfidenceInputVisibility();
+        updateFooterPositioning();
     }
 }
 
@@ -2985,6 +3032,7 @@ function setupEventListeners() {
                 hintContainer.classList.add('open');
                 hintModalBtn.setAttribute('aria-expanded', 'true');
             }
+            scheduleFooterPositioningUpdate();
         });
     }
     
@@ -3140,6 +3188,7 @@ function setupEventListeners() {
                 item.classList.add('open');
                 header.setAttribute('aria-expanded', 'true');
             }
+            scheduleFooterPositioningUpdate();
         });
     });
     
@@ -3195,4 +3244,5 @@ document.addEventListener('click', (e) => {
 
 // Initialize the game when the page loads
 window.addEventListener('resize', updateConfidenceInputVisibility);
+window.addEventListener('resize', updateFooterPositioning);
 document.addEventListener('DOMContentLoaded', initGame);

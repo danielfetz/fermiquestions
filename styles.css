@@ -25,6 +25,10 @@ button {
     margin: 0 auto;
     border-radius: 18px;
     position: relative;
+    padding-bottom: 30px;
+}
+
+.game-container.has-sticky-footer {
     padding-bottom: 134px;
 }
 
@@ -458,7 +462,6 @@ button#stats-btn {
 
 /* Guesses Container */
 .guesses-container {
-    margin-bottom: 20px;
     position: relative;
     z-index: 6; /* ensure tooltips above .question-box (z-index:5) */
 }
@@ -581,13 +584,17 @@ button#stats-btn {
 /* Input Section */
 .input-section,
 .new-game-section {
+    margin-top: 20px;
+    padding-bottom: 18px;
+}
+
+.sticky-footer {
     position: fixed;
+    width: min(500px, calc(100% - 36px));
     left: 50%;
     transform: translateX(-50%);
-    width: min(500px, calc(100% - 36px));
     bottom: calc(0px + env(safe-area-inset-bottom));
     z-index: 900;
-    padding-bottom: 18px;
     margin-top: 0;
 }
 
@@ -1179,10 +1186,6 @@ button#stats-btn {
     .game-header {
         padding: 18px 0;
     }
-    .game-container {
-        padding: 0 0 134px;
-        border-radius: 18px;
-    }
     .question-box {
         border-radius: 16px;
         padding: 20px;
@@ -1190,9 +1193,6 @@ button#stats-btn {
     .feedback-button::after {
         width: 98px;
         white-space: normal;
-    }
-    .guesses-container {
-        margin-bottom: 0px;
     }
     .guess-counter,
     .hint-container {
