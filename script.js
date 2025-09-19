@@ -3147,7 +3147,7 @@ function showShareFeedback(message) {
         color: white;
         padding: 12px 20px;
         border-radius: 8px;
-        font-family: 'Press Start 2P', monospace;
+        font-family: 'Nunito', sans-serif;
         font-size: 0.7rem;
         z-index: 10000;
     `;
