@@ -70,6 +70,10 @@ main {
     gap: 10px;
 }
 
+.mobile-nav {
+    display: none;
+}
+
 .nav-button {
     background: #fff;
     font-family: 'Press Start 2P', monospace;
@@ -1652,6 +1656,30 @@ button.calendar-cell:disabled {
         bottom: 0;
         border-radius: 18px 18px 0 0;
         box-shadow: 0 -2px 10px rgba(0,0,0,0.1);
+    }
+
+    main {
+        padding-bottom: 120px;
+    }
+
+    .mobile-nav {
+        display: flex;
+        position: fixed;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        gap: 12px;
+        padding: 12px 20px calc(12px + env(safe-area-inset-bottom));
+        background: rgba(255, 255, 255, 0.96);
+        border-top: 1px solid #e9ecef;
+        box-shadow: 0 -4px 18px rgba(15, 23, 42, 0.08);
+        z-index: 100;
+    }
+
+    .mobile-nav .nav-button {
+        flex: 1;
+        font-size: 0.58rem;
+        padding: 14px 12px;
     }
 }
 
