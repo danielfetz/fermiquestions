@@ -984,11 +984,10 @@ const playDailyBtn = document.getElementById('play-daily-btn');
 const calendarLinkBtn = document.getElementById('calendar-link-btn');
 const homeBtn = document.getElementById('home-btn');
 const calendarBtn = document.getElementById('calendar-btn');
+const dailyChallengeCard = document.getElementById('daily-challenge-card');
 const dailyChallengeQuestionEl = document.getElementById('daily-challenge-question');
 const dailyChallengeDateEl = document.getElementById('daily-challenge-date');
 const dailyChallengeStatusEl = document.getElementById('daily-challenge-status');
-const dailyChallengeImageContainer = document.getElementById('daily-challenge-image-container');
-const dailyChallengeImageEl = document.getElementById('daily-challenge-image');
 const calendarMonthsContainer = document.getElementById('calendar-months');
 const questionText = document.getElementById('question-text');
 const questionCategory = document.getElementById('question-category');
@@ -1259,6 +1258,14 @@ function formatDateForDisplay(dateString) {
     return date.toLocaleDateString('en-GB', options);
 }
 
+function formatDateForBadge(dateString) {
+    const date = new Date(dateString);
+    if (Number.isNaN(date.getTime())) {
+        return '';
+    }
+    return date.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
+}
+
 // Get question based on current date and game state
 function getCurrentQuestion() {
     const today = getCurrentDate();
@@ -1301,15 +1308,22 @@ function refreshDailyChallengeSummary() {
     const todayQuestion = getTodaysQuestion();
     todaysQuestion = todayQuestion || null;
 
+    if (dailyChallengeCard) {
+        dailyChallengeCard.classList.remove(
+            'daily-challenge-card--ready',
+            'daily-challenge-card--won',
+            'daily-challenge-card--lost'
+        );
+    }
+
     if (!todayQuestion) {
         dailyChallengeQuestionEl.textContent = 'No daily challenge is available right now.';
         dailyChallengeDateEl.textContent = '';
+        dailyChallengeDateEl.removeAttribute('title');
+        dailyChallengeDateEl.removeAttribute('aria-label');
         if (dailyChallengeStatusEl) {
             dailyChallengeStatusEl.textContent = '';
             dailyChallengeStatusEl.classList.remove('status-won', 'status-lost');
-        }
-        if (dailyChallengeImageContainer) {
-            dailyChallengeImageContainer.style.display = 'none';
         }
         if (playDailyBtn) {
             playDailyBtn.disabled = true;
@@ -1318,25 +1332,19 @@ function refreshDailyChallengeSummary() {
         return;
     }
 
-    const todayDate = getCurrentDate();
-    const formattedDate = todayQuestion.date === todayDate
-        ? 'Today'
-        : formatDateForDisplay(todayQuestion.date);
+    const badgeDate = formatDateForBadge(todayQuestion.date);
+    const fullDateLabel = formatDateForDisplay(todayQuestion.date);
 
-    dailyChallengeDateEl.textContent = formattedDate;
-    dailyChallengeQuestionEl.textContent = todayQuestion.question;
-
-    if (dailyChallengeImageContainer) {
-        if (todayQuestion.image) {
-            dailyChallengeImageContainer.style.display = 'flex';
-            if (dailyChallengeImageEl) {
-                dailyChallengeImageEl.src = todayQuestion.image;
-                dailyChallengeImageEl.alt = `Image for ${todayQuestion.question}`;
-            }
-        } else {
-            dailyChallengeImageContainer.style.display = 'none';
-        }
+    dailyChallengeDateEl.textContent = badgeDate;
+    if (fullDateLabel) {
+        dailyChallengeDateEl.title = fullDateLabel;
+        dailyChallengeDateEl.setAttribute('aria-label', `Question date: ${fullDateLabel}`);
+    } else {
+        dailyChallengeDateEl.removeAttribute('title');
+        dailyChallengeDateEl.removeAttribute('aria-label');
     }
+
+    dailyChallengeQuestionEl.textContent = todayQuestion.question;
 
     if (playDailyBtn) {
         playDailyBtn.disabled = false;
@@ -1355,12 +1363,20 @@ function refreshDailyChallengeSummary() {
         if (playDailyBtn) {
             playDailyBtn.textContent = 'Review';
         }
+        if (dailyChallengeCard) {
+            dailyChallengeCard.classList.add(
+                completed.won ? 'daily-challenge-card--won' : 'daily-challenge-card--lost'
+            );
+        }
     } else {
         if (dailyChallengeStatusEl) {
             dailyChallengeStatusEl.textContent = 'Ready to play';
         }
         if (playDailyBtn) {
             playDailyBtn.textContent = 'Play';
+        }
+        if (dailyChallengeCard) {
+            dailyChallengeCard.classList.add('daily-challenge-card--ready');
         }
     }
 }
