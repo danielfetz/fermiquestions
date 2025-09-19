@@ -1230,7 +1230,7 @@ button#stats-btn {
     --card-accent: #e9ecef;
     border: 4px solid var(--card-accent);
     border-radius: 18px;
-    padding: 24px;
+    padding: 20px;
     display: flex;
     flex-direction: column;
     gap: 18px;
@@ -1592,7 +1592,7 @@ button.calendar-cell:disabled {
     }
 
     .daily-challenge-card {
-        padding: 18px;
+        padding: 20px;
     }
 }
 
