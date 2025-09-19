@@ -975,6 +975,15 @@ const fermiQuestions = [
         hint: "25.9M US households reported an income between $100,000 and $200,000 in 2022.",
         date: "2025-09-18",
         image: "data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' width='100' height='100' viewBox='0 0 100 100'%3e%3crect width='100' height='100' fill='%23f8fafc'/%3e%3ctext x='50' y='62' font-size='40' text-anchor='middle' fill='%23374151'%3e️🇺🇸%3c/text%3e%3c/svg%3e"
+    },
+    {
+        question: "How many people work in McDonald's restaurants across the United States?",
+        answer: 800000,
+        category: "",
+        explanation: "",
+        hint: "There are 1,225 McDonald's restaurants in California.",
+        date: "2025-09-19",
+        image: "data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' width='100' height='100' viewBox='0 0 100 100'%3e%3crect width='100' height='100' fill='%23f8fafc'/%3e%3ctext x='50' y='62' font-size='40' text-anchor='middle' fill='%23374151'%3e️🍔%3c/text%3e%3c/svg%3e"
     }
 ];
 
@@ -1022,6 +1031,8 @@ const sendIcon = `\
   <path d="M2 21L23 12L2 3v7l12 2L2 14v7z"/>
 </svg>`;
 const inputSection = document.getElementById('input-section');
+const newGameSection = document.getElementById('new-game-section');
+const gameContainer = document.querySelector('.game-container');
 
 function resetConfidenceInput() {
     if (confidenceInput) confidenceInput.value = '';
@@ -1030,7 +1041,47 @@ function resetConfidenceInput() {
         confidenceMenu.querySelectorAll('.selected').forEach(btn => btn.classList.remove('selected'));
     }
 }
-const newGameSection = document.getElementById('new-game-section');
+
+function updateFooterPositioning() {
+    const sections = [inputSection, newGameSection];
+    let shouldAddPadding = false;
+    const isMobileView = isSmallDevice();
+
+    sections.forEach(section => {
+        if (section) {
+            section.classList.remove('sticky-footer');
+        }
+    });
+
+    sections.forEach(section => {
+        if (!section) return;
+        if (section.offsetParent === null) return;
+        if (isMobileView) {
+            section.classList.add('sticky-footer');
+            shouldAddPadding = true;
+            return;
+        }
+        const rect = section.getBoundingClientRect();
+        if (rect.bottom > window.innerHeight) {
+            section.classList.add('sticky-footer');
+            shouldAddPadding = true;
+        }
+    });
+
+    if (gameContainer) {
+        gameContainer.classList.toggle('has-sticky-footer', shouldAddPadding);
+    }
+}
+
+let footerUpdateScheduled = false;
+function scheduleFooterPositioningUpdate() {
+    if (footerUpdateScheduled) return;
+    footerUpdateScheduled = true;
+    requestAnimationFrame(() => {
+        footerUpdateScheduled = false;
+        updateFooterPositioning();
+    });
+}
 const newGameBtnInline = document.getElementById('new-game-btn-inline');
 const gameOverModal = document.getElementById('game-over-modal');
 const modalTitle = document.getElementById('modal-title');
@@ -1127,19 +1178,20 @@ function initGame() {
 
     setupEventListeners();
     // Always initialize routing; allow it to handle future navigations
-    initRouting(true);
+    initRouting(false);
+    updateFooterPositioning();
 }
 
 // Update question display including image
 function updateQuestionDisplay(question) {
     questionText.textContent = question.question;
     questionCategory.innerHTML = getQuestionDisplayText(question); // Use innerHTML to allow <span>
-    
+
     // Update question image
     if (question.image) {
         // Hide container initially while loading
         questionImageContainer.style.display = 'none';
-        
+
         // Create a new image element to test loading
         const testImg = new Image();
         testImg.onload = function() {
@@ -1147,19 +1199,24 @@ function updateQuestionDisplay(question) {
             questionImage.src = question.image;
             questionImage.alt = `Image for ${question.question}`;
             questionImageContainer.style.display = 'block';
+            updateFooterPositioning();
         };
         testImg.onerror = function() {
             // Image failed to load, hide container
             console.log('Failed to load image:', question.image);
             questionImageContainer.style.display = 'none';
+            updateFooterPositioning();
         };
         testImg.src = question.image;
+        updateFooterPositioning();
     } else {
         questionImageContainer.style.display = 'none';
+        updateFooterPositioning();
     }
 
     updateCommentCount();
     subscribeToComments(question.date);
+    updateFooterPositioning();
 }
 
 // Start a new game
@@ -1203,6 +1260,7 @@ function startNewGame(skipURLUpdate = false) {
     inputSection.style.display = 'block';
     newGameSection.style.display = 'none';
     shareBtn.style.display = 'none'; // Hide share button for new game
+    updateFooterPositioning();
     // Nudge attention to the counter on initial start (mobile only)
     triggerShake(guessCounter);
     
@@ -1800,7 +1858,10 @@ function formatNumber(num) {
 
 // Detect small devices for conditional animations
 function isSmallDevice() {
-    return window.matchMedia('(max-width: 768px)').matches;
+    if (typeof window.matchMedia === 'function') {
+        return window.matchMedia('(max-width: 768px)').matches;
+    }
+    return (window.innerWidth || document.documentElement.clientWidth || 0) <= 768;
 }
 
 // Briefly add a 'shake' animation class to an element (mobile only)
@@ -2066,6 +2127,7 @@ function endGame() {
 
     // Simple scroll to top to ensure good positioning
     window.scrollTo(0, 0);
+    updateFooterPositioning();
 }
 
 // Start a new game
@@ -2614,7 +2676,8 @@ function loadCurrentGameState() {
                     setTimeout(() => guessInput.focus(), 100);
                 }
             }
-
+            updateFooterPositioning();
+        }
             // Ensure confidence input visibility matches current state
             updateConfidenceInputVisibility();
 
@@ -2766,6 +2829,7 @@ function endGameDisplay() {
         newGameBtnInline.textContent = 'Play more';
         newGameBtnInline.onclick = startNewGame;
     }
+    updateFooterPositioning();
 }
 
 // Show questions history modal
@@ -3015,6 +3079,7 @@ function selectQuestion(question) {
 
         // Show confidence input for first guess only
         updateConfidenceInputVisibility();
+        updateFooterPositioning();
     }
 }
 
@@ -3338,6 +3403,7 @@ function setupEventListeners() {
                 hintContainer.classList.add('open');
                 hintModalBtn.setAttribute('aria-expanded', 'true');
             }
+            scheduleFooterPositioningUpdate();
         });
     }
     
@@ -3493,6 +3559,7 @@ function setupEventListeners() {
                 item.classList.add('open');
                 header.setAttribute('aria-expanded', 'true');
             }
+            scheduleFooterPositioningUpdate();
         });
     });
     
@@ -3548,4 +3615,5 @@ document.addEventListener('click', (e) => {
 
 // Initialize the game when the page loads
 window.addEventListener('resize', updateConfidenceInputVisibility);
+window.addEventListener('resize', updateFooterPositioning);
 document.addEventListener('DOMContentLoaded', initGame);
