@@ -88,19 +88,6 @@
             </div>
         </div>
 
-        <!-- Comments Section -->
-        <div class="comments-section" id="comments-section">
-            <div class="comments-header">
-                <button class="icon-button" id="comments-back-btn">&lt;</button>
-                <h2>Comments</h2>
-            </div>
-            <div class="comments-list" id="comments-list"></div>
-            <div class="comments-input">
-                <textarea id="comment-input" placeholder="Add a comment..."></textarea>
-                <button id="comment-submit-btn" class="submit-btn">Post</button>
-            </div>
-        </div>
-
         <!-- Questions History Modal -->
         <div class="modal" id="questions-modal">
             <div class="modal-content">
@@ -209,10 +196,31 @@
             </div>
         </div>
 
-        <!-- Help Modal -->
-        <div class="modal" id="help-modal">
-            <div class="modal-content">
-                <h2>How to Play</h2>
+            </div>
+        </section>
+
+        <section id="calendar-view" class="view">
+            <div class="calendar-wrapper">
+                <div class="view-header">
+                    <button type="button" class="back-button" id="calendar-back-btn">&lt; Back</button>
+                    <h2 class="calendar-title">Question Calendar</h2>
+                </div>
+                <p class="calendar-subtitle">Pick a day to play or review its challenge.</p>
+                <div class="calendar-legend">
+                    <span><span class="legend-box pending"></span> Not played</span>
+                    <span><span class="legend-box won"></span> Completed</span>
+                    <span><span class="legend-box lost"></span> Missed</span>
+                </div>
+                <div id="calendar-months" class="calendar-months"></div>
+            </div>
+        </section>
+
+        <section id="help-view" class="view">
+            <div class="info-view">
+                <div class="view-header">
+                    <button type="button" class="back-button" id="help-back-btn">&lt; Back</button>
+                    <h2>How to Play</h2>
+                </div>
                 <div class="accordion" id="help-accordion">
                     <div class="accordion-item" id="acc-calibration-help-item">
                         <button class="accordion-header" id="acc-calibration-help-header" aria-expanded="false" aria-controls="acc-calibration-help-panel">
@@ -249,15 +257,15 @@
                         </div>
                     </div>
                 </div>
-                <button id="close-help-btn" class="close-btn">Close</button>
             </div>
-        </div>
+        </section>
 
-
-        <!-- Source/Explanation Modal -->
-        <div class="modal" id="source-modal">
-            <div class="modal-content">
-                <h2>Source & Stats</h2>
+        <section id="source-view" class="view">
+            <div class="info-view">
+                <div class="view-header">
+                    <button type="button" class="back-button" id="source-back-btn">&lt; Back</button>
+                    <h2>Source & Stats</h2>
+                </div>
                 <div class="accordion" id="source-accordion">
                     <div class="accordion-item" id="acc-source-item">
                         <button class="accordion-header" id="acc-source-header" aria-expanded="false" aria-controls="acc-source-panel">
@@ -303,14 +311,15 @@
                         </div>
                     </div>
                 </div>
-                <button id="close-source-btn" class="close-btn">Close</button>
             </div>
-        </div>
+        </section>
 
-        <!-- Stats Modal -->
-        <div class="modal" id="stats-modal">
-            <div class="modal-content">
-                <h2>Statistics</h2>
+        <section id="stats-view" class="view">
+            <div class="info-view">
+                <div class="view-header">
+                    <button type="button" class="back-button" id="stats-back-btn">&lt; Back</button>
+                    <h2>Statistics</h2>
+                </div>
                 <div class="accordion" id="stats-accordion">
                     <div class="accordion-item open" id="acc-statsgrid-item">
                         <button class="accordion-header" id="acc-statsgrid-header" aria-expanded="true" aria-controls="acc-statsgrid-panel">
@@ -425,22 +434,20 @@
                 </div>
 
                 <button id="share-stats-btn" class="share-btn">Share</button>
-                <button id="close-stats-btn" class="close-btn">Close</button>
-            </div>
-        </div>
             </div>
         </section>
 
-        <section id="calendar-view" class="view">
-            <div class="calendar-wrapper">
-                <h2 class="calendar-title">Question Calendar</h2>
-                <p class="calendar-subtitle">Pick a day to play or review its challenge.</p>
-                <div class="calendar-legend">
-                    <span><span class="legend-box pending"></span> Not played</span>
-                    <span><span class="legend-box won"></span> Completed</span>
-                    <span><span class="legend-box lost"></span> Missed</span>
+        <section id="comments-section" class="view comments-section">
+            <div class="info-view comments-view">
+                <div class="view-header">
+                    <button type="button" class="back-button" id="comments-back-btn">&lt; Back</button>
+                    <h2>Comments</h2>
                 </div>
-                <div id="calendar-months" class="calendar-months"></div>
+                <div class="comments-list" id="comments-list"></div>
+                <div class="comments-input">
+                    <textarea id="comment-input" placeholder="Add a comment..."></textarea>
+                    <button id="comment-submit-btn" class="submit-btn">Post</button>
+                </div>
             </div>
         </section>
     </main>

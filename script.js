@@ -405,7 +405,7 @@ function subscribeToComments(questionDate) {
             filter: `question_date=eq.${questionDate}`
         }, async () => {
             await updateCommentCount();
-            if (commentsSection && commentsSection.classList.contains('open')) {
+            if (currentView === 'comments') {
                 await loadComments();
             }
         })
@@ -415,14 +415,11 @@ function subscribeToComments(questionDate) {
 function openComments() {
     if (!commentsSection) return;
     loadComments();
-    commentsSection.classList.add('open');
-    document.body.classList.add('no-scroll');
+    navigateToView('comments');
 }
 
 function closeComments() {
-    if (!commentsSection) return;
-    commentsSection.classList.remove('open');
-    document.body.classList.remove('no-scroll');
+    goBack('game');
 }
 
 // Update the average tries display in the inline meta row
@@ -439,6 +436,7 @@ let completedQuestions = {}; // Changed from array to object to track win/loss s
 // URL Routing state
 let isNavigating = false;
 let currentView = 'welcome';
+let viewHistory = [];
 let todaysQuestion = null;
 
 // Statistics
@@ -1002,9 +1000,8 @@ const hintText = document.getElementById('hint-text');
 const hintBody = document.getElementById('hint-body');
 const questionMeta = document.getElementById('question-meta');
 const sourceBtn = document.getElementById('source-btn');
-const sourceModal = document.getElementById('source-modal');
+const sourceView = document.getElementById('source-view');
 const sourceText = document.getElementById('source-text');
-const closeSourceBtn = document.getElementById('close-source-btn');
 const gameResult = document.getElementById('game-result');
 const resultMessage = document.getElementById('result-message');
 const resultEmoji = document.getElementById('result-emoji');
@@ -1039,15 +1036,13 @@ const modalAnswer = document.getElementById('modal-answer');
 const newGameBtn = document.getElementById('new-game-btn');
 const helpBtn = document.getElementById('help-btn');
 const statsBtn = document.getElementById('stats-btn');
-const helpModal = document.getElementById('help-modal');
-const statsModal = document.getElementById('stats-modal');
+const helpView = document.getElementById('help-view');
+const statsView = document.getElementById('stats-view');
 const questionsModal = document.getElementById('questions-modal');
 const strategyTipsBtn = document.getElementById('strategy-tips-btn');
 // Hint elements
 const hintModalBtn = document.getElementById('hint-modal-btn');
 const questionsList = document.getElementById('questions-list');
-const closeHelpBtn = document.getElementById('close-help-btn');
-const closeStatsBtn = document.getElementById('close-stats-btn');
 const closeQuestionsBtn = document.getElementById('close-questions-btn');
 const shareBtn = document.getElementById('share-btn');
 const shareStatsBtn = document.getElementById('share-stats-btn');
@@ -1065,6 +1060,20 @@ const commentsList = document.getElementById('comments-list');
 const commentInput = document.getElementById('comment-input');
 const commentSubmitBtn = document.getElementById('comment-submit-btn');
 const commentCountEl = document.getElementById('comment-count');
+const helpBackBtn = document.getElementById('help-back-btn');
+const statsBackBtn = document.getElementById('stats-back-btn');
+const sourceBackBtn = document.getElementById('source-back-btn');
+const calendarBackBtn = document.getElementById('calendar-back-btn');
+
+const viewElements = {
+    welcome: welcomeScreen,
+    game: gameView,
+    calendar: calendarView,
+    help: helpView,
+    stats: statsView,
+    source: sourceView,
+    comments: commentsSection
+};
 
 
 // Confidence tooltip
@@ -1369,21 +1378,20 @@ function setActiveView(view, options = {}) {
             renderCalendar();
         } else if (view === 'welcome') {
             refreshDailyChallengeSummary();
+        } else if (view === 'game') {
+            if (guessInput && !('ontouchstart' in window) && !navigator.maxTouchPoints) {
+                setTimeout(() => guessInput.focus(), 150);
+            }
         }
         return;
     }
 
     currentView = view;
 
-    if (welcomeScreen) {
-        welcomeScreen.classList.toggle('active', view === 'welcome');
-    }
-    if (gameView) {
-        gameView.classList.toggle('active', view === 'game');
-    }
-    if (calendarView) {
-        calendarView.classList.toggle('active', view === 'calendar');
-    }
+    Object.entries(viewElements).forEach(([key, element]) => {
+        if (!element) return;
+        element.classList.toggle('active', key === view);
+    });
 
     if (!skipURLUpdate) {
         if (view === 'welcome') {
@@ -1401,6 +1409,31 @@ function setActiveView(view, options = {}) {
         if (guessInput && !('ontouchstart' in window) && !navigator.maxTouchPoints) {
             setTimeout(() => guessInput.focus(), 150);
         }
+    }
+}
+
+function navigateToView(view, options = {}) {
+    const { skipHistory = false, skipURLUpdate, force = false } = options;
+    if (!skipHistory && currentView !== view) {
+        viewHistory.push(currentView);
+    }
+    const shouldSkipURL = skipURLUpdate !== undefined
+        ? skipURLUpdate
+        : !['welcome', 'calendar'].includes(view);
+    setActiveView(view, { skipURLUpdate: shouldSkipURL, force });
+}
+
+function goBack(fallbackView = 'welcome') {
+    if (viewHistory.length > 0) {
+        const previous = viewHistory.pop();
+        const skipURLUpdate = !['welcome', 'calendar'].includes(previous);
+        setActiveView(previous, { skipURLUpdate, force: true });
+        return;
+    }
+
+    if (fallbackView) {
+        const skipURLUpdate = !['welcome', 'calendar'].includes(fallbackView);
+        setActiveView(fallbackView, { skipURLUpdate, force: true });
     }
 }
 
@@ -2074,15 +2107,17 @@ function startNewGameFromModal() {
     startNewGame();
 }
 
-// Show help modal
+// Show help view
 function showHelp() {
-    helpModal.style.display = 'block';
+    if (!helpView) return;
+    navigateToView('help');
 }
 
-// Show stats modal
+// Show stats view
 function showStats() {
     updateStatsDisplay();
-    statsModal.style.display = 'block';
+    if (!statsView) return;
+    navigateToView('stats');
 }
 
 // Update stats display
@@ -3300,19 +3335,19 @@ function setupEventListeners() {
 
     if (calendarLinkBtn) {
         calendarLinkBtn.addEventListener('click', () => {
-            setActiveView('calendar');
+            navigateToView('calendar');
         });
     }
 
     if (homeBtn) {
         homeBtn.addEventListener('click', () => {
-            setActiveView('welcome');
+            navigateToView('welcome');
         });
     }
 
     if (calendarBtn) {
         calendarBtn.addEventListener('click', () => {
-            setActiveView('calendar');
+            navigateToView('calendar');
         });
     }
 
@@ -3419,8 +3454,8 @@ function setupEventListeners() {
         updateSelected(confidenceInput.value);
     }
     
-    // Source button opens explanation modal
-    if (sourceBtn && sourceModal) {
+    // Source button opens explanation view
+    if (sourceBtn && sourceView) {
         sourceBtn.addEventListener('click', () => {
             if (currentQuestion && sourceText) {
                 const explanation = currentQuestion.explanation || 'No source available for this question as of now. This is a new feature that will be available in the coming days.';
@@ -3477,7 +3512,7 @@ function setupEventListeners() {
                     })
                     .catch(() => {/* ignore */});
             }
-            sourceModal.style.display = 'block';
+            navigateToView('source');
         });
     }
 
@@ -3497,9 +3532,9 @@ function setupEventListeners() {
     });
     
     // Close buttons
-    closeHelpBtn.addEventListener('click', () => closeModal(helpModal));
-    closeStatsBtn.addEventListener('click', () => closeModal(statsModal));
-    closeQuestionsBtn.addEventListener('click', () => closeModal(questionsModal));
+    if (closeQuestionsBtn) {
+        closeQuestionsBtn.addEventListener('click', () => closeModal(questionsModal));
+    }
 
     // Comment buttons
     if (commentsBtn) commentsBtn.addEventListener('click', openComments);
@@ -3517,9 +3552,10 @@ function setupEventListeners() {
     // Share buttons
     shareBtn.addEventListener('click', shareGame);
     shareStatsBtn.addEventListener('click', shareStats);
-        
+
     // Close modals when clicking outside (desktop + mobile)
-    [helpModal, statsModal, questionsModal, sourceModal].forEach(modal => {
+    [questionsModal, gameOverModal].forEach(modal => {
+        if (!modal) return;
         ['click', 'touchend'].forEach(event => {
             modal.addEventListener(event, e => e.target === modal && closeModal(modal));
         });
@@ -3532,10 +3568,11 @@ function setupEventListeners() {
         });
     });
 
-    // Close source modal via button
-    if (closeSourceBtn && sourceModal) {
-        closeSourceBtn.addEventListener('click', () => closeModal(sourceModal));
-    }
+    // Back buttons for secondary views
+    if (helpBackBtn) helpBackBtn.addEventListener('click', () => goBack('welcome'));
+    if (statsBackBtn) statsBackBtn.addEventListener('click', () => goBack('welcome'));
+    if (sourceBackBtn) sourceBackBtn.addEventListener('click', () => goBack('game'));
+    if (calendarBackBtn) calendarBackBtn.addEventListener('click', () => goBack('welcome'));
 }
 
 if (calibrationChart) {
