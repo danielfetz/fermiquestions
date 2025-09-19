@@ -35,8 +35,6 @@
     <main>
         <section id="welcome-screen" class="view active">
             <div class="welcome-content">
-                <h2 class="welcome-title">Welcome to Fermi Questions</h2>
-                <p class="welcome-subtitle">Sharpen your estimation skills with a fresh puzzle every day.</p>
                 <div class="daily-challenge-card">
                     <div class="daily-challenge-header">
                         <h3>Daily Challenge</h3>
@@ -51,9 +49,11 @@
                             <p id="daily-challenge-status" class="daily-challenge-status"></p>
                         </div>
                     </div>
-                    <button id="play-daily-btn" class="primary-action">Play</button>
+                    <div class="daily-challenge-actions">
+                        <button id="play-daily-btn" class="primary-action">Play</button>
+                        <button id="calendar-link-btn" class="secondary-action">Browse the calendar</button>
+                    </div>
                 </div>
-                <button id="calendar-link-btn" class="secondary-action">Browse the calendar</button>
             </div>
         </section>
 
