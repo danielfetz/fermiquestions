@@ -439,6 +439,7 @@ let completedQuestions = {}; // Changed from array to object to track win/loss s
 // URL Routing state
 let isNavigating = false;
 let currentView = 'welcome';
+const viewHistory = [];
 let todaysQuestion = null;
 
 // Statistics
@@ -982,6 +983,8 @@ const fermiQuestions = [
 const welcomeScreen = document.getElementById('welcome-screen');
 const gameView = document.getElementById('game-view');
 const calendarView = document.getElementById('calendar-view');
+const helpView = document.getElementById('help-view');
+const statsView = document.getElementById('stats-view');
 const playDailyBtn = document.getElementById('play-daily-btn');
 const calendarLinkBtn = document.getElementById('calendar-link-btn');
 const homeBtn = document.getElementById('home-btn');
@@ -1043,6 +1046,9 @@ const helpModal = document.getElementById('help-modal');
 const statsModal = document.getElementById('stats-modal');
 const questionsModal = document.getElementById('questions-modal');
 const strategyTipsBtn = document.getElementById('strategy-tips-btn');
+const helpBackBtn = document.getElementById('help-back-btn');
+const statsBackBtn = document.getElementById('stats-back-btn');
+const calendarBackBtn = document.getElementById('calendar-back-btn');
 // Hint elements
 const hintModalBtn = document.getElementById('hint-modal-btn');
 const questionsList = document.getElementById('questions-list');
@@ -1050,14 +1056,20 @@ const closeHelpBtn = document.getElementById('close-help-btn');
 const closeStatsBtn = document.getElementById('close-stats-btn');
 const closeQuestionsBtn = document.getElementById('close-questions-btn');
 const shareBtn = document.getElementById('share-btn');
-const shareStatsBtn = document.getElementById('share-stats-btn');
-const medianFirstGuessText = document.getElementById('median-first-guess-text');
-const firstGuessPercentileText = document.getElementById('first-guess-percentile-text');
+const shareStatsButtons = document.querySelectorAll('.share-stats-btn');
+const medianFirstGuessElements = document.querySelectorAll('[data-median-first-guess]');
+const firstGuessPercentileElements = document.querySelectorAll('[data-first-guess-percentile]');
 const calibrationCheckboxes = document.querySelectorAll('.prob-calibration-checkbox');
-const firstGuessCheckbox = document.getElementById('first-guess-checkbox');
-const calibrationChart = document.getElementById('calibration-chart');
-const calibrationTooltip = document.getElementById('calibration-tooltip');
-const calibrationNote = document.querySelector('.calibration-note');
+const firstGuessCheckboxes = document.querySelectorAll('[data-first-guess-checkbox]');
+const calibrationCharts = document.querySelectorAll('[data-calibration-chart]');
+const calibrationTooltips = new Map();
+document.querySelectorAll('[data-calibration-tooltip]').forEach(el => {
+    calibrationTooltips.set(el.dataset.calibrationTooltip || 'default', el);
+});
+const calibrationNotes = new Map();
+document.querySelectorAll('[data-calibration-note]').forEach(el => {
+    calibrationNotes.set(el.dataset.calibrationNote || 'default', el);
+});
 const commentsBtn = document.getElementById('comments-btn');
 const commentsSection = document.getElementById('comments-section');
 const commentsBackBtn = document.getElementById('comments-back-btn');
@@ -1363,14 +1375,23 @@ function updateHash(newHash) {
 }
 
 function setActiveView(view, options = {}) {
-    const { skipURLUpdate = false, force = false } = options;
+    const { skipURLUpdate = false, force = false, fromHistory = false } = options;
     if (!force && currentView === view) {
         if (view === 'calendar') {
             renderCalendar();
         } else if (view === 'welcome') {
             refreshDailyChallengeSummary();
+        } else if (view === 'stats') {
+            updateStatsDisplay();
         }
         return;
+    }
+
+    if (!fromHistory && currentView && currentView !== view) {
+        const last = viewHistory[viewHistory.length - 1];
+        if (last !== currentView) {
+            viewHistory.push(currentView);
+        }
     }
 
     currentView = view;
@@ -1384,12 +1405,20 @@ function setActiveView(view, options = {}) {
     if (calendarView) {
         calendarView.classList.toggle('active', view === 'calendar');
     }
+    if (helpView) {
+        helpView.classList.toggle('active', view === 'help');
+    }
+    if (statsView) {
+        statsView.classList.toggle('active', view === 'stats');
+    }
 
     if (!skipURLUpdate) {
         if (view === 'welcome') {
             updateHash('#/welcome');
         } else if (view === 'calendar') {
             updateHash('#/calendar');
+        } else if (view === 'game' && currentQuestion) {
+            updateURL(currentQuestion.date);
         }
     }
 
@@ -1401,7 +1430,24 @@ function setActiveView(view, options = {}) {
         if (guessInput && !('ontouchstart' in window) && !navigator.maxTouchPoints) {
             setTimeout(() => guessInput.focus(), 150);
         }
+    } else if (view === 'stats') {
+        updateStatsDisplay();
     }
+
+    if (view !== 'stats') {
+        hideCalibrationTooltip();
+    }
+}
+
+function navigateBack(fallbackView = 'welcome') {
+    while (viewHistory.length > 0) {
+        const previous = viewHistory.pop();
+        if (previous && previous !== currentView) {
+            setActiveView(previous, { force: true, fromHistory: true });
+            return;
+        }
+    }
+    setActiveView(fallbackView, { force: true, fromHistory: true });
 }
 
 function renderCalendar() {
@@ -2074,94 +2120,118 @@ function startNewGameFromModal() {
     startNewGame();
 }
 
-// Show help modal
-function showHelp() {
-    helpModal.style.display = 'block';
+// Show help modal or view
+function showHelp(options = {}) {
+    const { asModal = false } = options;
+    if (!asModal && helpView) {
+        setActiveView('help', { skipURLUpdate: true });
+        window.scrollTo(0, 0);
+        return;
+    }
+    if (helpModal) {
+        helpModal.style.display = 'block';
+    }
 }
 
-// Show stats modal
-function showStats() {
+// Show stats modal or view
+function showStats(options = {}) {
     updateStatsDisplay();
-    statsModal.style.display = 'block';
+    const { asModal = false } = options;
+    if (!asModal && statsView) {
+        setActiveView('stats', { skipURLUpdate: true });
+        window.scrollTo(0, 0);
+        return;
+    }
+    if (statsModal) {
+        statsModal.style.display = 'block';
+    }
 }
 
 // Update stats display
+function setStatField(field, value) {
+    document.querySelectorAll(`[data-stat-field="${field}"]`).forEach(el => {
+        el.textContent = value;
+    });
+}
+
 function updateStatsDisplay() {
-    document.getElementById('games-played').textContent = stats.gamesPlayed;
-    document.getElementById('games-won').textContent = stats.gamesWon;
-    document.getElementById('win-rate').textContent = `${stats.winRate}%`;
-    document.getElementById('current-streak').textContent = stats.currentStreak;
-    document.getElementById('max-streak').textContent = stats.maxStreak;
-    
-    // Compute Guess Average (count losses as 7 guesses)
-    const guessAverageElement = document.getElementById('guess-average');
-    if (guessAverageElement) {
-        try {
-            const completed = completedQuestions || {};
-            const games = Object.values(completed);
-            const totalGames = games.length;
-            if (totalGames === 0) {
-                guessAverageElement.textContent = '0';
-            } else {
-                const totalRatedGuesses = games.reduce((sum, game) => {
-                    const won = !!game.won;
-                    const guessesUsed = Number(game.guesses) || 0;
-                    return sum + (won ? guessesUsed : 7);
-                }, 0);
-                const average = totalRatedGuesses / totalGames;
-                guessAverageElement.textContent = Number.isInteger(average) ? `${average}` : average.toFixed(1);
-            }
-        } catch (e) {
-            guessAverageElement.textContent = '0';
+    setStatField('games-played', stats.gamesPlayed);
+    setStatField('games-won', stats.gamesWon);
+    setStatField('win-rate', `${stats.winRate}%`);
+    setStatField('current-streak', stats.currentStreak);
+    setStatField('max-streak', stats.maxStreak);
+
+    let guessAverageValue = '0';
+    try {
+        const completed = completedQuestions || {};
+        const games = Object.values(completed);
+        const totalGames = games.length;
+        if (totalGames === 0) {
+            guessAverageValue = '0';
+        } else {
+            const totalRatedGuesses = games.reduce((sum, game) => {
+                const won = !!game.won;
+                const guessesUsed = Number(game.guesses) || 0;
+                return sum + (won ? guessesUsed : 7);
+            }, 0);
+            const average = totalRatedGuesses / totalGames;
+            guessAverageValue = Number.isInteger(average) ? `${average}` : average.toFixed(1);
         }
+    } catch (e) {
+        guessAverageValue = '0';
     }
-    
-    // Update guess distribution
+    setStatField('guess-average', guessAverageValue);
+
     const guessDist = stats.guessDistribution || {};
     const maxWins = Math.max(...Object.values(guessDist), 0);
-    
+
     for (let i = 1; i <= 6; i++) {
         const count = guessDist[i] || 0;
         const percentage = maxWins > 0 ? (count / maxWins) * 100 : 0;
-        
-        const countElement = document.getElementById(`count-${i}`);
-        const barElement = document.getElementById(`dist-${i}`);
-        
-        if (countElement && barElement) {
-            countElement.textContent = count;
-            barElement.style.width = `${percentage}%`;
-        }
+
+        document.querySelectorAll(`[data-dist-count="${i}"]`).forEach(el => {
+            el.textContent = count;
+        });
+
+        document.querySelectorAll(`[data-dist-bar="${i}"]`).forEach(el => {
+            el.style.width = `${percentage}%`;
+        });
     }
 
     updateCalibrationChart();
 }
 
-function showCalibrationTooltip(evt, sampleSize, declared, actual) {
-    if (!calibrationTooltip) return;
+function showCalibrationTooltip(evt, sampleSize, declared, actual, group = 'default') {
+    const tooltip = calibrationTooltips.get(group);
+    if (!tooltip) return;
     const x = (evt.clientX || 0) + 10;
     const y = (evt.clientY || 0) + 10;
-    calibrationTooltip.style.left = `${x}px`;
-    calibrationTooltip.style.top = `${y}px`;
-    calibrationTooltip.innerHTML = `Sample Size: ${sampleSize}<br>Declared: ${declared}%<br>Actual: ${Math.round(actual)}%`;
-    calibrationTooltip.style.display = 'block';
+    tooltip.style.left = `${x}px`;
+    tooltip.style.top = `${y}px`;
+    tooltip.innerHTML = `Sample Size: ${sampleSize}<br>Declared: ${declared}%<br>Actual: ${Math.round(actual)}%`;
+    tooltip.style.display = 'block';
 }
 
-function hideCalibrationTooltip() {
-    if (calibrationTooltip) calibrationTooltip.style.display = 'none';
+function hideCalibrationTooltip(group) {
+    if (group) {
+        const tooltip = calibrationTooltips.get(group);
+        if (tooltip) tooltip.style.display = 'none';
+        return;
+    }
+    calibrationTooltips.forEach(el => {
+        el.style.display = 'none';
+    });
+}
+
+function isFirstGuessOnlyEnabled() {
+    if (!firstGuessCheckboxes || firstGuessCheckboxes.length === 0) return false;
+    return firstGuessCheckboxes[0].checked;
 }
 
 function updateCalibrationChart() {
-    const svg = calibrationChart;
-    if (!svg) return;
+    if (!calibrationCharts || calibrationCharts.length === 0) return;
 
-    hideCalibrationTooltip();
-    while (svg.firstChild) svg.removeChild(svg.firstChild);
-
-    const width = svg.viewBox.baseVal?.width || svg.width.baseVal.value || 300;
-    const height = svg.viewBox.baseVal?.height || svg.height.baseVal.value || 200;
-    svg.setAttribute('overflow', 'visible');
-
-    const firstOnly = firstGuessCheckbox && firstGuessCheckbox.checked;
+    const firstOnly = isFirstGuessOnlyEnabled();
     let data = stats.calibrationData || [];
     if (firstOnly) {
         data = data.filter(d => d.guessNumber === 1);
@@ -2184,112 +2254,119 @@ function updateCalibrationChart() {
         }
     });
 
-    const paddingLeft = 50,
-        paddingBottom = 60,
-        paddingTop = 20,
-        paddingRight = 20;
-    const plotWidth = width - paddingLeft - paddingRight;
-    const plotHeight = height - paddingTop - paddingBottom;
-
+    const hasData = bins.some(bin => bin.total > 0);
     const ns = 'http://www.w3.org/2000/svg';
 
-    const hasData = bins.some(bin => bin.total > 0);
-    if (calibrationNote) {
-        calibrationNote.style.display = hasData ? 'none' : 'block';
-    }
+    calibrationCharts.forEach(svg => {
+        if (!svg) return;
+        const group = svg.dataset.calibrationChart || 'default';
+        hideCalibrationTooltip(group);
+        while (svg.firstChild) svg.removeChild(svg.firstChild);
 
-    // Axes
-    const xAxis = document.createElementNS(ns, 'line');
-    xAxis.setAttribute('x1', paddingLeft);
-    xAxis.setAttribute('y1', height - paddingBottom);
-    xAxis.setAttribute('x2', width - paddingRight);
-    xAxis.setAttribute('y2', height - paddingBottom);
-    xAxis.setAttribute('stroke', '#ccc');
-    svg.appendChild(xAxis);
+        const width = svg.viewBox.baseVal?.width || svg.width.baseVal.value || 300;
+        const height = svg.viewBox.baseVal?.height || svg.height.baseVal.value || 200;
+        svg.setAttribute('overflow', 'visible');
 
-    const yAxis = document.createElementNS(ns, 'line');
-    yAxis.setAttribute('x1', paddingLeft);
-    yAxis.setAttribute('y1', height - paddingBottom);
-    yAxis.setAttribute('x2', paddingLeft);
-    yAxis.setAttribute('y2', paddingTop);
-    yAxis.setAttribute('stroke', '#ccc');
-    svg.appendChild(yAxis);
+        const note = calibrationNotes.get(group);
+        if (note) {
+            note.style.display = hasData ? 'none' : 'block';
+        }
 
-    // Diagonal line
-    const diag = document.createElementNS(ns, 'line');
-    diag.setAttribute('x1', paddingLeft);
-    diag.setAttribute('y1', height - paddingBottom);
-    diag.setAttribute('x2', width - paddingRight);
-    diag.setAttribute('y2', paddingTop);
-    diag.setAttribute('stroke', '#eee');
-    svg.appendChild(diag);
+        const paddingLeft = 50;
+        const paddingBottom = 60;
+        const paddingTop = 20;
+        const paddingRight = 20;
+        const plotWidth = width - paddingLeft - paddingRight;
+        const plotHeight = height - paddingTop - paddingBottom;
 
-    // Ticks and labels
-    const xTickValues = declaredLevels;
-    xTickValues.forEach((value) => {
-        const x = paddingLeft + (value / 100) * plotWidth;
+        const xAxis = document.createElementNS(ns, 'line');
+        xAxis.setAttribute('x1', paddingLeft);
+        xAxis.setAttribute('y1', height - paddingBottom);
+        xAxis.setAttribute('x2', width - paddingRight);
+        xAxis.setAttribute('y2', height - paddingBottom);
+        xAxis.setAttribute('stroke', '#ccc');
+        svg.appendChild(xAxis);
 
-        const xTick = document.createElementNS(ns, 'line');
-        xTick.setAttribute('x1', x);
-        xTick.setAttribute('y1', height - paddingBottom);
-        xTick.setAttribute('x2', x);
-        xTick.setAttribute('y2', height - paddingBottom + 5);
-        xTick.setAttribute('stroke', '#ccc');
-        svg.appendChild(xTick);
+        const yAxis = document.createElementNS(ns, 'line');
+        yAxis.setAttribute('x1', paddingLeft);
+        yAxis.setAttribute('y1', height - paddingBottom);
+        yAxis.setAttribute('x2', paddingLeft);
+        yAxis.setAttribute('y2', paddingTop);
+        yAxis.setAttribute('stroke', '#ccc');
+        svg.appendChild(yAxis);
 
-        const xLabel = document.createElementNS(ns, 'text');
-        xLabel.setAttribute('x', x + 2);
-        xLabel.setAttribute('y', height - paddingBottom + 20);
-        xLabel.setAttribute('text-anchor', 'end');
-        xLabel.setAttribute('font-size', '10');
-        xLabel.setAttribute('transform', `rotate(-45 ${x} ${height - paddingBottom + 15})`);
-        xLabel.textContent = `${value}%`;
-        svg.appendChild(xLabel);
-    });
+        const diag = document.createElementNS(ns, 'line');
+        diag.setAttribute('x1', paddingLeft);
+        diag.setAttribute('y1', height - paddingBottom);
+        diag.setAttribute('x2', width - paddingRight);
+        diag.setAttribute('y2', paddingTop);
+        diag.setAttribute('stroke', '#eee');
+        svg.appendChild(diag);
 
-    const yTickValues = Array.from(new Set([...declaredLevels, 100]))
-        .filter((value) => value !== MAX_CONFIDENCE_PERCENT)
-        .sort((a, b) => a - b);
-    yTickValues.forEach((value) => {
-        const y = height - paddingBottom - (value / 100) * plotHeight;
+        declaredLevels.forEach((value) => {
+            const x = paddingLeft + (value / 100) * plotWidth;
 
-        const yTick = document.createElementNS(ns, 'line');
-        yTick.setAttribute('x1', paddingLeft - 5);
-        yTick.setAttribute('y1', y);
-        yTick.setAttribute('x2', paddingLeft);
-        yTick.setAttribute('y2', y);
-        yTick.setAttribute('stroke', '#ccc');
-        svg.appendChild(yTick);
+            const xTick = document.createElementNS(ns, 'line');
+            xTick.setAttribute('x1', x);
+            xTick.setAttribute('y1', height - paddingBottom);
+            xTick.setAttribute('x2', x);
+            xTick.setAttribute('y2', height - paddingBottom + 5);
+            xTick.setAttribute('stroke', '#ccc');
+            svg.appendChild(xTick);
 
-        const yLabel = document.createElementNS(ns, 'text');
-        yLabel.setAttribute('x', paddingLeft - 8);
-        yLabel.setAttribute('y', y + 6);
-        yLabel.setAttribute('text-anchor', 'end');
-        yLabel.setAttribute('font-size', '10');
-        yLabel.textContent = `${value}%`;
-        svg.appendChild(yLabel);
-    });
+            const xLabel = document.createElementNS(ns, 'text');
+            xLabel.setAttribute('x', x + 2);
+            xLabel.setAttribute('y', height - paddingBottom + 20);
+            xLabel.setAttribute('text-anchor', 'end');
+            xLabel.setAttribute('font-size', '10');
+            xLabel.setAttribute('transform', `rotate(-45 ${x} ${height - paddingBottom + 15})`);
+            xLabel.textContent = `${value}%`;
+            svg.appendChild(xLabel);
+        });
 
-    // Calibration points
-    bins.forEach((bin, i) => {
-        if (!bin.total) return;
-        const x = paddingLeft + (declaredLevels[i] / 100) * plotWidth;
-        const ratio = bin.correct / bin.total;
-        const y = height - paddingBottom - ratio * plotHeight;
-        const circle = document.createElementNS(ns, 'circle');
-        circle.setAttribute('cx', x);
-        circle.setAttribute('cy', y);
-        circle.setAttribute('r', 3);
-        circle.setAttribute('fill', '#3498db');
-        const declaredPercent = declaredLevels[i];
-        circle.addEventListener('mouseenter', (e) => showCalibrationTooltip(e, bin.total, declaredPercent, ratio * 100));
-        circle.addEventListener('mouseleave', hideCalibrationTooltip);
-        circle.addEventListener('click', (e) => showCalibrationTooltip(e, bin.total, declaredPercent, ratio * 100));
-        circle.addEventListener('touchstart', (e) => {
-            const t = e.touches[0];
-            if (t) showCalibrationTooltip(t, bin.total, declaredPercent, ratio * 100);
-        }, { passive: true });
-        svg.appendChild(circle);
+        const yTickValues = Array.from(new Set([...declaredLevels, 100]))
+            .filter((value) => value !== MAX_CONFIDENCE_PERCENT)
+            .sort((a, b) => a - b);
+        yTickValues.forEach((value) => {
+            const y = height - paddingBottom - (value / 100) * plotHeight;
+
+            const yTick = document.createElementNS(ns, 'line');
+            yTick.setAttribute('x1', paddingLeft - 5);
+            yTick.setAttribute('y1', y);
+            yTick.setAttribute('x2', paddingLeft);
+            yTick.setAttribute('y2', y);
+            yTick.setAttribute('stroke', '#ccc');
+            svg.appendChild(yTick);
+
+            const yLabel = document.createElementNS(ns, 'text');
+            yLabel.setAttribute('x', paddingLeft - 8);
+            yLabel.setAttribute('y', y + 6);
+            yLabel.setAttribute('text-anchor', 'end');
+            yLabel.setAttribute('font-size', '10');
+            yLabel.textContent = `${value}%`;
+            svg.appendChild(yLabel);
+        });
+
+        bins.forEach((bin, i) => {
+            if (!bin.total) return;
+            const x = paddingLeft + (declaredLevels[i] / 100) * plotWidth;
+            const ratio = bin.correct / bin.total;
+            const y = height - paddingBottom - ratio * plotHeight;
+            const circle = document.createElementNS(ns, 'circle');
+            circle.setAttribute('cx', x);
+            circle.setAttribute('cy', y);
+            circle.setAttribute('r', 3);
+            circle.setAttribute('fill', '#3498db');
+            const declaredPercent = declaredLevels[i];
+            circle.addEventListener('mouseenter', (e) => showCalibrationTooltip(e, bin.total, declaredPercent, ratio * 100, group));
+            circle.addEventListener('mouseleave', () => hideCalibrationTooltip(group));
+            circle.addEventListener('click', (e) => showCalibrationTooltip(e, bin.total, declaredPercent, ratio * 100, group));
+            circle.addEventListener('touchstart', (e) => {
+                const t = e.touches[0];
+                if (t) showCalibrationTooltip(t, bin.total, declaredPercent, ratio * 100, group);
+            }, { passive: true });
+            svg.appendChild(circle);
+        });
     });
 }
 
@@ -2417,8 +2494,11 @@ function loadCalibrationSetting() {
         cb.checked = calibrationEnabled;
     });
     const savedFirstOnly = localStorage.getItem('fermiFirstGuessOnly');
-    if (firstGuessCheckbox && savedFirstOnly !== null) {
-        firstGuessCheckbox.checked = savedFirstOnly === 'true';
+    if (savedFirstOnly !== null) {
+        const checked = savedFirstOnly === 'true';
+        firstGuessCheckboxes.forEach(cb => {
+            cb.checked = checked;
+        });
     }
     updateConfidenceInputVisibility();
     updateCalibrationChart();
@@ -2434,7 +2514,7 @@ function setCalibrationEnabled(enabled) {
 }
 
 function updateConfidenceInputVisibility() {
-    const firstOnlyActive = firstGuessCheckbox && firstGuessCheckbox.checked;
+    const firstOnlyActive = isFirstGuessOnlyEnabled();
     const showConfidence = calibrationEnabled && (!firstOnlyActive || currentGuess === 0);
 
     if (confidenceWrapper) {
@@ -3157,6 +3237,14 @@ function parseURL() {
         return { view: 'calendar' };
     }
 
+    if (hash === '#/help') {
+        return { view: 'help' };
+    }
+
+    if (hash === '#/stats') {
+        return { view: 'stats' };
+    }
+
     const questionMatch = hash.match(/^#\/(\d{4}-\d{2}-\d{2})$/);
     if (questionMatch) {
         return { view: 'game', date: questionMatch[1] };
@@ -3214,7 +3302,17 @@ function handlePopState() {
     const route = parseURL();
 
     if (route.view === 'calendar') {
-        setActiveView('calendar', { skipURLUpdate: true, force: true });
+        setActiveView('calendar', { skipURLUpdate: true, force: true, fromHistory: true });
+        return;
+    }
+
+    if (route.view === 'help') {
+        setActiveView('help', { skipURLUpdate: true, force: true, fromHistory: true });
+        return;
+    }
+
+    if (route.view === 'stats') {
+        setActiveView('stats', { skipURLUpdate: true, force: true, fromHistory: true });
         return;
     }
 
@@ -3225,7 +3323,7 @@ function handlePopState() {
         return;
     }
 
-    setActiveView('welcome', { skipURLUpdate: true, force: true });
+    setActiveView('welcome', { skipURLUpdate: true, force: true, fromHistory: true });
 }
 
 // Initialize routing
@@ -3242,6 +3340,10 @@ function initRouting(skipInitialNavigation = false) {
     const route = parseURL();
     if (route.view === 'calendar') {
         setActiveView('calendar', { skipURLUpdate: true, force: true });
+    } else if (route.view === 'help') {
+        setActiveView('help', { skipURLUpdate: true, force: true, fromHistory: true });
+    } else if (route.view === 'stats') {
+        setActiveView('stats', { skipURLUpdate: true, force: true, fromHistory: true });
     } else if (route.view === 'game' && route.date) {
         if (!navigateToQuestion(route.date)) {
             navigateToCurrentQuestion();
@@ -3316,6 +3418,24 @@ function setupEventListeners() {
         });
     }
 
+    if (helpBackBtn) {
+        helpBackBtn.addEventListener('click', () => {
+            navigateBack('welcome');
+        });
+    }
+
+    if (statsBackBtn) {
+        statsBackBtn.addEventListener('click', () => {
+            navigateBack('welcome');
+        });
+    }
+
+    if (calendarBackBtn) {
+        calendarBackBtn.addEventListener('click', () => {
+            navigateBack('welcome');
+        });
+    }
+
     // Help button
     helpBtn.addEventListener('click', showHelp);
 
@@ -3352,11 +3472,19 @@ function setupEventListeners() {
         });
     }
 
-    if (firstGuessCheckbox) {
-        firstGuessCheckbox.addEventListener('change', () => {
-            localStorage.setItem('fermiFirstGuessOnly', firstGuessCheckbox.checked ? 'true' : 'false');
-            updateCalibrationChart();
-            updateConfidenceInputVisibility();
+    if (firstGuessCheckboxes.length) {
+        firstGuessCheckboxes.forEach(cb => {
+            cb.addEventListener('change', () => {
+                const checked = cb.checked;
+                firstGuessCheckboxes.forEach(other => {
+                    if (other !== cb) {
+                        other.checked = checked;
+                    }
+                });
+                localStorage.setItem('fermiFirstGuessOnly', checked ? 'true' : 'false');
+                updateCalibrationChart();
+                updateConfidenceInputVisibility();
+            });
         });
     }
 
@@ -3433,7 +3561,9 @@ function setupEventListeners() {
                     sourceText.textContent = explanation;
                 }
                 // Reset stats placeholders before fetching
-                if (medianFirstGuessText) medianFirstGuessText.textContent = '';
+                medianFirstGuessElements.forEach(el => {
+                    el.textContent = '';
+                });
                 const playersEl = document.getElementById('source-players-count');
                 const winRateEl = document.getElementById('source-win-rate');
                 const avgTriesEl = document.getElementById('source-avg-tries');
@@ -3444,18 +3574,24 @@ function setupEventListeners() {
                 // Fetch median first guess
                 fetchMedianFirstGuess(currentQuestion.date)
                     .then(median => {
-                        if (median != null && medianFirstGuessText) {
-                            medianFirstGuessText.textContent = `The median first guess was ${formatNumber(median)}`;
+                        if (median != null) {
+                            medianFirstGuessElements.forEach(el => {
+                                el.textContent = `The median first guess was ${formatNumber(median)}`;
+                            });
                         }
                     })
                     .catch(() => {/* ignore */});
 
                 // Fetch user's first-guess percentile
-                if (firstGuessPercentileText) firstGuessPercentileText.textContent = '';
+                firstGuessPercentileElements.forEach(el => {
+                    el.textContent = '';
+                });
                 fetchFirstGuessPercentile(currentQuestion.date)
                     .then(p => {
-                        if (typeof p === 'number' && firstGuessPercentileText) {
-                            firstGuessPercentileText.textContent = `Your first guess is in the ${p}th percentile, meaning you've performed as well or better than ${p}% of players.`;
+                        if (typeof p === 'number') {
+                            firstGuessPercentileElements.forEach(el => {
+                                el.textContent = `Your first guess is in the ${p}th percentile, meaning you've performed as well or better than ${p}% of players.`;
+                            });
                         }
                     })
                     .catch(() => {/* ignore */});
@@ -3516,7 +3652,7 @@ function setupEventListeners() {
 
     // Share buttons
     shareBtn.addEventListener('click', shareGame);
-    shareStatsBtn.addEventListener('click', shareStats);
+    shareStatsButtons.forEach(btn => btn.addEventListener('click', shareStats));
         
     // Close modals when clicking outside (desktop + mobile)
     [helpModal, statsModal, questionsModal, sourceModal].forEach(modal => {
@@ -3538,12 +3674,13 @@ function setupEventListeners() {
     }
 }
 
-if (calibrationChart) {
-    calibrationChart.addEventListener('mouseleave', hideCalibrationTooltip);
-}
+calibrationCharts.forEach(chart => {
+    const group = chart.dataset.calibrationChart || 'default';
+    chart.addEventListener('mouseleave', () => hideCalibrationTooltip(group));
+});
 
 document.addEventListener('click', (e) => {
-    if (!e.target.closest('#calibration-chart')) hideCalibrationTooltip();
+    if (!e.target.closest('[data-calibration-chart]')) hideCalibrationTooltip();
 });
 
 // Initialize the game when the page loads
