@@ -1310,9 +1310,13 @@ button#stats-btn {
 .primary-action,
 .secondary-action {
     font-family: 'Nunito', sans-serif;
-    border-radius: 14px;
+    border-radius: 16px;
     cursor: pointer;
     transition: transform 0.15s ease, box-shadow 0.15s ease;
+    text-transform: uppercase;
+    letter-spacing: 0.05rem;
+    font-size: 15px;
+    font-weight: 700;
 }
 
 .primary-action {
@@ -1320,7 +1324,6 @@ button#stats-btn {
     color: #fff;
     padding: 16px 18px;
     border: none;
-    font-size: 0.72rem;
     box-shadow: 0 10px 18px rgba(15, 23, 42, 0.18);
 }
 
@@ -1335,15 +1338,15 @@ button#stats-btn {
 }
 
 .secondary-action {
-    background: transparent;
-    border: 2px solid #0f172a;
-    color: #0f172a;
-    padding: 14px 16px;
-    font-size: 0.62rem;
+    background: #fff;
+    border: 2px solid #eaecef;
+    color: #838181;
+    padding: 11.25px 18px;
+    box-shadow: 0 2px 0 #eaecef;
 }
 
 .secondary-action:hover {
-    background: rgba(15, 23, 42, 0.08);
+    background: rgba(15, 23, 42, 0.03);
 }
 
 .calendar-wrapper {
@@ -1543,16 +1546,6 @@ button.calendar-cell:disabled {
 
     .daily-challenge-question {
         font-size: 0.78rem;
-    }
-
-    .primary-action {
-        font-size: 0.65rem;
-        padding: 14px 16px;
-    }
-
-    .secondary-action {
-        font-size: 0.58rem;
-        padding: 12px 14px;
     }
 
     .calendar-wrapper {
