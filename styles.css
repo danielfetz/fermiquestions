@@ -148,9 +148,10 @@ main {
 }
 
 .game-title {
-    font-size: 0.9375rem;
-    width: 150px;
-    font-weight: 400;
+    font-size: 1.1rem;
+    width: 100px;
+    font-weight: 650;
+    line-height: 1.2;
 }
 
 .icon-button {
@@ -1219,7 +1220,7 @@ button#stats-btn {
 
 .welcome-content {
     max-width: 520px;
-    margin: 40px auto;
+    margin: 0 auto;
     text-align: center;
     display: flex;
     flex-direction: column;
