@@ -1226,6 +1226,43 @@ button#stats-btn {
     gap: 26px;
 }
 
+.welcome-info-card {
+    background: #fff;
+    border: 2px solid #e9ecef;
+    border-radius: 18px;
+    padding: 24px;
+    display: flex;
+    flex-direction: column;
+    gap: 18px;
+    text-align: left;
+}
+
+.welcome-info-body {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.welcome-info-body p {
+    margin: 0;
+}
+
+.welcome-info-note {
+    font-size: 0.95rem;
+    color: #64748b;
+    line-height: 1.55;
+}
+
+.welcome-info-actions {
+    display: flex;
+    justify-content: flex-start;
+    align-items: flex-start;
+}
+
+.welcome-info-actions .secondary-action {
+    align-self: flex-start;
+}
+
 .daily-challenge-card {
     --card-accent: #e9ecef;
     --primary-action-bg: var(--card-accent);
@@ -1250,9 +1287,9 @@ button#stats-btn {
 }
 
 .daily-challenge-card--won {
-    --card-accent: #15803d;
+    --card-accent: #58cc02;
     --primary-action-bg: var(--card-accent);
-    --primary-action-shadow: var(--card-accent);
+    --primary-action-shadow: #57a700;
     --primary-action-text: #fff;
 }
 
@@ -1268,7 +1305,7 @@ button#stats-btn {
     top: -4px;
     right: -4px;
     background: var(--card-accent);
-    color: #0f172a;
+    color: #fff;
     font-size: 15px;
     font-weight: 700;
     text-transform: uppercase;
@@ -1601,6 +1638,10 @@ button.calendar-cell:disabled {
     }
 
     .daily-challenge-card {
+        padding: 20px;
+    }
+
+    .welcome-info-card {
         padding: 20px;
     }
 }

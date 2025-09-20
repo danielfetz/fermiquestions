@@ -991,6 +991,7 @@ const gameView = document.getElementById('game-view');
 const calendarView = document.getElementById('calendar-view');
 const playDailyBtn = document.getElementById('play-daily-btn');
 const calendarLinkBtn = document.getElementById('calendar-link-btn');
+const learnMoreBtn = document.getElementById('learn-more-btn');
 const homeBtn = document.getElementById('home-btn');
 const calendarBtn = document.getElementById('calendar-btn');
 const dailyChallengeCard = document.getElementById('daily-challenge-card');
@@ -3362,6 +3363,10 @@ function setupEventListeners() {
         calendarLinkBtn.addEventListener('click', () => {
             navigateToView('calendar');
         });
+    }
+
+    if (learnMoreBtn) {
+        learnMoreBtn.addEventListener('click', showHelp);
     }
 
     if (homeBtn) {
