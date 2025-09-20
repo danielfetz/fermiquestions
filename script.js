@@ -414,7 +414,10 @@ function subscribeToComments(questionDate) {
 
 function openComments() {
     if (!commentsSection || !currentQuestion) return;
-    loadComments();
+    if (!ensureExtrasAccessible(currentQuestion.date)) {
+        return;
+    }
+    void loadComments();
     navigateToView('comments', { date: currentQuestion.date });
 }
 
@@ -1156,32 +1159,30 @@ function initGame() {
                 break;
             case 'source': {
                 const targetDate = initialRoute.date || (currentQuestion ? currentQuestion.date : null);
-                if (initialRoute.date) {
-                    if (!ensureQuestionSelected(initialRoute.date)) {
-                        navigateToCurrentQuestion();
-                        break;
-                    }
-                } else if (!ensureQuestionSelected(targetDate)) {
+                if (!ensureExtrasAccessible(targetDate)) {
+                    break;
+                }
+                const resolvedDate = targetDate || (currentQuestion ? currentQuestion.date : null);
+                if (!ensureQuestionSelected(resolvedDate)) {
                     navigateToCurrentQuestion();
                     break;
                 }
                 prepareSourceView();
-                setActiveView('source', { skipURLUpdate: true, force: true, date: targetDate || (currentQuestion ? currentQuestion.date : null) });
+                setActiveView('source', { skipURLUpdate: true, force: true, date: resolvedDate });
                 break;
             }
             case 'comments': {
                 const targetDate = initialRoute.date || (currentQuestion ? currentQuestion.date : null);
-                if (initialRoute.date) {
-                    if (!ensureQuestionSelected(initialRoute.date)) {
-                        navigateToCurrentQuestion();
-                        break;
-                    }
-                } else if (!ensureQuestionSelected(targetDate)) {
+                if (!ensureExtrasAccessible(targetDate)) {
+                    break;
+                }
+                const resolvedDate = targetDate || (currentQuestion ? currentQuestion.date : null);
+                if (!ensureQuestionSelected(resolvedDate)) {
                     navigateToCurrentQuestion();
                     break;
                 }
                 void loadComments();
-                setActiveView('comments', { skipURLUpdate: true, force: true, date: targetDate || (currentQuestion ? currentQuestion.date : null) });
+                setActiveView('comments', { skipURLUpdate: true, force: true, date: resolvedDate });
                 break;
             }
             case 'welcome':
@@ -1507,6 +1508,14 @@ function setActiveView(view, options = {}) {
 
 function navigateToView(view, options = {}) {
     const { skipHistory = false, skipURLUpdate, force = false, date } = options;
+
+    if (view === 'source' || view === 'comments') {
+        const targetDate = date || (currentQuestion ? currentQuestion.date : null);
+        if (!ensureExtrasAccessible(targetDate)) {
+            return;
+        }
+    }
+
     if (!skipHistory && currentView !== view) {
         viewHistory.push(currentView);
     }
@@ -3420,6 +3429,25 @@ function ensureQuestionSelected(questionDate) {
     return true;
 }
 
+function hasCompletedQuestion(questionDate) {
+    if (!questionDate) return false;
+    return Boolean(completedQuestions && completedQuestions[questionDate]);
+}
+
+function ensureExtrasAccessible(questionDate) {
+    if (!questionDate) {
+        navigateToCurrentQuestion();
+        return false;
+    }
+
+    if (!hasCompletedQuestion(questionDate)) {
+        navigateToQuestion(questionDate);
+        return false;
+    }
+
+    return true;
+}
+
 // Navigate to a specific question by date
 function navigateToQuestion(questionDate) {
     const question = getQuestionForDate(questionDate);
@@ -3477,28 +3505,30 @@ function handlePopState() {
             return;
         case 'source': {
             const targetDate = route.date || (currentQuestion ? currentQuestion.date : null);
-            if (route.date && !ensureQuestionSelected(route.date)) {
-                navigateToCurrentQuestion();
+            if (!ensureExtrasAccessible(targetDate)) {
                 return;
-            } else if (!route.date && !ensureQuestionSelected(targetDate)) {
+            }
+            const resolvedDate = targetDate || (currentQuestion ? currentQuestion.date : null);
+            if (!ensureQuestionSelected(resolvedDate)) {
                 navigateToCurrentQuestion();
                 return;
             }
             prepareSourceView();
-            setActiveView('source', { skipURLUpdate: true, force: true, date: targetDate || (currentQuestion ? currentQuestion.date : null) });
+            setActiveView('source', { skipURLUpdate: true, force: true, date: resolvedDate });
             return;
         }
         case 'comments': {
             const targetDate = route.date || (currentQuestion ? currentQuestion.date : null);
-            if (route.date && !ensureQuestionSelected(route.date)) {
-                navigateToCurrentQuestion();
+            if (!ensureExtrasAccessible(targetDate)) {
                 return;
-            } else if (!route.date && !ensureQuestionSelected(targetDate)) {
+            }
+            const resolvedDate = targetDate || (currentQuestion ? currentQuestion.date : null);
+            if (!ensureQuestionSelected(resolvedDate)) {
                 navigateToCurrentQuestion();
                 return;
             }
             void loadComments();
-            setActiveView('comments', { skipURLUpdate: true, force: true, date: targetDate || (currentQuestion ? currentQuestion.date : null) });
+            setActiveView('comments', { skipURLUpdate: true, force: true, date: resolvedDate });
             return;
         }
         case 'game':
@@ -3549,32 +3579,30 @@ function initRouting(skipInitialNavigation = false) {
             break;
         case 'source': {
             const targetDate = route.date || (currentQuestion ? currentQuestion.date : null);
-            if (route.date) {
-                if (!ensureQuestionSelected(route.date)) {
-                    navigateToCurrentQuestion();
-                    break;
-                }
-            } else if (!ensureQuestionSelected(targetDate)) {
+            if (!ensureExtrasAccessible(targetDate)) {
+                break;
+            }
+            const resolvedDate = targetDate || (currentQuestion ? currentQuestion.date : null);
+            if (!ensureQuestionSelected(resolvedDate)) {
                 navigateToCurrentQuestion();
                 break;
             }
             prepareSourceView();
-            setActiveView('source', { skipURLUpdate: true, force: true, date: targetDate || (currentQuestion ? currentQuestion.date : null) });
+            setActiveView('source', { skipURLUpdate: true, force: true, date: resolvedDate });
             break;
         }
         case 'comments': {
             const targetDate = route.date || (currentQuestion ? currentQuestion.date : null);
-            if (route.date) {
-                if (!ensureQuestionSelected(route.date)) {
-                    navigateToCurrentQuestion();
-                    break;
-                }
-            } else if (!ensureQuestionSelected(targetDate)) {
+            if (!ensureExtrasAccessible(targetDate)) {
+                break;
+            }
+            const resolvedDate = targetDate || (currentQuestion ? currentQuestion.date : null);
+            if (!ensureQuestionSelected(resolvedDate)) {
                 navigateToCurrentQuestion();
                 break;
             }
             void loadComments();
-            setActiveView('comments', { skipURLUpdate: true, force: true, date: targetDate || (currentQuestion ? currentQuestion.date : null) });
+            setActiveView('comments', { skipURLUpdate: true, force: true, date: resolvedDate });
             break;
         }
         case 'welcome':
@@ -3760,8 +3788,13 @@ function setupEventListeners() {
     if (sourceBtn && sourceView) {
         sourceBtn.addEventListener('click', () => {
             if (!currentQuestion) return;
+            const targetDate = currentQuestion.date;
+            if (!hasCompletedQuestion(targetDate)) {
+                navigateToQuestion(targetDate);
+                return;
+            }
             prepareSourceView();
-            navigateToView('source', { date: currentQuestion.date });
+            navigateToView('source', { date: targetDate });
         });
     }
 
