@@ -413,9 +413,9 @@ function subscribeToComments(questionDate) {
 }
 
 function openComments() {
-    if (!commentsSection) return;
+    if (!commentsSection || !currentQuestion) return;
     loadComments();
-    navigateToView('comments');
+    navigateToView('comments', { date: currentQuestion.date });
 }
 
 function closeComments() {
@@ -1154,14 +1154,36 @@ function initGame() {
                 updateStatsDisplay();
                 setActiveView('stats', { skipURLUpdate: true, force: true });
                 break;
-            case 'source':
+            case 'source': {
+                const targetDate = initialRoute.date || (currentQuestion ? currentQuestion.date : null);
+                if (initialRoute.date) {
+                    if (!ensureQuestionSelected(initialRoute.date)) {
+                        navigateToCurrentQuestion();
+                        break;
+                    }
+                } else if (!ensureQuestionSelected(targetDate)) {
+                    navigateToCurrentQuestion();
+                    break;
+                }
                 prepareSourceView();
-                setActiveView('source', { skipURLUpdate: true, force: true });
+                setActiveView('source', { skipURLUpdate: true, force: true, date: targetDate || (currentQuestion ? currentQuestion.date : null) });
                 break;
-            case 'comments':
+            }
+            case 'comments': {
+                const targetDate = initialRoute.date || (currentQuestion ? currentQuestion.date : null);
+                if (initialRoute.date) {
+                    if (!ensureQuestionSelected(initialRoute.date)) {
+                        navigateToCurrentQuestion();
+                        break;
+                    }
+                } else if (!ensureQuestionSelected(targetDate)) {
+                    navigateToCurrentQuestion();
+                    break;
+                }
                 void loadComments();
-                setActiveView('comments', { skipURLUpdate: true, force: true });
+                setActiveView('comments', { skipURLUpdate: true, force: true, date: targetDate || (currentQuestion ? currentQuestion.date : null) });
                 break;
+            }
             case 'welcome':
             default:
                 setActiveView('welcome', { force: true });
@@ -1423,8 +1445,27 @@ function updateHash(newHash) {
     }
 }
 
+function getHashForView(view, date) {
+    switch (view) {
+        case 'welcome':
+            return '#/welcome';
+        case 'calendar':
+            return '#/calendar';
+        case 'help':
+            return '#/help';
+        case 'stats':
+            return '#/stats';
+        case 'source':
+            return date ? `#/${date}/source` : '#/source';
+        case 'comments':
+            return date ? `#/${date}/comments` : '#/comments';
+        default:
+            return null;
+    }
+}
+
 function setActiveView(view, options = {}) {
-    const { skipURLUpdate = false, force = false } = options;
+    const { skipURLUpdate = false, force = false, date } = options;
     if (!force && currentView === view) {
         if (view === 'calendar') {
             renderCalendar();
@@ -1446,18 +1487,10 @@ function setActiveView(view, options = {}) {
     });
 
     if (!skipURLUpdate) {
-        if (view === 'welcome') {
-            updateHash('#/welcome');
-        } else if (view === 'calendar') {
-            updateHash('#/calendar');
-        } else if (view === 'help') {
-            updateHash('#/help');
-        } else if (view === 'stats') {
-            updateHash('#/stats');
-        } else if (view === 'source') {
-            updateHash('#/source');
-        } else if (view === 'comments') {
-            updateHash('#/comments');
+        const viewDate = date || (currentQuestion ? currentQuestion.date : null);
+        const newHash = getHashForView(view, viewDate);
+        if (newHash) {
+            updateHash(newHash);
         }
     }
 
@@ -1473,27 +1506,41 @@ function setActiveView(view, options = {}) {
 }
 
 function navigateToView(view, options = {}) {
-    const { skipHistory = false, skipURLUpdate, force = false } = options;
+    const { skipHistory = false, skipURLUpdate, force = false, date } = options;
     if (!skipHistory && currentView !== view) {
         viewHistory.push(currentView);
     }
     const shouldSkipURL = skipURLUpdate !== undefined
         ? skipURLUpdate
         : !urlSyncedViews.has(view);
-    setActiveView(view, { skipURLUpdate: shouldSkipURL, force });
+    setActiveView(view, { skipURLUpdate: shouldSkipURL, force, date });
 }
 
 function goBack(fallbackView = 'welcome') {
     if (viewHistory.length > 0) {
         const previous = viewHistory.pop();
         const skipURLUpdate = !urlSyncedViews.has(previous);
-        setActiveView(previous, { skipURLUpdate, force: true });
+        const options = { skipURLUpdate, force: true };
+        if ((previous === 'source' || previous === 'comments') && currentQuestion) {
+            options.date = currentQuestion.date;
+        }
+        setActiveView(previous, options);
+        if (previous === 'game' && currentQuestion) {
+            updateURL(currentQuestion.date);
+        }
         return;
     }
 
     if (fallbackView) {
         const skipURLUpdate = !urlSyncedViews.has(fallbackView);
-        setActiveView(fallbackView, { skipURLUpdate, force: true });
+        const options = { skipURLUpdate, force: true };
+        if ((fallbackView === 'source' || fallbackView === 'comments') && currentQuestion) {
+            options.date = currentQuestion.date;
+        }
+        setActiveView(fallbackView, options);
+        if (fallbackView === 'game' && currentQuestion) {
+            updateURL(currentQuestion.date);
+        }
     }
 }
 
@@ -3314,6 +3361,11 @@ function parseURL() {
         return { view: 'stats' };
     }
 
+    const datedViewMatch = hash.match(/^#\/(\d{4}-\d{2}-\d{2})\/(comments|source)$/);
+    if (datedViewMatch) {
+        return { view: datedViewMatch[2], date: datedViewMatch[1] };
+    }
+
     if (hash === '#/source') {
         return { view: 'source' };
     }
@@ -3332,6 +3384,40 @@ function parseURL() {
     }
 
     return { view: 'welcome' };
+}
+
+function ensureQuestionSelected(questionDate) {
+    if (questionDate) {
+        if (currentQuestion && currentQuestion.date === questionDate) {
+            return true;
+        }
+        const question = getQuestionForDate(questionDate);
+        if (!question) {
+            return false;
+        }
+        const today = getCurrentDate();
+        if (question.date > today) {
+            return false;
+        }
+        isNavigating = true;
+        selectQuestion(question);
+        isNavigating = false;
+        return true;
+    }
+
+    if (currentQuestion) {
+        return true;
+    }
+
+    const defaultQuestion = getCurrentQuestion();
+    if (!defaultQuestion) {
+        return false;
+    }
+
+    isNavigating = true;
+    selectQuestion(defaultQuestion);
+    isNavigating = false;
+    return true;
 }
 
 // Navigate to a specific question by date
@@ -3389,14 +3475,32 @@ function handlePopState() {
             updateStatsDisplay();
             setActiveView('stats', { skipURLUpdate: true, force: true });
             return;
-        case 'source':
+        case 'source': {
+            const targetDate = route.date || (currentQuestion ? currentQuestion.date : null);
+            if (route.date && !ensureQuestionSelected(route.date)) {
+                navigateToCurrentQuestion();
+                return;
+            } else if (!route.date && !ensureQuestionSelected(targetDate)) {
+                navigateToCurrentQuestion();
+                return;
+            }
             prepareSourceView();
-            setActiveView('source', { skipURLUpdate: true, force: true });
+            setActiveView('source', { skipURLUpdate: true, force: true, date: targetDate || (currentQuestion ? currentQuestion.date : null) });
             return;
-        case 'comments':
+        }
+        case 'comments': {
+            const targetDate = route.date || (currentQuestion ? currentQuestion.date : null);
+            if (route.date && !ensureQuestionSelected(route.date)) {
+                navigateToCurrentQuestion();
+                return;
+            } else if (!route.date && !ensureQuestionSelected(targetDate)) {
+                navigateToCurrentQuestion();
+                return;
+            }
             void loadComments();
-            setActiveView('comments', { skipURLUpdate: true, force: true });
+            setActiveView('comments', { skipURLUpdate: true, force: true, date: targetDate || (currentQuestion ? currentQuestion.date : null) });
             return;
+        }
         case 'game':
             if (route.date) {
                 if (!navigateToQuestion(route.date)) {
@@ -3443,14 +3547,36 @@ function initRouting(skipInitialNavigation = false) {
             updateStatsDisplay();
             setActiveView('stats', { skipURLUpdate: true, force: true });
             break;
-        case 'source':
+        case 'source': {
+            const targetDate = route.date || (currentQuestion ? currentQuestion.date : null);
+            if (route.date) {
+                if (!ensureQuestionSelected(route.date)) {
+                    navigateToCurrentQuestion();
+                    break;
+                }
+            } else if (!ensureQuestionSelected(targetDate)) {
+                navigateToCurrentQuestion();
+                break;
+            }
             prepareSourceView();
-            setActiveView('source', { skipURLUpdate: true, force: true });
+            setActiveView('source', { skipURLUpdate: true, force: true, date: targetDate || (currentQuestion ? currentQuestion.date : null) });
             break;
-        case 'comments':
+        }
+        case 'comments': {
+            const targetDate = route.date || (currentQuestion ? currentQuestion.date : null);
+            if (route.date) {
+                if (!ensureQuestionSelected(route.date)) {
+                    navigateToCurrentQuestion();
+                    break;
+                }
+            } else if (!ensureQuestionSelected(targetDate)) {
+                navigateToCurrentQuestion();
+                break;
+            }
             void loadComments();
-            setActiveView('comments', { skipURLUpdate: true, force: true });
+            setActiveView('comments', { skipURLUpdate: true, force: true, date: targetDate || (currentQuestion ? currentQuestion.date : null) });
             break;
+        }
         case 'welcome':
         default:
             setActiveView('welcome', { force: true });
@@ -3633,8 +3759,9 @@ function setupEventListeners() {
     // Source button opens explanation view
     if (sourceBtn && sourceView) {
         sourceBtn.addEventListener('click', () => {
+            if (!currentQuestion) return;
             prepareSourceView();
-            navigateToView('source');
+            navigateToView('source', { date: currentQuestion.date });
         });
     }
 
