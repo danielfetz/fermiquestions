@@ -994,6 +994,9 @@ const welcomeScreen = document.getElementById('welcome-screen');
 const gameView = document.getElementById('game-view');
 const calendarView = document.getElementById('calendar-view');
 const gameBackBtn = document.getElementById('game-back-btn');
+if (gameBackBtn) {
+    setGameBackDestination(gameBackFallback);
+}
 const playDailyBtn = document.getElementById('play-daily-btn');
 const calendarLinkBtn = document.getElementById('calendar-link-btn');
 const learnMoreBtn = document.getElementById('learn-more-btn');
@@ -1309,19 +1312,23 @@ function getCurrentDate() {
     return `${year}-${month}-${day}`;
 }
 
-function updateGameBackFallback(question, sourceView = currentView) {
+function setGameBackDestination(destination) {
+    const target = destination === 'calendar' ? 'calendar' : 'welcome';
+    gameBackFallback = target;
+    if (gameBackBtn) {
+        gameBackBtn.textContent = target === 'calendar' ? 'Back to calendar' : 'Back';
+    }
+}
+
+function updateGameBackFallback(_question, sourceView = currentView) {
     if (sourceView === 'calendar') {
-        gameBackFallback = 'calendar';
+        setGameBackDestination('calendar');
         return;
     }
 
-    if (question && question.date) {
-        const today = getCurrentDate();
-        gameBackFallback = question.date === today ? 'welcome' : 'calendar';
-        return;
+    if (sourceView !== 'game') {
+        setGameBackDestination('welcome');
     }
-
-    gameBackFallback = 'welcome';
 }
 
 // Get question for a specific date
