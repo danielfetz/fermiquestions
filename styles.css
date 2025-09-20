@@ -1254,10 +1254,6 @@ button#stats-btn {
     font-weight: 500;
 }
 
-.welcome-info-card .secondary-action {
-    align-self: flex-start;
-}
-
 .daily-challenge-card {
     --card-accent: #e9ecef;
     --primary-action-bg: var(--card-accent);
@@ -1633,10 +1629,6 @@ button.calendar-cell:disabled {
     }
 
     .daily-challenge-card {
-        padding: 20px;
-    }
-
-    .welcome-info-card {
         padding: 20px;
     }
 }
