@@ -1084,6 +1084,8 @@ const viewElements = {
     comments: commentsSection
 };
 
+const urlSyncedViews = new Set(['welcome', 'calendar', 'help', 'stats', 'source', 'comments']);
+
 
 // Confidence tooltip
 function initConfidenceTooltip() {
@@ -1132,15 +1134,39 @@ function initGame() {
 
     if (navigatedFromRoute) {
         setActiveView('game', { skipURLUpdate: true, force: true });
-    } else if (initialRoute.view === 'calendar') {
-        setActiveView('calendar', { skipURLUpdate: true, force: true });
-    } else if (initialRoute.view === 'game' && initialRoute.date) {
-        setActiveView('game', { skipURLUpdate: true, force: true });
-        if (currentQuestion) {
-            updateURL(currentQuestion.date);
-        }
     } else {
-        setActiveView('welcome', { force: true });
+        switch (initialRoute.view) {
+            case 'calendar':
+                setActiveView('calendar', { skipURLUpdate: true, force: true });
+                break;
+            case 'game':
+                if (initialRoute.date && currentQuestion) {
+                    setActiveView('game', { skipURLUpdate: true, force: true });
+                    updateURL(currentQuestion.date);
+                } else {
+                    navigateToCurrentQuestion();
+                }
+                break;
+            case 'help':
+                setActiveView('help', { skipURLUpdate: true, force: true });
+                break;
+            case 'stats':
+                updateStatsDisplay();
+                setActiveView('stats', { skipURLUpdate: true, force: true });
+                break;
+            case 'source':
+                prepareSourceView();
+                setActiveView('source', { skipURLUpdate: true, force: true });
+                break;
+            case 'comments':
+                void loadComments();
+                setActiveView('comments', { skipURLUpdate: true, force: true });
+                break;
+            case 'welcome':
+            default:
+                setActiveView('welcome', { force: true });
+                break;
+        }
     }
 
     setupEventListeners();
@@ -1424,6 +1450,14 @@ function setActiveView(view, options = {}) {
             updateHash('#/welcome');
         } else if (view === 'calendar') {
             updateHash('#/calendar');
+        } else if (view === 'help') {
+            updateHash('#/help');
+        } else if (view === 'stats') {
+            updateHash('#/stats');
+        } else if (view === 'source') {
+            updateHash('#/source');
+        } else if (view === 'comments') {
+            updateHash('#/comments');
         }
     }
 
@@ -1445,20 +1479,20 @@ function navigateToView(view, options = {}) {
     }
     const shouldSkipURL = skipURLUpdate !== undefined
         ? skipURLUpdate
-        : !['welcome', 'calendar'].includes(view);
+        : !urlSyncedViews.has(view);
     setActiveView(view, { skipURLUpdate: shouldSkipURL, force });
 }
 
 function goBack(fallbackView = 'welcome') {
     if (viewHistory.length > 0) {
         const previous = viewHistory.pop();
-        const skipURLUpdate = !['welcome', 'calendar'].includes(previous);
+        const skipURLUpdate = !urlSyncedViews.has(previous);
         setActiveView(previous, { skipURLUpdate, force: true });
         return;
     }
 
     if (fallbackView) {
-        const skipURLUpdate = !['welcome', 'calendar'].includes(fallbackView);
+        const skipURLUpdate = !urlSyncedViews.has(fallbackView);
         setActiveView(fallbackView, { skipURLUpdate, force: true });
     }
 }
@@ -2131,6 +2165,60 @@ function endGame() {
 function startNewGameFromModal() {
     gameOverModal.style.display = 'none';
     startNewGame();
+}
+
+function prepareSourceView() {
+    if (!sourceView || !currentQuestion || !sourceText) return;
+
+    const explanation = currentQuestion.explanation || 'No source available for this question as of now. This is a new feature that will be available in the coming days.';
+    sourceText.textContent = '';
+    const asHtml = /<a\s|https?:\/\//i.test(explanation);
+    if (asHtml) {
+        sourceText.innerHTML = explanation;
+    } else {
+        sourceText.textContent = explanation;
+    }
+
+    if (medianFirstGuessText) medianFirstGuessText.textContent = '';
+    const playersEl = document.getElementById('source-players-count');
+    const winRateEl = document.getElementById('source-win-rate');
+    const avgTriesEl = document.getElementById('source-avg-tries');
+    if (playersEl) playersEl.textContent = '0';
+    if (winRateEl) winRateEl.textContent = '0%';
+    if (avgTriesEl) avgTriesEl.textContent = '0';
+
+    fetchMedianFirstGuess(currentQuestion.date)
+        .then(median => {
+            if (median != null && medianFirstGuessText) {
+                medianFirstGuessText.textContent = `The median first guess was ${formatNumber(median)}`;
+            }
+        })
+        .catch(() => {/* ignore */});
+
+    if (firstGuessPercentileText) firstGuessPercentileText.textContent = '';
+    fetchFirstGuessPercentile(currentQuestion.date)
+        .then(percentile => {
+            if (typeof percentile === 'number' && firstGuessPercentileText) {
+                firstGuessPercentileText.textContent = `Your first guess is in the ${percentile}th percentile, meaning you've performed as well or better than ${percentile}% of players.`;
+            }
+        })
+        .catch(() => {/* ignore */});
+
+    fetchAverageGuesses(currentQuestion.date)
+        .then(avgData => {
+            if (!avgData) return;
+            if (playersEl && typeof avgData.totalPlayers === 'number') {
+                playersEl.textContent = `${avgData.totalPlayers}`;
+            }
+            if (winRateEl && typeof avgData.winRate === 'number') {
+                winRateEl.textContent = `${avgData.winRate}%`;
+            }
+            if (avgTriesEl && typeof avgData.average === 'number') {
+                const value = avgData.average;
+                avgTriesEl.textContent = Number.isInteger(value) ? `${value}` : value.toFixed(1);
+            }
+        })
+        .catch(() => {/* ignore */});
 }
 
 // Show help view
@@ -3218,6 +3306,22 @@ function parseURL() {
         return { view: 'calendar' };
     }
 
+    if (hash === '#/help') {
+        return { view: 'help' };
+    }
+
+    if (hash === '#/stats') {
+        return { view: 'stats' };
+    }
+
+    if (hash === '#/source') {
+        return { view: 'source' };
+    }
+
+    if (hash === '#/comments') {
+        return { view: 'comments' };
+    }
+
     const questionMatch = hash.match(/^#\/(\d{4}-\d{2}-\d{2})$/);
     if (questionMatch) {
         return { view: 'game', date: questionMatch[1] };
@@ -3274,16 +3378,38 @@ function navigateToCurrentQuestion() {
 function handlePopState() {
     const route = parseURL();
 
-    if (route.view === 'calendar') {
-        setActiveView('calendar', { skipURLUpdate: true, force: true });
-        return;
-    }
-
-    if (route.view === 'game' && route.date) {
-        if (!navigateToQuestion(route.date)) {
-            navigateToCurrentQuestion();
-        }
-        return;
+    switch (route.view) {
+        case 'calendar':
+            setActiveView('calendar', { skipURLUpdate: true, force: true });
+            return;
+        case 'help':
+            setActiveView('help', { skipURLUpdate: true, force: true });
+            return;
+        case 'stats':
+            updateStatsDisplay();
+            setActiveView('stats', { skipURLUpdate: true, force: true });
+            return;
+        case 'source':
+            prepareSourceView();
+            setActiveView('source', { skipURLUpdate: true, force: true });
+            return;
+        case 'comments':
+            void loadComments();
+            setActiveView('comments', { skipURLUpdate: true, force: true });
+            return;
+        case 'game':
+            if (route.date) {
+                if (!navigateToQuestion(route.date)) {
+                    navigateToCurrentQuestion();
+                }
+                return;
+            }
+            break;
+        case 'welcome':
+            setActiveView('welcome', { skipURLUpdate: true, force: true });
+            return;
+        default:
+            break;
     }
 
     setActiveView('welcome', { skipURLUpdate: true, force: true });
@@ -3301,14 +3427,34 @@ function initRouting(skipInitialNavigation = false) {
 
     // Handle initial page load
     const route = parseURL();
-    if (route.view === 'calendar') {
-        setActiveView('calendar', { skipURLUpdate: true, force: true });
-    } else if (route.view === 'game' && route.date) {
-        if (!navigateToQuestion(route.date)) {
-            navigateToCurrentQuestion();
-        }
-    } else {
-        setActiveView('welcome', { force: true });
+    switch (route.view) {
+        case 'calendar':
+            setActiveView('calendar', { skipURLUpdate: true, force: true });
+            break;
+        case 'game':
+            if (!route.date || !navigateToQuestion(route.date)) {
+                navigateToCurrentQuestion();
+            }
+            break;
+        case 'help':
+            setActiveView('help', { skipURLUpdate: true, force: true });
+            break;
+        case 'stats':
+            updateStatsDisplay();
+            setActiveView('stats', { skipURLUpdate: true, force: true });
+            break;
+        case 'source':
+            prepareSourceView();
+            setActiveView('source', { skipURLUpdate: true, force: true });
+            break;
+        case 'comments':
+            void loadComments();
+            setActiveView('comments', { skipURLUpdate: true, force: true });
+            break;
+        case 'welcome':
+        default:
+            setActiveView('welcome', { force: true });
+            break;
     }
 }
 
@@ -3487,61 +3633,7 @@ function setupEventListeners() {
     // Source button opens explanation view
     if (sourceBtn && sourceView) {
         sourceBtn.addEventListener('click', () => {
-            if (currentQuestion && sourceText) {
-                const explanation = currentQuestion.explanation || 'No source available for this question as of now. This is a new feature that will be available in the coming days.';
-                // Allow simple links if present; otherwise treat as plain text
-                sourceText.textContent = '';
-                const asHtml = /<a\s|https?:\/\//i.test(explanation);
-                if (asHtml) {
-                    sourceText.innerHTML = explanation;
-                } else {
-                    sourceText.textContent = explanation;
-                }
-                // Reset stats placeholders before fetching
-                if (medianFirstGuessText) medianFirstGuessText.textContent = '';
-                const playersEl = document.getElementById('source-players-count');
-                const winRateEl = document.getElementById('source-win-rate');
-                const avgTriesEl = document.getElementById('source-avg-tries');
-                if (playersEl) playersEl.textContent = '0';
-                if (winRateEl) winRateEl.textContent = '0%';
-                if (avgTriesEl) avgTriesEl.textContent = '0';
-
-                // Fetch median first guess
-                fetchMedianFirstGuess(currentQuestion.date)
-                    .then(median => {
-                        if (median != null && medianFirstGuessText) {
-                            medianFirstGuessText.textContent = `The median first guess was ${formatNumber(median)}`;
-                        }
-                    })
-                    .catch(() => {/* ignore */});
-
-                // Fetch user's first-guess percentile
-                if (firstGuessPercentileText) firstGuessPercentileText.textContent = '';
-                fetchFirstGuessPercentile(currentQuestion.date)
-                    .then(p => {
-                        if (typeof p === 'number' && firstGuessPercentileText) {
-                            firstGuessPercentileText.textContent = `Your first guess is in the ${p}th percentile, meaning you've performed as well or better than ${p}% of players.`;
-                        }
-                    })
-                    .catch(() => {/* ignore */});
-
-                // Fetch aggregate stats (players, win rate)
-                fetchAverageGuesses(currentQuestion.date)
-                    .then(avgData => {
-                        if (!avgData) return;
-                        if (playersEl && typeof avgData.totalPlayers === 'number') {
-                            playersEl.textContent = `${avgData.totalPlayers}`;
-                        }
-                        if (winRateEl && typeof avgData.winRate === 'number') {
-                            winRateEl.textContent = `${avgData.winRate}%`;
-                        }
-                        if (avgTriesEl && typeof avgData.average === 'number') {
-                            const v = avgData.average;
-                            avgTriesEl.textContent = Number.isInteger(v) ? `${v}` : v.toFixed(1);
-                        }
-                    })
-                    .catch(() => {/* ignore */});
-            }
+            prepareSourceView();
             navigateToView('source');
         });
     }
