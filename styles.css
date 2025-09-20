@@ -1223,14 +1223,14 @@ button#stats-btn {
     text-align: center;
     display: flex;
     flex-direction: column;
-    gap: 26px;
+    gap: 20px;
 }
 
 .welcome-info-card {
     background: #fff;
     border: 2px solid #e9ecef;
     border-radius: 18px;
-    padding: 24px;
+    padding: 20px;
     display: flex;
     flex-direction: column;
     gap: 18px;
@@ -1248,18 +1248,13 @@ button#stats-btn {
 }
 
 .welcome-info-note {
-    font-size: 0.95rem;
-    color: #64748b;
-    line-height: 1.55;
+    font-size: 17px;
+    color: #777;
+    line-height: 24px;
+    font-weight: 500;
 }
 
-.welcome-info-actions {
-    display: flex;
-    justify-content: flex-start;
-    align-items: flex-start;
-}
-
-.welcome-info-actions .secondary-action {
+.welcome-info-card .secondary-action {
     align-self: flex-start;
 }
 
@@ -1339,7 +1334,7 @@ button#stats-btn {
 .daily-challenge-question {
     font-size: 21px;
     line-height: 28px;
-    color: #0f172a;
+    color: #4b4b4b;
     font-weight: 700;
 }
 
