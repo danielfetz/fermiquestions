@@ -441,6 +441,7 @@ let isNavigating = false;
 let currentView = 'welcome';
 let viewHistory = [];
 let todaysQuestion = null;
+let gameBackFallback = 'welcome';
 
 // Statistics
 let stats = {
@@ -992,6 +993,7 @@ const fermiQuestions = [
 const welcomeScreen = document.getElementById('welcome-screen');
 const gameView = document.getElementById('game-view');
 const calendarView = document.getElementById('calendar-view');
+const gameBackBtn = document.getElementById('game-back-btn');
 const playDailyBtn = document.getElementById('play-daily-btn');
 const calendarLinkBtn = document.getElementById('calendar-link-btn');
 const learnMoreBtn = document.getElementById('learn-more-btn');
@@ -1237,7 +1239,9 @@ function startNewGame(skipURLUpdate = false) {
         console.error('No questions available');
         return;
     }
-    
+
+    updateGameBackFallback(currentQuestion, currentView);
+
     // Check if this question already has saved progress
     const storageKey = `fermiGameState_${currentQuestion.date}`;
     const existingSavedState = localStorage.getItem(storageKey);
@@ -1303,6 +1307,21 @@ function getCurrentDate() {
     const month = String(today.getMonth() + 1).padStart(2, '0');
     const day = String(today.getDate()).padStart(2, '0');
     return `${year}-${month}-${day}`;
+}
+
+function updateGameBackFallback(question, sourceView = currentView) {
+    if (sourceView === 'calendar') {
+        gameBackFallback = 'calendar';
+        return;
+    }
+
+    if (question && question.date) {
+        const today = getCurrentDate();
+        gameBackFallback = question.date === today ? 'welcome' : 'calendar';
+        return;
+    }
+
+    gameBackFallback = 'welcome';
 }
 
 // Get question for a specific date
@@ -2777,6 +2796,7 @@ function loadCurrentGameState() {
             
             // Restore game state
             currentQuestion = gameState.question;
+            updateGameBackFallback(currentQuestion, currentView);
             currentGuess = gameState.currentGuess;
             gameWon = gameState.gameWon;
             gameOver = gameState.gameOver;
@@ -3075,6 +3095,8 @@ function updatePageTitle(question) {
 
 // Select a specific question
 function selectQuestion(question) {
+    updateGameBackFallback(question, currentView);
+
     // Save current game state before switching (if there's an active game)
     if (currentQuestion && currentGuess > 0 && !gameOver && !completedQuestions[currentQuestion.date]) {
         saveCurrentGameState();
@@ -3851,6 +3873,7 @@ function setupEventListeners() {
     });
 
     // Back buttons for secondary views
+    if (gameBackBtn) gameBackBtn.addEventListener('click', () => goBack(gameBackFallback));
     if (helpBackBtn) helpBackBtn.addEventListener('click', () => goBack('welcome'));
     if (statsBackBtn) statsBackBtn.addEventListener('click', () => goBack('welcome'));
     if (sourceBackBtn) sourceBackBtn.addEventListener('click', () => goBack('game'));

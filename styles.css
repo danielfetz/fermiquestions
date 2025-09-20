@@ -55,6 +55,10 @@ main {
     font-size: 0.95rem;
 }
 
+.game-view-header {
+    margin-bottom: 16px;
+}
+
 .back-button {
     background: #fff;
     border: 2px solid #e9ecef;
