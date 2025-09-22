@@ -986,6 +986,33 @@ const fermiQuestions = [
         hint: "There are 1,225 McDonald's restaurants in California.",
         date: "2025-09-19",
         image: "data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' width='100' height='100' viewBox='0 0 100 100'%3e%3crect width='100' height='100' fill='%23f8fafc'/%3e%3ctext x='50' y='62' font-size='40' text-anchor='middle' fill='%23374151'%3e️🍔%3c/text%3e%3c/svg%3e"
+    },
+    {
+        question: "How many daily active users did Duolingo have as of March 2025?",
+        answer: 46600000,
+        category: "",
+        explanation: "",
+        hint: "Duolingo's revenue in the first three months of 2025 was $230.7 million.",
+        date: "2025-09-20",
+        image: "data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' width='100' height='100' viewBox='0 0 100 100'%3e%3crect width='100' height='100' fill='%23f8fafc'/%3e%3ctext x='50' y='62' font-size='40' text-anchor='middle' fill='%23374151'%3e️📱%3c/text%3e%3c/svg%3e"
+    },
+    {
+        question: "How many commercial airline pilots are employed worldwide?",
+        answer: 382000,
+        category: "",
+        explanation: "",
+        hint: "There were around 36.4 million scheduled commercial airline flights in 2024.",
+        date: "2025-09-21",
+        image: "data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' width='100' height='100' viewBox='0 0 100 100'%3e%3crect width='100' height='100' fill='%23f8fafc'/%3e%3ctext x='50' y='62' font-size='40' text-anchor='middle' fill='%23374151'%3e️🧑‍✈️%3c/text%3e%3c/svg%3e"
+    },
+    {
+        question: "How many divorces took place in Germany in 2024?",
+        answer: 129337,
+        category: "",
+        explanation: "",
+        hint: "Roughly 81% of the marriages formed in 2005 were still intact in 2015.",
+        date: "2025-09-22",
+        image: "data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' width='100' height='100' viewBox='0 0 100 100'%3e%3crect width='100' height='100' fill='%23f8fafc'/%3e%3ctext x='50' y='62' font-size='40' text-anchor='middle' fill='%23374151'%3e️💔%3c/text%3e%3c/svg%3e"
     }
 ];
 
@@ -1127,7 +1154,7 @@ function initGame() {
     let navigatedFromRoute = false;
 
     if (initialRoute.view === 'game' && initialRoute.date) {
-        navigatedFromRoute = navigateToQuestion(initialRoute.date);
+        navigatedFromRoute = navigateToQuestion(initialRoute.date, { skipHistory: true });
     }
 
     if (!navigatedFromRoute) {
@@ -1164,7 +1191,7 @@ function initGame() {
                 break;
             case 'source': {
                 const targetDate = initialRoute.date || (currentQuestion ? currentQuestion.date : null);
-                if (!ensureExtrasAccessible(targetDate)) {
+                if (!ensureExtrasAccessible(targetDate, { skipHistory: true })) {
                     break;
                 }
                 const resolvedDate = targetDate || (currentQuestion ? currentQuestion.date : null);
@@ -1178,7 +1205,7 @@ function initGame() {
             }
             case 'comments': {
                 const targetDate = initialRoute.date || (currentQuestion ? currentQuestion.date : null);
-                if (!ensureExtrasAccessible(targetDate)) {
+                if (!ensureExtrasAccessible(targetDate, { skipHistory: true })) {
                     break;
                 }
                 const resolvedDate = targetDate || (currentQuestion ? currentQuestion.date : null);
@@ -1537,7 +1564,7 @@ function navigateToView(view, options = {}) {
 
     if (view === 'source' || view === 'comments') {
         const targetDate = date || (currentQuestion ? currentQuestion.date : null);
-        if (!ensureExtrasAccessible(targetDate)) {
+        if (!ensureExtrasAccessible(targetDate, { skipHistory })) {
             return;
         }
     }
@@ -3463,14 +3490,16 @@ function hasCompletedQuestion(questionDate) {
     return Boolean(completedQuestions && completedQuestions[questionDate]);
 }
 
-function ensureExtrasAccessible(questionDate) {
+function ensureExtrasAccessible(questionDate, options = {}) {
+    const { skipHistory = false } = options;
+
     if (!questionDate) {
         navigateToCurrentQuestion();
         return false;
     }
 
     if (!hasCompletedQuestion(questionDate)) {
-        navigateToQuestion(questionDate);
+        navigateToQuestion(questionDate, { skipHistory });
         return false;
     }
 
@@ -3478,7 +3507,17 @@ function ensureExtrasAccessible(questionDate) {
 }
 
 // Navigate to a specific question by date
-function navigateToQuestion(questionDate) {
+function navigateToQuestion(questionDate, options = {}) {
+    const { skipHistory = false, sourceView } = options;
+    const previousView = sourceView !== undefined ? sourceView : currentView;
+
+    if (!skipHistory && previousView && previousView !== 'game') {
+        const lastEntry = viewHistory[viewHistory.length - 1];
+        if (lastEntry !== previousView) {
+            viewHistory.push(previousView);
+        }
+    }
+
     const question = getQuestionForDate(questionDate);
 
     if (question) {
@@ -3534,7 +3573,7 @@ function handlePopState() {
             return;
         case 'source': {
             const targetDate = route.date || (currentQuestion ? currentQuestion.date : null);
-            if (!ensureExtrasAccessible(targetDate)) {
+            if (!ensureExtrasAccessible(targetDate, { skipHistory: true })) {
                 return;
             }
             const resolvedDate = targetDate || (currentQuestion ? currentQuestion.date : null);
@@ -3548,7 +3587,7 @@ function handlePopState() {
         }
         case 'comments': {
             const targetDate = route.date || (currentQuestion ? currentQuestion.date : null);
-            if (!ensureExtrasAccessible(targetDate)) {
+            if (!ensureExtrasAccessible(targetDate, { skipHistory: true })) {
                 return;
             }
             const resolvedDate = targetDate || (currentQuestion ? currentQuestion.date : null);
@@ -3562,7 +3601,7 @@ function handlePopState() {
         }
         case 'game':
             if (route.date) {
-                if (!navigateToQuestion(route.date)) {
+                if (!navigateToQuestion(route.date, { skipHistory: true })) {
                     navigateToCurrentQuestion();
                 }
                 return;
@@ -3595,7 +3634,7 @@ function initRouting(skipInitialNavigation = false) {
             setActiveView('calendar', { skipURLUpdate: true, force: true });
             break;
         case 'game':
-            if (!route.date || !navigateToQuestion(route.date)) {
+            if (!route.date || !navigateToQuestion(route.date, { skipHistory: true })) {
                 navigateToCurrentQuestion();
             }
             break;
@@ -3608,7 +3647,7 @@ function initRouting(skipInitialNavigation = false) {
             break;
         case 'source': {
             const targetDate = route.date || (currentQuestion ? currentQuestion.date : null);
-            if (!ensureExtrasAccessible(targetDate)) {
+            if (!ensureExtrasAccessible(targetDate, { skipHistory: true })) {
                 break;
             }
             const resolvedDate = targetDate || (currentQuestion ? currentQuestion.date : null);
@@ -3622,7 +3661,7 @@ function initRouting(skipInitialNavigation = false) {
         }
         case 'comments': {
             const targetDate = route.date || (currentQuestion ? currentQuestion.date : null);
-            if (!ensureExtrasAccessible(targetDate)) {
+            if (!ensureExtrasAccessible(targetDate, { skipHistory: true })) {
                 break;
             }
             const resolvedDate = targetDate || (currentQuestion ? currentQuestion.date : null);
