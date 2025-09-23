@@ -1018,6 +1018,15 @@ const fermiQuestions = [
         hint: "The straight-line distance between San Francisco and London is 5,354 miles (8,617 km).",
         date: "2025-09-23",
         image: "data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' width='100' height='100' viewBox='0 0 100 100'%3e%3crect width='100' height='100' fill='%23f8fafc'/%3e%3ctext x='50' y='62' font-size='40' text-anchor='middle' fill='%23374151'%3e️🗽%3c/text%3e%3c/svg%3e"
+    },
+    {
+        question: "How many babies were born in the United States on New Year's Day in 2000?",
+        answer: 9083,
+        category: "",
+        explanation: "",
+        hint: "January 1st, 2000 was a Saturday, which typically has 27% fewer births than weekdays.",
+        date: "2025-09-24",
+        image: "data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' width='100' height='100' viewBox='0 0 100 100'%3e%3crect width='100' height='100' fill='%23f8fafc'/%3e%3ctext x='50' y='62' font-size='40' text-anchor='middle' fill='%23374151'%3e️👶%3c/text%3e%3c/svg%3e"
     }
 ];
 
