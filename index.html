@@ -51,6 +51,23 @@
                         <button id="calendar-link-btn" class="secondary-action">Previous days</button>
                     </div>
                 </div>
+                <div class="daily-challenge-card infinite-challenge-card" id="infinite-challenge-card">
+                    <div class="daily-challenge-header infinite-header">
+                        <h3>Infinite Challenge</h3>
+                        <span id="infinite-challenge-level" class="infinite-level-badge" aria-live="polite"></span>
+                    </div>
+                    <div class="daily-challenge-body">
+                        <div class="daily-challenge-text">
+                            <p id="infinite-challenge-description" class="daily-challenge-question">
+                                Climb an endless ladder of Fermi questions. Each correct answer advances you to a higher level.
+                            </p>
+                            <p id="infinite-challenge-status" class="daily-challenge-status"></p>
+                        </div>
+                    </div>
+                    <div class="daily-challenge-actions">
+                        <button id="play-infinite-btn" class="primary-action">Start run</button>
+                    </div>
+                </div>
                 <div class="welcome-info-card">
                     <div class="daily-challenge-header">
                         <h3>How to Play</h3>
@@ -209,6 +226,83 @@
             </div>
         </section>
 
+        <section id="infinite-game-view" class="view">
+            <div class="game-container infinite-game-container">
+                <div class="view-header game-view-header">
+                    <button type="button" class="back-button" id="infinite-back-btn">&lt; Back</button>
+                    <div class="infinite-header-group">
+                        <h2>Infinite Challenge</h2>
+                        <span id="infinite-level-pill" class="infinite-level-pill"></span>
+                    </div>
+                </div>
+
+                <div class="question-container">
+                    <div class="question-box">
+                        <div class="question-content">
+                            <div class="question-image-container" id="infinite-question-image-container" aria-hidden="true">
+                                <img class="question-image" id="infinite-question-image" alt="">
+                            </div>
+                            <div class="question-text-container">
+                                <div class="question-text" id="infinite-question-text"></div>
+                                <div class="question-meta" id="infinite-question-meta">
+                                    <span class="question-category" id="infinite-question-category"></span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="hint-container" id="infinite-hint-container">
+                            <span class="hint-label">Hint</span>
+                            <div class="hint-text" id="infinite-hint-text"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="guess-counter" id="infinite-guess-counter">Guess 1 of 6</div>
+
+                <div class="guesses-container" id="infinite-guesses-container" aria-live="polite"></div>
+
+                <div class="input-section" id="infinite-input-section">
+                    <div class="input-row">
+                        <div class="input-container">
+                            <label for="infinite-guess-input" class="sr-only">Enter your estimate</label>
+                            <input
+                                type="text"
+                                id="infinite-guess-input"
+                                placeholder="Enter a guess..."
+                                inputmode="numeric"
+                                pattern="[0-9,]*"
+                                autocomplete="off"
+                            >
+                            <div class="input-actions">
+                                <div class="quick-buttons" id="infinite-quick-buttons">
+                                    <button type="button" class="quick-btn" data-value="1000">+1K</button>
+                                    <button type="button" class="quick-btn" data-value="1000000">+1M</button>
+                                    <button type="button" class="quick-btn" data-value="1000000000">+1B</button>
+                                </div>
+                                <div class="action-right">
+                                    <button id="infinite-submit-btn" class="submit-btn">Submit</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="game-result" id="infinite-game-result">
+                    <div class="result-container">
+                        <span class="result-emoji" id="infinite-result-emoji" aria-hidden="true"></span>
+                        <div class="result-text">
+                            <span class="result-message" id="infinite-result-message"></span>
+                            <span class="correct-answer" id="infinite-correct-answer"></span>
+                            <p class="result-explanation" id="infinite-explanation"></p>
+                        </div>
+                    </div>
+                    <div class="result-actions">
+                        <button id="infinite-next-btn" class="primary-action">Next level</button>
+                        <button id="infinite-restart-btn" class="secondary-action">Restart run</button>
+                    </div>
+                </div>
+            </div>
+        </section>
+
         <section id="calendar-view" class="view">
             <div class="calendar-wrapper">
                 <div class="view-header">
@@ -333,7 +427,7 @@
                 <div class="accordion" id="stats-accordion">
                     <div class="accordion-item open" id="acc-statsgrid-item">
                         <button class="accordion-header" id="acc-statsgrid-header" aria-expanded="true" aria-controls="acc-statsgrid-panel">
-                            <span>Stats</span>
+                            <span>Daily Challenge Stats</span>
                             <span class="acc-arrow">></span>
                         </button>
                         <div class="accordion-panel" id="acc-statsgrid-panel">
@@ -361,6 +455,40 @@
                                 <div class="stat-item">
                                     <span class="stat-number" id="guess-average">0</span>
                                     <span class="stat-label">Guess Average</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="accordion-item" id="acc-infinite-stats-item">
+                        <button class="accordion-header" id="acc-infinite-stats-header" aria-expanded="false" aria-controls="acc-infinite-stats-panel">
+                            <span>Infinite Challenge Stats</span>
+                            <span class="acc-arrow">></span>
+                        </button>
+                        <div class="accordion-panel" id="acc-infinite-stats-panel">
+                            <div class="stats-grid" id="infinite-stats-grid">
+                                <div class="stat-item">
+                                    <span class="stat-number" id="infinite-runs-started">0</span>
+                                    <span class="stat-label">Runs Started</span>
+                                </div>
+                                <div class="stat-item">
+                                    <span class="stat-number" id="infinite-best-level">0</span>
+                                    <span class="stat-label">Best Level Reached</span>
+                                </div>
+                                <div class="stat-item">
+                                    <span class="stat-number" id="infinite-longest-streak">0</span>
+                                    <span class="stat-label">Longest Correct Streak</span>
+                                </div>
+                                <div class="stat-item">
+                                    <span class="stat-number" id="infinite-questions-answered">0</span>
+                                    <span class="stat-label">Questions Answered</span>
+                                </div>
+                                <div class="stat-item">
+                                    <span class="stat-number" id="infinite-accuracy">0%</span>
+                                    <span class="stat-label">Accuracy</span>
+                                </div>
+                                <div class="stat-item">
+                                    <span class="stat-number" id="infinite-average-guesses">0</span>
+                                    <span class="stat-label">Avg Guesses Used</span>
                                 </div>
                             </div>
                         </div>
@@ -468,6 +596,8 @@
     </nav>
 
     <script src="fermi-questions.js"></script>
+    <script src="fermi-infinite-questions.js"></script>
     <script src="script.js"></script>
+    <script src="infinite-mode.js"></script>
 </body>
 </html>

@@ -5,6 +5,10 @@ const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBh
 // Initialize Supabase client
 let supabase = null;
 let currentUserId = null;
+if (typeof window !== 'undefined') {
+    window.supabaseClient = null;
+    window.currentUserId = null;
+}
 let commentsChannel = null;
 
 const MAX_CONFIDENCE_PERCENT = 99;
@@ -15,6 +19,9 @@ function initSupabase() {
     try {
         if (typeof window.supabase !== 'undefined') {
             supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+            if (typeof window !== 'undefined') {
+                window.supabaseClient = supabase;
+            }
             console.log('Supabase initialized successfully');
             
             // Sign in anonymously and get/create user session
@@ -42,16 +49,25 @@ async function initSupabaseAuth() {
                 console.error('Error signing in anonymously:', error);
             } else {
                 currentUserId = data.user?.id;
+                if (typeof window !== 'undefined') {
+                    window.currentUserId = currentUserId;
+                }
                 console.log('Anonymous user created:', currentUserId);
             }
         } else {
             currentUserId = session.user?.id;
+            if (typeof window !== 'undefined') {
+                window.currentUserId = currentUserId;
+            }
             console.log('Existing user session:', currentUserId);
         }
-        
+
         // Listen for auth changes
         supabase.auth.onAuthStateChange((event, session) => {
             currentUserId = session?.user?.id || null;
+            if (typeof window !== 'undefined') {
+                window.currentUserId = currentUserId;
+            }
             console.log('Auth state changed:', event, currentUserId);
         });
     } catch (error) {
@@ -557,6 +573,7 @@ const helpBackBtn = document.getElementById('help-back-btn');
 const statsBackBtn = document.getElementById('stats-back-btn');
 const sourceBackBtn = document.getElementById('source-back-btn');
 const calendarBackBtn = document.getElementById('calendar-back-btn');
+const infiniteGameView = document.getElementById('infinite-game-view');
 
 const viewElements = {
     welcome: welcomeScreen,
@@ -565,10 +582,11 @@ const viewElements = {
     help: helpView,
     stats: statsView,
     source: sourceView,
-    comments: commentsSection
+    comments: commentsSection,
+    infinite: infiniteGameView
 };
 
-const urlSyncedViews = new Set(['welcome', 'calendar', 'help', 'stats', 'source', 'comments']);
+const urlSyncedViews = new Set(['welcome', 'calendar', 'help', 'stats', 'source', 'comments', 'infinite']);
 
 
 // Confidence tooltip
@@ -958,6 +976,8 @@ function getHashForView(view, date) {
             return '#/help';
         case 'stats':
             return '#/stats';
+        case 'infinite':
+            return '#/infinite';
         case 'source':
             return date ? `#/${date}/source` : '#/source';
         case 'comments':
@@ -1004,6 +1024,10 @@ function setActiveView(view, options = {}) {
     } else if (view === 'game') {
         if (guessInput && !('ontouchstart' in window) && !navigator.maxTouchPoints) {
             setTimeout(() => guessInput.focus(), 150);
+        }
+    } else if (view === 'infinite') {
+        if (typeof window.onInfiniteViewActivated === 'function') {
+            window.onInfiniteViewActivated();
         }
     }
 }
@@ -1830,14 +1854,18 @@ function updateStatsDisplay() {
     for (let i = 1; i <= 6; i++) {
         const count = guessDist[i] || 0;
         const percentage = maxWins > 0 ? (count / maxWins) * 100 : 0;
-        
+
         const countElement = document.getElementById(`count-${i}`);
         const barElement = document.getElementById(`dist-${i}`);
-        
+
         if (countElement && barElement) {
             countElement.textContent = count;
             barElement.style.width = `${percentage}%`;
         }
+    }
+
+    if (typeof window.updateInfiniteStatsDisplay === 'function') {
+        window.updateInfiniteStatsDisplay();
     }
 
     updateCalibrationChart();
@@ -2875,6 +2903,10 @@ function parseURL() {
         return { view: 'stats' };
     }
 
+    if (hash === '#/infinite') {
+        return { view: 'infinite' };
+    }
+
     const datedViewMatch = hash.match(/^#\/(\d{4}-\d{2}-\d{2})\/(comments|source)$/);
     if (datedViewMatch) {
         return { view: datedViewMatch[2], date: datedViewMatch[1] };
@@ -3020,6 +3052,12 @@ function handlePopState() {
             updateStatsDisplay();
             setActiveView('stats', { skipURLUpdate: true, force: true });
             return;
+        case 'infinite':
+            setActiveView('infinite', { skipURLUpdate: true, force: true });
+            if (typeof window.onInfiniteRouteRequested === 'function') {
+                window.onInfiniteRouteRequested();
+            }
+            return;
         case 'source': {
             const targetDate = route.date || (currentQuestion ? currentQuestion.date : null);
             if (!ensureExtrasAccessible(targetDate, { skipHistory: true })) {
@@ -3093,6 +3131,12 @@ function initRouting(skipInitialNavigation = false) {
         case 'stats':
             updateStatsDisplay();
             setActiveView('stats', { skipURLUpdate: true, force: true });
+            break;
+        case 'infinite':
+            setActiveView('infinite', { skipURLUpdate: true, force: true });
+            if (typeof window.onInfiniteRouteRequested === 'function') {
+                window.onInfiniteRouteRequested();
+            }
             break;
         case 'source': {
             const targetDate = route.date || (currentQuestion ? currentQuestion.date : null);
