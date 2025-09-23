@@ -14,6 +14,18 @@ body {
     padding: 0 16px;
 }
 
+.sr-only {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    border: 0;
+}
+
 body.no-scroll {
     overflow: hidden;
 }
@@ -89,6 +101,40 @@ main {
     border-radius: 18px;
     position: relative;
     padding-bottom: 134px;
+}
+
+.infinite-game-container {
+    padding-bottom: 72px;
+}
+
+.infinite-header-group {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    gap: 12px;
+}
+
+.infinite-header-group h2 {
+    font-size: 1.05rem;
+    margin: 0;
+}
+
+.infinite-level-pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 6px 14px;
+    border-radius: 999px;
+    background: linear-gradient(135deg, #4f46e5, #7c3aed);
+    color: #fff;
+    font-size: 0.68rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.6px;
+}
+
+.infinite-level-pill:empty {
+    display: none;
 }
 
 /* Header */
@@ -199,6 +245,10 @@ button#stats-btn {
 
 .question-image-container {
     display: none!important; /* Hidden on small screens */
+}
+
+#infinite-question-image-container.visible {
+    display: block !important;
 }
 
 .question-image {
@@ -478,6 +528,25 @@ button#stats-btn {
     border-radius: 16px;
     padding: 8.5px 18.5px;
     background: white;
+}
+
+#infinite-game-result {
+    display: none;
+    margin-top: 20px;
+}
+
+#infinite-game-result .result-actions {
+    margin-top: 18px;
+    display: flex;
+    gap: 12px;
+    justify-content: center;
+    flex-wrap: wrap;
+}
+
+#infinite-game-result .result-explanation {
+    margin-top: 10px;
+    font-size: 0.78rem;
+    color: #475569;
 }
 
 .result-container {
@@ -1261,6 +1330,40 @@ button#stats-btn {
     background: #fff;
     text-align: left;
     position: relative;
+}
+
+.infinite-challenge-card {
+    --card-accent: #7c3aed;
+    position: relative;
+}
+
+.infinite-header {
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+}
+
+.infinite-level-badge {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    background: var(--card-accent);
+    color: #fff;
+    font-size: 0.68rem;
+    font-weight: 700;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+    padding: 6px 12px;
+    border-radius: 999px;
+}
+
+.infinite-level-badge:empty {
+    display: none;
+}
+
+.infinite-challenge-card .daily-challenge-status {
+    color: #4f46e5;
+    font-weight: 600;
 }
 
 .daily-challenge-card--ready {
