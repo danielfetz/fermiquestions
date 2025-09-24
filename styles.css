@@ -1234,7 +1234,7 @@ button#stats-btn {
     padding: 20px;
     display: flex;
     flex-direction: column;
-    gap: 18px;
+    gap: 8px;
     text-align: left;
 }
 
@@ -1297,7 +1297,7 @@ button#stats-btn {
     top: -4px;
     right: -4px;
     background: var(--card-accent);
-    color: #0f172a;
+    color: #fff;
     font-size: 15px;
     font-weight: 700;
     text-transform: uppercase;
@@ -1348,12 +1348,9 @@ button#stats-btn {
     gap: 12px;
 }
 
-.daily-challenge-status.status-won {
-    color: #15803d;
-}
-
+.daily-challenge-status.status-won,
 .daily-challenge-status.status-lost {
-    color: #b91c1c;
+    color: var(--card-accent);
 }
 
 .primary-action,
@@ -1406,13 +1403,8 @@ button#stats-btn {
 }
 
 .calendar-wrapper {
-    max-width: 900px;
-    margin: 40px auto;
-    background: rgba(255, 255, 255, 0.97);
-    border: 2px solid #e9ecef;
-    border-radius: 22px;
-    padding: 28px 32px 36px;
-    box-shadow: 0 18px 35px rgba(15, 23, 42, 0.08);
+    max-width: 520px;
+    margin: 0 auto;
 }
 
 .calendar-wrapper .view-header {
@@ -1589,11 +1581,6 @@ button.calendar-cell:disabled {
     .daily-challenge-body {
         align-items: flex-start;
         gap: 10px;
-    }
-
-    .calendar-wrapper {
-        padding: 24px 20px 30px;
-        margin: 28px auto 48px;
     }
 
     .calendar-grid {
