@@ -1498,12 +1498,14 @@ button#stats-btn {
 button.calendar-cell {
     border: 2px solid #e9ecef;
     border-radius: 12px;
+    border-bottom-width: 4px;
     min-height: 48px;
     display: flex;
     align-items: center;
     justify-content: center;
     font-family: 'Nunito', sans-serif;
-    font-size: 0.68rem;
+    font-size: 15px;
+    font-weight: 700;
     background: #fff;
     color: #0f172a;
     cursor: default;
@@ -1559,10 +1561,6 @@ button.calendar-cell:disabled {
     border-color: #0f172a;
 }
 
-.calendar-cell.active {
-    box-shadow: 0 0 0 2px rgba(15, 23, 42, 0.35) inset;
-}
-
 .calendar-month-footer {
     margin-top: 16px;
     font-size: 0.6rem;
@@ -1590,7 +1588,7 @@ button.calendar-cell:disabled {
     .calendar-cell,
     button.calendar-cell {
         min-height: 42px;
-        font-size: 0.6rem;
+        font-size: 0.8rem;
     }
 
     .nav-button {
@@ -1604,11 +1602,6 @@ button.calendar-cell:disabled {
         flex-direction: column;
         align-items: center;
         gap: 10px;
-    }
-
-    .calendar-cell,
-    button.calendar-cell {
-        min-height: 38px;
     }
 
     .daily-challenge-card {
