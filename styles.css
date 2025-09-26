@@ -1343,11 +1343,12 @@ button#stats-btn {
 }
 
 .daily-challenge-status {
-    font-size: 0.65rem;
-    color: #475569;
+    font-size: 0.75rem;
+    color: #afafaf;
     margin-top: 6px;
     text-transform: uppercase;
     letter-spacing: 1px;
+    font-weight: 750;
 }
 
 .daily-challenge-actions {
@@ -1423,48 +1424,6 @@ button#stats-btn {
 .calendar-title {
     font-size: 0.95rem;
     margin: 0;
-}
-
-.calendar-subtitle {
-    font-size: 0.72rem;
-    text-align: center;
-    color: #4b5563;
-    margin-bottom: 24px;
-}
-
-.calendar-legend {
-    display: flex;
-    justify-content: center;
-    gap: 18px;
-    flex-wrap: wrap;
-    font-size: 0.58rem;
-    color: #475569;
-    margin-bottom: 24px;
-}
-
-.legend-box {
-    display: inline-block;
-    width: 12px;
-    height: 12px;
-    border-radius: 4px;
-    margin-right: 6px;
-    border: 2px solid #e9ecef;
-    background: #f8fafc;
-}
-
-.legend-box.won {
-    background: #dcfce7;
-    border-color: #16a34a;
-}
-
-.legend-box.lost {
-    background: #fee2e2;
-    border-color: #dc2626;
-}
-
-.legend-box.pending {
-    background: #e2e8f0;
-    border-color: #cbd5f5;
 }
 
 .calendar-months {

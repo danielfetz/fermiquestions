@@ -1666,7 +1666,10 @@ function renderCalendar() {
     calendarMonthsContainer.innerHTML = '';
     const dayLabels = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
 
-    questionsByMonth.forEach((monthQuestions, monthKey) => {
+    const monthEntries = Array.from(questionsByMonth.entries()).sort((a, b) => b[0].localeCompare(a[0]));
+
+    monthEntries.forEach(([monthKey, monthQuestions]) => {
+        const sortedMonthQuestions = [...monthQuestions].sort((a, b) => a.date.localeCompare(b.date));
         const monthContainer = document.createElement('div');
         monthContainer.className = 'calendar-month';
 
@@ -1686,7 +1689,7 @@ function renderCalendar() {
         });
 
         const questionByDay = new Map();
-        monthQuestions.forEach((question) => {
+        sortedMonthQuestions.forEach((question) => {
             const dayNumber = parseInt(question.date.slice(8, 10), 10);
             questionByDay.set(dayNumber, question);
         });
