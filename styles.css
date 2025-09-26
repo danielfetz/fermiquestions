@@ -1241,7 +1241,8 @@ button#stats-btn {
 .welcome-info-body {
     display: flex;
     flex-direction: column;
-    gap: 12px;
+    gap: 6px;
+    margin-bottom: 8px;
 }
 
 .welcome-info-body p {
@@ -1265,7 +1266,7 @@ button#stats-btn {
     padding: 20px;
     display: flex;
     flex-direction: column;
-    gap: 18px;
+    gap: 8px;
     background: #fff;
     text-align: left;
     position: relative;
@@ -1325,6 +1326,13 @@ button#stats-btn {
     flex-direction: column;
     gap: 12px;
     align-items: flex-start;
+}
+
+.daily-challenge-text {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    margin-bottom: 8px;
 }
 
 .daily-challenge-question {
