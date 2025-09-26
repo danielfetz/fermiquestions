@@ -175,8 +175,10 @@ async function fetchGuessDistribution(questionDate) {
         }
 
         const totalWins = Number(data[0]?.total_wins) || 0;
+        const totalCompleted = Number(data[0]?.total_completed) || 0;
         const distribution = {
             totalWins,
+            totalCompleted,
             entries: {}
         };
 
@@ -189,7 +191,7 @@ async function fetchGuessDistribution(questionDate) {
             const normalizedPercentage = Number(rawPercentage);
             const safePercentage = Number.isFinite(normalizedPercentage)
                 ? normalizedPercentage
-                : (totalWins > 0 ? (winCount / totalWins) * 100 : 0);
+                : (totalCompleted > 0 ? (winCount / totalCompleted) * 100 : 0);
 
             distribution.entries[guessNumber] = {
                 count: winCount,
@@ -1902,7 +1904,7 @@ function getGuessPlaceholderText(guessNumber) {
     const baseText = getGuessText(guessNumber);
     const distribution = currentQuestionGuessDistribution;
 
-    if (!distribution || !distribution.entries || distribution.totalWins <= 0) {
+    if (!distribution || !distribution.entries || distribution.totalCompleted <= 0) {
         return baseText;
     }
 
