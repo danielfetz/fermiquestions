@@ -1031,6 +1031,24 @@ const fermiQuestions = [
         hint: "January 1st, 2000 was a Saturday, which typically has 27% fewer births than weekdays.",
         date: "2025-09-24",
         image: "data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' width='100' height='100' viewBox='0 0 100 100'%3e%3crect width='100' height='100' fill='%23f8fafc'/%3e%3ctext x='50' y='62' font-size='40' text-anchor='middle' fill='%23374151'%3e️👶%3c/text%3e%3c/svg%3e"
+    },
+    {
+        question: "How many transactions did Visa process per day in 2024?",
+        answer: 639000000,
+        category: "",
+        explanation: "",
+        hint: "Roughly 57% of all credit and debit cards outside China carry the Visa brand.",
+        date: "2025-09-25",
+        image: "data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' width='100' height='100' viewBox='0 0 100 100'%3e%3crect width='100' height='100' fill='%23f8fafc'/%3e%3ctext x='50' y='62' font-size='40' text-anchor='middle' fill='%23374151'%3e️💳%3c/text%3e%3c/svg%3e"
+    },
+    {
+        question: "How many radiologists are there in the United States?",
+        answer: 31960,
+        category: "",
+        explanation: "",
+        hint: "In 2023, around 35.7 million MRI scans were performed in the US.",
+        date: "2025-09-26",
+        image: "data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' width='100' height='100' viewBox='0 0 100 100'%3e%3crect width='100' height='100' fill='%23f8fafc'/%3e%3ctext x='50' y='62' font-size='40' text-anchor='middle' fill='%23374151'%3e️🩻%3c/text%3e%3c/svg%3e"
     }
 ];
 
