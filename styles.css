@@ -586,7 +586,7 @@ button#stats-btn {
 
 .guess-field {
     flex: 1;
-    background-color: #f6f6f6;
+    background-color: #fff;
     color: #333;
     padding: 17.5px 15px;
     border-radius: 13px;
@@ -596,6 +596,10 @@ button#stats-btn {
     font-family: 'Nunito', sans-serif;
     line-height: normal;
     max-height: 48px;
+}
+
+.guess-field.active {
+    background-color: #fcfcfc;
 }
 
 .guess-field.empty {

@@ -1168,6 +1168,14 @@ const correctAnswer = document.getElementById('correct-answer');
 const guessesContainer = document.getElementById('guesses-container');
 let guessHeaderCountEl = null;
 const guessInput = document.getElementById('guess-input');
+const guessInputPlaceholderTexts = [
+    'Enter first guess',
+    'Enter second guess',
+    'Enter third guess',
+    'Enter fourth guess',
+    'Enter fifth guess',
+    'Enter final guess'
+];
 const confidenceInput = document.getElementById('confidence-input');
 const confidenceButton = document.getElementById('confidence-button');
 const confidenceMenu = document.getElementById('confidence-menu');
@@ -1901,12 +1909,41 @@ function clearGuesses() {
         guessRow.appendChild(feedbackButton);
         guessesContainer.appendChild(guessRow);
     }
+
+    refreshGuessUIState();
 }
 
 function updateGuessUsageDisplay() {
     if (!guessHeaderCountEl) return;
     const usedGuesses = Math.min(Math.max(currentGuess, 0), maxGuesses);
     guessHeaderCountEl.textContent = `${usedGuesses} out of ${maxGuesses}`;
+}
+
+function updateGuessInputPlaceholder() {
+    if (!guessInput) return;
+    const index = Math.min(Math.max(currentGuess, 0), guessInputPlaceholderTexts.length - 1);
+    guessInput.placeholder = guessInputPlaceholderTexts[index];
+}
+
+function updateActiveGuessField() {
+    if (!guessesContainer) return;
+    const guessRows = guessesContainer.querySelectorAll('.guess-row');
+    const highlightIndex = !gameOver && currentGuess < maxGuesses ? currentGuess : -1;
+
+    guessRows.forEach((row, index) => {
+        const guessField = row.querySelector('.guess-field');
+        if (!guessField) return;
+        if (index === highlightIndex) {
+            guessField.classList.add('active');
+        } else {
+            guessField.classList.remove('active');
+        }
+    });
+}
+
+function refreshGuessUIState() {
+    updateGuessInputPlaceholder();
+    updateActiveGuessField();
 }
 
 function formatGuessPercentage(value) {
@@ -2123,6 +2160,7 @@ function submitGuess() {
         endGame();
     }
 
+    refreshGuessUIState();
     resetConfidenceInput();
     // Hide confidence input after first guess if needed
     updateConfidenceInputVisibility();
@@ -2138,6 +2176,7 @@ function addGuessToDisplay(guess) {
     guessField.textContent = formatNumber(guess);
     guessField.classList.remove('empty');
     updateGuessUsageDisplay();
+    refreshGuessUIState();
 }
 
 // Show feedback for a guess
@@ -3200,6 +3239,7 @@ function restoreGuessesDisplay(savedGuesses) {
 
     updateGuessUsageDisplay();
     applyGuessPlaceholderTexts();
+    refreshGuessUIState();
 }
 
 // Update display elements for ended game (without updating stats)
