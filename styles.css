@@ -553,13 +553,18 @@ button#stats-btn {
     margin-bottom: 20px;
     position: relative;
     z-index: 6; /* ensure tooltips above .question-box (z-index:5) */
+    border: 2px solid #eaecef;
+    border-radius: 16px;
 }
 
 .guess-row {
     display: flex;
     align-items: center;
-    margin-bottom: 5px;
     gap: 5px;
+}
+
+.guess-row:not(:last-child) {
+    border-bottom: 2px dashed #eaecef;
 }
 
 .guess-field {
@@ -579,6 +584,30 @@ button#stats-btn {
 .guess-field.empty {
     color: #b3b3b3;
     font-size: 0.8rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 12px;
+    text-align: left;
+}
+
+.guess-placeholder-text {
+    font-weight: 600;
+}
+
+.guess-placeholder-percentage {
+    border: 2px solid #e5e5e5;
+    padding: 7px;
+    border-radius: 8px;
+    font-weight: 700;
+    font-size: 15px;
+    color: #afafaf;
+    font-family: 'Nunito', sans-serif;
+    background: white;
+}
+
+.guess-placeholder-percentage.hidden {
+    display: none;
 }
 
 .feedback-button {

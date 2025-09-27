@@ -1873,10 +1873,8 @@ function clearGuesses() {
         const guessField = document.createElement('div');
         guessField.className = 'guess-field empty';
 
-        // Set the appropriate text for each guess position
         const guessNumber = i + 1;
-        const guessText = getGuessPlaceholderText(guessNumber);
-        guessField.textContent = guessText;
+        setGuessPlaceholderContent(guessField, guessNumber);
 
         const feedbackButton = document.createElement('button');
         feedbackButton.className = 'feedback-button hidden';
@@ -1900,18 +1898,51 @@ function formatGuessPercentage(value) {
     return String(rounded).replace(/\.0$/, '');
 }
 
-function getGuessPlaceholderText(guessNumber) {
-    const baseText = getGuessText(guessNumber);
+function getGuessPlaceholderInfo(guessNumber) {
+    const label = getGuessText(guessNumber);
     const distribution = currentQuestionGuessDistribution;
 
     if (!distribution || !distribution.entries || distribution.totalCompleted <= 0) {
-        return baseText;
+        return { label, percentageText: null };
     }
 
     const entry = distribution.entries[guessNumber];
     const percentage = entry && Number.isFinite(entry.percentage) ? entry.percentage : 0;
     const formatted = formatGuessPercentage(percentage);
-    return `${baseText} · ${formatted}% of players`;
+
+    return {
+        label,
+        percentageText: `${formatted}% of players`
+    };
+}
+
+function setGuessPlaceholderContent(guessField, guessNumber) {
+    if (!guessField) return;
+
+    const { label, percentageText } = getGuessPlaceholderInfo(guessNumber);
+
+    let labelEl = guessField.querySelector('.guess-placeholder-text');
+    let percentageEl = guessField.querySelector('.guess-placeholder-percentage');
+
+    if (!labelEl || !percentageEl) {
+        guessField.innerHTML = '';
+        labelEl = document.createElement('span');
+        labelEl.className = 'guess-placeholder-text';
+        percentageEl = document.createElement('div');
+        percentageEl.className = 'guess-placeholder-percentage';
+        guessField.appendChild(labelEl);
+        guessField.appendChild(percentageEl);
+    }
+
+    labelEl.textContent = label;
+
+    if (percentageText) {
+        percentageEl.textContent = percentageText;
+        percentageEl.classList.remove('hidden');
+    } else {
+        percentageEl.textContent = '';
+        percentageEl.classList.add('hidden');
+    }
 }
 
 function applyGuessPlaceholderTexts() {
@@ -1921,7 +1952,7 @@ function applyGuessPlaceholderTexts() {
         const guessField = row.querySelector('.guess-field');
         if (!guessField || !guessField.classList.contains('empty')) return;
         const guessNumber = index + 1;
-        guessField.textContent = getGuessPlaceholderText(guessNumber);
+        setGuessPlaceholderContent(guessField, guessNumber);
     });
 }
 
