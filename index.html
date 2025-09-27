@@ -8,7 +8,7 @@
     <meta name="description" content="A Wordle-style game for Fermi questions. Guess the answer to estimation questions in 6 or less tries.">
     <link rel="canonical" href="https://www.fermiquestions.org">
     <link rel="stylesheet" href="styles.css">
-    <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Nunito:ital,wght@0,200..1000;1,200..1000&family=Open+Sans:wght@400;500&family=Varela+Round&display=swap" rel="stylesheet">
     <script defer data-domain="fermiquestions.org" data-api="https://fermiquestions.daniel-fetz.workers.dev/fermiquestions/event" src="https://fermiquestions.daniel-fetz.workers.dev/fermiquestions/script.hash.js"></script>
     <!-- Supabase client library -->
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
@@ -35,30 +35,40 @@
     <main>
         <section id="welcome-screen" class="view active">
             <div class="welcome-content">
-                <h2 class="welcome-title">Welcome to Fermi Questions</h2>
-                <p class="welcome-subtitle">Sharpen your estimation skills with a fresh puzzle every day.</p>
-                <div class="daily-challenge-card">
+                <div class="daily-challenge-card" id="daily-challenge-card">
+                    <span id="daily-challenge-date" class="daily-challenge-date-badge"></span>
                     <div class="daily-challenge-header">
                         <h3>Daily Challenge</h3>
-                        <span id="daily-challenge-date" class="daily-challenge-date"></span>
                     </div>
                     <div class="daily-challenge-body">
-                        <div class="daily-challenge-image" id="daily-challenge-image-container" style="display: none;">
-                            <img id="daily-challenge-image" alt="" />
-                        </div>
                         <div class="daily-challenge-text">
                             <p id="daily-challenge-question" class="daily-challenge-question"></p>
                             <p id="daily-challenge-status" class="daily-challenge-status"></p>
                         </div>
                     </div>
-                    <button id="play-daily-btn" class="primary-action">Play</button>
+                    <div class="daily-challenge-actions">
+                        <button id="play-daily-btn" class="primary-action">Play</button>
+                        <button id="calendar-link-btn" class="secondary-action">Previous days</button>
+                    </div>
                 </div>
-                <button id="calendar-link-btn" class="secondary-action">Browse the calendar</button>
+                <div class="welcome-info-card">
+                    <div class="daily-challenge-header">
+                        <h3>How to Play</h3>
+                    </div>
+                    <div class="welcome-info-body">
+                        <p class="daily-challenge-question welcome-info-lede">Fermi estimates. Probability calibration training. Bayesian updating.</p>
+                        <p class="welcome-info-note">Many daunting terms, but this game effectively trains some of the core rationality techniques.</p>
+                    </div>
+                    <button id="learn-more-btn" class="secondary-action">Learn more</button>
+                </div>
             </div>
         </section>
 
         <section id="game-view" class="view">
             <div class="game-container">
+                <div class="view-header game-view-header">
+                    <button type="button" class="back-button" id="game-back-btn">Back</button>
+                </div>
         <!-- Question Display -->
         <div class="question-container">
             <div class="question-box">
@@ -85,19 +95,6 @@
                     <span id="comment-count">0</span>
                 </button>
                 <button id="source-btn" class="source-btn">Source & Stats <span class="arrow">></span></button>
-            </div>
-        </div>
-
-        <!-- Comments Section -->
-        <div class="comments-section" id="comments-section">
-            <div class="comments-header">
-                <button class="icon-button" id="comments-back-btn">&lt;</button>
-                <h2>Comments</h2>
-            </div>
-            <div class="comments-list" id="comments-list"></div>
-            <div class="comments-input">
-                <textarea id="comment-input" placeholder="Add a comment..."></textarea>
-                <button id="comment-submit-btn" class="submit-btn">Post</button>
             </div>
         </div>
 
@@ -148,7 +145,7 @@
                     <input
                         type="text"
                         id="guess-input"
-                        placeholder="Enter a guess..."
+                        placeholder="Enter first guess"
                         inputmode="numeric"
                         pattern="[0-9,]*"
                     >
@@ -209,10 +206,25 @@
             </div>
         </div>
 
-        <!-- Help Modal -->
-        <div class="modal" id="help-modal">
-            <div class="modal-content">
-                <h2>How to Play</h2>
+            </div>
+        </section>
+
+        <section id="calendar-view" class="view">
+            <div class="calendar-wrapper">
+                <div class="view-header">
+                    <button type="button" class="back-button" id="calendar-back-btn">&lt; Back</button>
+                    <h2 class="calendar-title">Question Calendar</h2>
+                </div>
+                <div id="calendar-months" class="calendar-months"></div>
+            </div>
+        </section>
+
+        <section id="help-view" class="view">
+            <div class="info-view">
+                <div class="view-header">
+                    <button type="button" class="back-button" id="help-back-btn">&lt; Back</button>
+                    <h2>How to Play</h2>
+                </div>
                 <div class="accordion" id="help-accordion">
                     <div class="accordion-item" id="acc-calibration-help-item">
                         <button class="accordion-header" id="acc-calibration-help-header" aria-expanded="false" aria-controls="acc-calibration-help-panel">
@@ -249,15 +261,15 @@
                         </div>
                     </div>
                 </div>
-                <button id="close-help-btn" class="close-btn">Close</button>
             </div>
-        </div>
+        </section>
 
-
-        <!-- Source/Explanation Modal -->
-        <div class="modal" id="source-modal">
-            <div class="modal-content">
-                <h2>Source & Stats</h2>
+        <section id="source-view" class="view">
+            <div class="info-view">
+                <div class="view-header">
+                    <button type="button" class="back-button" id="source-back-btn">&lt; Back</button>
+                    <h2>Source & Stats</h2>
+                </div>
                 <div class="accordion" id="source-accordion">
                     <div class="accordion-item" id="acc-source-item">
                         <button class="accordion-header" id="acc-source-header" aria-expanded="false" aria-controls="acc-source-panel">
@@ -303,14 +315,15 @@
                         </div>
                     </div>
                 </div>
-                <button id="close-source-btn" class="close-btn">Close</button>
             </div>
-        </div>
+        </section>
 
-        <!-- Stats Modal -->
-        <div class="modal" id="stats-modal">
-            <div class="modal-content">
-                <h2>Statistics</h2>
+        <section id="stats-view" class="view">
+            <div class="info-view">
+                <div class="view-header">
+                    <button type="button" class="back-button" id="stats-back-btn">&lt; Back</button>
+                    <h2>Statistics</h2>
+                </div>
                 <div class="accordion" id="stats-accordion">
                     <div class="accordion-item open" id="acc-statsgrid-item">
                         <button class="accordion-header" id="acc-statsgrid-header" aria-expanded="true" aria-controls="acc-statsgrid-panel">
@@ -425,22 +438,20 @@
                 </div>
 
                 <button id="share-stats-btn" class="share-btn">Share</button>
-                <button id="close-stats-btn" class="close-btn">Close</button>
-            </div>
-        </div>
             </div>
         </section>
 
-        <section id="calendar-view" class="view">
-            <div class="calendar-wrapper">
-                <h2 class="calendar-title">Question Calendar</h2>
-                <p class="calendar-subtitle">Pick a day to play or review its challenge.</p>
-                <div class="calendar-legend">
-                    <span><span class="legend-box pending"></span> Not played</span>
-                    <span><span class="legend-box won"></span> Completed</span>
-                    <span><span class="legend-box lost"></span> Missed</span>
+        <section id="comments-section" class="view comments-section">
+            <div class="info-view comments-view">
+                <div class="view-header">
+                    <button type="button" class="back-button" id="comments-back-btn">&lt; Back</button>
+                    <h2>Comments</h2>
                 </div>
-                <div id="calendar-months" class="calendar-months"></div>
+                <div class="comments-list" id="comments-list"></div>
+                <div class="comments-input">
+                    <textarea id="comment-input" placeholder="Add a comment..."></textarea>
+                    <button id="comment-submit-btn" class="submit-btn">Post</button>
+                </div>
             </div>
         </section>
     </main>

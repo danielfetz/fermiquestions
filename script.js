@@ -123,7 +123,7 @@ async function saveStatsToSupabase(statsData) {
 // Fetch average guesses for a question from Supabase using RPC
 async function fetchAverageGuesses(questionDate) {
     if (!supabase) return null;
-    
+
     try {
         // Call the RPC function for server-side aggregation
         const { data, error } = await supabase
@@ -154,6 +154,82 @@ async function fetchAverageGuesses(questionDate) {
     } catch (error) {
         console.error('Error with average guesses fetch:', error);
         return null;
+    }
+}
+
+// Fetch distribution of winning guesses per guess number for a question
+async function fetchGuessDistribution(questionDate) {
+    if (!supabase) return null;
+
+    try {
+        const { data, error } = await supabase
+            .rpc('guess_distribution_for_date', { q_date: questionDate });
+
+        if (error) {
+            console.error('Error fetching guess distribution:', error);
+            return null;
+        }
+
+        if (!Array.isArray(data) || data.length === 0) {
+            return null;
+        }
+
+        const totalWins = Number(data[0]?.total_wins) || 0;
+        const totalCompleted = Number(data[0]?.total_completed) || 0;
+        const distribution = {
+            totalWins,
+            totalCompleted,
+            entries: {}
+        };
+
+        for (const row of data) {
+            const guessNumber = Number(row?.guess_number);
+            if (!Number.isInteger(guessNumber)) continue;
+
+            const winCount = Number(row?.win_count) || 0;
+            const rawPercentage = row?.percentage;
+            const normalizedPercentage = Number(rawPercentage);
+            const safePercentage = Number.isFinite(normalizedPercentage)
+                ? normalizedPercentage
+                : (totalCompleted > 0 ? (winCount / totalCompleted) * 100 : 0);
+
+            distribution.entries[guessNumber] = {
+                count: winCount,
+                percentage: Math.max(0, Math.min(100, safePercentage))
+            };
+        }
+
+        return distribution;
+    } catch (error) {
+        console.error('Error with guess distribution fetch:', error);
+        return null;
+    }
+}
+
+// Load guess distribution and update placeholders when data is available
+async function loadGuessDistribution(questionDate, options = {}) {
+    if (!questionDate) return;
+
+    const { force = false } = options;
+    const hasCached = Object.prototype.hasOwnProperty.call(guessDistributionCache, questionDate);
+
+    if (!force && hasCached) {
+        const cached = guessDistributionCache[questionDate];
+        if (currentQuestion && currentQuestion.date === questionDate) {
+            currentQuestionGuessDistribution = cached;
+            applyGuessPlaceholderTexts();
+        }
+        return;
+    }
+
+    if (!supabase) return;
+
+    const distribution = await fetchGuessDistribution(questionDate);
+    guessDistributionCache[questionDate] = distribution;
+
+    if (currentQuestion && currentQuestion.date === questionDate) {
+        currentQuestionGuessDistribution = distribution;
+        applyGuessPlaceholderTexts();
     }
 }
 
@@ -405,7 +481,7 @@ function subscribeToComments(questionDate) {
             filter: `question_date=eq.${questionDate}`
         }, async () => {
             await updateCommentCount();
-            if (commentsSection && commentsSection.classList.contains('open')) {
+            if (currentView === 'comments') {
                 await loadComments();
             }
         })
@@ -413,16 +489,16 @@ function subscribeToComments(questionDate) {
 }
 
 function openComments() {
-    if (!commentsSection) return;
-    loadComments();
-    commentsSection.classList.add('open');
-    document.body.classList.add('no-scroll');
+    if (!commentsSection || !currentQuestion) return;
+    if (!ensureExtrasAccessible(currentQuestion.date)) {
+        return;
+    }
+    void loadComments();
+    navigateToView('comments', { date: currentQuestion.date });
 }
 
 function closeComments() {
-    if (!commentsSection) return;
-    commentsSection.classList.remove('open');
-    document.body.classList.remove('no-scroll');
+    goBack('game');
 }
 
 // Update the average tries display in the inline meta row
@@ -439,7 +515,9 @@ let completedQuestions = {}; // Changed from array to object to track win/loss s
 // URL Routing state
 let isNavigating = false;
 let currentView = 'welcome';
+let viewHistory = [];
 let todaysQuestion = null;
+let gameBackFallback = 'welcome';
 
 // Statistics
 let stats = {
@@ -460,6 +538,9 @@ let stats = {
 };
 
 let calibrationEnabled = true;
+
+const guessDistributionCache = Object.create(null);
+let currentQuestionGuessDistribution = null;
 
 // Database of Fermi questions with dates
 const fermiQuestions = [
@@ -975,6 +1056,78 @@ const fermiQuestions = [
         hint: "25.9M US households reported an income between $100,000 and $200,000 in 2022.",
         date: "2025-09-18",
         image: "data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' width='100' height='100' viewBox='0 0 100 100'%3e%3crect width='100' height='100' fill='%23f8fafc'/%3e%3ctext x='50' y='62' font-size='40' text-anchor='middle' fill='%23374151'%3e️🇺🇸%3c/text%3e%3c/svg%3e"
+    },
+    {
+        question: "How many people work in McDonald's restaurants across the United States?",
+        answer: 800000,
+        category: "",
+        explanation: "",
+        hint: "There are 1,225 McDonald's restaurants in California.",
+        date: "2025-09-19",
+        image: "data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' width='100' height='100' viewBox='0 0 100 100'%3e%3crect width='100' height='100' fill='%23f8fafc'/%3e%3ctext x='50' y='62' font-size='40' text-anchor='middle' fill='%23374151'%3e️🍔%3c/text%3e%3c/svg%3e"
+    },
+    {
+        question: "How many daily active users did Duolingo have as of March 2025?",
+        answer: 46600000,
+        category: "",
+        explanation: "",
+        hint: "Duolingo's revenue in the first three months of 2025 was $230.7 million.",
+        date: "2025-09-20",
+        image: "data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' width='100' height='100' viewBox='0 0 100 100'%3e%3crect width='100' height='100' fill='%23f8fafc'/%3e%3ctext x='50' y='62' font-size='40' text-anchor='middle' fill='%23374151'%3e️📱%3c/text%3e%3c/svg%3e"
+    },
+    {
+        question: "How many commercial airline pilots are employed worldwide?",
+        answer: 382000,
+        category: "",
+        explanation: "",
+        hint: "There were around 36.4 million scheduled commercial airline flights in 2024.",
+        date: "2025-09-21",
+        image: "data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' width='100' height='100' viewBox='0 0 100 100'%3e%3crect width='100' height='100' fill='%23f8fafc'/%3e%3ctext x='50' y='62' font-size='40' text-anchor='middle' fill='%23374151'%3e️🧑‍✈️%3c/text%3e%3c/svg%3e"
+    },
+    {
+        question: "How many divorces took place in Germany in 2024?",
+        answer: 129337,
+        category: "",
+        explanation: "",
+        hint: "Roughly 81% of the marriages formed in 2005 were still intact in 2015.",
+        date: "2025-09-22",
+        image: "data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' width='100' height='100' viewBox='0 0 100 100'%3e%3crect width='100' height='100' fill='%23f8fafc'/%3e%3ctext x='50' y='62' font-size='40' text-anchor='middle' fill='%23374151'%3e️💔%3c/text%3e%3c/svg%3e"
+    },
+    {
+        question: "How many hours did the average journey from London to San Francisco take in 1900?",
+        answer: 293,
+        category: "",
+        explanation: "",
+        hint: "The straight-line distance between San Francisco and London is 5,354 miles (8,617 km).",
+        date: "2025-09-23",
+        image: "data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' width='100' height='100' viewBox='0 0 100 100'%3e%3crect width='100' height='100' fill='%23f8fafc'/%3e%3ctext x='50' y='62' font-size='40' text-anchor='middle' fill='%23374151'%3e️🗽%3c/text%3e%3c/svg%3e"
+    },
+    {
+        question: "How many babies were born in the United States on New Year's Day in 2000?",
+        answer: 9083,
+        category: "",
+        explanation: "",
+        hint: "January 1st, 2000 was a Saturday, which typically has 27% fewer births than weekdays.",
+        date: "2025-09-24",
+        image: "data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' width='100' height='100' viewBox='0 0 100 100'%3e%3crect width='100' height='100' fill='%23f8fafc'/%3e%3ctext x='50' y='62' font-size='40' text-anchor='middle' fill='%23374151'%3e️👶%3c/text%3e%3c/svg%3e"
+    },
+    {
+        question: "How many transactions did Visa process per day in 2024?",
+        answer: 639000000,
+        category: "",
+        explanation: "",
+        hint: "Roughly 57% of all credit and debit cards outside China carry the Visa brand.",
+        date: "2025-09-25",
+        image: "data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' width='100' height='100' viewBox='0 0 100 100'%3e%3crect width='100' height='100' fill='%23f8fafc'/%3e%3ctext x='50' y='62' font-size='40' text-anchor='middle' fill='%23374151'%3e️💳%3c/text%3e%3c/svg%3e"
+    },
+    {
+        question: "How many radiologists are there in the United States?",
+        answer: 31960,
+        category: "",
+        explanation: "",
+        hint: "In 2023, around 35.7 million MRI scans were performed in the US.",
+        date: "2025-09-26",
+        image: "data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' width='100' height='100' viewBox='0 0 100 100'%3e%3crect width='100' height='100' fill='%23f8fafc'/%3e%3ctext x='50' y='62' font-size='40' text-anchor='middle' fill='%23374151'%3e️🩻%3c/text%3e%3c/svg%3e"
     }
 ];
 
@@ -982,15 +1135,19 @@ const fermiQuestions = [
 const welcomeScreen = document.getElementById('welcome-screen');
 const gameView = document.getElementById('game-view');
 const calendarView = document.getElementById('calendar-view');
+const gameBackBtn = document.getElementById('game-back-btn');
+if (gameBackBtn) {
+    setGameBackDestination(gameBackFallback);
+}
 const playDailyBtn = document.getElementById('play-daily-btn');
 const calendarLinkBtn = document.getElementById('calendar-link-btn');
+const learnMoreBtn = document.getElementById('learn-more-btn');
 const homeBtn = document.getElementById('home-btn');
 const calendarBtn = document.getElementById('calendar-btn');
+const dailyChallengeCard = document.getElementById('daily-challenge-card');
 const dailyChallengeQuestionEl = document.getElementById('daily-challenge-question');
 const dailyChallengeDateEl = document.getElementById('daily-challenge-date');
 const dailyChallengeStatusEl = document.getElementById('daily-challenge-status');
-const dailyChallengeImageContainer = document.getElementById('daily-challenge-image-container');
-const dailyChallengeImageEl = document.getElementById('daily-challenge-image');
 const calendarMonthsContainer = document.getElementById('calendar-months');
 const questionText = document.getElementById('question-text');
 const questionCategory = document.getElementById('question-category');
@@ -1002,15 +1159,23 @@ const hintText = document.getElementById('hint-text');
 const hintBody = document.getElementById('hint-body');
 const questionMeta = document.getElementById('question-meta');
 const sourceBtn = document.getElementById('source-btn');
-const sourceModal = document.getElementById('source-modal');
+const sourceView = document.getElementById('source-view');
 const sourceText = document.getElementById('source-text');
-const closeSourceBtn = document.getElementById('close-source-btn');
 const gameResult = document.getElementById('game-result');
 const resultMessage = document.getElementById('result-message');
 const resultEmoji = document.getElementById('result-emoji');
 const correctAnswer = document.getElementById('correct-answer');
 const guessesContainer = document.getElementById('guesses-container');
+let guessHeaderCountEl = null;
 const guessInput = document.getElementById('guess-input');
+const guessInputPlaceholderTexts = [
+    'Enter first guess',
+    'Enter second guess',
+    'Enter third guess',
+    'Enter fourth guess',
+    'Enter fifth guess',
+    'Enter final guess'
+];
 const confidenceInput = document.getElementById('confidence-input');
 const confidenceButton = document.getElementById('confidence-button');
 const confidenceMenu = document.getElementById('confidence-menu');
@@ -1039,15 +1204,13 @@ const modalAnswer = document.getElementById('modal-answer');
 const newGameBtn = document.getElementById('new-game-btn');
 const helpBtn = document.getElementById('help-btn');
 const statsBtn = document.getElementById('stats-btn');
-const helpModal = document.getElementById('help-modal');
-const statsModal = document.getElementById('stats-modal');
+const helpView = document.getElementById('help-view');
+const statsView = document.getElementById('stats-view');
 const questionsModal = document.getElementById('questions-modal');
 const strategyTipsBtn = document.getElementById('strategy-tips-btn');
 // Hint elements
 const hintModalBtn = document.getElementById('hint-modal-btn');
 const questionsList = document.getElementById('questions-list');
-const closeHelpBtn = document.getElementById('close-help-btn');
-const closeStatsBtn = document.getElementById('close-stats-btn');
 const closeQuestionsBtn = document.getElementById('close-questions-btn');
 const shareBtn = document.getElementById('share-btn');
 const shareStatsBtn = document.getElementById('share-stats-btn');
@@ -1065,6 +1228,22 @@ const commentsList = document.getElementById('comments-list');
 const commentInput = document.getElementById('comment-input');
 const commentSubmitBtn = document.getElementById('comment-submit-btn');
 const commentCountEl = document.getElementById('comment-count');
+const helpBackBtn = document.getElementById('help-back-btn');
+const statsBackBtn = document.getElementById('stats-back-btn');
+const sourceBackBtn = document.getElementById('source-back-btn');
+const calendarBackBtn = document.getElementById('calendar-back-btn');
+
+const viewElements = {
+    welcome: welcomeScreen,
+    game: gameView,
+    calendar: calendarView,
+    help: helpView,
+    stats: statsView,
+    source: sourceView,
+    comments: commentsSection
+};
+
+const urlSyncedViews = new Set(['welcome', 'calendar', 'help', 'stats', 'source', 'comments']);
 
 
 // Confidence tooltip
@@ -1099,7 +1278,7 @@ function initGame() {
     let navigatedFromRoute = false;
 
     if (initialRoute.view === 'game' && initialRoute.date) {
-        navigatedFromRoute = navigateToQuestion(initialRoute.date);
+        navigatedFromRoute = navigateToQuestion(initialRoute.date, { skipHistory: true });
     }
 
     if (!navigatedFromRoute) {
@@ -1114,15 +1293,59 @@ function initGame() {
 
     if (navigatedFromRoute) {
         setActiveView('game', { skipURLUpdate: true, force: true });
-    } else if (initialRoute.view === 'calendar') {
-        setActiveView('calendar', { skipURLUpdate: true, force: true });
-    } else if (initialRoute.view === 'game' && initialRoute.date) {
-        setActiveView('game', { skipURLUpdate: true, force: true });
-        if (currentQuestion) {
-            updateURL(currentQuestion.date);
-        }
     } else {
-        setActiveView('welcome', { force: true });
+        switch (initialRoute.view) {
+            case 'calendar':
+                setActiveView('calendar', { skipURLUpdate: true, force: true });
+                break;
+            case 'game':
+                if (initialRoute.date && currentQuestion) {
+                    setActiveView('game', { skipURLUpdate: true, force: true });
+                    updateURL(currentQuestion.date);
+                } else {
+                    navigateToCurrentQuestion();
+                }
+                break;
+            case 'help':
+                setActiveView('help', { skipURLUpdate: true, force: true });
+                break;
+            case 'stats':
+                updateStatsDisplay();
+                setActiveView('stats', { skipURLUpdate: true, force: true });
+                break;
+            case 'source': {
+                const targetDate = initialRoute.date || (currentQuestion ? currentQuestion.date : null);
+                if (!ensureExtrasAccessible(targetDate, { skipHistory: true })) {
+                    break;
+                }
+                const resolvedDate = targetDate || (currentQuestion ? currentQuestion.date : null);
+                if (!ensureQuestionSelected(resolvedDate)) {
+                    navigateToCurrentQuestion();
+                    break;
+                }
+                prepareSourceView();
+                setActiveView('source', { skipURLUpdate: true, force: true, date: resolvedDate });
+                break;
+            }
+            case 'comments': {
+                const targetDate = initialRoute.date || (currentQuestion ? currentQuestion.date : null);
+                if (!ensureExtrasAccessible(targetDate, { skipHistory: true })) {
+                    break;
+                }
+                const resolvedDate = targetDate || (currentQuestion ? currentQuestion.date : null);
+                if (!ensureQuestionSelected(resolvedDate)) {
+                    navigateToCurrentQuestion();
+                    break;
+                }
+                void loadComments();
+                setActiveView('comments', { skipURLUpdate: true, force: true, date: resolvedDate });
+                break;
+            }
+            case 'welcome':
+            default:
+                setActiveView('welcome', { force: true });
+                break;
+        }
     }
 
     setupEventListeners();
@@ -1170,7 +1393,9 @@ function startNewGame(skipURLUpdate = false) {
         console.error('No questions available');
         return;
     }
-    
+
+    updateGameBackFallback(currentQuestion, currentView);
+
     // Check if this question already has saved progress
     const storageKey = `fermiGameState_${currentQuestion.date}`;
     const existingSavedState = localStorage.getItem(storageKey);
@@ -1185,11 +1410,13 @@ function startNewGame(skipURLUpdate = false) {
     currentGuess = 0;
     gameWon = false;
     gameOver = false;
-    
+
     // Update display
     updateQuestionDisplay(currentQuestion);
+    currentQuestionGuessDistribution = guessDistributionCache[currentQuestion.date] || null;
     clearGuesses();
-    
+    void loadGuessDistribution(currentQuestion.date);
+
     // Update page title
     updatePageTitle(currentQuestion);
     
@@ -1238,6 +1465,25 @@ function getCurrentDate() {
     return `${year}-${month}-${day}`;
 }
 
+function setGameBackDestination(destination) {
+    const target = destination === 'calendar' ? 'calendar' : 'welcome';
+    gameBackFallback = target;
+    if (gameBackBtn) {
+        gameBackBtn.textContent = target === 'calendar' ? 'Back to calendar' : 'Back';
+    }
+}
+
+function updateGameBackFallback(_question, sourceView = currentView) {
+    if (sourceView === 'calendar') {
+        setGameBackDestination('calendar');
+        return;
+    }
+
+    if (sourceView !== 'game') {
+        setGameBackDestination('welcome');
+    }
+}
+
 // Get question for a specific date
 function getQuestionForDate(date) {
     return fermiQuestions.find(q => q.date === date);
@@ -1248,6 +1494,14 @@ function formatDateForDisplay(dateString) {
     const date = new Date(dateString);
     const options = { day: 'numeric', month: 'long', year: 'numeric' };
     return date.toLocaleDateString('en-GB', options);
+}
+
+function formatDateForBadge(dateString) {
+    const date = new Date(dateString);
+    if (Number.isNaN(date.getTime())) {
+        return '';
+    }
+    return date.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
 }
 
 // Get question based on current date and game state
@@ -1292,15 +1546,22 @@ function refreshDailyChallengeSummary() {
     const todayQuestion = getTodaysQuestion();
     todaysQuestion = todayQuestion || null;
 
+    if (dailyChallengeCard) {
+        dailyChallengeCard.classList.remove(
+            'daily-challenge-card--ready',
+            'daily-challenge-card--won',
+            'daily-challenge-card--lost'
+        );
+    }
+
     if (!todayQuestion) {
         dailyChallengeQuestionEl.textContent = 'No daily challenge is available right now.';
         dailyChallengeDateEl.textContent = '';
+        dailyChallengeDateEl.removeAttribute('title');
+        dailyChallengeDateEl.removeAttribute('aria-label');
         if (dailyChallengeStatusEl) {
             dailyChallengeStatusEl.textContent = '';
             dailyChallengeStatusEl.classList.remove('status-won', 'status-lost');
-        }
-        if (dailyChallengeImageContainer) {
-            dailyChallengeImageContainer.style.display = 'none';
         }
         if (playDailyBtn) {
             playDailyBtn.disabled = true;
@@ -1309,25 +1570,19 @@ function refreshDailyChallengeSummary() {
         return;
     }
 
-    const todayDate = getCurrentDate();
-    const formattedDate = todayQuestion.date === todayDate
-        ? 'Today'
-        : formatDateForDisplay(todayQuestion.date);
+    const badgeDate = formatDateForBadge(todayQuestion.date);
+    const fullDateLabel = formatDateForDisplay(todayQuestion.date);
 
-    dailyChallengeDateEl.textContent = formattedDate;
-    dailyChallengeQuestionEl.textContent = todayQuestion.question;
-
-    if (dailyChallengeImageContainer) {
-        if (todayQuestion.image) {
-            dailyChallengeImageContainer.style.display = 'flex';
-            if (dailyChallengeImageEl) {
-                dailyChallengeImageEl.src = todayQuestion.image;
-                dailyChallengeImageEl.alt = `Image for ${todayQuestion.question}`;
-            }
-        } else {
-            dailyChallengeImageContainer.style.display = 'none';
-        }
+    dailyChallengeDateEl.textContent = badgeDate;
+    if (fullDateLabel) {
+        dailyChallengeDateEl.title = fullDateLabel;
+        dailyChallengeDateEl.setAttribute('aria-label', `Question date: ${fullDateLabel}`);
+    } else {
+        dailyChallengeDateEl.removeAttribute('title');
+        dailyChallengeDateEl.removeAttribute('aria-label');
     }
+
+    dailyChallengeQuestionEl.textContent = todayQuestion.question;
 
     if (playDailyBtn) {
         playDailyBtn.disabled = false;
@@ -1346,12 +1601,20 @@ function refreshDailyChallengeSummary() {
         if (playDailyBtn) {
             playDailyBtn.textContent = 'Review';
         }
+        if (dailyChallengeCard) {
+            dailyChallengeCard.classList.add(
+                completed.won ? 'daily-challenge-card--won' : 'daily-challenge-card--lost'
+            );
+        }
     } else {
         if (dailyChallengeStatusEl) {
             dailyChallengeStatusEl.textContent = 'Ready to play';
         }
         if (playDailyBtn) {
             playDailyBtn.textContent = 'Play';
+        }
+        if (dailyChallengeCard) {
+            dailyChallengeCard.classList.add('daily-challenge-card--ready');
         }
     }
 }
@@ -1362,34 +1625,52 @@ function updateHash(newHash) {
     }
 }
 
+function getHashForView(view, date) {
+    switch (view) {
+        case 'welcome':
+            return '#/welcome';
+        case 'calendar':
+            return '#/calendar';
+        case 'help':
+            return '#/help';
+        case 'stats':
+            return '#/stats';
+        case 'source':
+            return date ? `#/${date}/source` : '#/source';
+        case 'comments':
+            return date ? `#/${date}/comments` : '#/comments';
+        default:
+            return null;
+    }
+}
+
 function setActiveView(view, options = {}) {
-    const { skipURLUpdate = false, force = false } = options;
+    const { skipURLUpdate = false, force = false, date } = options;
     if (!force && currentView === view) {
         if (view === 'calendar') {
             renderCalendar();
         } else if (view === 'welcome') {
             refreshDailyChallengeSummary();
+        } else if (view === 'game') {
+            if (guessInput && !('ontouchstart' in window) && !navigator.maxTouchPoints) {
+                setTimeout(() => guessInput.focus(), 150);
+            }
         }
         return;
     }
 
     currentView = view;
 
-    if (welcomeScreen) {
-        welcomeScreen.classList.toggle('active', view === 'welcome');
-    }
-    if (gameView) {
-        gameView.classList.toggle('active', view === 'game');
-    }
-    if (calendarView) {
-        calendarView.classList.toggle('active', view === 'calendar');
-    }
+    Object.entries(viewElements).forEach(([key, element]) => {
+        if (!element) return;
+        element.classList.toggle('active', key === view);
+    });
 
     if (!skipURLUpdate) {
-        if (view === 'welcome') {
-            updateHash('#/welcome');
-        } else if (view === 'calendar') {
-            updateHash('#/calendar');
+        const viewDate = date || (currentQuestion ? currentQuestion.date : null);
+        const newHash = getHashForView(view, viewDate);
+        if (newHash) {
+            updateHash(newHash);
         }
     }
 
@@ -1400,6 +1681,53 @@ function setActiveView(view, options = {}) {
     } else if (view === 'game') {
         if (guessInput && !('ontouchstart' in window) && !navigator.maxTouchPoints) {
             setTimeout(() => guessInput.focus(), 150);
+        }
+    }
+}
+
+function navigateToView(view, options = {}) {
+    const { skipHistory = false, skipURLUpdate, force = false, date } = options;
+
+    if (view === 'source' || view === 'comments') {
+        const targetDate = date || (currentQuestion ? currentQuestion.date : null);
+        if (!ensureExtrasAccessible(targetDate, { skipHistory })) {
+            return;
+        }
+    }
+
+    if (!skipHistory && currentView !== view) {
+        viewHistory.push(currentView);
+    }
+    const shouldSkipURL = skipURLUpdate !== undefined
+        ? skipURLUpdate
+        : !urlSyncedViews.has(view);
+    setActiveView(view, { skipURLUpdate: shouldSkipURL, force, date });
+}
+
+function goBack(fallbackView = 'welcome') {
+    if (viewHistory.length > 0) {
+        const previous = viewHistory.pop();
+        const skipURLUpdate = !urlSyncedViews.has(previous);
+        const options = { skipURLUpdate, force: true };
+        if ((previous === 'source' || previous === 'comments') && currentQuestion) {
+            options.date = currentQuestion.date;
+        }
+        setActiveView(previous, options);
+        if (previous === 'game' && currentQuestion) {
+            updateURL(currentQuestion.date);
+        }
+        return;
+    }
+
+    if (fallbackView) {
+        const skipURLUpdate = !urlSyncedViews.has(fallbackView);
+        const options = { skipURLUpdate, force: true };
+        if ((fallbackView === 'source' || fallbackView === 'comments') && currentQuestion) {
+            options.date = currentQuestion.date;
+        }
+        setActiveView(fallbackView, options);
+        if (fallbackView === 'game' && currentQuestion) {
+            updateURL(currentQuestion.date);
         }
     }
 }
@@ -1428,7 +1756,10 @@ function renderCalendar() {
     calendarMonthsContainer.innerHTML = '';
     const dayLabels = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
 
-    questionsByMonth.forEach((monthQuestions, monthKey) => {
+    const monthEntries = Array.from(questionsByMonth.entries()).sort((a, b) => b[0].localeCompare(a[0]));
+
+    monthEntries.forEach(([monthKey, monthQuestions]) => {
+        const sortedMonthQuestions = [...monthQuestions].sort((a, b) => a.date.localeCompare(b.date));
         const monthContainer = document.createElement('div');
         monthContainer.className = 'calendar-month';
 
@@ -1448,7 +1779,7 @@ function renderCalendar() {
         });
 
         const questionByDay = new Map();
-        monthQuestions.forEach((question) => {
+        sortedMonthQuestions.forEach((question) => {
             const dayNumber = parseInt(question.date.slice(8, 10), 10);
             questionByDay.set(dayNumber, question);
         });
@@ -1542,27 +1873,148 @@ function renderCalendar() {
 // Clear previous guesses
 function clearGuesses() {
     guessesContainer.innerHTML = '';
-    
+
+    const guessHeader = document.createElement('div');
+    guessHeader.className = 'guess-header';
+
+    const headerTitle = document.createElement('span');
+    headerTitle.className = 'guess-header-title';
+    headerTitle.textContent = 'Guesses';
+
+    const headerCount = document.createElement('span');
+    headerCount.className = 'guess-header-count';
+
+    guessHeader.appendChild(headerTitle);
+    guessHeader.appendChild(headerCount);
+    guessesContainer.appendChild(guessHeader);
+
+    guessHeaderCountEl = headerCount;
+    updateGuessUsageDisplay();
+
     // Create empty guess rows
     for (let i = 0; i < maxGuesses; i++) {
         const guessRow = document.createElement('div');
         guessRow.className = 'guess-row';
-        
+
         const guessField = document.createElement('div');
         guessField.className = 'guess-field empty';
-        
-        // Set the appropriate text for each guess position
+
         const guessNumber = i + 1;
-        const guessText = getGuessText(guessNumber);
-        guessField.textContent = guessText;
-        
+        setGuessPlaceholderContent(guessField, guessNumber);
+
         const feedbackButton = document.createElement('button');
         feedbackButton.className = 'feedback-button hidden';
-        
+
         guessRow.appendChild(guessField);
         guessRow.appendChild(feedbackButton);
         guessesContainer.appendChild(guessRow);
     }
+
+    refreshGuessUIState();
+}
+
+function updateGuessUsageDisplay() {
+    if (!guessHeaderCountEl) return;
+    const usedGuesses = Math.min(Math.max(currentGuess, 0), maxGuesses);
+    guessHeaderCountEl.textContent = `${usedGuesses} out of ${maxGuesses}`;
+}
+
+function updateGuessInputPlaceholder() {
+    if (!guessInput) return;
+    const index = Math.min(Math.max(currentGuess, 0), guessInputPlaceholderTexts.length - 1);
+    guessInput.placeholder = guessInputPlaceholderTexts[index];
+}
+
+function updateActiveGuessField() {
+    if (!guessesContainer) return;
+    const guessRows = guessesContainer.querySelectorAll('.guess-row');
+    const highlightIndex = !gameOver && currentGuess < maxGuesses ? currentGuess : -1;
+
+    guessRows.forEach((row, index) => {
+        const guessField = row.querySelector('.guess-field');
+        if (!guessField) return;
+        if (index === highlightIndex) {
+            guessField.classList.add('active');
+        } else {
+            guessField.classList.remove('active');
+        }
+    });
+}
+
+function refreshGuessUIState() {
+    updateGuessInputPlaceholder();
+    updateActiveGuessField();
+}
+
+function formatGuessPercentage(value) {
+    if (!Number.isFinite(value) || value <= 0) {
+        return '0';
+    }
+
+    if (value >= 10) {
+        return String(Math.round(value));
+    }
+
+    const rounded = Number(value.toFixed(1));
+    return String(rounded).replace(/\.0$/, '');
+}
+
+function getGuessPlaceholderInfo(guessNumber) {
+    const label = getGuessText(guessNumber);
+    const distribution = currentQuestionGuessDistribution;
+
+    if (!distribution || !distribution.entries || distribution.totalCompleted <= 0) {
+        return { label, percentageText: null };
+    }
+
+    const entry = distribution.entries[guessNumber];
+    const percentage = entry && Number.isFinite(entry.percentage) ? entry.percentage : 0;
+    const formatted = formatGuessPercentage(percentage);
+
+    return {
+        label,
+        percentageText: `${formatted}% of players`
+    };
+}
+
+function setGuessPlaceholderContent(guessField, guessNumber) {
+    if (!guessField) return;
+
+    const { label, percentageText } = getGuessPlaceholderInfo(guessNumber);
+
+    let labelEl = guessField.querySelector('.guess-placeholder-text');
+    let percentageEl = guessField.querySelector('.guess-placeholder-percentage');
+
+    if (!labelEl || !percentageEl) {
+        guessField.innerHTML = '';
+        labelEl = document.createElement('span');
+        labelEl.className = 'guess-placeholder-text';
+        percentageEl = document.createElement('div');
+        percentageEl.className = 'guess-placeholder-percentage';
+        guessField.appendChild(labelEl);
+        guessField.appendChild(percentageEl);
+    }
+
+    labelEl.textContent = label;
+
+    if (percentageText) {
+        percentageEl.textContent = percentageText;
+        percentageEl.classList.remove('hidden');
+    } else {
+        percentageEl.textContent = '';
+        percentageEl.classList.add('hidden');
+    }
+}
+
+function applyGuessPlaceholderTexts() {
+    if (!guessesContainer) return;
+    const guessRows = guessesContainer.querySelectorAll('.guess-row');
+    guessRows.forEach((row, index) => {
+        const guessField = row.querySelector('.guess-field');
+        if (!guessField || !guessField.classList.contains('empty')) return;
+        const guessNumber = index + 1;
+        setGuessPlaceholderContent(guessField, guessNumber);
+    });
 }
 
 // Helper function to get the text for each guess position
@@ -1708,6 +2160,7 @@ function submitGuess() {
         endGame();
     }
 
+    refreshGuessUIState();
     resetConfidenceInput();
     // Hide confidence input after first guess if needed
     updateConfidenceInputVisibility();
@@ -1719,9 +2172,11 @@ function addGuessToDisplay(guess) {
     const guessRows = guessesContainer.querySelectorAll('.guess-row');
     const currentRow = guessRows[currentGuess - 1];
     const guessField = currentRow.querySelector('.guess-field');
-    
+
     guessField.textContent = formatNumber(guess);
     guessField.classList.remove('empty');
+    updateGuessUsageDisplay();
+    refreshGuessUIState();
 }
 
 // Show feedback for a guess
@@ -2001,8 +2456,15 @@ function endGame() {
                 guesses: savedGuesses,
                 completed_at: new Date().toISOString()
             };
-            
+
             saveGameToSupabase(gameData);
+
+            const questionDate = currentQuestion.date;
+            if (questionDate) {
+                setTimeout(() => {
+                    void loadGuessDistribution(questionDate, { force: true });
+                }, 800);
+            }
         }
     }
     
@@ -2074,15 +2536,71 @@ function startNewGameFromModal() {
     startNewGame();
 }
 
-// Show help modal
-function showHelp() {
-    helpModal.style.display = 'block';
+function prepareSourceView() {
+    if (!sourceView || !currentQuestion || !sourceText) return;
+
+    const explanation = currentQuestion.explanation || 'No source available for this question as of now. This is a new feature that will be available in the coming days.';
+    sourceText.textContent = '';
+    const asHtml = /<a\s|https?:\/\//i.test(explanation);
+    if (asHtml) {
+        sourceText.innerHTML = explanation;
+    } else {
+        sourceText.textContent = explanation;
+    }
+
+    if (medianFirstGuessText) medianFirstGuessText.textContent = '';
+    const playersEl = document.getElementById('source-players-count');
+    const winRateEl = document.getElementById('source-win-rate');
+    const avgTriesEl = document.getElementById('source-avg-tries');
+    if (playersEl) playersEl.textContent = '0';
+    if (winRateEl) winRateEl.textContent = '0%';
+    if (avgTriesEl) avgTriesEl.textContent = '0';
+
+    fetchMedianFirstGuess(currentQuestion.date)
+        .then(median => {
+            if (median != null && medianFirstGuessText) {
+                medianFirstGuessText.textContent = `The median first guess was ${formatNumber(median)}`;
+            }
+        })
+        .catch(() => {/* ignore */});
+
+    if (firstGuessPercentileText) firstGuessPercentileText.textContent = '';
+    fetchFirstGuessPercentile(currentQuestion.date)
+        .then(percentile => {
+            if (typeof percentile === 'number' && firstGuessPercentileText) {
+                firstGuessPercentileText.textContent = `Your first guess is in the ${percentile}th percentile, meaning you've performed as well or better than ${percentile}% of players.`;
+            }
+        })
+        .catch(() => {/* ignore */});
+
+    fetchAverageGuesses(currentQuestion.date)
+        .then(avgData => {
+            if (!avgData) return;
+            if (playersEl && typeof avgData.totalPlayers === 'number') {
+                playersEl.textContent = `${avgData.totalPlayers}`;
+            }
+            if (winRateEl && typeof avgData.winRate === 'number') {
+                winRateEl.textContent = `${avgData.winRate}%`;
+            }
+            if (avgTriesEl && typeof avgData.average === 'number') {
+                const value = avgData.average;
+                avgTriesEl.textContent = Number.isInteger(value) ? `${value}` : value.toFixed(1);
+            }
+        })
+        .catch(() => {/* ignore */});
 }
 
-// Show stats modal
+// Show help view
+function showHelp() {
+    if (!helpView) return;
+    navigateToView('help');
+}
+
+// Show stats view
 function showStats() {
     updateStatsDisplay();
-    statsModal.style.display = 'block';
+    if (!statsView) return;
+    navigateToView('stats');
 }
 
 // Update stats display
@@ -2572,6 +3090,7 @@ function loadCurrentGameState() {
             
             // Restore game state
             currentQuestion = gameState.question;
+            updateGameBackFallback(currentQuestion, currentView);
             currentGuess = gameState.currentGuess;
             gameWon = gameState.gameWon;
             gameOver = gameState.gameOver;
@@ -2582,10 +3101,12 @@ function loadCurrentGameState() {
             
             // Update URL to reflect the restored question
             updateURL(currentQuestion.date);
-            
+
             // Clear guesses container and restore saved guesses
+            currentQuestionGuessDistribution = guessDistributionCache[currentQuestion.date] || null;
             clearGuesses();
             restoreGuessesDisplay(gameState.guesses);
+            void loadGuessDistribution(currentQuestion.date);
 
             // Update game state display
             if (gameOver) {
@@ -2640,7 +3161,7 @@ function clearCurrentGameState() {
 // Restore guesses display from saved state
 function restoreGuessesDisplay(savedGuesses) {
     const guessRows = guessesContainer.querySelectorAll('.guess-row');
-    
+
     savedGuesses.forEach((guess, index) => {
         if (index < guessRows.length) {
             const row = guessRows[index];
@@ -2715,6 +3236,10 @@ function restoreGuessesDisplay(savedGuesses) {
             }
         }
     });
+
+    updateGuessUsageDisplay();
+    applyGuessPlaceholderTexts();
+    refreshGuessUIState();
 }
 
 // Update display elements for ended game (without updating stats)
@@ -2870,6 +3395,8 @@ function updatePageTitle(question) {
 
 // Select a specific question
 function selectQuestion(question) {
+    updateGameBackFallback(question, currentView);
+
     // Save current game state before switching (if there's an active game)
     if (currentQuestion && currentGuess > 0 && !gameOver && !completedQuestions[currentQuestion.date]) {
         saveCurrentGameState();
@@ -2877,7 +3404,8 @@ function selectQuestion(question) {
     
     currentQuestion = question;
     updateQuestionDisplay(currentQuestion);
-    
+    currentQuestionGuessDistribution = guessDistributionCache[question.date] || null;
+
     // Update page title
     updatePageTitle(currentQuestion);
     
@@ -2977,6 +3505,9 @@ function selectQuestion(question) {
     if (!isNavigating && currentView === 'game') {
         updateURL(question.date);
     }
+
+    applyGuessPlaceholderTexts();
+    void loadGuessDistribution(question.date);
 
     refreshDailyChallengeSummary();
     renderCalendar();
@@ -3112,7 +3643,7 @@ function showShareFeedback(message) {
         color: white;
         padding: 12px 20px;
         border-radius: 8px;
-        font-family: 'Press Start 2P', monospace;
+        font-family: 'Nunito', sans-serif;
         font-size: 0.7rem;
         z-index: 10000;
     `;
@@ -3157,6 +3688,27 @@ function parseURL() {
         return { view: 'calendar' };
     }
 
+    if (hash === '#/help') {
+        return { view: 'help' };
+    }
+
+    if (hash === '#/stats') {
+        return { view: 'stats' };
+    }
+
+    const datedViewMatch = hash.match(/^#\/(\d{4}-\d{2}-\d{2})\/(comments|source)$/);
+    if (datedViewMatch) {
+        return { view: datedViewMatch[2], date: datedViewMatch[1] };
+    }
+
+    if (hash === '#/source') {
+        return { view: 'source' };
+    }
+
+    if (hash === '#/comments') {
+        return { view: 'comments' };
+    }
+
     const questionMatch = hash.match(/^#\/(\d{4}-\d{2}-\d{2})$/);
     if (questionMatch) {
         return { view: 'game', date: questionMatch[1] };
@@ -3169,8 +3721,73 @@ function parseURL() {
     return { view: 'welcome' };
 }
 
+function ensureQuestionSelected(questionDate) {
+    if (questionDate) {
+        if (currentQuestion && currentQuestion.date === questionDate) {
+            return true;
+        }
+        const question = getQuestionForDate(questionDate);
+        if (!question) {
+            return false;
+        }
+        const today = getCurrentDate();
+        if (question.date > today) {
+            return false;
+        }
+        isNavigating = true;
+        selectQuestion(question);
+        isNavigating = false;
+        return true;
+    }
+
+    if (currentQuestion) {
+        return true;
+    }
+
+    const defaultQuestion = getCurrentQuestion();
+    if (!defaultQuestion) {
+        return false;
+    }
+
+    isNavigating = true;
+    selectQuestion(defaultQuestion);
+    isNavigating = false;
+    return true;
+}
+
+function hasCompletedQuestion(questionDate) {
+    if (!questionDate) return false;
+    return Boolean(completedQuestions && completedQuestions[questionDate]);
+}
+
+function ensureExtrasAccessible(questionDate, options = {}) {
+    const { skipHistory = false } = options;
+
+    if (!questionDate) {
+        navigateToCurrentQuestion();
+        return false;
+    }
+
+    if (!hasCompletedQuestion(questionDate)) {
+        navigateToQuestion(questionDate, { skipHistory });
+        return false;
+    }
+
+    return true;
+}
+
 // Navigate to a specific question by date
-function navigateToQuestion(questionDate) {
+function navigateToQuestion(questionDate, options = {}) {
+    const { skipHistory = false, sourceView } = options;
+    const previousView = sourceView !== undefined ? sourceView : currentView;
+
+    if (!skipHistory && previousView && previousView !== 'game') {
+        const lastEntry = viewHistory[viewHistory.length - 1];
+        if (lastEntry !== previousView) {
+            viewHistory.push(previousView);
+        }
+    }
+
     const question = getQuestionForDate(questionDate);
 
     if (question) {
@@ -3213,16 +3830,58 @@ function navigateToCurrentQuestion() {
 function handlePopState() {
     const route = parseURL();
 
-    if (route.view === 'calendar') {
-        setActiveView('calendar', { skipURLUpdate: true, force: true });
-        return;
-    }
-
-    if (route.view === 'game' && route.date) {
-        if (!navigateToQuestion(route.date)) {
-            navigateToCurrentQuestion();
+    switch (route.view) {
+        case 'calendar':
+            setActiveView('calendar', { skipURLUpdate: true, force: true });
+            return;
+        case 'help':
+            setActiveView('help', { skipURLUpdate: true, force: true });
+            return;
+        case 'stats':
+            updateStatsDisplay();
+            setActiveView('stats', { skipURLUpdate: true, force: true });
+            return;
+        case 'source': {
+            const targetDate = route.date || (currentQuestion ? currentQuestion.date : null);
+            if (!ensureExtrasAccessible(targetDate, { skipHistory: true })) {
+                return;
+            }
+            const resolvedDate = targetDate || (currentQuestion ? currentQuestion.date : null);
+            if (!ensureQuestionSelected(resolvedDate)) {
+                navigateToCurrentQuestion();
+                return;
+            }
+            prepareSourceView();
+            setActiveView('source', { skipURLUpdate: true, force: true, date: resolvedDate });
+            return;
         }
-        return;
+        case 'comments': {
+            const targetDate = route.date || (currentQuestion ? currentQuestion.date : null);
+            if (!ensureExtrasAccessible(targetDate, { skipHistory: true })) {
+                return;
+            }
+            const resolvedDate = targetDate || (currentQuestion ? currentQuestion.date : null);
+            if (!ensureQuestionSelected(resolvedDate)) {
+                navigateToCurrentQuestion();
+                return;
+            }
+            void loadComments();
+            setActiveView('comments', { skipURLUpdate: true, force: true, date: resolvedDate });
+            return;
+        }
+        case 'game':
+            if (route.date) {
+                if (!navigateToQuestion(route.date, { skipHistory: true })) {
+                    navigateToCurrentQuestion();
+                }
+                return;
+            }
+            break;
+        case 'welcome':
+            setActiveView('welcome', { skipURLUpdate: true, force: true });
+            return;
+        default:
+            break;
     }
 
     setActiveView('welcome', { skipURLUpdate: true, force: true });
@@ -3240,14 +3899,54 @@ function initRouting(skipInitialNavigation = false) {
 
     // Handle initial page load
     const route = parseURL();
-    if (route.view === 'calendar') {
-        setActiveView('calendar', { skipURLUpdate: true, force: true });
-    } else if (route.view === 'game' && route.date) {
-        if (!navigateToQuestion(route.date)) {
-            navigateToCurrentQuestion();
+    switch (route.view) {
+        case 'calendar':
+            setActiveView('calendar', { skipURLUpdate: true, force: true });
+            break;
+        case 'game':
+            if (!route.date || !navigateToQuestion(route.date, { skipHistory: true })) {
+                navigateToCurrentQuestion();
+            }
+            break;
+        case 'help':
+            setActiveView('help', { skipURLUpdate: true, force: true });
+            break;
+        case 'stats':
+            updateStatsDisplay();
+            setActiveView('stats', { skipURLUpdate: true, force: true });
+            break;
+        case 'source': {
+            const targetDate = route.date || (currentQuestion ? currentQuestion.date : null);
+            if (!ensureExtrasAccessible(targetDate, { skipHistory: true })) {
+                break;
+            }
+            const resolvedDate = targetDate || (currentQuestion ? currentQuestion.date : null);
+            if (!ensureQuestionSelected(resolvedDate)) {
+                navigateToCurrentQuestion();
+                break;
+            }
+            prepareSourceView();
+            setActiveView('source', { skipURLUpdate: true, force: true, date: resolvedDate });
+            break;
         }
-    } else {
-        setActiveView('welcome', { force: true });
+        case 'comments': {
+            const targetDate = route.date || (currentQuestion ? currentQuestion.date : null);
+            if (!ensureExtrasAccessible(targetDate, { skipHistory: true })) {
+                break;
+            }
+            const resolvedDate = targetDate || (currentQuestion ? currentQuestion.date : null);
+            if (!ensureQuestionSelected(resolvedDate)) {
+                navigateToCurrentQuestion();
+                break;
+            }
+            void loadComments();
+            setActiveView('comments', { skipURLUpdate: true, force: true, date: resolvedDate });
+            break;
+        }
+        case 'welcome':
+        default:
+            setActiveView('welcome', { force: true });
+            break;
     }
 }
 
@@ -3300,19 +3999,23 @@ function setupEventListeners() {
 
     if (calendarLinkBtn) {
         calendarLinkBtn.addEventListener('click', () => {
-            setActiveView('calendar');
+            navigateToView('calendar');
         });
+    }
+
+    if (learnMoreBtn) {
+        learnMoreBtn.addEventListener('click', showHelp);
     }
 
     if (homeBtn) {
         homeBtn.addEventListener('click', () => {
-            setActiveView('welcome');
+            navigateToView('welcome');
         });
     }
 
     if (calendarBtn) {
         calendarBtn.addEventListener('click', () => {
-            setActiveView('calendar');
+            navigateToView('calendar');
         });
     }
 
@@ -3419,65 +4122,17 @@ function setupEventListeners() {
         updateSelected(confidenceInput.value);
     }
     
-    // Source button opens explanation modal
-    if (sourceBtn && sourceModal) {
+    // Source button opens explanation view
+    if (sourceBtn && sourceView) {
         sourceBtn.addEventListener('click', () => {
-            if (currentQuestion && sourceText) {
-                const explanation = currentQuestion.explanation || 'No source available for this question as of now. This is a new feature that will be available in the coming days.';
-                // Allow simple links if present; otherwise treat as plain text
-                sourceText.textContent = '';
-                const asHtml = /<a\s|https?:\/\//i.test(explanation);
-                if (asHtml) {
-                    sourceText.innerHTML = explanation;
-                } else {
-                    sourceText.textContent = explanation;
-                }
-                // Reset stats placeholders before fetching
-                if (medianFirstGuessText) medianFirstGuessText.textContent = '';
-                const playersEl = document.getElementById('source-players-count');
-                const winRateEl = document.getElementById('source-win-rate');
-                const avgTriesEl = document.getElementById('source-avg-tries');
-                if (playersEl) playersEl.textContent = '0';
-                if (winRateEl) winRateEl.textContent = '0%';
-                if (avgTriesEl) avgTriesEl.textContent = '0';
-
-                // Fetch median first guess
-                fetchMedianFirstGuess(currentQuestion.date)
-                    .then(median => {
-                        if (median != null && medianFirstGuessText) {
-                            medianFirstGuessText.textContent = `The median first guess was ${formatNumber(median)}`;
-                        }
-                    })
-                    .catch(() => {/* ignore */});
-
-                // Fetch user's first-guess percentile
-                if (firstGuessPercentileText) firstGuessPercentileText.textContent = '';
-                fetchFirstGuessPercentile(currentQuestion.date)
-                    .then(p => {
-                        if (typeof p === 'number' && firstGuessPercentileText) {
-                            firstGuessPercentileText.textContent = `Your first guess is in the ${p}th percentile, meaning you've performed as well or better than ${p}% of players.`;
-                        }
-                    })
-                    .catch(() => {/* ignore */});
-
-                // Fetch aggregate stats (players, win rate)
-                fetchAverageGuesses(currentQuestion.date)
-                    .then(avgData => {
-                        if (!avgData) return;
-                        if (playersEl && typeof avgData.totalPlayers === 'number') {
-                            playersEl.textContent = `${avgData.totalPlayers}`;
-                        }
-                        if (winRateEl && typeof avgData.winRate === 'number') {
-                            winRateEl.textContent = `${avgData.winRate}%`;
-                        }
-                        if (avgTriesEl && typeof avgData.average === 'number') {
-                            const v = avgData.average;
-                            avgTriesEl.textContent = Number.isInteger(v) ? `${v}` : v.toFixed(1);
-                        }
-                    })
-                    .catch(() => {/* ignore */});
+            if (!currentQuestion) return;
+            const targetDate = currentQuestion.date;
+            if (!hasCompletedQuestion(targetDate)) {
+                navigateToQuestion(targetDate);
+                return;
             }
-            sourceModal.style.display = 'block';
+            prepareSourceView();
+            navigateToView('source', { date: targetDate });
         });
     }
 
@@ -3497,9 +4152,9 @@ function setupEventListeners() {
     });
     
     // Close buttons
-    closeHelpBtn.addEventListener('click', () => closeModal(helpModal));
-    closeStatsBtn.addEventListener('click', () => closeModal(statsModal));
-    closeQuestionsBtn.addEventListener('click', () => closeModal(questionsModal));
+    if (closeQuestionsBtn) {
+        closeQuestionsBtn.addEventListener('click', () => closeModal(questionsModal));
+    }
 
     // Comment buttons
     if (commentsBtn) commentsBtn.addEventListener('click', openComments);
@@ -3517,9 +4172,10 @@ function setupEventListeners() {
     // Share buttons
     shareBtn.addEventListener('click', shareGame);
     shareStatsBtn.addEventListener('click', shareStats);
-        
+
     // Close modals when clicking outside (desktop + mobile)
-    [helpModal, statsModal, questionsModal, sourceModal].forEach(modal => {
+    [questionsModal, gameOverModal].forEach(modal => {
+        if (!modal) return;
         ['click', 'touchend'].forEach(event => {
             modal.addEventListener(event, e => e.target === modal && closeModal(modal));
         });
@@ -3532,10 +4188,12 @@ function setupEventListeners() {
         });
     });
 
-    // Close source modal via button
-    if (closeSourceBtn && sourceModal) {
-        closeSourceBtn.addEventListener('click', () => closeModal(sourceModal));
-    }
+    // Back buttons for secondary views
+    if (gameBackBtn) gameBackBtn.addEventListener('click', () => goBack(gameBackFallback));
+    if (helpBackBtn) helpBackBtn.addEventListener('click', () => goBack('welcome'));
+    if (statsBackBtn) statsBackBtn.addEventListener('click', () => goBack('welcome'));
+    if (sourceBackBtn) sourceBackBtn.addEventListener('click', () => goBack('game'));
+    if (calendarBackBtn) calendarBackBtn.addEventListener('click', () => goBack('welcome'));
 }
 
 if (calibrationChart) {
