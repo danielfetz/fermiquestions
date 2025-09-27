@@ -557,6 +557,23 @@ button#stats-btn {
     border-radius: 16px;
 }
 
+.guess-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 14px 18px;
+    border-bottom: 2px dashed #eaecef;
+    font-family: 'Nunito', sans-serif;
+    font-weight: 700;
+    font-size: 15px;
+    color: #0f172a;
+}
+
+.guess-header-count {
+    font-weight: 600;
+    color: #4b4b4b;
+}
+
 .guess-row {
     display: flex;
     align-items: center;

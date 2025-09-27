@@ -1166,6 +1166,7 @@ const resultMessage = document.getElementById('result-message');
 const resultEmoji = document.getElementById('result-emoji');
 const correctAnswer = document.getElementById('correct-answer');
 const guessesContainer = document.getElementById('guesses-container');
+let guessHeaderCountEl = null;
 const guessInput = document.getElementById('guess-input');
 const confidenceInput = document.getElementById('confidence-input');
 const confidenceButton = document.getElementById('confidence-button');
@@ -1865,6 +1866,23 @@ function renderCalendar() {
 function clearGuesses() {
     guessesContainer.innerHTML = '';
 
+    const guessHeader = document.createElement('div');
+    guessHeader.className = 'guess-header';
+
+    const headerTitle = document.createElement('span');
+    headerTitle.className = 'guess-header-title';
+    headerTitle.textContent = 'Guesses';
+
+    const headerCount = document.createElement('span');
+    headerCount.className = 'guess-header-count';
+
+    guessHeader.appendChild(headerTitle);
+    guessHeader.appendChild(headerCount);
+    guessesContainer.appendChild(guessHeader);
+
+    guessHeaderCountEl = headerCount;
+    updateGuessUsageDisplay();
+
     // Create empty guess rows
     for (let i = 0; i < maxGuesses; i++) {
         const guessRow = document.createElement('div');
@@ -1883,6 +1901,12 @@ function clearGuesses() {
         guessRow.appendChild(feedbackButton);
         guessesContainer.appendChild(guessRow);
     }
+}
+
+function updateGuessUsageDisplay() {
+    if (!guessHeaderCountEl) return;
+    const usedGuesses = Math.min(Math.max(currentGuess, 0), maxGuesses);
+    guessHeaderCountEl.textContent = `${usedGuesses} out of ${maxGuesses}`;
 }
 
 function formatGuessPercentage(value) {
@@ -2110,9 +2134,10 @@ function addGuessToDisplay(guess) {
     const guessRows = guessesContainer.querySelectorAll('.guess-row');
     const currentRow = guessRows[currentGuess - 1];
     const guessField = currentRow.querySelector('.guess-field');
-    
+
     guessField.textContent = formatNumber(guess);
     guessField.classList.remove('empty');
+    updateGuessUsageDisplay();
 }
 
 // Show feedback for a guess
@@ -3097,7 +3122,7 @@ function clearCurrentGameState() {
 // Restore guesses display from saved state
 function restoreGuessesDisplay(savedGuesses) {
     const guessRows = guessesContainer.querySelectorAll('.guess-row');
-    
+
     savedGuesses.forEach((guess, index) => {
         if (index < guessRows.length) {
             const row = guessRows[index];
@@ -3173,6 +3198,7 @@ function restoreGuessesDisplay(savedGuesses) {
         }
     });
 
+    updateGuessUsageDisplay();
     applyGuessPlaceholderTexts();
 }
 
