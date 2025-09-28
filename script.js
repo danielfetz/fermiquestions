@@ -1063,6 +1063,15 @@ const fermiQuestions = [
         hint: "There are around 86 practicing dentists per 100,000 inhabitants in Germany.",
         date: "2025-09-28",
         image: "data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' width='100' height='100' viewBox='0 0 100 100'%3e%3crect width='100' height='100' fill='%23f8fafc'/%3e%3ctext x='50' y='62' font-size='40' text-anchor='middle' fill='%23374151'%3e️🦷%3c/text%3e%3c/svg%3e"
+    },
+    {
+        question: "How much revenue in US dollars did Netflix make in the first half of 2025?",
+        answer: 21600000000,
+        category: "",
+        explanation: "",
+        hint: "The United States and Canada account for around 44% of Netflix's revenue.",
+        date: "2025-09-29",
+        image: "data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' width='100' height='100' viewBox='0 0 100 100'%3e%3crect width='100' height='100' fill='%23f8fafc'/%3e%3ctext x='50' y='62' font-size='40' text-anchor='middle' fill='%23374151'%3e️🍿%3c/text%3e%3c/svg%3e"
     }
 ];
 
