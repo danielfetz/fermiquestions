@@ -1072,6 +1072,15 @@ const fermiQuestions = [
         hint: "The United States and Canada account for around 44% of Netflix's revenue.",
         date: "2025-09-29",
         image: "data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' width='100' height='100' viewBox='0 0 100 100'%3e%3crect width='100' height='100' fill='%23f8fafc'/%3e%3ctext x='50' y='62' font-size='40' text-anchor='middle' fill='%23374151'%3e️🍿%3c/text%3e%3c/svg%3e"
+    },
+    {
+        question: "How many cars were in use in the United States in 1950?",
+        answer: 40300000,
+        category: "",
+        explanation: "",
+        hint: "The US had only 4% of the world population in 1950, but 75% of all cars.",
+        date: "2025-09-30",
+        image: "data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' width='100' height='100' viewBox='0 0 100 100'%3e%3crect width='100' height='100' fill='%23f8fafc'/%3e%3ctext x='50' y='62' font-size='40' text-anchor='middle' fill='%23374151'%3e️🚗%3c/text%3e%3c/svg%3e"
     }
 ];
 
