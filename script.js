@@ -1090,6 +1090,15 @@ const fermiQuestions = [
         hint: "US Bible sales in 2024 were 7.3 million higher than in 2019.",
         date: "2025-10-01",
         image: "data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' width='100' height='100' viewBox='0 0 100 100'%3e%3crect width='100' height='100' fill='%23f8fafc'/%3e%3ctext x='50' y='62' font-size='40' text-anchor='middle' fill='%23374151'%3e️📚%3c/text%3e%3c/svg%3e"
+    },
+    {
+        question: "How many existing and newly built US homes were sold in 2024?",
+        answer: 4750000,
+        category: "",
+        explanation: "",
+        hint: "US single-family home sales were around 686,000 in 2024.",
+        date: "2025-10-02",
+        image: "data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' width='100' height='100' viewBox='0 0 100 100'%3e%3crect width='100' height='100' fill='%23f8fafc'/%3e%3ctext x='50' y='62' font-size='40' text-anchor='middle' fill='%23374151'%3e️🏘️%3c/text%3e%3c/svg%3e"
     }
 ];
 
