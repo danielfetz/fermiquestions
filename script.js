@@ -1108,6 +1108,15 @@ const fermiQuestions = [
         hint: "The average bed oc­cupa­ncy rate was 71% in 2023.",
         date: "2025-10-03",
         image: "data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' width='100' height='100' viewBox='0 0 100 100'%3e%3crect width='100' height='100' fill='%23f8fafc'/%3e%3ctext x='50' y='62' font-size='40' text-anchor='middle' fill='%23374151'%3e️🏥%3c/text%3e%3c/svg%3e"
+    },
+    {
+        question: "How many AirPods did Apple sell worldwide in 2024?",
+        answer: 67000000,
+        category: "",
+        explanation: "",
+        hint: "AirPods launched in December 2016, and appx. 15 million units were sold in 2017.",
+        date: "2025-10-04",
+        image: "data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' width='100' height='100' viewBox='0 0 100 100'%3e%3crect width='100' height='100' fill='%23f8fafc'/%3e%3ctext x='50' y='62' font-size='40' text-anchor='middle' fill='%23374151'%3e️🍏%3c/text%3e%3c/svg%3e"
     }
 ];
 
