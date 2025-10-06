@@ -1263,6 +1263,16 @@ const commentsList = document.getElementById('comments-list');
 const commentInput = document.getElementById('comment-input');
 const commentSubmitBtn = document.getElementById('comment-submit-btn');
 const commentCountEl = document.getElementById('comment-count');
+const infoBanner = document.getElementById('info-banner');
+const bannerCloseBtn = document.getElementById('banner-close-btn');
+const bannerSubscribeBtn = document.getElementById('banner-subscribe-btn');
+const emailModal = document.getElementById('email-modal');
+const emailForm = document.getElementById('email-form');
+const emailInput = document.getElementById('email-input');
+const emailTimezoneSelect = document.getElementById('timezone-select');
+const emailFeedback = document.getElementById('email-feedback');
+const closeEmailModalBtn = document.getElementById('close-email-modal');
+const emailSubmitBtn = document.getElementById('email-submit-btn');
 
 
 // Confidence tooltip
@@ -1283,6 +1293,243 @@ function initConfidenceTooltip() {
     document.addEventListener('touchstart', hideTooltip, { once: true });
 }
 
+function detectUserTimeZone() {
+    try {
+        const options = Intl.DateTimeFormat().resolvedOptions();
+        if (options && options.timeZone) {
+            return options.timeZone;
+        }
+    } catch (error) {
+        // Ignore and fall back to UTC
+    }
+    return 'UTC';
+}
+
+function formatTimeZoneLabel(zone) {
+    if (!zone) return '';
+    return zone.replace(/_/g, ' ');
+}
+
+function populateTimezoneOptions(selectedZone) {
+    if (!emailTimezoneSelect) return;
+    const storedZone = localStorage.getItem('emailTimezone');
+    const preferredZone = storedZone || selectedZone || detectUserTimeZone();
+    let zones = [];
+    try {
+        if (typeof Intl !== 'undefined' && typeof Intl.supportedValuesOf === 'function') {
+            zones = Intl.supportedValuesOf('timeZone');
+        }
+    } catch (error) {
+        // Ignore feature detection errors
+    }
+
+    if (!Array.isArray(zones) || zones.length === 0) {
+        zones = [
+            'UTC',
+            'America/New_York',
+            'America/Los_Angeles',
+            'Europe/London',
+            'Europe/Berlin',
+            'Asia/Singapore',
+            'Australia/Sydney'
+        ];
+    }
+
+    const zoneSet = new Set(zones);
+    if (preferredZone) {
+        zoneSet.add(preferredZone);
+    }
+
+    emailTimezoneSelect.innerHTML = '';
+    Array.from(zoneSet)
+        .sort()
+        .forEach(zone => {
+            const option = document.createElement('option');
+            option.value = zone;
+            option.textContent = formatTimeZoneLabel(zone);
+            emailTimezoneSelect.appendChild(option);
+        });
+
+    if (preferredZone && zoneSet.has(preferredZone)) {
+        emailTimezoneSelect.value = preferredZone;
+    }
+}
+
+function showInfoBanner() {
+    if (!infoBanner) return;
+    infoBanner.classList.remove('info-banner--hidden');
+}
+
+function hideInfoBanner({ persistDismissal = false } = {}) {
+    if (!infoBanner) return;
+    infoBanner.classList.add('info-banner--hidden');
+    if (persistDismissal) {
+        localStorage.setItem('emailBannerDismissed', 'true');
+    }
+}
+
+function initEmailCapture() {
+    populateTimezoneOptions(detectUserTimeZone());
+
+    const dismissed = localStorage.getItem('emailBannerDismissed') === 'true';
+    if (!dismissed) {
+        showInfoBanner();
+    } else {
+        hideInfoBanner();
+    }
+}
+
+function openEmailModal() {
+    if (!emailModal) return;
+    populateTimezoneOptions(detectUserTimeZone());
+    clearEmailFeedback();
+    emailModal.style.display = 'block';
+    emailModal.setAttribute('aria-hidden', 'false');
+    if (emailInput) {
+        setTimeout(() => emailInput.focus(), 50);
+    }
+}
+
+function closeEmailModal() {
+    if (!emailModal) return;
+    closeModal(emailModal);
+    emailModal.setAttribute('aria-hidden', 'true');
+    if (emailForm) {
+        emailForm.reset();
+    }
+    populateTimezoneOptions(detectUserTimeZone());
+    clearEmailFeedback();
+}
+
+function clearEmailFeedback() {
+    setEmailFeedback('', null);
+}
+
+function setEmailFeedback(message, type = 'info') {
+    if (!emailFeedback) return;
+    emailFeedback.textContent = message || '';
+    emailFeedback.classList.remove('form-feedback--success', 'form-feedback--error', 'form-feedback--info');
+    if (message && type) {
+        emailFeedback.classList.add(`form-feedback--${type}`);
+    }
+}
+
+function isValidEmail(email) {
+    if (!email) return false;
+    const trimmed = email.trim();
+    return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(trimmed);
+}
+
+async function handleEmailSubscription(event) {
+    event.preventDefault();
+    if (!emailForm || !emailInput) return;
+
+    const email = emailInput.value.trim().toLowerCase();
+    if (!isValidEmail(email)) {
+        setEmailFeedback('Please enter a valid email address.', 'error');
+        return;
+    }
+
+    if (!supabase) {
+        initSupabase();
+    }
+
+    if (!supabase) {
+        setEmailFeedback('Subscription is unavailable right now. Please try again later.', 'error');
+        return;
+    }
+
+    const timezone = emailTimezoneSelect && emailTimezoneSelect.value ? emailTimezoneSelect.value : detectUserTimeZone();
+    localStorage.setItem('emailTimezone', timezone);
+
+    setEmailFeedback('Saving your subscription…', 'info');
+
+    let originalButtonText = null;
+    if (emailSubmitBtn) {
+        originalButtonText = emailSubmitBtn.textContent;
+        emailSubmitBtn.disabled = true;
+        emailSubmitBtn.textContent = 'Saving…';
+    }
+
+    try {
+        const payload = {
+            email,
+            timezone,
+            subscribed_at: new Date().toISOString()
+        };
+
+        const { error: upsertError } = await supabase
+            .from('email_subscribers')
+            .upsert(payload, { onConflict: 'email' });
+
+        if (upsertError) {
+            throw upsertError;
+        }
+
+        let functionRegistered = false;
+        try {
+            // Trigger Supabase Edge Function that stores the subscription and schedules Resend deliveries.
+            const { error: functionError } = await supabase.functions.invoke('register-daily-question-email', {
+                body: {
+                    email,
+                    timezone
+                }
+            });
+            if (!functionError) {
+                functionRegistered = true;
+            } else {
+                console.warn('Daily email registration function returned an error:', functionError);
+            }
+        } catch (invokeError) {
+            console.warn('Failed to invoke daily email registration function:', invokeError);
+        }
+
+        try {
+            // Fire-and-forget welcome message through a Supabase Edge Function that calls Resend.
+            await supabase.functions.invoke('send-welcome-email', {
+                body: {
+                    email,
+                    timezone
+                }
+            });
+        } catch (welcomeError) {
+            console.warn('Welcome email invocation failed:', welcomeError);
+        }
+
+        setEmailFeedback(
+            functionRegistered
+                ? 'You’re in! We’ll email you each morning when the new question goes live.'
+                : 'Subscription saved! Emails will begin shortly — if you do not receive one, please try again later.',
+            'success'
+        );
+
+        emailInput.value = '';
+        if (emailSubmitBtn && originalButtonText) {
+            emailSubmitBtn.textContent = originalButtonText;
+        }
+        if (emailSubmitBtn) {
+            emailSubmitBtn.disabled = false;
+        }
+
+        hideInfoBanner({ persistDismissal: true });
+        localStorage.setItem('emailSubscribed', 'true');
+
+        setTimeout(() => {
+            closeEmailModal();
+        }, 1600);
+    } catch (error) {
+        console.error('Email subscription failed:', error);
+        setEmailFeedback('We could not save your email. Please try again in a moment.', 'error');
+    } finally {
+        if (emailSubmitBtn) {
+            emailSubmitBtn.disabled = false;
+            if (originalButtonText) {
+                emailSubmitBtn.textContent = originalButtonText;
+            }
+        }
+    }
+}
+
 // Initialize game
 function initGame() {
     // Initialize Supabase first
@@ -1292,6 +1539,7 @@ function initGame() {
     loadCompletedQuestions();
     loadCalibrationSetting();
     initConfidenceTooltip();
+    initEmailCapture();
 
     // If URL has a specific question date, navigate to it first
     let navigatedFromURL = false;
@@ -3235,6 +3483,28 @@ function setupEventListeners() {
         });
     }
 
+    if (bannerCloseBtn) {
+        bannerCloseBtn.addEventListener('click', () => hideInfoBanner({ persistDismissal: true }));
+    }
+
+    if (bannerSubscribeBtn) {
+        bannerSubscribeBtn.addEventListener('click', openEmailModal);
+    }
+
+    if (closeEmailModalBtn) {
+        closeEmailModalBtn.addEventListener('click', closeEmailModal);
+    }
+
+    if (emailForm) {
+        emailForm.addEventListener('submit', handleEmailSubscription);
+    }
+
+    if (emailTimezoneSelect) {
+        emailTimezoneSelect.addEventListener('change', () => {
+            localStorage.setItem('emailTimezone', emailTimezoneSelect.value);
+        });
+    }
+
     // Mobile-only custom confidence dropdown
     if (confidenceButton && confidenceMenu && guessInput) {
         const menuButtons = confidenceMenu.querySelectorAll('button[data-value]');
@@ -3395,12 +3665,21 @@ function setupEventListeners() {
     shareStatsBtn.addEventListener('click', shareStats);
         
     // Close modals when clicking outside (desktop + mobile)
-    [helpModal, statsModal, questionsModal, sourceModal].forEach(modal => {
-        ['click', 'touchend'].forEach(event => {
-            modal.addEventListener(event, e => e.target === modal && closeModal(modal));
+    [helpModal, statsModal, questionsModal, sourceModal, emailModal]
+        .filter(Boolean)
+        .forEach(modal => {
+            ['click', 'touchend'].forEach(event => {
+                modal.addEventListener(event, e => {
+                    if (e.target !== modal) return;
+                    if (modal === emailModal) {
+                        closeEmailModal();
+                    } else {
+                        closeModal(modal);
+                    }
+                });
+            });
         });
-    });
-    
+
     // Prevent modal content clicks from closing modals
     document.querySelectorAll('.modal-content').forEach(content => {
         ['click', 'touchend'].forEach(event => {

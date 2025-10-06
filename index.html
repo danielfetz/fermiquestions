@@ -14,6 +14,19 @@
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 </head>
 <body>
+        <div class="info-banner info-banner--hidden" id="info-banner" role="region" aria-live="polite">
+            <div class="info-banner__content">
+                <span class="info-banner__icon" aria-hidden="true">📬</span>
+                <div class="info-banner__text">
+                    <strong>Get the daily question by email.</strong>
+                    <span>We’ll ping you when a new Fermi question is live.</span>
+                </div>
+            </div>
+            <div class="info-banner__actions">
+                <button id="banner-subscribe-btn" class="info-banner__action">Notify me</button>
+            </div>
+            <button id="banner-close-btn" class="info-banner__close" aria-label="Dismiss notification banner">&times;</button>
+        </div>
         <header class="game-header">
             <div class="header-left">
                 <img src="https://upload.wikimedia.org/wikipedia/commons/6/6f/Photograph_of_Enrico_Fermi_-_NARA_-_595043.gif" alt="Enrico Fermi" class="fermi-logo">
@@ -180,6 +193,26 @@
                 <p id="modal-message"></p>
                 <p id="modal-answer"></p>
                 <button id="new-game-btn" class="new-game-btn">New Game</button>
+            </div>
+        </div>
+
+        <!-- Email subscription modal -->
+        <div class="modal" id="email-modal" role="dialog" aria-modal="true" aria-labelledby="email-modal-title" aria-hidden="true">
+            <div class="modal-content modal-content--narrow">
+                <h2 id="email-modal-title">Daily question reminders</h2>
+                <p>Leave your email and we’ll send the new Fermi question straight to your inbox.</p>
+                <form id="email-form" class="email-form">
+                    <label for="email-input">Email address</label>
+                    <input type="email" id="email-input" name="email" placeholder="you@example.com" autocomplete="email" required>
+
+                    <label for="timezone-select">Time zone</label>
+                    <select id="timezone-select" name="timezone" required></select>
+                    <p class="timezone-note">We’ll schedule the email for around 9 AM in your time zone.</p>
+
+                    <button type="submit" id="email-submit-btn" class="primary-btn">Subscribe</button>
+                    <p id="email-feedback" class="form-feedback" aria-live="polite"></p>
+                </form>
+                <button id="close-email-modal" class="close-btn">Close</button>
             </div>
         </div>
 
