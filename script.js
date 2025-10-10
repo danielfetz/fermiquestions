@@ -1173,12 +1173,21 @@ const fermiQuestions = [
         image: "data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' width='100' height='100' viewBox='0 0 100 100'%3e%3crect width='100' height='100' fill='%23f8fafc'/%3e%3ctext x='50' y='62' font-size='40' text-anchor='middle' fill='%23374151'%3e️🇯🇵%3c/text%3e%3c/svg%3e"
     },
     {
+        question: "How much revenue in US dollars did Tesla make in 2024?",
+        answer: 97690000000,
+        category: "",
+        explanation: "",
+        hint: "Tesla's revenue from China was around $21 billion in 2024.",
+        date: "2025-10-11",
+        image: "data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' width='100' height='100' viewBox='0 0 100 100'%3e%3crect width='100' height='100' fill='%23f8fafc'/%3e%3ctext x='50' y='62' font-size='40' text-anchor='middle' fill='%23374151'%3e️🚗%3c/text%3e%3c/svg%3e"
+    },
+    {
         question: "How many new medium-and heavy-duty commercial trucks were sold in the US in 2024?",
         answer: 482300,
         category: "",
         explanation: "",
         hint: "",
-        date: "2025-10-12",
+        date: "2025-10-13",
         image: "data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' width='100' height='100' viewBox='0 0 100 100'%3e%3crect width='100' height='100' fill='%23f8fafc'/%3e%3ctext x='50' y='62' font-size='40' text-anchor='middle' fill='%23374151'%3e️🚛%3c/text%3e%3c/svg%3e"
     }
 ];
