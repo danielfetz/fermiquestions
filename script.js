@@ -1191,13 +1191,13 @@ const fermiQuestions = [
         image: "data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' width='100' height='100' viewBox='0 0 100 100'%3e%3crect width='100' height='100' fill='%23f8fafc'/%3e%3ctext x='50' y='62' font-size='40' text-anchor='middle' fill='%23374151'%3e️✈️%3c/text%3e%3c/svg%3e"
     },
     {
-        question: "How many new medium-and heavy-duty commercial trucks were sold in the US in 2024?",
-        answer: 482300,
+        question: "How many copies of Minecraft have been sold worldwide as of April 2025?",
+        answer: 350000000,
         category: "",
         explanation: "",
-        hint: "",
-        date: "2025-10-14",
-        image: "data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' width='100' height='100' viewBox='0 0 100 100'%3e%3crect width='100' height='100' fill='%23f8fafc'/%3e%3ctext x='50' y='62' font-size='40' text-anchor='middle' fill='%23374151'%3e️🚛%3c/text%3e%3c/svg%3e"
+        hint: "More than 215 million copies of Grand Theft Auto V have been sold.",
+        date: "2025-10-13",
+        image: "data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' width='100' height='100' viewBox='0 0 100 100'%3e%3crect width='100' height='100' fill='%23f8fafc'/%3e%3ctext x='50' y='62' font-size='40' text-anchor='middle' fill='%23374151'%3e️🎮%3c/text%3e%3c/svg%3e"
     }
 ];
 
