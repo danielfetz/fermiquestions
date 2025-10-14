@@ -1209,7 +1209,7 @@ const fermiQuestions = [
         image: "data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' width='100' height='100' viewBox='0 0 100 100'%3e%3crect width='100' height='100' fill='%23f8fafc'/%3e%3ctext x='50' y='62' font-size='40' text-anchor='middle' fill='%23374151'%3e️🤖%3c/text%3e%3c/svg%3e"
     },
     {
-        question: "How many medals have American athletes won at the Summer Olympic Games?",
+        question: "How many Summer Olympic medals have American athletes won in total?",
         answer: 2765,
         category: "",
         explanation: "",
