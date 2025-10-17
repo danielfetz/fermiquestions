@@ -1234,6 +1234,24 @@ const fermiQuestions = [
         hint: "The population of the United Kingdom was around 69 million in 2023.",
         date: "2025-10-17",
         image: "data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' width='100' height='100' viewBox='0 0 100 100'%3e%3crect width='100' height='100' fill='%23f8fafc'/%3e%3ctext x='50' y='62' font-size='40' text-anchor='middle' fill='%23374151'%3e️🍌%3c/text%3e%3c/svg%3e"
+    },
+    {
+        question: "How many public high schools are there in the United States?",
+        answer: 23810,
+        category: "",
+        explanation: "",
+        hint: "In 2007, 4.3 million babies were born in the United States",
+        date: "2025-10-18",
+        image: "data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' width='100' height='100' viewBox='0 0 100 100'%3e%3crect width='100' height='100' fill='%23f8fafc'/%3e%3ctext x='50' y='62' font-size='40' text-anchor='middle' fill='%23374151'%3e️🏫%3c/text%3e%3c/svg%3e"
+    },
+    {
+        question: "How many employees does Walmart have in the United States as of 2024?",
+        answer: 1600000,
+        category: "",
+        explanation: "",
+        hint: "The population of the United Kingdom was around 69 million in 2023.",
+        date: "2025-10-28",
+        image: "data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' width='100' height='100' viewBox='0 0 100 100'%3e%3crect width='100' height='100' fill='%23f8fafc'/%3e%3ctext x='50' y='62' font-size='40' text-anchor='middle' fill='%23374151'%3e️🛒%3c/text%3e%3c/svg%3e"
     }
 ];
 
