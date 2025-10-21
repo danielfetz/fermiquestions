@@ -1272,6 +1272,24 @@ const fermiQuestions = [
         image: "data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' width='100' height='100' viewBox='0 0 100 100'%3e%3crect width='100' height='100' fill='%23f8fafc'/%3e%3ctext x='50' y='62' font-size='40' text-anchor='middle' fill='%23374151'%3e️🚖%3c/text%3e%3c/svg%3e"
     },
     {
+        question: "How many years have passed since the Great Pyramid of Giza was completed?",
+        answer: 4575,
+        category: "",
+        explanation: "",
+        hint: "We live closer in time to Julius Caesar than he lived to the construction of the Great Pyramid.",
+        date: "2025-10-22",
+        image: "data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' width='100' height='100' viewBox='0 0 100 100'%3e%3crect width='100' height='100' fill='%23f8fafc'/%3e%3ctext x='50' y='62' font-size='40' text-anchor='middle' fill='%23374151'%3e️🐪%3c/text%3e%3c/svg%3e"
+    },
+    {
+        question: "How many years ago was the Great Pyramid of Giza built?",
+        answer: 4575,
+        category: "",
+        explanation: "",
+        hint: "In 2024, Tesla's US car sales totaled around 630,000.",
+        date: "2025-10-28",
+        image: "data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' width='100' height='100' viewBox='0 0 100 100'%3e%3crect width='100' height='100' fill='%23f8fafc'/%3e%3ctext x='50' y='62' font-size='40' text-anchor='middle' fill='%23374151'%3e️🚖%3c/text%3e%3c/svg%3e"
+    },
+    {
         question: "How many employees does Walmart have in the United States as of 2024?",
         answer: 1600000,
         category: "",
