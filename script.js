@@ -1299,6 +1299,15 @@ const fermiQuestions = [
         image: "data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' width='100' height='100' viewBox='0 0 100 100'%3e%3crect width='100' height='100' fill='%23f8fafc'/%3e%3ctext x='50' y='62' font-size='40' text-anchor='middle' fill='%23374151'%3e️🥼%3c/text%3e%3c/svg%3e"
     },
     {
+        question: "How many new electric cars/plug-in hybrids were sold in the United States in 2024?",
+        answer: 1560000,
+        category: "",
+        explanation: "",
+        hint: "Tesla accounted for 41% of all electric/plug-in hybrid US car sales in 2024.",
+        date: "2025-10-25",
+        image: "data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' width='100' height='100' viewBox='0 0 100 100'%3e%3crect width='100' height='100' fill='%23f8fafc'/%3e%3ctext x='50' y='62' font-size='40' text-anchor='middle' fill='%23374151'%3e️⚡️%3c/text%3e%3c/svg%3e"
+    },
+    {
         question: "How much revenue in US dollars did LVMH (make in 2024",
         answer: 4575,
         category: "",
