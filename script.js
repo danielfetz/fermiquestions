@@ -1371,12 +1371,21 @@ const fermiQuestions = [
         image: "data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' width='100' height='100' viewBox='0 0 100 100'%3e%3crect width='100' height='100' fill='%23f8fafc'/%3e%3ctext x='50' y='62' font-size='40' text-anchor='middle' fill='%23374151'%3e️🌎%3c/text%3e%3c/svg%3e"
     },
     {
+        question: "How much revenue in US dollars did the LEGO Group (toys) make in 2024?",
+        answer: 1080000000,
+        category: "",
+        explanation: "",
+        hint: "The LEGO Group made a net profit of around $2 billion in 2024.",
+        date: "2025-11-02",
+        image: "data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' width='100' height='100' viewBox='0 0 100 100'%3e%3crect width='100' height='100' fill='%23f8fafc'/%3e%3ctext x='50' y='62' font-size='40' text-anchor='middle' fill='%23374151'%3e️🧱%3c/text%3e%3c/svg%3e"
+    },
+    {
         question: "How many teachers worked in schools in Germanyin the 2023/24 school year?",
         answer: 3175,
         category: "",
         explanation: "",
         hint: "The list price for a dedicated Falcon 9 rocket launch is $69.85 million.",
-        date: "2025-11-04",
+        date: "2025-12-07",
         image: "data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' width='100' height='100' viewBox='0 0 100 100'%3e%3crect width='100' height='100' fill='%23f8fafc'/%3e%3ctext x='50' y='62' font-size='40' text-anchor='middle' fill='%23374151'%3e️🚀%3c/text%3e%3c/svg%3e"
     },
     {
@@ -1385,7 +1394,7 @@ const fermiQuestions = [
         category: "",
         explanation: "",
         hint: "In 2024, Tesla's US car sales totaled around 630,000.",
-        date: "2025-11-05",
+        date: "2025-12-08",
         image: "data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' width='100' height='100' viewBox='0 0 100 100'%3e%3crect width='100' height='100' fill='%23f8fafc'/%3e%3ctext x='50' y='62' font-size='40' text-anchor='middle' fill='%23374151'%3e️🚖%3c/text%3e%3c/svg%3e"
     },
     {
@@ -1394,7 +1403,7 @@ const fermiQuestions = [
         category: "",
         explanation: "",
         hint: "The population of the United Kingdom was around 69 million in 2023.",
-        date: "2025-11-06",
+        date: "2025-12-09",
         image: "data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' width='100' height='100' viewBox='0 0 100 100'%3e%3crect width='100' height='100' fill='%23f8fafc'/%3e%3ctext x='50' y='62' font-size='40' text-anchor='middle' fill='%23374151'%3e️🛒%3c/text%3e%3c/svg%3e"
     }
 ];
