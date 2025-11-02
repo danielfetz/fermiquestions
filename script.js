@@ -1372,7 +1372,7 @@ const fermiQuestions = [
     },
     {
         question: "How much revenue in US dollars did the LEGO Group (toys) make in 2024?",
-        answer: 1080000000,
+        answer: 10080000000,
         category: "",
         explanation: "",
         hint: "The LEGO Group made a net profit of around $2 billion in 2024.",
