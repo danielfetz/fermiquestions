@@ -1425,6 +1425,15 @@ const fermiQuestions = [
         image: "data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' width='100' height='100' viewBox='0 0 100 100'%3e%3crect width='100' height='100' fill='%23f8fafc'/%3e%3ctext x='50' y='62' font-size='40' text-anchor='middle' fill='%23374151'%3e️🇺🇸%3c/text%3e%3c/svg%3e"
     },
     {
+        question: "How many police officers work for the New York City Police Department?",
+        answer: 33000,
+        category: "",
+        explanation: "",
+        hint: "New York City had around 8.5 million residents as of 2024.",
+        date: "2025-11-08",
+        image: "data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' width='100' height='100' viewBox='0 0 100 100'%3e%3crect width='100' height='100' fill='%23f8fafc'/%3e%3ctext x='50' y='62' font-size='40' text-anchor='middle' fill='%23374151'%3e️👮‍♂️%3c/text%3e%3c/svg%3e"
+    },
+    {
         question: "How many teachers worked in schools in Germanyin the 2023/24 school year?",
         answer: 3175,
         category: "",
