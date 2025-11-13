@@ -1483,7 +1483,7 @@ const fermiQuestions = [
         answer: 57000000,
         category: "",
         explanation: "",
-        hint: "iPad share of tablet shipments 2024 was around 39%.",
+        hint: "iPad share of tablet shipments in 2024 was around 39%.",
         date: "2025-11-14",
         image: "data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' width='100' height='100' viewBox='0 0 100 100'%3e%3crect width='100' height='100' fill='%23f8fafc'/%3e%3ctext x='50' y='62' font-size='40' text-anchor='middle' fill='%23374151'%3e️🍏%3c/text%3e%3c/svg%3e"
     },
