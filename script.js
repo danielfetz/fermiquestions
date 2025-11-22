@@ -1560,6 +1560,15 @@ const fermiQuestions = [
         image: "data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' width='100' height='100' viewBox='0 0 100 100'%3e%3crect width='100' height='100' fill='%23f8fafc'/%3e%3ctext x='50' y='62' font-size='40' text-anchor='middle' fill='%23374151'%3e👨‍⚕️%3c/text%3e%3c/svg%3e"
     },
     {
+        question: "How many people live south of the equator?",
+        answer: 1100000000,
+        category: "",
+        explanation: "",
+        hint: "Indonesia, Brazil, DR Congo, Tanzania and South Africa all have more than 50 million people living south of the equator.",
+        date: "2025-11-23",
+        image: "data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' width='100' height='100' viewBox='0 0 100 100'%3e%3crect width='100' height='100' fill='%23f8fafc'/%3e%3ctext x='50' y='62' font-size='40' text-anchor='middle' fill='%23374151'%3e🌎%3c/text%3e%3c/svg%3e"
+    },
+    {
         question: "How many teachers worked in schools in Germanyin the 2023/24 school year?",
         answer: 3175,
         category: "",
