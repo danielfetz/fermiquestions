@@ -1632,6 +1632,15 @@ const fermiQuestions = [
         image: "data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' width='100' height='100' viewBox='0 0 100 100'%3e%3crect width='100' height='100' fill='%23fef2f2'/%3e%3ctext x='50' y='62' font-size='40' text-anchor='middle' fill='%23dc2626'%3e🇻🇦%3c/text%3e%3c/svg%3e"
     },
     {
+        question: "How much revenue in US dollars did Barbie (2023) make at the box office?",
+        answer: 1447138421,
+        category: "",
+        explanation: "",
+        hint: "The highest grossing movie of all time was Avatar (2009) and made twice as much box office revenue.",
+        date: "2025-12-01",
+        image: "data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' width='100' height='100' viewBox='0 0 100 100'%3e%3crect width='100' height='100' fill='%23f8fafc'/%3e%3ctext x='50' y='62' font-size='40' text-anchor='middle' fill='%23374151'%3e️🍿%3c/text%3e%3c/svg%3e"
+    },
+    {
         question: "How many teachers worked in schools in Germanyin the 2023/24 school year?",
         answer: 3175,
         category: "",
