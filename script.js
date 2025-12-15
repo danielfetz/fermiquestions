@@ -1771,7 +1771,7 @@ const fermiQuestions = [
         answer: 14460000000,
         category: "",
         explanation: "",
-        hint: "In the UK, each year 12,700 km (≈ 7,870 miles/year) are driven per licensed driver.",
+        hint: "In the UK, 12,700 km (≈ 7,870 miles) are driven annually per licensed driver.",
         date: "2025-12-16",
         image: "data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' width='100' height='100' viewBox='0 0 100 100'%3e%3crect width='100' height='100' fill='%23f8fafc'/%3e%3ctext x='50' y='62' font-size='40' text-anchor='middle' fill='%23374151'%3e️🚗%3c/text%3e%3c/svg%3e"
     },
