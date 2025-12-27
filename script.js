@@ -1870,7 +1870,7 @@ const fermiQuestions = [
         answer: 57700000000,
         category: "",
         explanation: "",
-        hint: "Roblox made $1.36 billion in revenue in the third quarter of 2025, growing 48% year-over-year. ",
+        hint: "Roblox made $1.36 billion in revenue in the third quarter of 2025, growing 48% year-over-year.",
         date: "2025-12-27",
         image: "data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' width='100' height='100' viewBox='0 0 100 100'%3e%3crect width='100' height='100' fill='%23f0fdf4'/%3e%3ctext x='50' y='62' font-size='40' text-anchor='middle' fill='%2316a34a'%3e🎮%3c/text%3e%3c/svg%3e"
     },
