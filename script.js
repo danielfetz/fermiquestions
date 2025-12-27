@@ -164,7 +164,7 @@ const fermiQuestions = [
         image: "data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' width='100' height='100' viewBox='0 0 100 100'%3e%3crect width='100' height='100' fill='%23fdf2f8'/%3e%3ctext x='50' y='62' font-size='40' text-anchor='middle' fill='%23ec4899'%3e🐷%3c/text%3e%3c/svg%3e"
     },
     {
-        question: "How many passengers did the San Francisco Airport serve in 2024?",
+        question: "How many passengers did the San Francisco Airport handle in 2024?",
         answer: 52300000,
         category: "",
         explanation: "",
@@ -173,13 +173,22 @@ const fermiQuestions = [
         image: "data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' width='100' height='100' viewBox='0 0 100 100'%3e%3crect width='100' height='100' fill='%23f0f8ff'/%3e%3ctext x='50' y='62' font-size='40' text-anchor='middle' fill='%234169e1'%3e✈️%3c/text%3e%3c/svg%3e"
     },
     {
-        question: "How many printed books did Amazon sell in the US last year?",
+        question: "How many printed books has Amazon sold in the US last year?",
         answer: 308000000,
         category: "",
         explanation: "",
         hint: "Hint: In France, retailers sold 440 million print books in 2023.",
         date: "2025-08-09",
         image: "data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' width='100' height='100' viewBox='0 0 100 100'%3e%3crect width='100' height='100' fill='%23f0fdf4'/%3e%3ctext x='50' y='62' font-size='40' text-anchor='middle' fill='%2316a34a'%3e📚%3c/text%3e%3c/svg%3e"
+    },
+    {
+        question: "How many babies were born worldwide in 2024?",
+        answer: 132000000,
+        category: "",
+        explanation: "",
+        hint: "Hint: For every person that died in 2024, more than two babies were born.",
+        date: "2025-08-10",
+        image: "data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' width='100' height='100' viewBox='0 0 100 100'%3e%3crect width='100' height='100' fill='%23fffbeb'/%3e%3ctext x='50' y='62' font-size='40' text-anchor='middle' fill='%23d97706'%3e👶%3c/text%3e%3c/svg%3e"
     }
 ];
 
@@ -449,6 +458,21 @@ function submitGuess() {
         } else {
             showFeedback(currentGuess - 1, isHigh ? 'high' : 'low', isHigh ? '↓' : '↑');
         }
+
+        // Tutorial: auto-show tooltip on the first ever miss
+        try {
+            const tutorialShown = localStorage.getItem('fermiTooltipTutorialShown');
+            if (!tutorialShown) {
+                const guessRows = guessesContainer.querySelectorAll('.guess-row');
+                const currentRow = guessRows[currentGuess - 1];
+                const feedbackButton = currentRow.querySelector('.feedback-button');
+                feedbackButton.classList.add('show-tooltip');
+                setTimeout(() => feedbackButton.classList.remove('show-tooltip'), 4000);
+                localStorage.setItem('fermiTooltipTutorialShown', '1');
+            }
+        } catch (e) {
+            // ignore storage errors
+        }
         
         if (currentGuess >= maxGuesses) {
             gameOver = true;
@@ -517,6 +541,31 @@ function showFeedback(guessIndex, type, symbol) {
     }
     
     feedbackButton.className = `feedback-button ${type}`;
+
+    // Set tooltip titles for low/high feedback
+    if (type === 'low') {
+        feedbackButton.setAttribute('data-tooltip', 'Too low! You need to go higher ↑');
+        feedbackButton.title = '';
+    } else if (type === 'high') {
+        feedbackButton.setAttribute('data-tooltip', 'Too high! You need to go lower ↓');
+        feedbackButton.title = '';
+    } else if (type === 'close') {
+        // Use the direction symbol to choose appropriate text
+        if (symbol === '↑') {
+            feedbackButton.setAttribute('data-tooltip', 'Too low! You need to go higher ↑');
+        } else if (symbol === '↓') {
+            feedbackButton.setAttribute('data-tooltip', 'Too high! You need to go lower ↓');
+        } else {
+            feedbackButton.removeAttribute('data-tooltip');
+        }
+        feedbackButton.title = '';
+    } else if (type === 'correct') {
+        feedbackButton.setAttribute('data-tooltip', "You're within ±20% of the correct answer!");
+        feedbackButton.title = '';
+    } else {
+        feedbackButton.removeAttribute('data-tooltip');
+        feedbackButton.title = '';
+    }
     
     if (type !== 'correct') {
         currentRow.classList.add('shake');
@@ -619,7 +668,7 @@ function endGame() {
     
     // Set result message
     if (gameWon) {
-        resultMessage.textContent = `You won in ${currentGuess} guess${currentGuess > 1 ? 'es' : ''}!`;
+        resultMessage.textContent = `You win!`;
         resultMessage.className = 'result-message won';
     } else {
         resultMessage.textContent = 'You ran out of guesses!';
@@ -923,7 +972,7 @@ function restoreGuessesDisplay(savedGuesses) {
             guessField.classList.remove('empty');
             
             // Restore feedback
-            if (guess.feedbackType !== 'none') {
+                if (guess.feedbackType !== 'none') {
                 if (guess.feedbackType === 'correct') {
                     // Use the same checkmark SVG from showFeedback function
                     feedbackButton.innerHTML = `
@@ -952,7 +1001,31 @@ function restoreGuessesDisplay(savedGuesses) {
                     feedbackButton.textContent = guess.feedbackSymbol;
                 }
                 
-                feedbackButton.className = `feedback-button ${guess.feedbackType}`;
+                    feedbackButton.className = `feedback-button ${guess.feedbackType}`;
+
+                    // Set tooltip titles for low/high feedback
+                    if (guess.feedbackType === 'low') {
+                        feedbackButton.setAttribute('data-tooltip', 'Too low! You need to go higher ↑');
+                        feedbackButton.title = '';
+                    } else if (guess.feedbackType === 'high') {
+                        feedbackButton.setAttribute('data-tooltip', 'Too high! You need to go lower ↓');
+                        feedbackButton.title = '';
+                    } else if (guess.feedbackType === 'close') {
+                        if (guess.feedbackSymbol === '↑') {
+                            feedbackButton.setAttribute('data-tooltip', 'Too low!');
+                        } else if (guess.feedbackSymbol === '↓') {
+                            feedbackButton.setAttribute('data-tooltip', 'Too high!');
+                        } else {
+                            feedbackButton.removeAttribute('data-tooltip');
+                        }
+                        feedbackButton.title = '';
+                    } else if (guess.feedbackType === 'correct') {
+                        feedbackButton.setAttribute('data-tooltip', "You're within ±20% of the correct answer!");
+                        feedbackButton.title = '';
+                    } else {
+                        feedbackButton.removeAttribute('data-tooltip');
+                        feedbackButton.title = '';
+                    }
             }
         }
     });
@@ -970,7 +1043,7 @@ function endGameDisplay() {
     
     // Set result message
     if (gameWon) {
-        resultMessage.textContent = `You won in ${currentGuess} guess${currentGuess > 1 ? 'es' : ''}!`;
+        resultMessage.textContent = `You win!`;
         resultMessage.className = 'result-message won';
     } else {
         resultMessage.textContent = 'You ran out of guesses!';

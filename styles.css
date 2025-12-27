@@ -16,7 +16,7 @@ body {
     max-width: 500px;
     margin: 0 auto;
     background-color: #ffffff;
-    border-radius: 16px;
+    border-radius: 18px;
     padding: 20px;    
 }
 
@@ -81,7 +81,7 @@ button#stats-btn {
 }
 
 .question-box {
-    border-radius: 14px;
+    border-radius: 16px;
     padding: 20px;
     text-align: center;
     border: 2px solid #e9ecef;
@@ -232,7 +232,7 @@ button#stats-btn {
 /* Guess Counter */
 .guess-counter {
     text-align: center;
-    margin-bottom: 20px;
+    margin-bottom: 19px;
     font-size: 0.8rem;
     color: #333;
 }
@@ -267,7 +267,7 @@ button#stats-btn {
     color: white;
     border: none;
     padding: 12px 25px;
-    border-radius: 12px;
+    border-radius: 14px;
     font-family: 'Press Start 2P', monospace;
     font-size: 0.8rem;
     cursor: pointer;
@@ -299,7 +299,7 @@ button#stats-btn {
     height: 50.16px;
     font-size: 0.8rem;
     margin-top: 0;
-    border-radius: 12px;
+    border-radius: 14px;
     border: 2px solid #eaecef;
 }
 
@@ -319,22 +319,24 @@ button#stats-btn {
     flex: 1;
     background-color: #f6f6f6;
     color: #333;
-    padding: 14px 15px;
-    border-radius: 12px;
+    padding: 15.96px 15px;
+    border-radius: 13px;
     font-size: 0.8rem;
     text-align: center;
     border: none;
     font-family: 'Press Start 2P', monospace;
+    line-height: normal;
+    max-height: 44.91px;
 }
 
 .guess-field.empty {
-    color: #acacac;
+    color: #b3b3b3;
 }
 
 .feedback-button {
     width: 100px;
-    height: 45.91px;
-    border-radius: 12px;
+    height: 44.91px;
+    border-radius: 13px;
     border: none;
     display: flex;
     align-items: center;
@@ -349,8 +351,54 @@ button#stats-btn {
     display: none;
 }
 
-.feedback-button:hover {
-    transform: scale(1.1);
+
+.feedback-button {
+    position: relative;
+}
+
+/* Custom tooltip for feedback buttons */
+.feedback-button::after {
+    content: attr(data-tooltip);
+    position: absolute;
+    bottom: calc(100% + 12px);
+    left: 50%;
+    transform: translateX(-50%);
+    background: #333;
+    color: #fff;
+    padding: 10px 14px;
+    border-radius: 8px;
+    font-size: 0.675rem;
+    white-space: nowrap;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.15s ease, transform 0.15s ease;
+    z-index: 1000;
+    line-height: 1.4;
+}
+
+.feedback-button::before {
+    content: '';
+    position: absolute;
+    bottom: 100%;
+    left: 50%;
+    transform: translateX(-50%);
+    border-width: 6px;
+    border-style: solid;
+    border-color: rgba(51, 51, 51, 0.95) transparent transparent transparent;
+    opacity: 0;
+    transition: opacity 0.15s ease;
+    z-index: 1000;
+}
+
+.feedback-button:hover::after,
+.feedback-button:hover::before {
+    opacity: 1;
+}
+
+/* Programmatically show tooltip without hover (for tutorial) */
+.feedback-button.show-tooltip::after,
+.feedback-button.show-tooltip::before {
+    opacity: 1;
 }
 
 .feedback-button.high {
@@ -391,7 +439,7 @@ button#stats-btn {
     align-items: center;
     gap: 8px;
     padding: 10px 15px;
-    border-radius: 12px;
+    border-radius: 14px;
     flex: 1;
     border: 2px solid #eaecf0;
 }
@@ -418,7 +466,7 @@ button#stats-btn {
     color: white;
     border: none;
     padding: 8px 12px;
-    border-radius: 12px;
+    border-radius: 14px;
     font-family: 'Press Start 2P', monospace;
     font-size: 0.765625rem;
     cursor: pointer;
@@ -592,19 +640,17 @@ button#stats-btn {
 /* Responsive Design */
 @media (max-width: 768px) {
     .game-container {
-        padding: 18px 16px;
-        border-radius: 13px;
-        box-shadow: 0 0 5px #dcdcdc5e;
+        padding: 16px;
+        border-radius: 18px;
     }
     .question-box {
-        border-radius: 12px;
-        padding: 18px;
+        border-radius: 16px;
+        padding: 20px;
+        border-bottom: 4px solid #e9ecef;
     }
-    .hint-container {
-        font-size: 0.8375rem;
-    }
-    .game-result {
-        font-size: 0.8375rem;
+    .feedback-button::after {
+        width: 120px;
+        white-space: normal;
     }
 }
 
