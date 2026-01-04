@@ -1938,6 +1938,15 @@ const fermiQuestions = [
         image: "data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' width='100' height='100' viewBox='0 0 100 100'%3e%3crect width='100' height='100' fill='%23f0fdf4'/%3e%3ctext x='50' y='62' font-size='40' text-anchor='middle' fill='%2316a34a'%3e🚙%3c/text%3e%3c/svg%3e"
     },
     {
+        question: "How many people travelled through the Channel Tunnel connecting the UK with France in 2022?",
+        answer: 15900000,
+        category: "",
+        explanation: "",
+        hint: "In addition to the passengers of the high-speed Eurostar trains, 2.12 million vehicles with its passengers were transported by 'Le Shuttle'.",
+        date: "2026-01-04",
+        image: "data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' width='100' height='100' viewBox='0 0 100 100'%3e%3crect width='100' height='100' fill='%23f0fdf4'/%3e%3ctext x='50' y='62' font-size='40' text-anchor='middle' fill='%2316a34a'%3e🚝%3c/text%3e%3c/svg%3e"
+    },
+    {
         question: "How many movies with more than 1000 user ratings are listed on the movie review platform IMDb? worldwide celebrate their 50th birthday today (December 24, 2025)?",
         answer: 275000,
         category: "",
