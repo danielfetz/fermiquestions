@@ -1947,6 +1947,15 @@ const fermiQuestions = [
         image: "data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' width='100' height='100' viewBox='0 0 100 100'%3e%3crect width='100' height='100' fill='%23f0fdf4'/%3e%3ctext x='50' y='62' font-size='40' text-anchor='middle' fill='%2316a34a'%3e🚝%3c/text%3e%3c/svg%3e"
     },
     {
+        question: "How many US dollars did YouTube pay out to creators and artists on its platform in 2024?",
+        answer: 32000000000,
+        category: "",
+        explanation: "",
+        hint: "YouTube's standard revenue share model gives creators 55% of ad/subscription revenue.",
+        date: "2026-01-05",
+        image: "data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' width='100' height='100' viewBox='0 0 100 100'%3e%3crect width='100' height='100' fill='%23f0fdf4'/%3e%3ctext x='50' y='62' font-size='40' text-anchor='middle' fill='%2316a34a'%3e🎥%3c/text%3e%3c/svg%3e"
+    },
+    {
         question: "How many movies with more than 1000 user ratings are listed on the movie review platform IMDb? worldwide celebrate their 50th birthday today (December 24, 2025)?",
         answer: 275000,
         category: "",
