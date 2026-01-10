@@ -2001,6 +2001,15 @@ const fermiQuestions = [
         image: "data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' width='100' height='100' viewBox='0 0 100 100'%3e%3crect width='100' height='100' fill='%23f0fdf4'/%3e%3ctext x='50' y='62' font-size='40' text-anchor='middle' fill='%2316a34a'%3e🐄%3c/text%3e%3c/svg%3e"
     },
     {
+        question: "How many kiwi fruits were imported into the United States in 2024?",
+        answer: 1200000000,
+        category: "",
+        explanation: "",
+        hint: "76% of kiwis consumed in the US were imported, and Germany alone imported more kiwis than the US.",
+        date: "2026-01-11",
+        image: "data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' width='100' height='100' viewBox='0 0 100 100'%3e%3crect width='100' height='100' fill='%23f0fdf4'/%3e%3ctext x='50' y='62' font-size='40' text-anchor='middle' fill='%2316a34a'%3e🥝%3c/text%3e%3c/svg%3e"
+    },
+    {
         question: "How many movies with more than 1000 user ratings are listed on the movie review platform IMDb? worldwide celebrate their 50th birthday today (December 24, 2025)?",
         answer: 275000,
         category: "",
