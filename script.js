@@ -720,6 +720,10 @@ const guessesContainer = document.getElementById('guesses-container');
 const guessInput = document.getElementById('guess-input');
 const confidenceInput = document.getElementById('confidence-input');
 const submitBtn = document.getElementById('submit-btn');
+const sendIcon = `\
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
+  <path d="M2 21L23 12L2 3v7l12 2L2 14v7z"/>
+</svg>`;
 const inputSection = document.getElementById('input-section');
 const newGameSection = document.getElementById('new-game-section');
 const newGameBtnInline = document.getElementById('new-game-btn-inline');
@@ -976,6 +980,9 @@ function getGuessText(guessNumber) {
 function submitGuess() {
     const guessValue = parseInt(guessInput.value.replace(/[^\d]/g, ''));
     const confidenceValue = confidenceInput ? parseInt(confidenceInput.value) : null;
+    const confPercent = (calibrationEnabled && confidenceInput && !isNaN(confidenceValue))
+        ? Math.max(0, Math.min(100, confidenceValue))
+        : null;
 
     if (isNaN(guessValue) || guessValue < 0) {
         alert('Please enter a valid positive number!');
@@ -1046,12 +1053,11 @@ function submitGuess() {
     guessInput.value = '';
 
     if (calibrationEnabled && confidenceInput) {
-        const confPercent = isNaN(confidenceValue) ? null : Math.max(0, Math.min(100, confidenceValue));
         if (confPercent !== null) {
             stats.calibrationData.push({ confidence: confPercent / 100, correct: isCorrect, guessNumber: currentGuess });
             saveStats();
         }
-        confidenceInput.value = '50';
+        
     }
     
     // Save current game state after each guess
@@ -1067,6 +1073,7 @@ function submitGuess() {
             is_correct: isCorrect,
             is_close: isClose,
             is_high: isHigh,
+            confidence_percent: confPercent,
             timestamp: new Date().toISOString()
         };
         
@@ -1754,9 +1761,10 @@ function setCalibrationEnabled(enabled) {
 
 function updateConfidenceInputVisibility() {
     if (confidenceInput) {
+        const prevValue = confidenceInput.value;
         confidenceInput.style.display = calibrationEnabled ? 'block' : 'none';
         if (calibrationEnabled) {
-            confidenceInput.value = '50';
+            confidenceInput.value = prevValue || '50';
         } else {
             confidenceInput.value = '';
         }
@@ -1764,7 +1772,7 @@ function updateConfidenceInputVisibility() {
     if (submitBtn) {
         if (calibrationEnabled && isSmallDevice()) {
             submitBtn.style.width = '54px';
-            submitBtn.textContent = '>';
+            submitBtn.innerHTML = sendIcon;
         } else {
             submitBtn.style.width = '';
             submitBtn.textContent = 'Submit';
