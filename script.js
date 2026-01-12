@@ -97,6 +97,20 @@ const fermiQuestions = [
         category: "",
         explanation: "",
         date: "2025-08-02"
+    },
+    {
+        question: "How many veterinarians are there in the US?",
+        answer: 130415,
+        category: "",
+        explanation: "",
+        date: "2025-08-03"
+    },
+    {
+        question: "How many paying subscribers does Spotify have?",
+        answer: 276000000,
+        category: "",
+        explanation: "",
+        date: "2025-08-04"
     }
 ];
 
@@ -128,6 +142,8 @@ const questionsList = document.getElementById('questions-list');
 const closeHelpBtn = document.getElementById('close-help-btn');
 const closeStatsBtn = document.getElementById('close-stats-btn');
 const closeQuestionsBtn = document.getElementById('close-questions-btn');
+const shareBtn = document.getElementById('share-btn');
+const shareStatsBtn = document.getElementById('share-stats-btn');
 
 // Initialize game
 function initGame() {
@@ -164,6 +180,7 @@ function startNewGame() {
     gameResult.style.display = 'none';
     inputSection.style.display = 'block';
     newGameSection.style.display = 'none';
+    shareBtn.style.display = 'none'; // Hide share button for new game
     
     // Reset input
     guessInput.value = '';
@@ -275,7 +292,7 @@ function getGuessText(guessNumber) {
 
 // Submit a guess
 function submitGuess() {
-    const guessValue = parseInt(guessInput.value.replace(/,/g, ''));
+    const guessValue = parseInt(guessInput.value.replace(/[^\d]/g, ''));
     
     if (isNaN(guessValue) || guessValue < 0) {
         alert('Please enter a valid positive number!');
@@ -390,10 +407,10 @@ function endGame() {
     
     // Set result message
     if (gameWon) {
-        resultMessage.textContent = `Congratulations! You won in ${currentGuess} guess${currentGuess > 1 ? 'es' : ''}!`;
+        resultMessage.textContent = `You won in ${currentGuess} guess${currentGuess > 1 ? 'es' : ''}!`;
         resultMessage.className = 'result-message won';
     } else {
-        resultMessage.textContent = 'Game Over! You ran out of guesses.';
+        resultMessage.textContent = 'You ran out of guesses!';
         resultMessage.className = 'result-message lost';
     }
     
@@ -402,7 +419,8 @@ function endGame() {
     
     // Hide input section and show new game button
     inputSection.style.display = 'none';
-    newGameSection.style.display = 'block';
+    newGameSection.style.display = 'flex';
+    shareBtn.style.display = 'block'; // Show share button after game ends
     updateStreakDisplay(); // Update streak display when game ends
 }
 
@@ -641,6 +659,7 @@ function selectQuestion(question) {
     gameResult.style.display = 'none';
     inputSection.style.display = 'block';
     newGameSection.style.display = 'none';
+    shareBtn.style.display = 'none'; // Hide share button when selecting new question
     
     // Reset input
     guessInput.value = '';
@@ -662,6 +681,131 @@ function selectQuestion(question) {
     if (!isNavigating) {
         updateURL(question.date);
     }
+}
+
+
+// Generate share text for current game
+function generateGameShareText() {
+    if (!gameOver || !currentQuestion) return '';
+    
+    const date = formatDateForDisplay(currentQuestion.date);
+    const guessEmojis = generateGuessEmojis();
+    const question = currentQuestion.question;
+    
+    let shareText = `Fermi Question of the Day: ${date}\n\n"${question}"\n\n`;
+    
+    if (gameWon) {
+        shareText += `I won using ${currentGuess} out of 6 guesses. Can you beat me?\n\n`;
+    } else {
+        shareText += `I couldn't solve this one in 6 guesses. Can you do better?\n\n`;
+    }
+    
+    shareText += `${guessEmojis}\n\nhttps://fermiquestions.org`;
+    
+    return shareText;
+}
+
+// Generate share text for stats
+function generateStatsShareText() {
+    const gamesPlayed = stats.gamesPlayed;
+    const winRate = stats.winRate;
+    const currentStreak = stats.currentStreak;
+    const maxStreak = stats.maxStreak;
+    
+    return `My Fermi Questions Stats:\n🎯 Games Played: ${gamesPlayed}\n📊 Win Rate: ${winRate}%\n🔥 Current Streak: ${currentStreak}\n🏆 Max Streak: ${maxStreak}\n\nhttps://fermiquestions.org`;
+}
+
+// Generate emoji representation of guesses
+function generateGuessEmojis() {
+    const guessRows = guessesContainer.querySelectorAll('.guess-row');
+    let emojis = '';
+    
+    for (let i = 0; i < currentGuess; i++) {
+        const row = guessRows[i];
+        const feedbackButton = row.querySelector('.feedback-button');
+        
+        if (feedbackButton.classList.contains('correct')) {
+            emojis += '🟢';
+        } else if (feedbackButton.classList.contains('close')) {
+            emojis += '🟡';
+        } else {
+            emojis += '🔴';
+        }
+    }
+    
+    return emojis;
+}
+
+// Handle sharing with Web Share API or clipboard fallback
+async function handleShare(text) {
+    const isMobile = /Android|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+    
+    try {
+        if (navigator.share && isMobile) {
+            await navigator.share({
+                text: text
+            });
+            // No feedback message for native share - OS handles this
+        } else {
+            // Desktop: copy to clipboard
+            await navigator.clipboard.writeText(text);
+            showShareFeedback('Copied to clipboard!');
+        }
+    } catch (error) {
+        // Only show clipboard feedback if we're actually copying to clipboard
+        if (navigator.share && isMobile) {
+            // User cancelled share sheet - do nothing
+            return;
+        }
+        
+        // Fallback for older browsers - copy to clipboard
+        const textArea = document.createElement('textarea');
+        textArea.value = text;
+        document.body.appendChild(textArea);
+        textArea.select();
+        document.execCommand('copy');
+        document.body.removeChild(textArea);
+        showShareFeedback('Copied to clipboard!');
+    }
+}
+
+// Show feedback after sharing
+function showShareFeedback(message) {
+    const feedback = document.createElement('div');
+    feedback.textContent = message;
+    feedback.style.cssText = `
+        position: fixed;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        background: #333;
+        color: white;
+        padding: 12px 20px;
+        border-radius: 8px;
+        font-family: 'Press Start 2P', monospace;
+        font-size: 0.7rem;
+        z-index: 10000;
+    `;
+    
+    document.body.appendChild(feedback);
+    
+    setTimeout(() => {
+        document.body.removeChild(feedback);
+    }, 2000);
+}
+
+// Share current game
+function shareGame() {
+    const shareText = generateGameShareText();
+    if (shareText) {
+        handleShare(shareText);
+    }
+}
+
+// Share stats
+function shareStats() {
+    const shareText = generateStatsShareText();
+    handleShare(shareText);
 }
 
 // URL Routing Functions
@@ -788,7 +932,11 @@ function setupEventListeners() {
     closeHelpBtn.addEventListener('click', () => closeModal(helpModal));
     closeStatsBtn.addEventListener('click', () => closeModal(statsModal));
     closeQuestionsBtn.addEventListener('click', () => closeModal(questionsModal));
-    
+
+    // Share buttons
+    shareBtn.addEventListener('click', shareGame);
+    shareStatsBtn.addEventListener('click', shareStats);
+        
     // Close modals when clicking outside
     window.addEventListener('click', (e) => {
         if (e.target === helpModal) {
