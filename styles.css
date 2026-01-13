@@ -9,13 +9,15 @@ body {
     background-color: #f0f0f0;
     color: #333;
     line-height: 1.4;
-    padding: 0px 16px;
+    padding: 0 6px;
 }
 
 .game-container {
     max-width: 500px;
     margin: 0 auto;
-    background-color: #f0f0f0;
+    background-color: #ffffff;
+    border-radius: 16px;
+    padding: 20px;    
 }
 
 /* Header */
@@ -23,7 +25,7 @@ body {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: 15px 0;
+    padding: 16px 10px;
 }
 
 .header-left {
@@ -78,7 +80,6 @@ button#stats-btn {
 }
 
 .question-box {
-    background-color: #fdfdfd;
     border-radius: 14px;
     padding: 22px;
     text-align: center;
@@ -274,6 +275,7 @@ button#stats-btn {
     margin-top: 0;
     margin-bottom: 10px;
     border-radius: 12px;
+    border: 2px solid #eaecef;
 }
 
 /* Guesses Container */
@@ -290,7 +292,7 @@ button#stats-btn {
 
 .guess-field {
     flex: 1;
-    background-color: #fdfdfd;
+    background-color: #f6f6f6;
     color: #333;
     padding: 14px 15px;
     border-radius: 12px;
@@ -301,7 +303,7 @@ button#stats-btn {
 }
 
 .guess-field.empty {
-    color: #b2b3b3;
+    color: #acacac;
 }
 
 .feedback-button {
@@ -363,10 +365,10 @@ button#stats-btn {
     display: flex;
     align-items: center;
     gap: 8px;
-    background-color: #fdfdfd;
     padding: 10px 15px;
     border-radius: 12px;
     flex: 1;
+    border: 2px solid #eaecf0;
 }
 
 #guess-input {

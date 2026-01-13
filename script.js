@@ -139,6 +139,14 @@ const fermiQuestions = [
         explanation: "",
         hint: "Hint: The US had 1,01 million active physicians in 2023.",
         date: "2025-08-06"
+    },
+    {
+        question: "How many pigs were slaughtered for meat worldwide in 2023?",
+        answer: 1510000000,
+        category: "",
+        explanation: "",
+        hint: "Hint: The average meat yield per pig is 82 kg (181 lbs).",
+        date: "2025-08-07"
     }
 ];
 
