@@ -237,6 +237,23 @@ button#stats-btn {
     color: #333;
 }
 
+.strategy-link {
+    display: none;
+    background: white;
+    border: 2px solid #e9ecef;
+    font-family: 'Press Start 2P', monospace;
+    font-size: 0.8rem;
+    padding: 19px;
+    width: 100%;
+    border-radius: 14px;
+    color: #333;
+}
+
+.strategy-link .arrow {
+    display: inline-block;
+    transform: rotate(90deg);
+}
+
 /* Hint Container */
 .hint-container {
     text-align: center;
@@ -319,14 +336,14 @@ button#stats-btn {
     flex: 1;
     background-color: #f6f6f6;
     color: #333;
-    padding: 17.5px 15px;
+    padding: 17px 15px;
     border-radius: 13px;
     font-size: 0.835rem;
     text-align: center;
     border: none;
     font-family: 'Press Start 2P', monospace;
     line-height: normal;
-    max-height: 47.91px;
+    max-height: 46.91px;
 }
 
 .guess-field.empty {
@@ -336,7 +353,7 @@ button#stats-btn {
 
 .feedback-button {
     width: 100px;
-    height: 47.91px;
+    height: 46.91px;
     border-radius: 13px;
     border: none;
     display: flex;
@@ -644,7 +661,7 @@ button#stats-btn {
         background: #fff;
     }
     body {
-        background: linear-gradient(#f0f5ff 166px, #fff 166px 100%);
+        background: linear-gradient(to bottom, aliceblue 0 140px, #fff 290px);
         padding: 0px 18px;
     }
     .game-header {
@@ -654,10 +671,15 @@ button#stats-btn {
         padding: 0;
         border-radius: 18px;
         padding-bottom: 83px; /* space for fixed input/new game area */
+        background: transparent;
+    }
+    .question-container {
+        margin-bottom: 12px;
     }
     .question-box {
         border-radius: 16px;
-        padding: 22px;
+        padding: 20px;
+        background: white;
     }
     .input-section,
     .new-game-section {
@@ -677,7 +699,24 @@ button#stats-btn {
     .guesses-container {
         margin-bottom: 0px;
     }
-    
+    .guess-counter {
+        margin-bottom: 18px;
+    }
+    .hint-container,
+    .game-result {
+        border: 2px solid #e8ecee;
+        border-radius: 16px;
+        padding: 16px;
+        background: white;
+        font-size: 0.8rem;
+    }
+    /* On mobile, hide the streak label and show strategy link */
+    #current-streak-display {
+        display: none;
+    }
+    .strategy-link {
+        display: inline;
+    }
 }
 
 /* Animation for new guesses

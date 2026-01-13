@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
-    <meta name="theme-color" content="#f0f5ff">
+    <meta name="theme-color" content="#f0f8ff">
     <title>Fermi Questions</title>
     <meta name="description" content="A Wordle-style game for Fermi questions.">
     <link rel="stylesheet" href="styles.css">
@@ -63,6 +63,7 @@
         <!-- Guess Counter -->
         <div class="guess-counter" id="guess-counter">
             <span id="current-streak-display">Current streak: 0</span>
+            <button id="strategy-tips-btn" class="strategy-link" aria-controls="strategy-modal" aria-haspopup="dialog">Show strategy tips <span class="arrow">></span></button>
         </div>
 
         <!-- Hint (hidden by default) -->
@@ -122,6 +123,17 @@
                 <p>The feedback color shows how close you are: orange means your guess is within ±50% of the correct answer, red means it is further away.</p>
                 <p>You win if your guess is within ±20% of the correct answer.</p>
                 <button id="close-help-btn" class="close-btn">Close</button>
+            </div>
+        </div>
+
+        <!-- Strategy Tips Modal -->
+        <div class="modal" id="strategy-modal">
+            <div class="modal-content">
+                <h2>Strategy tips</h2>
+                <p>Use a Fermi estimate: break the problem into simple factors, choose round numbers, then multiply. Aim for the right order of magnitude.</p>
+                <p><strong>Example</strong>: How many pizzas are eaten in NYC per day?</p>
+                <p>Population ≈ 8M. About half eat pizza weekly → 4M people. Typical serving ≈ 2 slices per person per week → 8M slices/week. Per day ≈ 8M/7 ≈ 1.1M slices/day. ≈ 8 slices/pizza → ~140k pizzas/day.</p>
+                <button id="close-strategy-btn" class="close-btn">Close</button>
             </div>
         </div>
 
