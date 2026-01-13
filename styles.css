@@ -595,7 +595,6 @@ button#stats-btn {
 
 .modal-content p.calibration-description {
     font-size: 0.625rem;
-    margin: 8px 0 0;
 }
 
 .calibration-chart-wrapper {
@@ -654,6 +653,7 @@ button#stats-btn {
 #confidence-input {
     margin: 0 10px 0 0;
     height: 100%;
+    width: 72px;
     padding: 18.5px 0;
     background: none;
     border: none;
@@ -663,7 +663,7 @@ button#stats-btn {
     font-size: 0.8rem;
     font-family: 'Press Start 2P', monospace;
     outline: none;
-    text-align: center;
+    text-align: right;
     display: none;
 }
 
