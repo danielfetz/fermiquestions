@@ -669,6 +669,19 @@ function updateStatsDisplay() {
 // Close modals
 function closeModal(modal) {
     modal.style.display = 'none';
+    
+    // Force cleanup of any rendering layers that might affect viewport
+    modal.style.backdropFilter = 'none';
+    modal.style.transform = 'none';
+    
+    // Trigger a style recalculation
+    modal.offsetHeight;
+    
+    // Reset backdrop filter after cleanup
+    setTimeout(() => {
+        modal.style.backdropFilter = '';
+        modal.style.transform = '';
+    }, 0);
 }
 
 // Save statistics to localStorage
@@ -811,11 +824,12 @@ function populateQuestionsList() {
         // Add click handler to select this question
         questionItem.addEventListener('click', () => {
             if (!isCompleted) {
-                // Navigate using URL routing
-                const newURL = `#/question/${question.date}`;
-                window.history.pushState(null, '', newURL);
-                navigateToQuestion(question.date);
+                // Close modal first
                 closeModal(questionsModal);
+                
+                // Use direct URL navigation like typing in address bar
+                // This should work exactly like direct URL access which always works
+                window.location.hash = `/question/${question.date}`;
             }
         });
         
@@ -870,7 +884,7 @@ function selectQuestion(question) {
     // Simple scroll to top to ensure good positioning
     window.scrollTo(0, 0);
     
-    // Auto-focus on desktop only
+    // Auto-focus only on non-touch devices (desktop)
     if (!('ontouchstart' in window) && !navigator.maxTouchPoints) {
         guessInput.focus();
     }
