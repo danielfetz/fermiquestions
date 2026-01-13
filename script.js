@@ -367,6 +367,7 @@ async function voteComment(commentId, value) {
         }
     } catch (e) {
         console.error('Error voting on comment:', e);
+        throw e;
     }
 }
 
@@ -402,6 +403,13 @@ function renderComments(comments) {
         commentsList.appendChild(empty);
         return;
     }
+
+    const applyVoteChange = (comment, oldVal, newVal) => {
+        if (oldVal === newVal) return;
+        if (oldVal === 1) comment.upvotes--; else if (oldVal === -1) comment.downvotes--;
+        if (newVal === 1) comment.upvotes++; else if (newVal === -1) comment.downvotes++;
+    };
+
     comments.forEach(c => {
         const div = document.createElement('div');
         div.className = 'comment';
@@ -423,33 +431,45 @@ function renderComments(comments) {
         downBtn.textContent = '▼';
         if (c.user_vote === -1) downBtn.classList.add('active');
 
-        function applyVoteChange(oldVal, newVal) {
-            if (oldVal === newVal) return;
-            if (oldVal === 1) c.upvotes--;
-            else if (oldVal === -1) c.downvotes--;
-            if (newVal === 1) c.upvotes++;
-            else if (newVal === -1) c.downvotes++;
-        }
-
         upBtn.addEventListener('click', async () => {
             const oldVal = c.user_vote;
             const newVal = c.user_vote === 1 ? 0 : 1;
+            if (oldVal === newVal) return;
             c.user_vote = newVal;
-            applyVoteChange(oldVal, newVal);
+            applyVoteChange(c, oldVal, newVal);
             scoreEl.textContent = c.upvotes - c.downvotes;
             upBtn.classList.toggle('active', c.user_vote === 1);
             downBtn.classList.toggle('active', c.user_vote === -1);
-            await voteComment(c.id, newVal);
+            try {
+                await voteComment(c.id, newVal);
+            } catch (e) {
+                // rollback on error
+                applyVoteChange(c, newVal, oldVal);
+                c.user_vote = oldVal;
+                scoreEl.textContent = c.upvotes - c.downvotes;
+                upBtn.classList.toggle('active', c.user_vote === 1);
+                downBtn.classList.toggle('active', c.user_vote === -1);
+            }
         });
         downBtn.addEventListener('click', async () => {
             const oldVal = c.user_vote;
             const newVal = c.user_vote === -1 ? 0 : -1;
+            if (oldVal === newVal) return;
             c.user_vote = newVal;
-            applyVoteChange(oldVal, newVal);
+            applyVoteChange(c, oldVal, newVal);
             scoreEl.textContent = c.upvotes - c.downvotes;
             upBtn.classList.toggle('active', c.user_vote === 1);
             downBtn.classList.toggle('active', c.user_vote === -1);
-            await voteComment(c.id, newVal);
+            try {
+                await voteComment(c.id, newVal);
+            } catch (e) {
+                // rollback on error
+                applyVoteChange(c, newVal, oldVal);
+                c.user_vote = oldVal;
+                scoreEl.textContent = c.upvotes - c.downvotes;
+                upBtn.classList.toggle('active', c.user_vote === 1);
+                downBtn.classList.toggle('active', c.user_vote === -1);
+            }
         });
 
         votesEl.appendChild(upBtn);
