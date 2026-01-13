@@ -10,6 +10,12 @@ let commentsChannel = null;
 const MAX_CONFIDENCE_PERCENT = 99;
 const MAX_CONFIDENCE_FRACTION = MAX_CONFIDENCE_PERCENT / 100;
 
+const FIRST_GUESS_WARNING_THRESHOLD = 2 / 3;
+const MIN_FIRST_GUESS_SAMPLES = 6;
+const MIN_CALIBRATION_SAMPLES = 12;
+const MIN_CALIBRATION_BIN_SIZE = 4;
+const CALIBRATION_WARNING_THRESHOLD = 0.2;
+
 // Initialize Supabase with error handling
 function initSupabase() {
     try {
@@ -1943,6 +1949,9 @@ const helpModal = document.getElementById('help-modal');
 const statsModal = document.getElementById('stats-modal');
 const questionsModal = document.getElementById('questions-modal');
 const strategyTipsBtn = document.getElementById('strategy-tips-btn');
+const strategyModal = document.getElementById('strategy-modal');
+const strategyTipsContainer = document.getElementById('strategy-tips-container');
+const closeStrategyBtn = document.getElementById('close-strategy-btn');
 // Hint elements
 const hintModalBtn = document.getElementById('hint-modal-btn');
 const questionsList = document.getElementById('questions-list');
@@ -1992,6 +2001,7 @@ function initGame() {
 
     loadStats();
     loadCompletedQuestions();
+    updateStrategyTipsAvailability();
     loadCalibrationSetting();
     initConfidenceTooltip();
 
@@ -2012,6 +2022,7 @@ function initGame() {
     }
 
     setupEventListeners();
+    updateStrategyTipsAvailability();
     // Always initialize routing; allow it to handle future navigations
     initRouting(false);
     updateFooterPositioning();
@@ -2654,7 +2665,8 @@ function endGame() {
     }
     stats.winRate = Math.round((stats.gamesWon / stats.gamesPlayed) * 100);
     saveStats();
-    
+    updateStrategyTipsAvailability();
+
     // Hide guess counter, hint, and show game result
     guessCounter.style.display = 'none';
     hideHint();
@@ -2771,6 +2783,362 @@ function updateStatsDisplay() {
     }
 
     updateCalibrationChart();
+}
+
+function hasCompletedAnyGames() {
+    const completedCount = completedQuestions && typeof completedQuestions === 'object'
+        ? Object.keys(completedQuestions).length
+        : 0;
+    return (stats && stats.gamesPlayed > 0) || completedCount > 0;
+}
+
+function updateStrategyTipsAvailability() {
+    if (!strategyTipsBtn) return;
+    const arrow = '<span class="arrow">></span>';
+    if (hasCompletedAnyGames()) {
+        strategyTipsBtn.innerHTML = `Strategy tips ${arrow}`;
+        strategyTipsBtn.setAttribute('aria-controls', 'strategy-modal');
+    } else {
+        strategyTipsBtn.innerHTML = `How to Play ${arrow}`;
+        strategyTipsBtn.setAttribute('aria-controls', 'help-modal');
+    }
+}
+
+function handleStrategyTipsClick() {
+    if (!strategyTipsBtn) return;
+    updateStrategyTipsAvailability();
+    if (!hasCompletedAnyGames()) {
+        showHelp();
+        return;
+    }
+    showStrategyTips();
+}
+
+function showStrategyTips() {
+    if (!strategyModal) return;
+    renderStrategyTips();
+    strategyModal.style.display = 'block';
+}
+
+function parseStoredGuessValue(value) {
+    if (value === null || value === undefined) return null;
+    if (typeof value === 'number') {
+        return Number.isFinite(value) ? value : null;
+    }
+    if (typeof value !== 'string') return null;
+    const cleaned = value.replace(/[^0-9.-]/g, '');
+    if (!cleaned) return null;
+    const parsed = parseFloat(cleaned);
+    return Number.isFinite(parsed) ? parsed : null;
+}
+
+function getFirstGuessAnalysis() {
+    const games = completedQuestions && typeof completedQuestions === 'object'
+        ? Object.values(completedQuestions)
+        : [];
+    const analysis = {
+        totalGames: 0,
+        comparable: 0,
+        over: 0,
+        under: 0,
+        exact: 0
+    };
+
+    games.forEach(game => {
+        if (!game || !Array.isArray(game.savedGuesses) || game.savedGuesses.length === 0) {
+            return;
+        }
+
+        const firstGuess = game.savedGuesses[0];
+        const guessValue = parseStoredGuessValue(firstGuess?.value);
+        const answerValue = typeof game.answer === 'number'
+            ? game.answer
+            : parseStoredGuessValue(game.answer);
+
+        if (guessValue === null || answerValue === null) {
+            return;
+        }
+
+        analysis.totalGames++;
+
+        if (guessValue === answerValue) {
+            analysis.exact++;
+            return;
+        }
+
+        analysis.comparable++;
+        if (guessValue > answerValue) {
+            analysis.over++;
+        } else {
+            analysis.under++;
+        }
+    });
+
+    return analysis;
+}
+
+function buildFirstGuessSection() {
+    const title = 'First guess bias';
+    const analysis = getFirstGuessAnalysis();
+    const messages = [];
+
+    if (analysis.totalGames === 0) {
+        messages.push({
+            type: 'info',
+            text: 'Finish at least one question to unlock first-guess advice.'
+        });
+        return { title, messages };
+    }
+
+    if (analysis.comparable === 0) {
+        messages.push({
+            type: 'positive',
+            heading: 'Spot-on starts',
+            text: `Every recorded first guess has hit the answer exactly so far. We'll flag any bias once a few misses show up.`
+        });
+    } else if (analysis.comparable < MIN_FIRST_GUESS_SAMPLES) {
+        const needed = MIN_FIRST_GUESS_SAMPLES - analysis.comparable;
+        messages.push({
+            type: 'info',
+            text: `Log ${needed} more first guess${needed === 1 ? '' : 'es'} (${analysis.comparable} so far) so we can reliably spot high or low bias.`
+        });
+    } else {
+        const overRate = analysis.over / analysis.comparable;
+        const underRate = analysis.under / analysis.comparable;
+
+        if (overRate >= FIRST_GUESS_WARNING_THRESHOLD) {
+            const percent = Math.round(overRate * 100);
+            messages.push({
+                type: 'warning',
+                heading: 'First guess tends to overshoot',
+                text: `Your opening guess was above the answer in ${percent}% (${analysis.over} of ${analysis.comparable}) of recent games. Try anchoring with smaller factors before scaling up.`
+            });
+        } else if (underRate >= FIRST_GUESS_WARNING_THRESHOLD) {
+            const percent = Math.round(underRate * 100);
+            messages.push({
+                type: 'warning',
+                heading: 'First guess tends to undershoot',
+                text: `Your opening guess was below the answer in ${percent}% (${analysis.under} of ${analysis.comparable}) of recent games. Consider starting slightly higher before refining.`
+            });
+        } else {
+            messages.push({
+                type: 'positive',
+                heading: 'Balanced first guesses',
+                text: `Your first guesses split high vs. low (${analysis.over} high, ${analysis.under} low) within a healthy range. Keep breaking problems into factors before locking in a number.`
+            });
+        }
+    }
+
+    if (analysis.totalGames > 0) {
+        const breakdownParts = [];
+        if (analysis.over > 0) breakdownParts.push(`${analysis.over} high`);
+        if (analysis.under > 0) breakdownParts.push(`${analysis.under} low`);
+        if (analysis.exact > 0) breakdownParts.push(`${analysis.exact} spot on`);
+        messages.push({
+            type: 'info',
+            text: `Breakdown across ${analysis.totalGames} completed game${analysis.totalGames === 1 ? '' : 's'}: ${breakdownParts.length ? breakdownParts.join(', ') : 'no recorded first guesses yet.'}`
+        });
+    }
+
+    return { title, messages };
+}
+
+function getCalibrationEntries() {
+    if (!stats || !Array.isArray(stats.calibrationData)) return [];
+    return stats.calibrationData.filter(entry => {
+        if (!entry || typeof entry !== 'object') return false;
+        if (typeof entry.correct !== 'boolean') return false;
+        return clampConfidenceFraction(entry.confidence) !== null;
+    });
+}
+
+function buildCalibrationSection() {
+    const title = 'Confidence calibration';
+    const entries = getCalibrationEntries();
+    const total = entries.length;
+    const messages = [];
+
+    if (total === 0) {
+        messages.push({
+            type: 'info',
+            text: calibrationEnabled
+                ? 'Log your confidence with a few guesses to unlock calibration tips.'
+                : 'Enable probability calibration below the guess input to start logging your confidence.'
+        });
+        return { title, messages };
+    }
+
+    if (total < MIN_CALIBRATION_SAMPLES) {
+        const needed = MIN_CALIBRATION_SAMPLES - total;
+        messages.push({
+            type: 'info',
+            text: `Add ${needed} more confidence entr${needed === 1 ? 'y' : 'ies'} (${total} logged) so we can compare your stated odds with reality.`
+        });
+        return { title, messages };
+    }
+
+    const declaredLevels = [10, 20, 30, 40, 50, 60, 70, 80, 90, MAX_CONFIDENCE_PERCENT];
+    const bins = declaredLevels.map(level => ({
+        declared: level,
+        total: 0,
+        correct: 0
+    }));
+
+    entries.forEach(entry => {
+        const fraction = clampConfidenceFraction(entry.confidence);
+        if (fraction === null) return;
+        const percent = Math.round(fraction * 100);
+        const normalized = Math.min(
+            MAX_CONFIDENCE_PERCENT,
+            Math.max(10, Math.round(percent / 10) * 10)
+        );
+        const idx = declaredLevels.indexOf(normalized);
+        if (idx === -1) return;
+        const bin = bins[idx];
+        bin.total += 1;
+        if (entry.correct) bin.correct += 1;
+    });
+
+    const binWarnings = bins
+        .map(bin => {
+            if (bin.total < MIN_CALIBRATION_BIN_SIZE) return null;
+            const actual = bin.correct / bin.total;
+            const declared = bin.declared / 100;
+            const diff = actual - declared;
+            return {
+                declared,
+                declaredPercent: bin.declared,
+                total: bin.total,
+                correct: bin.correct,
+                actual,
+                diff
+            };
+        })
+        .filter(Boolean)
+        .filter(item => Math.abs(item.diff) >= CALIBRATION_WARNING_THRESHOLD)
+        .sort((a, b) => Math.abs(b.diff) - Math.abs(a.diff));
+
+    const warningMessages = binWarnings.slice(0, 2).map(item => {
+        const actualPercent = Math.round(item.actual * 100);
+        const declaredPercent = item.declaredPercent;
+        const heading = item.diff < 0
+            ? `Overconfident at ${declaredPercent}%`
+            : `Underconfident at ${declaredPercent}%`;
+        const advice = item.diff < 0
+            ? 'Try widening your range or dialing back the confidence until you have more evidence.'
+            : 'Consider trusting your estimate more when you feel this confident.';
+        return {
+            type: 'warning',
+            heading,
+            text: `You were correct ${actualPercent}% of the time (${item.correct} of ${item.total}) when you said ${declaredPercent}%. ${advice}`
+        };
+    });
+
+    messages.push(...warningMessages);
+
+    const totalCorrect = entries.reduce((sum, entry) => sum + (entry.correct ? 1 : 0), 0);
+    const averageDeclared = entries.reduce((sum, entry) => sum + (clampConfidenceFraction(entry.confidence) || 0), 0) / total;
+    const overallActual = totalCorrect / total;
+    const overallDiff = overallActual - averageDeclared;
+    const hasLargeBin = bins.some(bin => bin.total >= MIN_CALIBRATION_BIN_SIZE);
+
+    if (!warningMessages.length) {
+        if (Math.abs(overallDiff) >= CALIBRATION_WARNING_THRESHOLD) {
+            const declaredPercent = Math.round(averageDeclared * 100);
+            const actualPercent = Math.round(overallActual * 100);
+            const heading = overallDiff < 0 ? 'Overall overconfidence' : 'Overall underconfidence';
+            const advice = overallDiff < 0
+                ? 'Reserve very high confidence for cases where multiple sanity checks agree.'
+                : 'You might be hedging too much—consider leaning a little more on your reasoning when the evidence is strong.';
+            messages.push({
+                type: 'warning',
+                heading,
+                text: `On average you claim ${declaredPercent}% confidence but are correct about ${actualPercent}% of the time. ${advice}`
+            });
+        } else if (!hasLargeBin) {
+            messages.push({
+                type: 'info',
+                text: 'Log a few more guesses using the same confidence levels so we can check for calibration issues at specific probabilities.'
+            });
+        } else {
+            const declaredPercent = Math.round(averageDeclared * 100);
+            const actualPercent = Math.round(overallActual * 100);
+            messages.push({
+                type: 'positive',
+                heading: 'Promising calibration',
+                text: `Your stated confidence (averaging ${declaredPercent}%) is close to your actual accuracy (${actualPercent}%). Keep tracking guesses to confirm the pattern.`
+            });
+        }
+    }
+
+    messages.push({
+        type: 'info',
+        text: `Confidence entries analyzed: ${total} (${totalCorrect} correct).`
+    });
+
+    return { title, messages };
+}
+
+function buildStrategySections() {
+    const sections = [buildFirstGuessSection(), buildCalibrationSection()];
+    return sections.filter(section => section && Array.isArray(section.messages) && section.messages.length > 0);
+}
+
+function renderStrategyTips() {
+    if (!strategyTipsContainer) return;
+    const sections = buildStrategySections();
+    strategyTipsContainer.innerHTML = '';
+
+    if (!sections.length) {
+        const placeholder = document.createElement('p');
+        placeholder.className = 'strategy-empty';
+        placeholder.textContent = 'Finish a game to unlock personalized strategy tips.';
+        strategyTipsContainer.appendChild(placeholder);
+        return;
+    }
+
+    let rendered = false;
+
+    sections.forEach(section => {
+        if (!section || !Array.isArray(section.messages) || !section.messages.length) return;
+        rendered = true;
+        const sectionEl = document.createElement('div');
+        sectionEl.className = 'tip-section';
+
+        if (section.title) {
+            const titleEl = document.createElement('h3');
+            titleEl.className = 'tip-section-title';
+            titleEl.textContent = section.title;
+            sectionEl.appendChild(titleEl);
+        }
+
+        section.messages.forEach(message => {
+            if (!message || !message.text) return;
+            const card = document.createElement('div');
+            card.className = `tip-card ${message.type || 'info'}`;
+
+            if (message.heading) {
+                const headingEl = document.createElement('div');
+                headingEl.className = 'tip-card-title';
+                headingEl.textContent = message.heading;
+                card.appendChild(headingEl);
+            }
+
+            const textEl = document.createElement('p');
+            textEl.textContent = message.text;
+            card.appendChild(textEl);
+            sectionEl.appendChild(card);
+        });
+
+        strategyTipsContainer.appendChild(sectionEl);
+    });
+
+    if (!rendered) {
+        const placeholder = document.createElement('p');
+        placeholder.className = 'strategy-empty';
+        placeholder.textContent = 'Finish a game to unlock personalized strategy tips.';
+        strategyTipsContainer.appendChild(placeholder);
+    }
 }
 
 function showCalibrationTooltip(evt, sampleSize, declared, actual) {
@@ -3900,7 +4268,7 @@ function setupEventListeners() {
     
     // Strategy tips (mobile link in guess counter)
     if (strategyTipsBtn) {
-        strategyTipsBtn.addEventListener('click', showHelp);
+        strategyTipsBtn.addEventListener('click', handleStrategyTipsClick);
     }
 
     // Hint accordion toggle (mobile)
@@ -4078,6 +4446,9 @@ function setupEventListeners() {
     closeHelpBtn.addEventListener('click', () => closeModal(helpModal));
     closeStatsBtn.addEventListener('click', () => closeModal(statsModal));
     closeQuestionsBtn.addEventListener('click', () => closeModal(questionsModal));
+    if (closeStrategyBtn && strategyModal) {
+        closeStrategyBtn.addEventListener('click', () => closeModal(strategyModal));
+    }
 
     // Comment buttons
     if (commentsBtn) commentsBtn.addEventListener('click', openComments);
@@ -4097,7 +4468,7 @@ function setupEventListeners() {
     shareStatsBtn.addEventListener('click', shareStats);
         
     // Close modals when clicking outside (desktop + mobile)
-    [helpModal, statsModal, questionsModal, sourceModal].forEach(modal => {
+    [helpModal, statsModal, questionsModal, sourceModal, strategyModal].forEach(modal => {
         ['click', 'touchend'].forEach(event => {
             modal.addEventListener(event, e => e.target === modal && closeModal(modal));
         });
