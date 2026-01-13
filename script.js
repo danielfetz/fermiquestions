@@ -684,7 +684,7 @@ function triggerShake(element, durationMs = 500) {
 // Brief confetti animation when winning a game
 function triggerConfetti(durationMs = 1200, particleCount = 80) {
     const onSmall = isSmallDevice();
-    const total = onSmall ? Math.min(particleCount, 32) : particleCount;
+    const total = onSmall ? Math.min(particleCount, 40) : particleCount;
 
     const canvas = document.createElement('canvas');
     canvas.style.position = 'fixed';
@@ -714,14 +714,14 @@ function triggerConfetti(durationMs = 1200, particleCount = 80) {
 
     const particles = [];
     for (let i = 0; i < total; i++) {
-        const size = 4 + Math.random() * 6; // 4-10px
+        const size = 6 + Math.random() * 6; // 6-12px (slightly larger)
         particles.push({
             x: Math.random() * width(),
-            y: -10 - Math.random() * 40,
+            y: -10 - Math.random() * 60,
             vx: (Math.random() - 0.5) * 260, // px/s
-            vy: 80 + Math.random() * 160,     // px/s
+            vy: 120 + Math.random() * 240, // px/s
             ax: (Math.random() - 0.5) * 40,   // lateral drift
-            ay: 360,                           // gravity px/s^2
+            ay: 540,                            // gravity px/s^2
             size,
             rotation: Math.random() * Math.PI * 2,
             rotationSpeed: (Math.random() - 0.5) * 6, // rad/s
@@ -758,7 +758,7 @@ function triggerConfetti(durationMs = 1200, particleCount = 80) {
             ctx.restore();
         }
 
-        if (elapsed < durationMs + 200) {
+        if (elapsed < durationMs + 400) {
             requestAnimationFrame(frame);
         } else {
             cleanup();
@@ -776,7 +776,7 @@ function triggerConfetti(durationMs = 1200, particleCount = 80) {
     const stopTimer = setTimeout(() => {
         window.removeEventListener('resize', onResize);
         cleanup();
-    }, durationMs + 400);
+    }, durationMs + 600);
 
     if (onSmall) {
         setTimeout(() => requestAnimationFrame(frame), 80);
@@ -876,7 +876,6 @@ function endGame() {
     guessCounter.style.display = 'none';
     hideHint();
     gameResult.style.display = 'block';
-    triggerShake(gameResult);
     
     // Set result message
     if (gameWon) {
@@ -1282,7 +1281,6 @@ function endGameDisplay() {
     guessCounter.style.display = 'none';
     hideHint();
     gameResult.style.display = 'block';
-    triggerShake(gameResult);
     
     // Set result message
     if (gameWon) {
