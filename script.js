@@ -7,6 +7,9 @@ let supabase = null;
 let currentUserId = null;
 let commentsChannel = null;
 
+const MAX_CONFIDENCE_PERCENT = 99;
+const MAX_CONFIDENCE_FRACTION = MAX_CONFIDENCE_PERCENT / 100;
+
 // Initialize Supabase with error handling
 function initSupabase() {
     try {
@@ -943,6 +946,906 @@ const fermiQuestions = [
         hint: "The London Eye has 32 capsules, each of which holds up to 25 passengers.",
         date: "2025-09-15",
         image: "data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' width='100' height='100' viewBox='0 0 100 100'%3e%3crect width='100' height='100' fill='%23f8fafc'/%3e%3ctext x='50' y='62' font-size='40' text-anchor='middle' fill='%23374151'%3e️🎡%3c/text%3e%3c/svg%3e"
+    },
+    {
+        question: "How much revenue in US dollars did the Harry Potter film series make at the box office?",
+        answer: 7700000000,
+        category: "",
+        explanation: "",
+        hint: "The eight Harry Potter films earned $2.39 billion at the US box office.",
+        date: "2025-09-16",
+        image: "data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' width='100' height='100' viewBox='0 0 100 100'%3e%3crect width='100' height='100' fill='%23f8fafc'/%3e%3ctext x='50' y='62' font-size='40' text-anchor='middle' fill='%23374151'%3e️🍿%3c/text%3e%3c/svg%3e"
+    },
+    {
+        question: "How many MacBooks were sold worldwide in 2024?",
+        answer: 19700000,
+        category: "",
+        explanation: "",
+        hint: "25.9% of Apple's total revenue in 2024 came from Europe.",
+        date: "2025-09-17",
+        image: "data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' width='100' height='100' viewBox='0 0 100 100'%3e%3crect width='100' height='100' fill='%23f8fafc'/%3e%3ctext x='50' y='62' font-size='40' text-anchor='middle' fill='%23374151'%3e️💻%3c/text%3e%3c/svg%3e"
+    },
+    {
+        question: "How many households in the US had an income exceeding $500,000 in 2022?",
+        answer: 2478530,
+        category: "",
+        explanation: "",
+        hint: "25.9M US households reported an income between $100,000 and $200,000 in 2022.",
+        date: "2025-09-18",
+        image: "data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' width='100' height='100' viewBox='0 0 100 100'%3e%3crect width='100' height='100' fill='%23f8fafc'/%3e%3ctext x='50' y='62' font-size='40' text-anchor='middle' fill='%23374151'%3e️🇺🇸%3c/text%3e%3c/svg%3e"
+    },
+    {
+        question: "How many people work in McDonald's restaurants across the United States?",
+        answer: 800000,
+        category: "",
+        explanation: "",
+        hint: "There are 1,225 McDonald's restaurants in California.",
+        date: "2025-09-19",
+        image: "data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' width='100' height='100' viewBox='0 0 100 100'%3e%3crect width='100' height='100' fill='%23f8fafc'/%3e%3ctext x='50' y='62' font-size='40' text-anchor='middle' fill='%23374151'%3e️🍔%3c/text%3e%3c/svg%3e"
+    },
+    {
+        question: "How many daily active users did Duolingo have as of March 2025?",
+        answer: 46600000,
+        category: "",
+        explanation: "",
+        hint: "Duolingo's revenue in the first three months of 2025 was $230.7 million.",
+        date: "2025-09-20",
+        image: "data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' width='100' height='100' viewBox='0 0 100 100'%3e%3crect width='100' height='100' fill='%23f8fafc'/%3e%3ctext x='50' y='62' font-size='40' text-anchor='middle' fill='%23374151'%3e️📱%3c/text%3e%3c/svg%3e"
+    },
+    {
+        question: "How many commercial airline pilots are employed worldwide?",
+        answer: 382000,
+        category: "",
+        explanation: "",
+        hint: "There were around 36.4 million scheduled commercial airline flights in 2024.",
+        date: "2025-09-21",
+        image: "data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' width='100' height='100' viewBox='0 0 100 100'%3e%3crect width='100' height='100' fill='%23f8fafc'/%3e%3ctext x='50' y='62' font-size='40' text-anchor='middle' fill='%23374151'%3e️🧑‍✈️%3c/text%3e%3c/svg%3e"
+    },
+    {
+        question: "How many divorces took place in Germany in 2024?",
+        answer: 129337,
+        category: "",
+        explanation: "",
+        hint: "Roughly 81% of the marriages formed in 2005 were still intact in 2015.",
+        date: "2025-09-22",
+        image: "data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' width='100' height='100' viewBox='0 0 100 100'%3e%3crect width='100' height='100' fill='%23f8fafc'/%3e%3ctext x='50' y='62' font-size='40' text-anchor='middle' fill='%23374151'%3e️💔%3c/text%3e%3c/svg%3e"
+    },
+    {
+        question: "How many hours did the average journey from London to San Francisco take in 1900?",
+        answer: 293,
+        category: "",
+        explanation: "",
+        hint: "The straight-line distance between San Francisco and London is 5,354 miles (8,617 km).",
+        date: "2025-09-23",
+        image: "data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' width='100' height='100' viewBox='0 0 100 100'%3e%3crect width='100' height='100' fill='%23f8fafc'/%3e%3ctext x='50' y='62' font-size='40' text-anchor='middle' fill='%23374151'%3e️🗽%3c/text%3e%3c/svg%3e"
+    },
+    {
+        question: "How many babies were born in the United States on New Year's Day in 2000?",
+        answer: 9083,
+        category: "",
+        explanation: "",
+        hint: "January 1st, 2000 was a Saturday, which typically has 27% fewer births than weekdays.",
+        date: "2025-09-24",
+        image: "data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' width='100' height='100' viewBox='0 0 100 100'%3e%3crect width='100' height='100' fill='%23f8fafc'/%3e%3ctext x='50' y='62' font-size='40' text-anchor='middle' fill='%23374151'%3e️👶%3c/text%3e%3c/svg%3e"
+    },
+    {
+        question: "How many transactions did Visa process per day in 2024?",
+        answer: 639000000,
+        category: "",
+        explanation: "",
+        hint: "Roughly 57% of all credit and debit cards outside China carry the Visa brand.",
+        date: "2025-09-25",
+        image: "data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' width='100' height='100' viewBox='0 0 100 100'%3e%3crect width='100' height='100' fill='%23f8fafc'/%3e%3ctext x='50' y='62' font-size='40' text-anchor='middle' fill='%23374151'%3e️💳%3c/text%3e%3c/svg%3e"
+    },
+    {
+        question: "How many radiologists are there in the United States?",
+        answer: 31960,
+        category: "",
+        explanation: "",
+        hint: "In 2023, around 35.7 million MRI scans were performed in the US.",
+        date: "2025-09-26",
+        image: "data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' width='100' height='100' viewBox='0 0 100 100'%3e%3crect width='100' height='100' fill='%23f8fafc'/%3e%3ctext x='50' y='62' font-size='40' text-anchor='middle' fill='%23374151'%3e️🩻%3c/text%3e%3c/svg%3e"
+    },
+    {
+        question: "How many pigs were alive worldwide in April 2025?",
+        answer: 754281000,
+        category: "",
+        explanation: "",
+        hint: "Pigs can live up to 20 years, but they are usually slaughtered for meat at the age of six months.",
+        date: "2025-09-27",
+        image: "data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' width='100' height='100' viewBox='0 0 100 100'%3e%3crect width='100' height='100' fill='%23f8fafc'/%3e%3ctext x='50' y='62' font-size='40' text-anchor='middle' fill='%23374151'%3e️🐷%3c/text%3e%3c/svg%3e"
+    },
+    {
+        question: "How many new dentistry graduates were there across the European Union in 2023?",
+        answer: 14186,
+        category: "",
+        explanation: "",
+        hint: "There are around 86 practicing dentists per 100,000 inhabitants in Germany.",
+        date: "2025-09-28",
+        image: "data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' width='100' height='100' viewBox='0 0 100 100'%3e%3crect width='100' height='100' fill='%23f8fafc'/%3e%3ctext x='50' y='62' font-size='40' text-anchor='middle' fill='%23374151'%3e️🦷%3c/text%3e%3c/svg%3e"
+    },
+    {
+        question: "How much revenue in US dollars did Netflix make in the first half of 2025?",
+        answer: 21600000000,
+        category: "",
+        explanation: "",
+        hint: "The United States and Canada account for around 44% of Netflix's revenue.",
+        date: "2025-09-29",
+        image: "data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' width='100' height='100' viewBox='0 0 100 100'%3e%3crect width='100' height='100' fill='%23f8fafc'/%3e%3ctext x='50' y='62' font-size='40' text-anchor='middle' fill='%23374151'%3e️🍿%3c/text%3e%3c/svg%3e"
+    },
+    {
+        question: "How many cars were in use in the United States in 1950?",
+        answer: 40300000,
+        category: "",
+        explanation: "",
+        hint: "The US had only 6% of the world population in 1950, but 75% of all cars.",
+        date: "2025-09-30",
+        image: "data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' width='100' height='100' viewBox='0 0 100 100'%3e%3crect width='100' height='100' fill='%23f8fafc'/%3e%3ctext x='50' y='62' font-size='40' text-anchor='middle' fill='%23374151'%3e️🚗%3c/text%3e%3c/svg%3e"
+    },
+    {
+        question: "How many bibles were sold in the United States in 2024?",
+        answer: 17000000,
+        category: "",
+        explanation: "",
+        hint: "US Bible sales in 2024 were 7.3 million higher than in 2019.",
+        date: "2025-10-01",
+        image: "data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' width='100' height='100' viewBox='0 0 100 100'%3e%3crect width='100' height='100' fill='%23f8fafc'/%3e%3ctext x='50' y='62' font-size='40' text-anchor='middle' fill='%23374151'%3e️📚%3c/text%3e%3c/svg%3e"
+    },
+    {
+        question: "How many existing and newly built US homes were sold in 2024?",
+        answer: 4750000,
+        category: "",
+        explanation: "",
+        hint: "US single-family home sales were around 686,000 in 2024.",
+        date: "2025-10-02",
+        image: "data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' width='100' height='100' viewBox='0 0 100 100'%3e%3crect width='100' height='100' fill='%23f8fafc'/%3e%3ctext x='50' y='62' font-size='40' text-anchor='middle' fill='%23374151'%3e️🏘️%3c/text%3e%3c/svg%3e"
+    },
+    {
+        question: "How many hospital beds were there in Germany as of 2023?",
+        answer: 477000,
+        category: "",
+        explanation: "",
+        hint: "The average bed oc­cupa­ncy rate was 71% in 2023.",
+        date: "2025-10-03",
+        image: "data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' width='100' height='100' viewBox='0 0 100 100'%3e%3crect width='100' height='100' fill='%23f8fafc'/%3e%3ctext x='50' y='62' font-size='40' text-anchor='middle' fill='%23374151'%3e️🏥%3c/text%3e%3c/svg%3e"
+    },
+    {
+        question: "How many AirPods did Apple sell worldwide in 2024?",
+        answer: 67000000,
+        category: "",
+        explanation: "",
+        hint: "AirPods launched in late 2016, and appx. 15 million units were sold in 2017.",
+        date: "2025-10-04",
+        image: "data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' width='100' height='100' viewBox='0 0 100 100'%3e%3crect width='100' height='100' fill='%23f8fafc'/%3e%3ctext x='50' y='62' font-size='40' text-anchor='middle' fill='%23374151'%3e️🍏%3c/text%3e%3c/svg%3e"
+    },
+    {
+        question: "How many school buses were in service in the United States as of 2024?",
+        answer: 451000,
+        category: "",
+        explanation: "",
+        hint: "A 2022 survey suggests that 28% of US students ride a school bus on a typical day.",
+        date: "2025-10-05",
+        image: "data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' width='100' height='100' viewBox='0 0 100 100'%3e%3crect width='100' height='100' fill='%23f8fafc'/%3e%3ctext x='50' y='62' font-size='40' text-anchor='middle' fill='%23374151'%3e️🚌%3c/text%3e%3c/svg%3e"
+    },
+    {
+        question: "How many soldiers did Switzerland mobilize at its highest point during WWII?",
+        answer: 850000,
+        category: "",
+        explanation: "",
+        hint: "At its peak, around 40% of the male population in Switzerland was mobilized.",
+        date: "2025-10-06",
+        image: "data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' width='100' height='100' viewBox='0 0 100 100'%3e%3crect width='100' height='100' fill='%23f8fafc'/%3e%3ctext x='50' y='62' font-size='40' text-anchor='middle' fill='%23374151'%3e️🇨🇭%3c/text%3e%3c/svg%3e"
+    },
+    {
+        question: "How many .com domains were registered in total as of June 2025?",
+        answer: 157900000,
+        category: "",
+        explanation: "",
+        hint: "The number of .cn domains registered stood at 21 million in June 2025.",
+        date: "2025-10-07",
+        image: "data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' width='100' height='100' viewBox='0 0 100 100'%3e%3crect width='100' height='100' fill='%23f8fafc'/%3e%3ctext x='50' y='62' font-size='40' text-anchor='middle' fill='%23374151'%3e️🌐%3c/text%3e%3c/svg%3e"
+    },
+    {
+        question: "How many Chromebooks were sold worldwide in 2024?",
+        answer: 17500000,
+        category: "",
+        explanation: "",
+        hint: "Around 60% of Chromebook shipments went to the education sector in 2024/25.",
+        date: "2025-10-08",
+        image: "data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' width='100' height='100' viewBox='0 0 100 100'%3e%3crect width='100' height='100' fill='%23f8fafc'/%3e%3ctext x='50' y='62' font-size='40' text-anchor='middle' fill='%23374151'%3e️💻%3c/text%3e%3c/svg%3e"
+    },
+    {
+        question: "How many subscribers did Disney+ have as of June 2025?",
+        answer: 128000000,
+        category: "",
+        explanation: "",
+        hint: "Around 45% of Disney+ subscribers were in the US and Canada.",
+        date: "2025-10-09",
+        image: "data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' width='100' height='100' viewBox='0 0 100 100'%3e%3crect width='100' height='100' fill='%23f8fafc'/%3e%3ctext x='50' y='62' font-size='40' text-anchor='middle' fill='%23374151'%3e️🏰%3c/text%3e%3c/svg%3e"
+    },
+    {
+        question: "How many foreign visitors came to Japan in 2024?",
+        answer: 36900000,
+        category: "",
+        explanation: "",
+        hint: "Around 24% of all visitors were Korean, and 7.4% were American.",
+        date: "2025-10-10",
+        image: "data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' width='100' height='100' viewBox='0 0 100 100'%3e%3crect width='100' height='100' fill='%23f8fafc'/%3e%3ctext x='50' y='62' font-size='40' text-anchor='middle' fill='%23374151'%3e️🇯🇵%3c/text%3e%3c/svg%3e"
+    },
+    {
+        question: "How much revenue in US dollars did Tesla make in 2024?",
+        answer: 97690000000,
+        category: "",
+        explanation: "",
+        hint: "Tesla's revenue from China was around $21 billion in 2024.",
+        date: "2025-10-11",
+        image: "data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' width='100' height='100' viewBox='0 0 100 100'%3e%3crect width='100' height='100' fill='%23f8fafc'/%3e%3ctext x='50' y='62' font-size='40' text-anchor='middle' fill='%23374151'%3e️🚗%3c/text%3e%3c/svg%3e"
+    },
+    {
+        question: "How many aircraft takeoffs and landings did Singapore's Changi Airport handle in 2024?",
+        answer: 366000,
+        category: "",
+        explanation: "",
+        hint: "On the airport’s busiest day in 2024, 226,000 passengers passed through its terminals.",
+        date: "2025-10-12",
+        image: "data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' width='100' height='100' viewBox='0 0 100 100'%3e%3crect width='100' height='100' fill='%23f8fafc'/%3e%3ctext x='50' y='62' font-size='40' text-anchor='middle' fill='%23374151'%3e️✈️%3c/text%3e%3c/svg%3e"
+    },
+    {
+        question: "How many copies of Minecraft have been sold worldwide as of April 2025?",
+        answer: 350000000,
+        category: "",
+        explanation: "",
+        hint: "More than 215 million copies of Grand Theft Auto V have been sold.",
+        date: "2025-10-13",
+        image: "data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' width='100' height='100' viewBox='0 0 100 100'%3e%3crect width='100' height='100' fill='%23f8fafc'/%3e%3ctext x='50' y='62' font-size='40' text-anchor='middle' fill='%23374151'%3e️🎮%3c/text%3e%3c/svg%3e"
+    },
+    {
+        question: "How much revenue in US dollars did OpenAI make in the first half of 2025?",
+        answer: 4300000000,
+        category: "",
+        explanation: "",
+        hint: "OpenAI's revenue in the first six months of 2025 was 16% more than its revenue for all of 2024.",
+        date: "2025-10-14",
+        image: "data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' width='100' height='100' viewBox='0 0 100 100'%3e%3crect width='100' height='100' fill='%23f8fafc'/%3e%3ctext x='50' y='62' font-size='40' text-anchor='middle' fill='%23374151'%3e️🤖%3c/text%3e%3c/svg%3e"
+    },
+    {
+        question: "How many Summer Olympic medals have American athletes won in total?",
+        answer: 2765,
+        category: "",
+        explanation: "",
+        hint: "Germany won 33 medals at the 2024 Summer Olympics.",
+        date: "2025-10-15",
+        image: "data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' width='100' height='100' viewBox='0 0 100 100'%3e%3crect width='100' height='100' fill='%23f8fafc'/%3e%3ctext x='50' y='62' font-size='40' text-anchor='middle' fill='%23374151'%3e️🏅%3c/text%3e%3c/svg%3e"
+    },
+    {
+        question: "How many articles are there in the English Wikipedia as of October 2025?",
+        answer: 7075000,
+        category: "",
+        explanation: "",
+        hint: "There are around 2 million articles about individual people on English Wikipedia.",
+        date: "2025-10-16",
+        image: "data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' width='100' height='100' viewBox='0 0 100 100'%3e%3crect width='100' height='100' fill='%23f8fafc'/%3e%3ctext x='50' y='62' font-size='40' text-anchor='middle' fill='%23374151'%3e️📖%3c/text%3e%3c/svg%3e"
+    },
+    {
+        question: "How many bananas were imported to the United Kingdom in 2023?",
+        answer: 4900000000,
+        category: "",
+        explanation: "",
+        hint: "The population of the United Kingdom was around 69 million in 2023.",
+        date: "2025-10-17",
+        image: "data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' width='100' height='100' viewBox='0 0 100 100'%3e%3crect width='100' height='100' fill='%23f8fafc'/%3e%3ctext x='50' y='62' font-size='40' text-anchor='middle' fill='%23374151'%3e️🍌%3c/text%3e%3c/svg%3e"
+    },
+    {
+        question: "How many public high schools are there in the United States?",
+        answer: 23810,
+        category: "",
+        explanation: "",
+        hint: "In 2007, 4.3 million babies were born in the United States",
+        date: "2025-10-18",
+        image: "data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' width='100' height='100' viewBox='0 0 100 100'%3e%3crect width='100' height='100' fill='%23f8fafc'/%3e%3ctext x='50' y='62' font-size='40' text-anchor='middle' fill='%23374151'%3e️🏫%3c/text%3e%3c/svg%3e"
+    },
+    {
+        question: "How many Starbucks stores are there worldwide?",
+        answer: 41097,
+        category: "",
+        explanation: "",
+        hint: "The revenue of Starbucks in 2024 was around $36 billion worldwide.",
+        date: "2025-10-19",
+        image: "data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' width='100' height='100' viewBox='0 0 100 100'%3e%3crect width='100' height='100' fill='%23f8fafc'/%3e%3ctext x='50' y='62' font-size='40' text-anchor='middle' fill='%23374151'%3e️☕️%3c/text%3e%3c/svg%3e"
+    },
+    {
+        question: "How many students were enrolled at Harvard University in the fall of 2024?",
+        answer: 24519,
+        category: "",
+        explanation: "",
+        hint: "Harvard has around 420,000 living alumni.",
+        date: "2025-10-20",
+        image: "data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' width='100' height='100' viewBox='0 0 100 100'%3e%3crect width='100' height='100' fill='%23f8fafc'/%3e%3ctext x='50' y='62' font-size='40' text-anchor='middle' fill='%23374151'%3e️🎓%3c/text%3e%3c/svg%3e"
+    },
+    {
+        question: "How many cars has Mercedes-Benz sold in the United States in 2024?",
+        answer: 324528,
+        category: "",
+        explanation: "",
+        hint: "In 2024, Tesla's US car sales totaled around 630,000.",
+        date: "2025-10-21",
+        image: "data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' width='100' height='100' viewBox='0 0 100 100'%3e%3crect width='100' height='100' fill='%23f8fafc'/%3e%3ctext x='50' y='62' font-size='40' text-anchor='middle' fill='%23374151'%3e️🚖%3c/text%3e%3c/svg%3e"
+    },
+    {
+        question: "How many years have passed since the Great Pyramid of Giza was completed?",
+        answer: 4575,
+        category: "",
+        explanation: "",
+        hint: "We live closer in time to Julius Caesar than he lived to the construction of the Great Pyramid.",
+        date: "2025-10-22",
+        image: "data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' width='100' height='100' viewBox='0 0 100 100'%3e%3crect width='100' height='100' fill='%23f8fafc'/%3e%3ctext x='50' y='62' font-size='40' text-anchor='middle' fill='%23374151'%3e️🐪%3c/text%3e%3c/svg%3e"
+    },
+    {
+        question: "How many police officers are there in Australia?",
+        answer: 57539,
+        category: "",
+        explanation: "",
+        hint: "The population of Australia was around 19 million in 2000.",
+        date: "2025-10-23",
+        image: "data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' width='100' height='100' viewBox='0 0 100 100'%3e%3crect width='100' height='100' fill='%23f8fafc'/%3e%3ctext x='50' y='62' font-size='40' text-anchor='middle' fill='%23374151'%3e️👮‍♀️%3c/text%3e%3c/svg%3e"
+    },
+    {
+        question: "How many students graduated from medical school in the United Kingdom in 2024?",
+        answer: 9374,
+        category: "",
+        explanation: "",
+        hint: "There are about 3.2 practicing doctors per 1,000 people in the UK.",
+        date: "2025-10-24",
+        image: "data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' width='100' height='100' viewBox='0 0 100 100'%3e%3crect width='100' height='100' fill='%23f8fafc'/%3e%3ctext x='50' y='62' font-size='40' text-anchor='middle' fill='%23374151'%3e️🥼%3c/text%3e%3c/svg%3e"
+    },
+    {
+        question: "How many new electric cars/plug-in hybrids were sold in the United States in 2024?",
+        answer: 1560000,
+        category: "",
+        explanation: "",
+        hint: "Tesla accounted for 41% of all electric/plug-in hybrid US car sales in 2024.",
+        date: "2025-10-25",
+        image: "data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' width='100' height='100' viewBox='0 0 100 100'%3e%3crect width='100' height='100' fill='%23f8fafc'/%3e%3ctext x='50' y='62' font-size='40' text-anchor='middle' fill='%23374151'%3e️⚡️%3c/text%3e%3c/svg%3e"
+    },
+    {
+        question: "How much revenue in US dollars did Uber make from ridesharing services in 2024?",
+        answer: 25000000000,
+        category: "",
+        explanation: "",
+        hint: "Around 11.3 billion trips were faciliated by Uber in 2024, however this number also includes food delivery orders.",
+        date: "2025-10-26",
+        image: "data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' width='100' height='100' viewBox='0 0 100 100'%3e%3crect width='100' height='100' fill='%23f8fafc'/%3e%3ctext x='50' y='62' font-size='40' text-anchor='middle' fill='%23374151'%3e️🚖%3c/text%3e%3c/svg%3e"
+    },
+    {
+        question: "How many buildings had a height of 200 meters or more at the end of 2024?",
+        answer: 2519,
+        category: "",
+        explanation: "",
+        hint: "As of October 2025, New York City had 101 buildings with a height of 200 meters or more.",
+        date: "2025-10-27",
+        image: "data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' width='100' height='100' viewBox='0 0 100 100'%3e%3crect width='100' height='100' fill='%23f8fafc'/%3e%3ctext x='50' y='62' font-size='40' text-anchor='middle' fill='%23374151'%3e️🗼%3c/text%3e%3c/svg%3e"
+    },
+    {
+        question: "How much US dollars does it cost to launch one kilogram to low Earth orbit onboard Falcon 9?",
+        answer: 3175,
+        category: "",
+        explanation: "",
+        hint: "The list price for a dedicated Falcon 9 rocket launch is $69.85 million.",
+        date: "2025-10-28",
+        image: "data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' width='100' height='100' viewBox='0 0 100 100'%3e%3crect width='100' height='100' fill='%23f8fafc'/%3e%3ctext x='50' y='62' font-size='40' text-anchor='middle' fill='%23374151'%3e️🚀%3c/text%3e%3c/svg%3e"
+    },
+    {
+        question: "How many babies were born in Germany on December 24, 2024?",
+        answer: 1333,
+        category: "",
+        explanation: "",
+        hint: "December 24 saw 29% fewer babies born than December 23, 2024.",
+        date: "2025-10-29",
+        image: "data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' width='100' height='100' viewBox='0 0 100 100'%3e%3crect width='100' height='100' fill='%23f8fafc'/%3e%3ctext x='50' y='62' font-size='40' text-anchor='middle' fill='%23374151'%3e️👶%3c/text%3e%3c/svg%3e"
+    },
+    {
+        question: "How many Jews live in the European Union?",
+        answer: 794100,
+        category: "",
+        explanation: "",
+        hint: "There are roughly 30 times more Muslims than Jews living in the EU.",
+        date: "2025-10-30",
+        image: "data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' width='100' height='100' viewBox='0 0 100 100'%3e%3crect width='100' height='100' fill='%23f8fafc'/%3e%3ctext x='50' y='62' font-size='40' text-anchor='middle' fill='%23374151'%3e️🕍%3c/text%3e%3c/svg%3e"
+    },
+    {
+        question: "How many new cars did Audi sell globally in 2024?",
+        answer: 1671218,
+        category: "",
+        explanation: "",
+        hint: "The largest market for Audi was China which accounted for 650,000 car sales in 2024.",
+        date: "2025-10-31",
+        image: "data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' width='100' height='100' viewBox='0 0 100 100'%3e%3crect width='100' height='100' fill='%23f8fafc'/%3e%3ctext x='50' y='62' font-size='40' text-anchor='middle' fill='%23374151'%3e️🚙%3c/text%3e%3c/svg%3e"
+    },
+    {
+        question: "How many of the least populous UN member states must be combined to match China’s population?",
+        answer: 150,
+        category: "",
+        explanation: "",
+        hint: "74 UN member states have a population of under 5 million.",
+        date: "2025-11-01",
+        image: "data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' width='100' height='100' viewBox='0 0 100 100'%3e%3crect width='100' height='100' fill='%23f8fafc'/%3e%3ctext x='50' y='62' font-size='40' text-anchor='middle' fill='%23374151'%3e️🌎%3c/text%3e%3c/svg%3e"
+    },
+    {
+        question: "How much revenue in US dollars did the LEGO Group (toys) make in 2024?",
+        answer: 10080000000,
+        category: "",
+        explanation: "",
+        hint: "The LEGO Group made a net profit of around $2 billion in 2024.",
+        date: "2025-11-02",
+        image: "data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' width='100' height='100' viewBox='0 0 100 100'%3e%3crect width='100' height='100' fill='%23f8fafc'/%3e%3ctext x='50' y='62' font-size='40' text-anchor='middle' fill='%23374151'%3e️🧱%3c/text%3e%3c/svg%3e"
+    },
+    {
+        question: "How many people watched the Apollo 11 moon landing live on TV?",
+        answer: 650000000,
+        category: "",
+        explanation: "",
+        hint: "The worldwide population in 1969 was around 3.62 billion people.",
+        date: "2025-11-03",
+        image: "data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' width='100' height='100' viewBox='0 0 100 100'%3e%3crect width='100' height='100' fill='%23f8fafc'/%3e%3ctext x='50' y='62' font-size='40' text-anchor='middle' fill='%23374151'%3e️🚀%3c/text%3e%3c/svg%3e"
+    },
+    {
+        question: "How many passengers passed through the gates of the Prague Airport in 2024?",
+        answer: 16350000,
+        category: "",
+        explanation: "",
+        hint: "1.4 million passengers used the direct flights between Prague and London in 2024.",
+        date: "2025-11-04",
+        image: "data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' width='100' height='100' viewBox='0 0 100 100'%3e%3crect width='100' height='100' fill='%23f8fafc'/%3e%3ctext x='50' y='62' font-size='40' text-anchor='middle' fill='%23374151'%3e️🛫%3c/text%3e%3c/svg%3e"
+    },
+    {
+        question: "How many new smartphones did Samsung sell worldwide in 2024?",
+        answer: 222900000,
+        category: "",
+        explanation: "",
+        hint: "Samsung’s US smartphone market share was around 24% in 2024.",
+        date: "2025-11-05",
+        image: "data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' width='100' height='100' viewBox='0 0 100 100'%3e%3crect width='100' height='100' fill='%23f8fafc'/%3e%3ctext x='50' y='62' font-size='40' text-anchor='middle' fill='%23374151'%3e️📱%3c/text%3e%3c/svg%3e"
+    },
+    {
+        question: "How many macadamia nuts are harvested each year worldwide?",
+        answer: 35000000000,
+        category: "",
+        explanation: "",
+        hint: "In 2023, US per-capita consumption was about 12 macadamia nuts.",
+        date: "2025-11-06",
+        image: "data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' width='100' height='100' viewBox='0 0 100 100'%3e%3crect width='100' height='100' fill='%23f8fafc'/%3e%3ctext x='50' y='62' font-size='40' text-anchor='middle' fill='%23374151'%3e️🧑‍🌾%3c/text%3e%3c/svg%3e"
+    },
+    {
+        question: "How many people voted for Trump in the 2024 US presidential election?",
+        answer: 77302580,
+        category: "",
+        explanation: "",
+        hint: "Trump received 6.11 million votes in Florida alone.",
+        date: "2025-11-07",
+        image: "data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' width='100' height='100' viewBox='0 0 100 100'%3e%3crect width='100' height='100' fill='%23f8fafc'/%3e%3ctext x='50' y='62' font-size='40' text-anchor='middle' fill='%23374151'%3e️🇺🇸%3c/text%3e%3c/svg%3e"
+    },
+    {
+        question: "How many police officers work for the New York City Police Department?",
+        answer: 33000,
+        category: "",
+        explanation: "",
+        hint: "New York City had around 8.5 million residents as of 2024.",
+        date: "2025-11-08",
+        image: "data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' width='100' height='100' viewBox='0 0 100 100'%3e%3crect width='100' height='100' fill='%23f8fafc'/%3e%3ctext x='50' y='62' font-size='40' text-anchor='middle' fill='%23374151'%3e️👮‍♂️%3c/text%3e%3c/svg%3e"
+    },
+    {
+        question: "How much revenue in US dollars did Nike make in 2024?",
+        answer: 51400000000,
+        category: "",
+        explanation: "",
+        hint: "In 2024, footwear revenue made up around 70% of Nike's total revenue.",
+        date: "2025-11-09",
+        image: "data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' width='100' height='100' viewBox='0 0 100 100'%3e%3crect width='100' height='100' fill='%23f8fafc'/%3e%3ctext x='50' y='62' font-size='40' text-anchor='middle' fill='%23374151'%3e️👟%3c/text%3e%3c/svg%3e"
+    },
+    {
+        question: "How many pharmacies are there in Russia?",
+        answer: 81700,
+        category: "",
+        explanation: "",
+        hint: "Russia had a population of around 144 million in 2024.",
+        date: "2025-11-10",
+        image: "data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' width='100' height='100' viewBox='0 0 100 100'%3e%3crect width='100' height='100' fill='%23f8fafc'/%3e%3ctext x='50' y='62' font-size='40' text-anchor='middle' fill='%23374151'%3e️💊%3c/text%3e%3c/svg%3e"
+    },
+    {
+        question: "How many McDonald's restaurants are there in Australia?",
+        answer: 1068,
+        category: "",
+        explanation: "",
+        hint: "There are 172 McDonald's restaurants in New Zealand.",
+        date: "2025-11-11",
+        image: "data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' width='100' height='100' viewBox='0 0 100 100'%3e%3crect width='100' height='100' fill='%23f8fafc'/%3e%3ctext x='50' y='62' font-size='40' text-anchor='middle' fill='%23374151'%3e️🍟%3c/text%3e%3c/svg%3e"
+    },
+    {
+        question: "How many new bicycles were sold in Germany in 2024?",
+        answer: 3850000,
+        category: "",
+        explanation: "",
+        hint: "Around 53% of bicycles sold in Germany in 2024 were e-bikes.",
+        date: "2025-11-12",
+        image: "data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' width='100' height='100' viewBox='0 0 100 100'%3e%3crect width='100' height='100' fill='%23f8fafc'/%3e%3ctext x='50' y='62' font-size='40' text-anchor='middle' fill='%23374151'%3e️🚴‍♀️%3c/text%3e%3c/svg%3e"
+    },
+    {
+        question: "How many horses and ponies are there in the United Kingdom?",
+        answer: 900000,
+        category: "",
+        explanation: "",
+        hint: "There were around 2.1 million horses in Great Britain in 1920.",
+        date: "2025-11-13",
+        image: "data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' width='100' height='100' viewBox='0 0 100 100'%3e%3crect width='100' height='100' fill='%23f8fafc'/%3e%3ctext x='50' y='62' font-size='40' text-anchor='middle' fill='%23374151'%3e️🐴%3c/text%3e%3c/svg%3e"
+    },
+    {
+        question: "How many new iPads were sold by Apple in 2024?",
+        answer: 57000000,
+        category: "",
+        explanation: "",
+        hint: "iPad share of tablet shipments in 2024 was around 39%.",
+        date: "2025-11-14",
+        image: "data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' width='100' height='100' viewBox='0 0 100 100'%3e%3crect width='100' height='100' fill='%23f8fafc'/%3e%3ctext x='50' y='62' font-size='40' text-anchor='middle' fill='%23374151'%3e️🍏%3c/text%3e%3c/svg%3e"
+    },
+    {
+        question: "How many people could live in the United States if it were as densely populated as New York City?",
+        answer: 103000000000,
+        category: "",
+        explanation: "",
+        hint: "US land area is about 9.15 million km² (≈3.53 million mi²).",
+        date: "2025-11-15",
+        image: "data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' width='100' height='100' viewBox='0 0 100 100'%3e%3crect width='100' height='100' fill='%23f8fafc'/%3e%3ctext x='50' y='62' font-size='40' text-anchor='middle' fill='%23374151'%3e️🇺🇸%3c/text%3e%3c/svg%3e"
+    },
+    {
+        question: "How many watches did Rolex produce in 2024?",
+        answer: 1176000,
+        category: "",
+        explanation: "",
+        hint: "Rolex made around $12 billion in revenue in 2024.",
+        date: "2025-11-16",
+        image: "data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' width='100' height='100' viewBox='0 0 100 100'%3e%3crect width='100' height='100' fill='%23f8fafc'/%3e%3ctext x='50' y='62' font-size='40' text-anchor='middle' fill='%23374151'%3e️🇨🇭%3c/text%3e%3c/svg%3e"
+    },
+    {
+        question: "How many weddings took place in France in 2024?",
+        answer: 247000,
+        category: "",
+        explanation: "",
+        hint: "There were around 130,000 divorces in France in 2022.",
+        date: "2025-11-17",
+        image: "data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' width='100' height='100' viewBox='0 0 100 100'%3e%3crect width='100' height='100' fill='%23f8fafc'/%3e%3ctext x='50' y='62' font-size='40' text-anchor='middle' fill='%23374151'%3e💍%3c/text%3e%3c/svg%3e"
+    },
+    {
+        question: "How many European-born immigrants live in the United States?",
+        answer: 4700000,
+        category: "",
+        explanation: "",
+        hint: "Europeans made up 75% of all US immigrants in 1960, but only 10% by 2022.",
+        date: "2025-11-18",
+        image: "data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' width='100' height='100' viewBox='0 0 100 100'%3e%3crect width='100' height='100' fill='%23f8fafc'/%3e%3ctext x='50' y='62' font-size='40' text-anchor='middle' fill='%23374151'%3e🇺🇸%3c/text%3e%3c/svg%3e"
+    },
+    {
+        question: "How many people visited the Eiffel Tower’s observation platforms in 2024?",
+        answer: 6300000,
+        category: "",
+        explanation: "",
+        hint: "There are three public elevators that go from the ground to the observation levels.",
+        date: "2025-11-19",
+        image: "data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' width='100' height='100' viewBox='0 0 100 100'%3e%3crect width='100' height='100' fill='%23f8fafc'/%3e%3ctext x='50' y='62' font-size='40' text-anchor='middle' fill='%23374151'%3e🗼%3c/text%3e%3c/svg%3e"
+    },
+    {
+        question: "How many children aged 10 or younger live in the world today?",
+        answer: 1450000000,
+        category: "",
+        explanation: "",
+        hint: "15% of the Canadian population was aged 0-14 in 2024.",
+        date: "2025-11-20",
+        image: "data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' width='100' height='100' viewBox='0 0 100 100'%3e%3crect width='100' height='100' fill='%23f8fafc'/%3e%3ctext x='50' y='62' font-size='40' text-anchor='middle' fill='%23374151'%3e👨‍👨‍👦%3c/text%3e%3c/svg%3e"
+    },
+    {
+        question: "How many new cars were sold in Russia in 2024?",
+        answer: 1550000,
+        category: "",
+        explanation: "",
+        hint: "Around 55–60% of all new cars sold in Russia in 2024 were produced in China, up from 7% in 2021.",
+        date: "2025-11-21",
+        image: "data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' width='100' height='100' viewBox='0 0 100 100'%3e%3crect width='100' height='100' fill='%23f8fafc'/%3e%3ctext x='50' y='62' font-size='40' text-anchor='middle' fill='%23374151'%3e🚗%3c/text%3e%3c/svg%3e"
+    },
+    {
+        question: "How many dermatologists worked in Germany in 2024?",
+        answer: 6640,
+        category: "",
+        explanation: "",
+        hint: "Roughly 77% of dermatologists in Germany practiced in ambulatory settings.",
+        date: "2025-11-22",
+        image: "data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' width='100' height='100' viewBox='0 0 100 100'%3e%3crect width='100' height='100' fill='%23f8fafc'/%3e%3ctext x='50' y='62' font-size='40' text-anchor='middle' fill='%23374151'%3e👨‍⚕️%3c/text%3e%3c/svg%3e"
+    },
+    {
+        question: "How many people live south of the equator?",
+        answer: 1100000000,
+        category: "",
+        explanation: "",
+        hint: "Indonesia, Brazil, DR Congo, Tanzania and South Africa all have more than 50 million people living south of the equator.",
+        date: "2025-11-23",
+        image: "data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' width='100' height='100' viewBox='0 0 100 100'%3e%3crect width='100' height='100' fill='%23f8fafc'/%3e%3ctext x='50' y='62' font-size='40' text-anchor='middle' fill='%23374151'%3e🌎%3c/text%3e%3c/svg%3e"
+    },
+    {
+        question: "How many tennis courts were there in the United States in 2010?",
+        answer: 270000,
+        category: "",
+        explanation: "",
+        hint: "Around 117,000 tennis courts are at organized facilities like tennis clubs and schools.",
+        date: "2025-11-24",
+        image: "data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' width='100' height='100' viewBox='0 0 100 100'%3e%3crect width='100' height='100' fill='%23f8fafc'/%3e%3ctext x='50' y='62' font-size='40' text-anchor='middle' fill='%23374151'%3e🎾%3c/text%3e%3c/svg%3e"
+    },
+    {
+        question: "How much revenue in US dollars did LVMH Moët Hennessy Louis Vuitton make in the first half of 2025?",
+        answer: 46800000000,
+        category: "",
+        explanation: "",
+        hint: "LVMH is the second largest company by market capitalization in the EU.",
+        date: "2025-11-25",
+        image: "data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' width='100' height='100' viewBox='0 0 100 100'%3e%3crect width='100' height='100' fill='%23f8fafc'/%3e%3ctext x='50' y='62' font-size='40' text-anchor='middle' fill='%23374151'%3e️👜%3c/text%3e%3c/svg%3e"
+    },
+    {
+        question: "How many practising lawyers are there in Canada?",
+        answer: 106766,
+        category: "",
+        explanation: "",
+        hint: "Canada's total population was appx. 30.8 million in 2000.",
+        date: "2025-11-26",
+        image: "data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' width='100' height='100' viewBox='0 0 100 100'%3e%3crect width='100' height='100' fill='%23f8fafc'/%3e%3ctext x='50' y='62' font-size='40' text-anchor='middle' fill='%23374151'%3e️👩‍💼%3c/text%3e%3c/svg%3e"
+    },
+    {
+        question: "How many cans of their energy drink did Red Bull sell in 2024?",
+        answer: 12670000000,
+        category: "",
+        explanation: "",
+        hint: "Red Bull had a net income of €650 million in 2018.",
+        date: "2025-11-27",
+        image: "data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' width='100' height='100' viewBox='0 0 100 100'%3e%3crect width='100' height='100' fill='%23f8fafc'/%3e%3ctext x='50' y='62' font-size='40' text-anchor='middle' fill='%23374151'%3e️⚡️%3c/text%3e%3c/svg%3e"
+    },
+    {
+        question: "How large is the total cryptocurrency market cap in US dollars as of November 27, 2025?",
+        answer: 3200000000000,
+        category: "",
+        explanation: "",
+        hint: "Nvidia, Apple, Alphabet (Google), and Microsoft each individually have a larger market cap than all crypto combined.",
+        date: "2025-11-28",
+        image: "data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' width='100' height='100' viewBox='0 0 100 100'%3e%3crect width='100' height='100' fill='%23f8fafc'/%3e%3ctext x='50' y='62' font-size='40' text-anchor='middle' fill='%23374151'%3e️💸%3c/text%3e%3c/svg%3e"
+    },
+    {
+        question: "How many students are currently enrolled in medical school in Germany?",
+        answer: 117916,
+        category: "",
+        explanation: "",
+        hint: "There are 76,482 female students enrolled in medical school which in Germany has a minimum length of 6.25 years.",
+        date: "2025-11-29",
+        image: "data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' width='100' height='100' viewBox='0 0 100 100'%3e%3crect width='100' height='100' fill='%23fef2f2'/%3e%3ctext x='50' y='62' font-size='40' text-anchor='middle' fill='%23dc2626'%3e🏥%3c/text%3e%3c/svg%3e"
+    },
+    {
+        question: "How many people visited the St. Peter’s Basilica in 2024?",
+        answer: 14640000,
+        category: "",
+        explanation: "",
+        hint: "In 2024, the Vatican Museums were visited by 6.8 million people.",
+        date: "2025-11-30",
+        image: "data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' width='100' height='100' viewBox='0 0 100 100'%3e%3crect width='100' height='100' fill='%23fef2f2'/%3e%3ctext x='50' y='62' font-size='40' text-anchor='middle' fill='%23dc2626'%3e🇻🇦%3c/text%3e%3c/svg%3e"
+    },
+    {
+        question: "How much revenue in US dollars did Barbie (2023) make at the box office?",
+        answer: 1447138421,
+        category: "",
+        explanation: "",
+        hint: "The highest grossing movie of all time was Avatar (2009) and made twice as much box office revenue.",
+        date: "2025-12-01",
+        image: "data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' width='100' height='100' viewBox='0 0 100 100'%3e%3crect width='100' height='100' fill='%23f8fafc'/%3e%3ctext x='50' y='62' font-size='40' text-anchor='middle' fill='%23374151'%3e️🍿%3c/text%3e%3c/svg%3e"
+    },
+    {
+        question: "How many passengers fly in and out of German airports every day?",
+        answer: 579000,
+        category: "",
+        explanation: "",
+        hint: "Around 61.6 million passengers traveled through Frankfurt Airport in 2024.",
+        date: "2025-12-02",
+        image: "data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' width='100' height='100' viewBox='0 0 100 100'%3e%3crect width='100' height='100' fill='%23f8fafc'/%3e%3ctext x='50' y='62' font-size='40' text-anchor='middle' fill='%23374151'%3e✈️%3c/text%3e%3c/svg%3e"
+    },
+    {
+        question: "How many public swimming pools are there in France?",
+        answer: 4135,
+        category: "",
+        explanation: "",
+        hint: "There are about 11.4 million people in France under 15 years old.",
+        date: "2025-12-03",
+        image: "data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' width='100' height='100' viewBox='0 0 100 100'%3e%3crect width='100' height='100' fill='%23f8fafc'/%3e%3ctext x='50' y='62' font-size='40' text-anchor='middle' fill='%23374151'%3e🏊‍♀️%3c/text%3e%3c/svg%3e"
+    },
+    {
+        question: "How many Americans have been either Boy Scouts or Girl Scouts since 1910?",
+        answer: 180000000,
+        category: "",
+        explanation: "",
+        hint: "In 1970, there were 4.7 million active Boy Scouts.",
+        date: "2025-12-04",
+        image: "data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' width='100' height='100' viewBox='0 0 100 100'%3e%3crect width='100' height='100' fill='%23f8fafc'/%3e%3ctext x='50' y='62' font-size='40' text-anchor='middle' fill='%23374151'%3e🧗‍♀️%3c/text%3e%3c/svg%3e"
+    },
+    {
+        question: "How many correctional officers and jailers work in the United States?",
+        answer: 361000,
+        category: "",
+        explanation: "",
+        hint: "In spring 2024 there were about 1.8 million people incarcerated in the US.",
+        date: "2025-12-05",
+        image: "data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' width='100' height='100' viewBox='0 0 100 100'%3e%3crect width='100' height='100' fill='%23f8fafc'/%3e%3ctext x='50' y='62' font-size='40' text-anchor='middle' fill='%23374151'%3e️👮‍♂️%3c/text%3e%3c/svg%3e"
+    },
+    {
+        question: "How many paying subscribers does Netflix have across Europe, Middle East & Africa?",
+        answer: 101140000,
+        category: "",
+        explanation: "",
+        hint: "Netflix had a market capitalization of around $425 billion on Dec 5, 2025.",
+        date: "2025-12-06",
+        image: "data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' width='100' height='100' viewBox='0 0 100 100'%3e%3crect width='100' height='100' fill='%23f8fafc'/%3e%3ctext x='50' y='62' font-size='40' text-anchor='middle' fill='%23374151'%3e️📺%3c/text%3e%3c/svg%3e"
+    },
+    {
+        question: "How many people in the European Union were daily cigarette smokers in 2019?",
+        answer: 70000000,
+        category: "",
+        explanation: "",
+        hint: "Finland and Sweden were the only EU countries where less than 10% of the population were daily smokers in 2019.",
+        date: "2025-12-07",
+        image: "data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' width='100' height='100' viewBox='0 0 100 100'%3e%3crect width='100' height='100' fill='%23f8fafc'/%3e%3ctext x='50' y='62' font-size='40' text-anchor='middle' fill='%23374151'%3e️🚬%3c/text%3e%3c/svg%3e"
+    },
+    {
+        question: "How many students graduated from Law School in the United States in 2024?",
+        answer: 38937,
+        category: "",
+        explanation: "",
+        hint: "In 2000, about 4.06 million children were born in the United States.",
+        date: "2025-12-08",
+        image: "data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' width='100' height='100' viewBox='0 0 100 100'%3e%3crect width='100' height='100' fill='%23f8fafc'/%3e%3ctext x='50' y='62' font-size='40' text-anchor='middle' fill='%23374151'%3e️⚖️%3c/text%3e%3c/svg%3e"
+    },
+    {
+        question: "How many Teslas were sold in the United States from 2015 through 2024?",
+        answer: 2805742,
+        category: "",
+        explanation: "",
+        hint: "In 2024, Tesla's US car sales totaled around 630,000.",
+        date: "2025-12-09",
+        image: "data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' width='100' height='100' viewBox='0 0 100 100'%3e%3crect width='100' height='100' fill='%23f8fafc'/%3e%3ctext x='50' y='62' font-size='40' text-anchor='middle' fill='%23374151'%3e️🚗%3c/text%3e%3c/svg%3e"
+    },
+    {
+        question: "How many athletes have participated in the Summer or Winter Olympics between 1896 and 2012?",
+        answer: 125051,
+        category: "",
+        explanation: "",
+        hint: "10,518 athletes competed at the 2012 Summer Olympics in London.",
+        date: "2025-12-10",
+        image: "data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' width='100' height='100' viewBox='0 0 100 100'%3e%3crect width='100' height='100' fill='%23f8fafc'/%3e%3ctext x='50' y='62' font-size='40' text-anchor='middle' fill='%23374151'%3e️🏊‍♀️%3c/text%3e%3c/svg%3e"
+    },
+    {
+        question: "How many practicing veterinarians are there in Germany?",
+        answer: 33845,
+        category: "",
+        explanation: "",
+        hint: "About 11,400 veterinarians are self-employed in Germany.",
+        date: "2025-12-11",
+        image: "data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' width='100' height='100' viewBox='0 0 100 100'%3e%3crect width='100' height='100' fill='%23f8fafc'/%3e%3ctext x='50' y='62' font-size='40' text-anchor='middle' fill='%23374151'%3e️🐈%3c/text%3e%3c/svg%3e"
+    },
+    {
+        question: "How many operational helicopters are there worldwide?",
+        answer: 69728,
+        category: "",
+        explanation: "",
+        hint: "Germany has around 890 civil helicopters and 361 military ones.",
+        date: "2025-12-12",
+        image: "data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' width='100' height='100' viewBox='0 0 100 100'%3e%3crect width='100' height='100' fill='%23f8fafc'/%3e%3ctext x='50' y='62' font-size='40' text-anchor='middle' fill='%23374151'%3e️🚁%3c/text%3e%3c/svg%3e"
+    },
+    {
+        question: "How many gas stations are there in the United States?",
+        answer: 109174,
+        category: "",
+        explanation: "",
+        hint: "There are around 229 million licensed drivers in the US.",
+        date: "2025-12-13",
+        image: "data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' width='100' height='100' viewBox='0 0 100 100'%3e%3crect width='100' height='100' fill='%23f8fafc'/%3e%3ctext x='50' y='62' font-size='40' text-anchor='middle' fill='%23374151'%3e️⛽️%3c/text%3e%3c/svg%3e"
+    },
+    {
+        question: "How many ATMs are there in the United States?",
+        answer: 530000,
+        category: "",
+        explanation: "",
+        hint: "There are roughly 44,000 ATMs (cash machines) in the United Kingdom.",
+        date: "2025-12-14",
+        image: "data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' width='100' height='100' viewBox='0 0 100 100'%3e%3crect width='100' height='100' fill='%23f8fafc'/%3e%3ctext x='50' y='62' font-size='40' text-anchor='middle' fill='%23374151'%3e️💳%3c/text%3e%3c/svg%3e"
+    },
+    {
+        question: "How many elevators are there in New York City?",
+        answer: 70000,
+        category: "",
+        explanation: "",
+        hint: "The iconic Empire State Building has 73 elevators.",
+        date: "2025-12-15",
+        image: "data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' width='100' height='100' viewBox='0 0 100 100'%3e%3crect width='100' height='100' fill='%23f8fafc'/%3e%3ctext x='50' y='62' font-size='40' text-anchor='middle' fill='%23374151'%3e️🛗%3c/text%3e%3c/svg%3e"
+    },
+    {
+        question: "How many kilometers are driven per day by motor vehicles on US roads?",
+        answer: 14460000000,
+        category: "",
+        explanation: "",
+        hint: "In the UK, 12,700 km (≈ 7,870 miles) are driven annually per licensed driver.",
+        date: "2025-12-16",
+        image: "data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' width='100' height='100' viewBox='0 0 100 100'%3e%3crect width='100' height='100' fill='%23f8fafc'/%3e%3ctext x='50' y='62' font-size='40' text-anchor='middle' fill='%23374151'%3e️🚗%3c/text%3e%3c/svg%3e"
+    },
+    {
+        question: "How many hotel rooms are there in London?",
+        answer: 158000,
+        category: "",
+        explanation: "",
+        hint: "There were around 705,000 hotel rooms in the UK in 2024.",
+        date: "2025-12-17",
+        image: "data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' width='100' height='100' viewBox='0 0 100 100'%3e%3crect width='100' height='100' fill='%23f8fafc'/%3e%3ctext x='50' y='62' font-size='40' text-anchor='middle' fill='%23374151'%3e️🛎️%3c/text%3e%3c/svg%3e"
+    },
+    {
+        question: "How many bridges longer than 20 feet are there on public roads in the United States?",
+        answer: 620000,
+        category: "",
+        explanation: "",
+        hint: "California has 25,975 bridges 20 feet or longer on public roads.",
+        date: "2025-12-18",
+        image: "data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' width='100' height='100' viewBox='0 0 100 100'%3e%3crect width='100' height='100' fill='%23f8fafc'/%3e%3ctext x='50' y='62' font-size='40' text-anchor='middle' fill='%23374151'%3e️🌉%3c/text%3e%3c/svg%3e"
+    },
+    {
+        question: "How many direct employees does Amazon have in the United States?",
+        answer: 1100000,
+        category: "",
+        explanation: "",
+        hint: "Walmart is the biggest employer in the US with 1.6 million employees.",
+        date: "2025-12-19",
+        image: "data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' width='100' height='100' viewBox='0 0 100 100'%3e%3crect width='100' height='100' fill='%23f8fafc'/%3e%3ctext x='50' y='62' font-size='40' text-anchor='middle' fill='%23374151'%3e️🛒%3c/text%3e%3c/svg%3e"
+    },
+    {
+        question: "How many students took the SAT standardized test in 2024?",
+        answer: 1970000,
+        category: "",
+        explanation: "",
+        hint: "Around 21,000 students were admitted to a first-year Ivy League undergraduate class in 2024.",
+        date: "2025-12-20",
+        image: "data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' width='100' height='100' viewBox='0 0 100 100'%3e%3crect width='100' height='100' fill='%23f8fafc'/%3e%3ctext x='50' y='62' font-size='40' text-anchor='middle' fill='%23374151'%3e️🇺🇸%3c/text%3e%3c/svg%3e"
+    },
+    {
+        question: "How many US dollars were spent by NASA in 2024?",
+        answer: 25000000000,
+        category: "",
+        explanation: "",
+        hint: "While most of NASA's budget goes to contractors, NASA also employs 18,150 federal civilian employees.",
+        date: "2025-12-21",
+        image: "data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' width='100' height='100' viewBox='0 0 100 100'%3e%3crect width='100' height='100' fill='%23f8fafc'/%3e%3ctext x='50' y='62' font-size='40' text-anchor='middle' fill='%23374151'%3e️🚀%3c/text%3e%3c/svg%3e"
+    },
+    {
+        question: "How many teachers worked in schools in Germanyin the 2023/24 school year?",
+        answer: 3175,
+        category: "",
+        explanation: "",
+        hint: "The list price for a dedicated Falcon 9 rocket launch is $69.85 million.",
+        date: "2026-12-27",
+        image: "data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' width='100' height='100' viewBox='0 0 100 100'%3e%3crect width='100' height='100' fill='%23f8fafc'/%3e%3ctext x='50' y='62' font-size='40' text-anchor='middle' fill='%23374151'%3e️🚀%3c/text%3e%3c/svg%3e"
+    },
+    {
+        question: "How much revenue in US dollars did LVMH (make in 2024",
+        answer: 4575,
+        category: "",
+        explanation: "",
+        hint: "In 2024, Tesla's US car sales totaled around 630,000.",
+        date: "2026-12-28",
+        image: "data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' width='100' height='100' viewBox='0 0 100 100'%3e%3crect width='100' height='100' fill='%23f8fafc'/%3e%3ctext x='50' y='62' font-size='40' text-anchor='middle' fill='%23374151'%3e️🚖%3c/text%3e%3c/svg%3e"
+    },
+    {
+        question: "How many employees does Walmart have in the United States as of 2024?",
+        answer: 1600000,
+        category: "",
+        explanation: "",
+        hint: "The population of the United Kingdom was around 69 million in 2023.",
+        date: "2026-12-29",
+        image: "data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' width='100' height='100' viewBox='0 0 100 100'%3e%3crect width='100' height='100' fill='%23f8fafc'/%3e%3ctext x='50' y='62' font-size='40' text-anchor='middle' fill='%23374151'%3e️🛒%3c/text%3e%3c/svg%3e"
     }
 ];
 
@@ -951,7 +1854,6 @@ const questionText = document.getElementById('question-text');
 const questionCategory = document.getElementById('question-category');
 const questionImage = document.getElementById('question-image');
 const questionImageContainer = document.getElementById('question-image-container');
-const currentStreakDisplay = document.getElementById('current-streak-display');
 const guessCounter = document.getElementById('guess-counter');
 const hintContainer = document.getElementById('hint-container');
 const hintText = document.getElementById('hint-text');
@@ -979,6 +1881,56 @@ const sendIcon = `\
 </svg>`;
 const inputSection = document.getElementById('input-section');
 const newGameSection = document.getElementById('new-game-section');
+const gameContainer = document.querySelector('.game-container');
+
+function resetConfidenceInput() {
+    if (confidenceInput) confidenceInput.value = '';
+    if (confidenceButton) confidenceButton.textContent = '..%';
+    if (confidenceMenu) {
+        confidenceMenu.querySelectorAll('.selected').forEach(btn => btn.classList.remove('selected'));
+    }
+}
+
+function updateFooterPositioning() {
+    const sections = [inputSection, newGameSection];
+    let shouldAddPadding = false;
+    const isMobileView = isSmallDevice();
+
+    sections.forEach(section => {
+        if (section) {
+            section.classList.remove('sticky-footer');
+        }
+    });
+
+    sections.forEach(section => {
+        if (!section) return;
+        if (section.offsetParent === null) return;
+        if (isMobileView) {
+            section.classList.add('sticky-footer');
+            shouldAddPadding = true;
+            return;
+        }
+        const rect = section.getBoundingClientRect();
+        if (rect.bottom > window.innerHeight) {
+            section.classList.add('sticky-footer');
+            shouldAddPadding = true;
+        }
+    });
+
+    if (gameContainer) {
+        gameContainer.classList.toggle('has-sticky-footer', shouldAddPadding);
+    }
+}
+
+let footerUpdateScheduled = false;
+function scheduleFooterPositioningUpdate() {
+    if (footerUpdateScheduled) return;
+    footerUpdateScheduled = true;
+    requestAnimationFrame(() => {
+        footerUpdateScheduled = false;
+        updateFooterPositioning();
+    });
+}
 const newGameBtnInline = document.getElementById('new-game-btn-inline');
 const gameOverModal = document.getElementById('game-over-modal');
 const modalTitle = document.getElementById('modal-title');
@@ -1062,23 +2014,19 @@ function initGame() {
     setupEventListeners();
     // Always initialize routing; allow it to handle future navigations
     initRouting(false);
-}
-
-// Update current streak display
-function updateStreakDisplay() {
-    currentStreakDisplay.textContent = `Current streak: ${stats.currentStreak}`;
+    updateFooterPositioning();
 }
 
 // Update question display including image
 function updateQuestionDisplay(question) {
     questionText.textContent = question.question;
     questionCategory.innerHTML = getQuestionDisplayText(question); // Use innerHTML to allow <span>
-    
+
     // Update question image
     if (question.image) {
         // Hide container initially while loading
         questionImageContainer.style.display = 'none';
-        
+
         // Create a new image element to test loading
         const testImg = new Image();
         testImg.onload = function() {
@@ -1086,19 +2034,24 @@ function updateQuestionDisplay(question) {
             questionImage.src = question.image;
             questionImage.alt = `Image for ${question.question}`;
             questionImageContainer.style.display = 'block';
+            updateFooterPositioning();
         };
         testImg.onerror = function() {
             // Image failed to load, hide container
             console.log('Failed to load image:', question.image);
             questionImageContainer.style.display = 'none';
+            updateFooterPositioning();
         };
         testImg.src = question.image;
+        updateFooterPositioning();
     } else {
         questionImageContainer.style.display = 'none';
+        updateFooterPositioning();
     }
 
     updateCommentCount();
     subscribeToComments(question.date);
+    updateFooterPositioning();
 }
 
 // Start a new game
@@ -1127,7 +2080,6 @@ function startNewGame() {
     
     // Update display
     updateQuestionDisplay(currentQuestion);
-    updateStreakDisplay();
     clearGuesses();
     
     // Update page title
@@ -1143,6 +2095,7 @@ function startNewGame() {
     inputSection.style.display = 'block';
     newGameSection.style.display = 'none';
     shareBtn.style.display = 'none'; // Hide share button for new game
+    updateFooterPositioning();
     // Nudge attention to the counter on initial start (mobile only)
     triggerShake(guessCounter);
     
@@ -1157,6 +2110,7 @@ function startNewGame() {
     }
 
     // Reset confidence input for new game
+    resetConfidenceInput();
     updateConfidenceInputVisibility();
 
     // Update URL to reflect the current question (only if not already navigating)
@@ -1261,9 +2215,13 @@ function getGuessText(guessNumber) {
 function submitGuess() {
     const guessValue = parseInt(guessInput.value.replace(/[^\d]/g, ''));
     const confidenceValue = confidenceInput ? parseInt(confidenceInput.value) : null;
-    const confPercent = (calibrationEnabled && confidenceInput && !isNaN(confidenceValue))
-        ? Math.max(0, Math.min(100, confidenceValue))
-        : null;
+    let confPercent = null;
+    if (calibrationEnabled && confidenceInput) {
+        const sanitized = clampConfidencePercent(confidenceValue);
+        if (sanitized !== null) {
+            confPercent = sanitized;
+        }
+    }
 
     if (isNaN(guessValue) || guessValue < 0) {
         alert('Please enter a valid positive number!');
@@ -1335,10 +2293,14 @@ function submitGuess() {
 
     if (calibrationEnabled && confidenceInput) {
         if (confPercent !== null) {
-            stats.calibrationData.push({ confidence: confPercent / 100, correct: isCorrect, guessNumber: currentGuess });
+            stats.calibrationData.push({
+                confidence: confPercent / 100,
+                correct: isCorrect,
+                guessNumber: currentGuess
+            });
             saveStats();
         }
-        
+
     }
     
     // Save current game state after each guess
@@ -1379,6 +2341,7 @@ function submitGuess() {
         endGame();
     }
 
+    resetConfidenceInput();
     // Hide confidence input after first guess if needed
     updateConfidenceInputVisibility();
     applySubmitButtonState();
@@ -1470,7 +2433,10 @@ function formatNumber(num) {
 
 // Detect small devices for conditional animations
 function isSmallDevice() {
-    return window.matchMedia('(max-width: 768px)').matches;
+    if (typeof window.matchMedia === 'function') {
+        return window.matchMedia('(max-width: 768px)').matches;
+    }
+    return (window.innerWidth || document.documentElement.clientWidth || 0) <= 768;
 }
 
 // Briefly add a 'shake' animation class to an element (mobile only)
@@ -1733,10 +2699,10 @@ function endGame() {
         newGameBtnInline.textContent = 'Play more';
         newGameBtnInline.onclick = startNewGame;  
     }
-    updateStreakDisplay(); // Update streak display when game ends
 
     // Simple scroll to top to ensure good positioning
     window.scrollTo(0, 0);
+    updateFooterPositioning();
 }
 
 // Start a new game
@@ -1838,12 +2804,17 @@ function updateCalibrationChart() {
         data = data.filter(d => d.guessNumber === 1);
     }
 
-    const bins = Array.from({ length: 10 }, () => ({ total: 0, correct: 0 }));
+    const declaredLevels = [10, 20, 30, 40, 50, 60, 70, 80, 90, MAX_CONFIDENCE_PERCENT];
+    const bins = declaredLevels.map(() => ({ total: 0, correct: 0 }));
     data.forEach(d => {
-        let conf = typeof d.confidence === 'number' ? d.confidence : parseFloat(d.confidence);
-        if (isNaN(conf)) return;
-        conf = Math.max(0, Math.min(1, conf));
-        const idx = Math.min(9, Math.round(conf * 10) - 1);
+        const confFraction = clampConfidenceFraction(d.confidence);
+        if (confFraction === null) return;
+        const confPercent = Math.round(confFraction * 100);
+        const normalized = Math.min(
+            MAX_CONFIDENCE_PERCENT,
+            Math.max(10, Math.round(confPercent / 10) * 10)
+        );
+        const idx = declaredLevels.indexOf(normalized);
         if (idx >= 0) {
             bins[idx].total++;
             if (d.correct) bins[idx].correct++;
@@ -1891,9 +2862,9 @@ function updateCalibrationChart() {
     svg.appendChild(diag);
 
     // Ticks and labels
-    for (let i = 10; i <= 100; i += 10) {
-        const x = paddingLeft + (i / 100) * plotWidth;
-        const y = height - paddingBottom - (i / 100) * plotHeight;
+    const xTickValues = declaredLevels;
+    xTickValues.forEach((value) => {
+        const x = paddingLeft + (value / 100) * plotWidth;
 
         const xTick = document.createElementNS(ns, 'line');
         xTick.setAttribute('x1', x);
@@ -1909,8 +2880,15 @@ function updateCalibrationChart() {
         xLabel.setAttribute('text-anchor', 'end');
         xLabel.setAttribute('font-size', '10');
         xLabel.setAttribute('transform', `rotate(-45 ${x} ${height - paddingBottom + 15})`);
-        xLabel.textContent = `${i}%`;
+        xLabel.textContent = `${value}%`;
         svg.appendChild(xLabel);
+    });
+
+    const yTickValues = Array.from(new Set([...declaredLevels, 100]))
+        .filter((value) => value !== MAX_CONFIDENCE_PERCENT)
+        .sort((a, b) => a - b);
+    yTickValues.forEach((value) => {
+        const y = height - paddingBottom - (value / 100) * plotHeight;
 
         const yTick = document.createElementNS(ns, 'line');
         yTick.setAttribute('x1', paddingLeft - 5);
@@ -1925,14 +2903,14 @@ function updateCalibrationChart() {
         yLabel.setAttribute('y', y + 6);
         yLabel.setAttribute('text-anchor', 'end');
         yLabel.setAttribute('font-size', '10');
-        yLabel.textContent = `${i}%`;
+        yLabel.textContent = `${value}%`;
         svg.appendChild(yLabel);
-    }
+    });
 
     // Calibration points
     bins.forEach((bin, i) => {
         if (!bin.total) return;
-        const x = paddingLeft + ((i + 1) / 10) * plotWidth;
+        const x = paddingLeft + (declaredLevels[i] / 100) * plotWidth;
         const ratio = bin.correct / bin.total;
         const y = height - paddingBottom - ratio * plotHeight;
         const circle = document.createElementNS(ns, 'circle');
@@ -1940,14 +2918,46 @@ function updateCalibrationChart() {
         circle.setAttribute('cy', y);
         circle.setAttribute('r', 3);
         circle.setAttribute('fill', '#3498db');
-        circle.addEventListener('mouseenter', (e) => showCalibrationTooltip(e, bin.total, (i + 1) * 10, ratio * 100));
+        const declaredPercent = declaredLevels[i];
+        circle.addEventListener('mouseenter', (e) => showCalibrationTooltip(e, bin.total, declaredPercent, ratio * 100));
         circle.addEventListener('mouseleave', hideCalibrationTooltip);
-        circle.addEventListener('click', (e) => showCalibrationTooltip(e, bin.total, (i + 1) * 10, ratio * 100));
+        circle.addEventListener('click', (e) => showCalibrationTooltip(e, bin.total, declaredPercent, ratio * 100));
         circle.addEventListener('touchstart', (e) => {
             const t = e.touches[0];
-            if (t) showCalibrationTooltip(t, bin.total, (i + 1) * 10, ratio * 100);
+            if (t) showCalibrationTooltip(t, bin.total, declaredPercent, ratio * 100);
         }, { passive: true });
         svg.appendChild(circle);
+    });
+}
+
+function clampConfidencePercent(value) {
+    if (value === null || value === undefined) return null;
+    let numeric = typeof value === 'number' ? value : parseFloat(value);
+    if (Number.isNaN(numeric)) return null;
+    if (numeric > MAX_CONFIDENCE_PERCENT && numeric <= 100) {
+        numeric = MAX_CONFIDENCE_PERCENT;
+    } else if (numeric <= 1 && numeric >= 0) {
+        numeric = numeric * 100;
+    }
+    return Math.max(0, Math.min(MAX_CONFIDENCE_PERCENT, numeric));
+}
+
+function clampConfidenceFraction(value) {
+    if (value === null || value === undefined) return null;
+    let numeric = typeof value === 'number' ? value : parseFloat(value);
+    if (Number.isNaN(numeric)) return null;
+    if (numeric > 1) {
+        numeric = numeric / 100;
+    }
+    return Math.max(0, Math.min(MAX_CONFIDENCE_FRACTION, numeric));
+}
+
+function normalizeCalibrationDataEntries(calibrationData) {
+    if (!Array.isArray(calibrationData)) return [];
+    return calibrationData.map(entry => {
+        if (!entry || typeof entry !== 'object') return entry;
+        const sanitizedConfidence = clampConfidenceFraction(entry.confidence);
+        return sanitizedConfidence === null ? entry : { ...entry, confidence: sanitizedConfidence };
     });
 }
 
@@ -2007,6 +3017,14 @@ function loadStats() {
             };
         }
     }
+
+    const originalDataString = JSON.stringify(stats.calibrationData || []);
+    const normalizedData = normalizeCalibrationDataEntries(stats.calibrationData);
+    const normalizedDataString = JSON.stringify(normalizedData);
+    stats.calibrationData = normalizedData;
+    if (originalDataString !== normalizedDataString) {
+        saveStats();
+    }
 }
 
 // Save completed questions to localStorage
@@ -2059,13 +3077,11 @@ function updateConfidenceInputVisibility() {
     }
 
     if (confidenceInput && confidenceButton) {
-        const prevValue = confidenceInput.value;
         if (showConfidence) {
-            const val = prevValue || '50';
-            confidenceInput.value = val;
-            confidenceButton.textContent = val + '%';
+            const val = confidenceInput.value;
+            confidenceButton.textContent = val ? val + '%' : '..%';
         } else {
-            confidenceInput.value = '';
+            resetConfidenceInput();
             confidenceMenu && confidenceMenu.classList.remove('open');
             confidenceButton.setAttribute('aria-expanded', 'false');
         }
@@ -2198,7 +3214,6 @@ function loadCurrentGameState() {
             // Update display
             updateQuestionDisplay(currentQuestion);
             updatePageTitle(currentQuestion);
-            updateStreakDisplay();
             
             // Update URL to reflect the restored question
             updateURL(currentQuestion.date);
@@ -2233,6 +3248,7 @@ function loadCurrentGameState() {
             if (!('ontouchstart' in window) && !navigator.maxTouchPoints) {
                 setTimeout(() => guessInput.focus(), 100);
             }
+            updateFooterPositioning();
         }
 
             // Ensure confidence input visibility matches current state
@@ -2380,6 +3396,7 @@ function endGameDisplay() {
         newGameBtnInline.textContent = 'Play more';
         newGameBtnInline.onclick = startNewGame;
     }
+    updateFooterPositioning();
 }
 
 // Show questions history modal
@@ -2626,6 +3643,7 @@ function selectQuestion(question) {
 
         // Show confidence input for first guess only
         updateConfidenceInputVisibility();
+        updateFooterPositioning();
     }
 }
 
@@ -2896,6 +3914,7 @@ function setupEventListeners() {
                 hintContainer.classList.add('open');
                 hintModalBtn.setAttribute('aria-expanded', 'true');
             }
+            scheduleFooterPositioningUpdate();
         });
     }
     
@@ -3051,6 +4070,7 @@ function setupEventListeners() {
                 item.classList.add('open');
                 header.setAttribute('aria-expanded', 'true');
             }
+            scheduleFooterPositioningUpdate();
         });
     });
     
@@ -3106,4 +4126,5 @@ document.addEventListener('click', (e) => {
 
 // Initialize the game when the page loads
 window.addEventListener('resize', updateConfidenceInputVisibility);
+window.addEventListener('resize', updateFooterPositioning);
 document.addEventListener('DOMContentLoaded', initGame);
