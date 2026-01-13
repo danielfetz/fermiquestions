@@ -242,10 +242,10 @@ button#stats-btn {
     background: white;
     border: 2px solid #e9ecef;
     font-family: 'Press Start 2P', monospace;
-    font-size: 0.8rem;
-    padding: 19px;
+    font-size: 0.82rem;
+    padding: 18px;
     width: 100%;
-    border-radius: 14px;
+    border-radius: 15px;
     color: #333;
 }
 
@@ -260,6 +260,24 @@ button#stats-btn {
     margin-bottom: 20px;
     line-height: 1.5;
     font-size: 0.85rem;
+}
+
+/* Hint modal trigger button (mobile) */
+.hint-link {
+    display: none;
+    background: white;
+    border: 2px solid #e9ecef;
+    font-family: 'Press Start 2P', monospace;
+    font-size: 0.82rem;
+    padding: 18px;
+    width: 100%;
+    border-radius: 15px;
+    color: #333;
+}
+
+.hint-link .arrow {
+    display: inline-block;
+    transform: rotate(90deg);
 }
 
 /* Game Result */
@@ -279,7 +297,7 @@ button#stats-btn {
 
 .new-game-btn-inline {
     width: 100%;
-    height: 52.16px;
+    height: 53px;
     background-color: #3498db;
     color: white;
     border: none;
@@ -313,7 +331,7 @@ button#stats-btn {
 }
 
 .new-game-section .share-btn {
-    height: 52.16px;
+    height: 53px;
     font-size: 0.8rem;
     margin-top: 0;
     border-radius: 14px;
@@ -452,7 +470,7 @@ button#stats-btn {
 }
 
 .input-container {
-    height: 52.16px;
+    height: 53px;
     display: flex;
     align-items: center;
     gap: 8px;
@@ -479,7 +497,7 @@ button#stats-btn {
 
 .submit-btn {
     width: 110px;
-    height: 52.16px;
+    height: 53px;
     background-color: #3498db;
     color: white;
     border: none;
@@ -539,7 +557,7 @@ button#stats-btn {
 }
 
 .new-game-btn, .close-btn {
-    background-color: #27ae60;
+    background-color: #3498db;
     color: white;
     border: none;
     padding: 15px 25px;
@@ -552,7 +570,7 @@ button#stats-btn {
 }
 
 .new-game-btn:hover, .close-btn:hover {
-    background-color: #229954;
+    background-color: #2e86c1;
 }
 
 /* Stats Grid */
@@ -670,7 +688,7 @@ button#stats-btn {
     .game-container {
         padding: 0;
         border-radius: 18px;
-        padding-bottom: 83px; /* space for fixed input/new game area */
+        padding-bottom: 84px; /* space for fixed input/new game area */
         background: transparent;
     }
     .question-container {
@@ -699,16 +717,23 @@ button#stats-btn {
     .guesses-container {
         margin-bottom: 0px;
     }
-    .guess-counter {
+    .guess-counter,
+    .hint-container {
         margin-bottom: 18px;
     }
-    .hint-container,
     .game-result {
         border: 2px solid #e8ecee;
         border-radius: 16px;
-        padding: 16px;
+        padding: 18px;
         background: white;
-        font-size: 0.8rem;
+        font-size: 0.82rem;
+    }
+    /* On mobile, hide inline hint text and show the button */
+    #hint-text {
+        display: none;
+    }
+    .hint-link {
+        display: inline;
     }
     /* On mobile, hide the streak label and show strategy link */
     #current-streak-display {

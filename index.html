@@ -69,6 +69,7 @@
         <!-- Hint (hidden by default) -->
         <div class="hint-container" id="hint-container" style="display: none;">
             <div class="hint-text" id="hint-text"></div>
+            <button id="hint-modal-btn" class="hint-link" aria-controls="hint-modal" aria-haspopup="dialog">Show hint <span class="arrow">></span></button>
         </div>
 
         <!-- Game Result (hidden by default) -->
@@ -134,6 +135,15 @@
                 <p><strong>Example</strong>: How many pizzas are eaten in NYC per day?</p>
                 <p>Population ≈ 8M. About half eat pizza weekly → 4M people. Typical serving ≈ 2 slices per person per week → 8M slices/week. Per day ≈ 8M/7 ≈ 1.1M slices/day. ≈ 8 slices/pizza → ~140k pizzas/day.</p>
                 <button id="close-strategy-btn" class="close-btn">Close</button>
+            </div>
+        </div>
+
+        <!-- Hint Modal -->
+        <div class="modal" id="hint-modal">
+            <div class="modal-content">
+                <h2>Hint</h2>
+                <p id="hint-modal-text"></p>
+                <button id="close-hint-btn" class="close-btn">Close</button>
             </div>
         </div>
 
