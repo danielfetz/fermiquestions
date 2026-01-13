@@ -32,7 +32,33 @@
                 </button>
             </div>
         </header>
-    <div class="game-container">
+    <main>
+        <section id="welcome-screen" class="view active">
+            <div class="welcome-content">
+                <h2 class="welcome-title">Welcome to Fermi Questions</h2>
+                <p class="welcome-subtitle">Sharpen your estimation skills with a fresh puzzle every day.</p>
+                <div class="daily-challenge-card">
+                    <div class="daily-challenge-header">
+                        <h3>Daily Challenge</h3>
+                        <span id="daily-challenge-date" class="daily-challenge-date"></span>
+                    </div>
+                    <div class="daily-challenge-body">
+                        <div class="daily-challenge-image" id="daily-challenge-image-container" style="display: none;">
+                            <img id="daily-challenge-image" alt="" />
+                        </div>
+                        <div class="daily-challenge-text">
+                            <p id="daily-challenge-question" class="daily-challenge-question"></p>
+                            <p id="daily-challenge-status" class="daily-challenge-status"></p>
+                        </div>
+                    </div>
+                    <button id="play-daily-btn" class="primary-action">Play</button>
+                </div>
+                <button id="calendar-link-btn" class="secondary-action">Browse the calendar</button>
+            </div>
+        </section>
+
+        <section id="game-view" class="view">
+            <div class="game-container">
         <!-- Question Display -->
         <div class="question-container">
             <div class="question-box">
@@ -402,8 +428,28 @@
                 <button id="close-stats-btn" class="close-btn">Close</button>
             </div>
         </div>
-    </div>
+            </div>
+        </section>
+
+        <section id="calendar-view" class="view">
+            <div class="calendar-wrapper">
+                <h2 class="calendar-title">Question Calendar</h2>
+                <p class="calendar-subtitle">Pick a day to play or review its challenge.</p>
+                <div class="calendar-legend">
+                    <span><span class="legend-box pending"></span> Not played</span>
+                    <span><span class="legend-box won"></span> Completed</span>
+                    <span><span class="legend-box lost"></span> Missed</span>
+                </div>
+                <div id="calendar-months" class="calendar-months"></div>
+            </div>
+        </section>
+    </main>
+
+    <nav class="mobile-nav" aria-label="Primary">
+        <button type="button" class="nav-button" id="home-btn">Home</button>
+        <button type="button" class="nav-button" id="calendar-btn">Calendar</button>
+    </nav>
 
     <script src="script.js"></script>
 </body>
-</html> 
+</html>
