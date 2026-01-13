@@ -20,6 +20,91 @@ button {
     touch-action: manipulation;
 }
 
+.info-banner {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    background: #ffffff;
+    border: 2px solid #e9ecef;
+    border-radius: 18px;
+    padding: 14px 18px;
+    margin: 18px auto 8px;
+    max-width: 520px;
+    position: relative;
+    box-shadow: 0 12px 24px rgba(15, 23, 42, 0.08);
+}
+
+.info-banner--hidden {
+    display: none;
+}
+
+.info-banner__content {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    flex: 1;
+}
+
+.info-banner__icon {
+    font-size: 1.4rem;
+}
+
+.info-banner__text {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    font-size: 0.7rem;
+    line-height: 1.45;
+}
+
+.info-banner__text strong {
+    font-size: 0.72rem;
+    color: #1f2937;
+}
+
+.info-banner__actions {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.info-banner__action {
+    background: #2e86c1;
+    color: #fff;
+    border: none;
+    border-radius: 14px;
+    padding: 10px 16px;
+    font-family: 'Press Start 2P', monospace;
+    font-size: 0.7rem;
+    cursor: pointer;
+    box-shadow: 0 6px 15px rgba(46, 134, 193, 0.35);
+    transition: background 0.2s ease, transform 0.2s ease;
+}
+
+.info-banner__action:hover,
+.info-banner__action:focus {
+    background: #236699;
+    transform: translateY(-1px);
+}
+
+.info-banner__close {
+    position: absolute;
+    top: 10px;
+    right: 12px;
+    border: none;
+    background: transparent;
+    color: #6b7280;
+    font-size: 1.1rem;
+    cursor: pointer;
+    padding: 6px;
+    line-height: 1;
+}
+
+.info-banner__close:hover,
+.info-banner__close:focus {
+    color: #111827;
+}
+
 .game-container {
     max-width: 500px;
     margin: 0 auto;
@@ -84,6 +169,29 @@ button {
 
 button#stats-btn {
     padding-right: 10px;
+}
+
+@media (max-width: 560px) {
+    .info-banner {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 12px;
+        padding: 16px;
+    }
+
+    .info-banner__actions {
+        width: 100%;
+    }
+
+    .info-banner__action {
+        width: 100%;
+        text-align: center;
+    }
+
+    .info-banner__close {
+        top: 12px;
+        right: 12px;
+    }
 }
 
 /* Question Container */
@@ -908,6 +1016,96 @@ button#stats-btn {
     line-height: 1.4;
     color: #555;
     font-size: 0.8rem;
+}
+
+.modal-content--narrow {
+    max-width: 420px;
+}
+
+.email-form {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    text-align: left;
+}
+
+.email-form label {
+    font-size: 0.68rem;
+    color: #374151;
+}
+
+.email-form input,
+.email-form select {
+    width: 100%;
+    padding: 12px;
+    border: 2px solid #e9ecef;
+    border-radius: 12px;
+    background: #fff;
+    font-family: 'Press Start 2P', monospace;
+    font-size: 0.75rem;
+    color: #111827;
+}
+
+.email-form select {
+    appearance: none;
+    background-image: linear-gradient(45deg, transparent 50%, #111827 50%), linear-gradient(135deg, #111827 50%, transparent 50%);
+    background-position: calc(100% - 18px) calc(50% - 4px), calc(100% - 12px) calc(50% - 4px);
+    background-size: 6px 6px, 6px 6px;
+    background-repeat: no-repeat;
+}
+
+.email-form input:focus,
+.email-form select:focus {
+    outline: none;
+    border-color: #2e86c1;
+    box-shadow: 0 0 0 3px rgba(46, 134, 193, 0.25);
+}
+
+.timezone-note {
+    font-size: 0.66rem;
+    color: #6b7280;
+    margin-top: -6px;
+}
+
+.primary-btn {
+    background: #2e86c1;
+    color: #fff;
+    border: none;
+    border-radius: 14px;
+    padding: 12px 16px;
+    font-family: 'Press Start 2P', monospace;
+    font-size: 0.75rem;
+    cursor: pointer;
+    transition: background 0.2s ease;
+}
+
+.primary-btn:hover,
+.primary-btn:focus {
+    background: #236699;
+}
+
+.primary-btn:disabled {
+    background: #9bbfe2;
+    cursor: not-allowed;
+}
+
+.form-feedback {
+    min-height: 18px;
+    font-size: 0.66rem;
+    color: #4b5563;
+    margin-top: -2px;
+}
+
+.form-feedback--success {
+    color: #0f5132;
+}
+
+.form-feedback--error {
+    color: #842029;
+}
+
+.form-feedback--info {
+    color: #1f2937;
 }
 
 /* Accordion inside Source modal */
