@@ -355,7 +355,34 @@ function showFeedback(guessIndex, type, symbol) {
     const currentRow = guessRows[guessIndex];
     const feedbackButton = currentRow.querySelector('.feedback-button');
     
-    feedbackButton.textContent = symbol;
+    if (type === 'correct') {
+        // Use retro pixelated checkmark SVG for correct answers
+        feedbackButton.innerHTML = `
+            <svg width="18" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <rect x="1" y="10" width="3" height="2" fill="white"/>
+                <rect x="1" y="12" width="3" height="2" fill="white"/>
+                <rect x="3" y="12" width="3" height="2" fill="white"/>
+                <rect x="3" y="14" width="3" height="2" fill="white"/>
+                <rect x="5" y="14" width="3" height="2" fill="white"/>
+                <rect x="5" y="16" width="3" height="2" fill="white"/>
+                <rect x="7" y="12" width="3" height="2" fill="white"/>
+                <rect x="7" y="14" width="3" height="2" fill="white"/>
+                <rect x="9" y="10" width="3" height="2" fill="white"/>
+                <rect x="9" y="12" width="3" height="2" fill="white"/>
+                <rect x="11" y="8" width="3" height="2" fill="white"/>
+                <rect x="11" y="10" width="3" height="2" fill="white"/>
+                <rect x="13" y="6" width="3" height="2" fill="white"/>
+                <rect x="13" y="8" width="3" height="2" fill="white"/>
+                <rect x="15" y="4" width="3" height="2" fill="white"/>
+                <rect x="15" y="6" width="3" height="2" fill="white"/>
+                <rect x="17" y="2" width="3" height="2" fill="white"/>
+                <rect x="17" y="4" width="3" height="2" fill="white"/>
+            </svg>
+        `;
+    } else {
+        feedbackButton.textContent = symbol;
+    }
+    
     feedbackButton.className = `feedback-button ${type}`;
     
     if (type !== 'correct') {
