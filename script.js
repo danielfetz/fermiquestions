@@ -116,6 +116,63 @@ async function saveStatsToSupabase(statsData) {
     }
 }
 
+// Fetch average guesses for a question from Supabase
+async function fetchAverageGuesses(questionDate) {
+    if (!supabase) return null;
+    
+    try {
+        // Query all completed games for this question
+        const { data, error } = await supabase
+            .from('game_sessions')
+            .select('total_guesses, won')
+            .eq('question_date', questionDate)
+            .not('completed_at', 'is', null);
+        
+        if (error) {
+            console.error('Error fetching average guesses:', error);
+            return null;
+        }
+        
+        if (!data || data.length === 0) {
+            return null;
+        }
+        
+        // Calculate average, counting losses as 7 guesses
+        const totalGuesses = data.reduce((sum, game) => {
+            const guessCount = game.won ? game.total_guesses : 7;
+            return sum + guessCount;
+        }, 0);
+        
+        const average = totalGuesses / data.length;
+        
+        return {
+            average: average,
+            totalPlayers: data.length,
+            winRate: Math.round((data.filter(g => g.won).length / data.length) * 100)
+        };
+    } catch (error) {
+        console.error('Error with average guesses fetch:', error);
+        return null;
+    }
+}
+
+// Update the average display inline with result text
+function updateAverageDisplay(averageData) {
+    const averageInfo = document.getElementById('average-info');
+    
+    if (!averageInfo) return;
+    
+    if (!averageData || averageData.totalPlayers < 1) {
+        // Not enough data yet or error fetching
+        averageInfo.innerHTML = '';
+        return;
+    }
+    
+    // Display average with one decimal place
+    const avgDisplay = averageData.average.toFixed(1);
+    averageInfo.innerHTML = `— it took players on average <i>${avgDisplay}</i> tries`;
+}
+
 // Game state
 let currentQuestion = null;
 let currentGuess = 0;
@@ -406,15 +463,6 @@ const fermiQuestions = [
         hint: "In December 2024, Meta's family of apps reached 3.35 billion people daily.",
         date: "2025-08-21",
         image: "data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' width='100' height='100' viewBox='0 0 100 100'%3e%3crect width='100' height='100' fill='%23f8fafc'/%3e%3ctext x='50' y='62' font-size='40' text-anchor='middle' fill='%23374151'%3e📱%3c/text%3e%3c/svg%3e"
-    },
-    {
-        question: "How many employees does Walmart have?",
-        answer: 2100000,
-        category: "",
-        explanation: "",
-        hint: "Finland has around 135 police officers per 100,000 inhabitants.",
-        date: "2025-08-22",
-        image: "data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' width='100' height='100' viewBox='0 0 100 100'%3e%3crect width='100' height='100' fill='%23f8fafc'/%3e%3ctext x='50' y='62' font-size='40' text-anchor='middle' fill='%23374151'%3e🚓%3c/text%3e%3c/svg%3e"
     }
 ];
 
@@ -1071,7 +1119,7 @@ function endGame() {
     
     // Set result message
     if (gameWon) {
-        resultMessage.textContent = `You win!`;
+        resultMessage.textContent = `You won!`;
         resultMessage.className = 'result-message won';
         resultEmoji.textContent = '🎉';
         // Brief confetti on win
@@ -1083,7 +1131,17 @@ function endGame() {
     }
     
     // Set correct answer
-    correctAnswer.innerHTML = `The correct answer was: <i>${formatNumber(currentQuestion.answer)}</i>`;
+    correctAnswer.innerHTML = `The correct answer was <i>${formatNumber(currentQuestion.answer)}</i>`;
+    
+    // Fetch and display average guesses from other players
+    if (currentQuestion) {
+        fetchAverageGuesses(currentQuestion.date).then(averageData => {
+            updateAverageDisplay(averageData);
+        }).catch(error => {
+            console.error('Error fetching average:', error);
+            // Just don't show average if there's an error
+        });
+    }
 
     // Check if all available questions are completed
     const today = getCurrentDate();
@@ -1497,7 +1555,7 @@ function endGameDisplay() {
     
     // Set result message
     if (gameWon) {
-        resultMessage.textContent = `You win!`;
+        resultMessage.textContent = `You won!`;
         resultMessage.className = 'result-message won';
         resultEmoji.textContent = '🎉';
         // Brief confetti on win
@@ -1509,7 +1567,17 @@ function endGameDisplay() {
     }
     
     // Set correct answer
-    correctAnswer.innerHTML = `The correct answer was: <i>${formatNumber(currentQuestion.answer)}</i>`;
+    correctAnswer.innerHTML = `The correct answer was <i>${formatNumber(currentQuestion.answer)}</i>`;
+    
+    // Fetch and display average guesses from other players (for restored games too)
+    if (currentQuestion) {
+        fetchAverageGuesses(currentQuestion.date).then(averageData => {
+            updateAverageDisplay(averageData);
+        }).catch(error => {
+            console.error('Error fetching average:', error);
+            // Just don't show average if there's an error
+        });
+    }
 
     // Check if all available questions are completed
     const today = getCurrentDate();
