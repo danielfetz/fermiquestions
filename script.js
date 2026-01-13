@@ -23,7 +23,8 @@ let stats = {
         4: 0,
         5: 0,
         6: 0
-    }
+    },
+    hasSeenFirstGuessFeedback: false
 };
 
 // Database of Fermi questions with dates
@@ -188,6 +189,7 @@ const questionText = document.getElementById('question-text');
 const questionCategory = document.getElementById('question-category');
 const questionImage = document.getElementById('question-image');
 const questionImageContainer = document.getElementById('question-image-container');
+
 const currentStreakDisplay = document.getElementById('current-streak-display');
 const guessCounter = document.getElementById('guess-counter');
 const hintContainer = document.getElementById('hint-container');
@@ -237,6 +239,8 @@ function initGame() {
 function updateStreakDisplay() {
     currentStreakDisplay.textContent = `Current streak: ${stats.currentStreak}`;
 }
+
+
 
 // Update question display including image
 function updateQuestionDisplay(question) {
@@ -396,6 +400,8 @@ function clearGuesses() {
         const feedbackButton = document.createElement('button');
         feedbackButton.className = 'feedback-button hidden';
         
+
+        
         guessRow.appendChild(guessField);
         guessRow.appendChild(feedbackButton);
         guessesContainer.appendChild(guessRow);
@@ -439,6 +445,8 @@ function submitGuess() {
         showFeedback(currentGuess - 1, 'correct', 'WIN');
     } else {
         const isHigh = guessValue > currentQuestion.answer;
+        
+
         
         // Check if guess is within 50% (close but not correct)
         const closeTolerance = currentQuestion.answer * 0.5;
@@ -513,7 +521,40 @@ function showFeedback(guessIndex, type, symbol) {
             </svg>
         `;
     } else {
+        // For incorrect answers, add arrow symbol and tooltip
         feedbackButton.textContent = symbol;
+        
+        // Create and add tooltip for incorrect answers
+        const tooltip = document.createElement('div');
+        tooltip.className = 'feedback-tooltip';
+        const tooltipContent = document.createElement('div');
+        tooltipContent.className = 'tooltip-content';
+        
+        // Set tooltip text based on direction
+        if (type === 'high' || (type === 'close' && symbol === '↓')) {
+            tooltipContent.textContent = 'Too high! You need to go lower ↓';
+        } else if (type === 'low' || (type === 'close' && symbol === '↑')) {
+            tooltipContent.textContent = 'Too low! You need to go higher ↑';
+        }
+        
+        const tooltipArrow = document.createElement('div');
+        tooltipArrow.className = 'tooltip-arrow';
+        
+        tooltip.appendChild(tooltipContent);
+        tooltip.appendChild(tooltipArrow);
+        feedbackButton.appendChild(tooltip);
+        
+        // Show tooltip automatically for first incorrect guess ever
+        if (guessIndex === 0 && !stats.hasSeenFirstGuessFeedback) {
+            setTimeout(() => {
+                tooltip.classList.add('show');
+                setTimeout(() => {
+                    tooltip.classList.remove('show');
+                }, 3500);
+            }, 200);
+            stats.hasSeenFirstGuessFeedback = true;
+            saveStats();
+        }
     }
     
     feedbackButton.className = `feedback-button ${type}`;
@@ -722,7 +763,8 @@ function loadStats() {
                     4: 0,
                     5: 0,
                     6: 0
-                }
+                },
+                hasSeenFirstGuessFeedback: loadedStats.hasSeenFirstGuessFeedback || false
             };
         } catch (error) {
             console.error('Error loading stats:', error);
@@ -740,7 +782,8 @@ function loadStats() {
                     4: 0,
                     5: 0,
                     6: 0
-                }
+                },
+                hasSeenFirstGuessFeedback: false
             };
         }
     }
@@ -925,7 +968,7 @@ function restoreGuessesDisplay(savedGuesses) {
             // Restore feedback
             if (guess.feedbackType !== 'none') {
                 if (guess.feedbackType === 'correct') {
-                    // Use the same checkmark SVG from showFeedback function
+                    // Correct answer - just show checkmark, no tooltip
                     feedbackButton.innerHTML = `
                         <svg width="18" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
                             <rect x="1" y="10" width="3" height="2" fill="white"/>
@@ -949,7 +992,28 @@ function restoreGuessesDisplay(savedGuesses) {
                         </svg>
                     `;
                 } else {
+                    // Incorrect answer - show arrow and add tooltip
                     feedbackButton.textContent = guess.feedbackSymbol;
+                    
+                    // Create and add tooltip
+                    const tooltip = document.createElement('div');
+                    tooltip.className = 'feedback-tooltip';
+                    const tooltipContent = document.createElement('div');
+                    tooltipContent.className = 'tooltip-content';
+                    
+                    // Set tooltip text based on arrow
+                    if (guess.feedbackSymbol === '↓') {
+                        tooltipContent.textContent = 'Too high! You need to go lower ↓';
+                    } else if (guess.feedbackSymbol === '↑') {
+                        tooltipContent.textContent = 'Too low! You need to go higher ↑';
+                    }
+                    
+                    const tooltipArrow = document.createElement('div');
+                    tooltipArrow.className = 'tooltip-arrow';
+                    
+                    tooltip.appendChild(tooltipContent);
+                    tooltip.appendChild(tooltipArrow);
+                    feedbackButton.appendChild(tooltip);
                 }
                 
                 feedbackButton.className = `feedback-button ${guess.feedbackType}`;
