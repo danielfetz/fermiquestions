@@ -655,6 +655,15 @@ const fermiQuestions = [
         hint: "There are around 1300 pharmacies in Scotland alone.",
         date: "2025-08-31",
         image: "data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' width='100' height='100' viewBox='0 0 100 100'%3e%3crect width='100' height='100' fill='%23f8fafc'/%3e%3ctext x='50' y='62' font-size='40' text-anchor='middle' fill='%23374151'%3e💊%3c/text%3e%3c/svg%3e"
+    },
+    {
+        question: "How many electricians are there in the US?",
+        answer: 818700,
+        category: "",
+        explanation: "",
+        hint: "In 2024, roughly 1.02 million single-family homes finished construction in the US.",
+        date: "2025-09-01",
+        image: "data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' width='100' height='100' viewBox='0 0 100 100'%3e%3crect width='100' height='100' fill='%23f8fafc'/%3e%3ctext x='50' y='62' font-size='40' text-anchor='middle' fill='%23374151'%3e🔌%3c/text%3e%3c/svg%3e"
     }
 ];
 
@@ -965,16 +974,26 @@ function submitGuess() {
             showFeedback(currentGuess - 1, isHigh ? 'high' : 'low', isHigh ? '↓' : '↑');
         }
 
-        // Tutorial: auto-show tooltip on the first ever miss
+        // Tutorial: auto-show tooltip on first-ever misses
         try {
-            const tutorialShown = localStorage.getItem('fermiTooltipTutorialShown');
-            if (!tutorialShown) {
-                const guessRows = guessesContainer.querySelectorAll('.guess-row');
-                const currentRow = guessRows[currentGuess - 1];
-                const feedbackButton = currentRow.querySelector('.feedback-button');
-                feedbackButton.classList.add('show-tooltip');
-                setTimeout(() => feedbackButton.classList.remove('show-tooltip'), 3200);
-                localStorage.setItem('fermiTooltipTutorialShown', '1');
+            const guessRows = guessesContainer.querySelectorAll('.guess-row');
+            const currentRow = guessRows[currentGuess - 1];
+            const feedbackButton = currentRow.querySelector('.feedback-button');
+
+            if (isClose) {
+                const shownClose = localStorage.getItem('fermiTooltipTutorialCloseShown');
+                if (!shownClose) {
+                    feedbackButton.classList.add('show-tooltip');
+                    setTimeout(() => feedbackButton.classList.remove('show-tooltip'), 3200);
+                    localStorage.setItem('fermiTooltipTutorialCloseShown', '1');
+                }
+            } else {
+                const shownBasic = localStorage.getItem('fermiTooltipTutorialBasicShown');
+                if (!shownBasic) {
+                    feedbackButton.classList.add('show-tooltip');
+                    setTimeout(() => feedbackButton.classList.remove('show-tooltip'), 3200);
+                    localStorage.setItem('fermiTooltipTutorialBasicShown', '1');
+                }
             }
         } catch (e) {
             // ignore storage errors
@@ -1082,9 +1101,9 @@ function showFeedback(guessIndex, type, symbol) {
     } else if (type === 'close') {
         // Use the direction symbol to choose appropriate text
         if (symbol === '↑') {
-            feedbackButton.setAttribute('data-tooltip', 'Too low! You need to go higher ↑');
+            feedbackButton.setAttribute('data-tooltip', 'Too low, but within ±50% of the correct answer!');
         } else if (symbol === '↓') {
-            feedbackButton.setAttribute('data-tooltip', 'Too high! You need to go lower ↓');
+            feedbackButton.setAttribute('data-tooltip', 'Too high, but within ±50% of the correct answer!');
         } else {
             feedbackButton.removeAttribute('data-tooltip');
         }
