@@ -531,7 +531,7 @@ const fermiQuestions = [
         image: "data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' width='100' height='100' viewBox='0 0 100 100'%3e%3crect width='100' height='100' fill='%23f8fafc'/%3e%3ctext x='50' y='62' font-size='40' text-anchor='middle' fill='%23374151'%3e🪖%3c/text%3e%3c/svg%3e"
     },
     {
-        question: "How many airports are there in the US, including small private airstrips and other types?",
+        question: "How many airports are there in the US, including small private airstrips?",
         answer: 19482,
         category: "",
         explanation: "",
@@ -574,6 +574,15 @@ const fermiQuestions = [
         hint: "The FAA handles on average more than 44,000 flights per day.",
         date: "2025-08-22",
         image: "data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' width='100' height='100' viewBox='0 0 100 100'%3e%3crect width='100' height='100' fill='%23f8fafc'/%3e%3ctext x='50' y='62' font-size='40' text-anchor='middle' fill='%23374151'%3e✈️%3c/text%3e%3c/svg%3e"
+    },
+    {
+        question: "How many new cars did Toyota sell globally in 2024?",
+        answer: 10200000,
+        category: "",
+        explanation: "",
+        hint: "In 2024, Toyoto sold around 2.33 million cars in the US.",
+        date: "2025-08-23",
+        image: "data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' width='100' height='100' viewBox='0 0 100 100'%3e%3crect width='100' height='100' fill='%23f8fafc'/%3e%3ctext x='50' y='62' font-size='40' text-anchor='middle' fill='%23374151'%3e🚗️%3c/text%3e%3c/svg%3e"
     },
     {
         question: "How many golf courses are there in the US?",
@@ -619,6 +628,33 @@ const fermiQuestions = [
         hint: "Around 76% of the Earth's land surface is habitable.",
         date: "2025-08-28",
         image: "data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' width='100' height='100' viewBox='0 0 100 100'%3e%3crect width='100' height='100' fill='%23f8fafc'/%3e%3ctext x='50' y='62' font-size='40' text-anchor='middle' fill='%23374151'%3e🌲%3c/text%3e%3c/svg%3e"
+    },
+    {
+        question: "How many visitors did Disneyland Paris have in 2023?",
+        answer: 16100000,
+        category: "",
+        explanation: "",
+        hint: "The Louvre Museum had 8.9 million visitors in 2023.",
+        date: "2025-08-29",
+        image: "data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' width='100' height='100' viewBox='0 0 100 100'%3e%3crect width='100' height='100' fill='%23f8fafc'/%3e%3ctext x='50' y='62' font-size='40' text-anchor='middle' fill='%23374151'%3e🎢%3c/text%3e%3c/svg%3e"
+    },
+    {
+        question: "How many people worldwide were 80 years or older in 2021?",
+        answer: 155000000,
+        category: "",
+        explanation: "",
+        hint: "The UN estimates that 459 million people will be aged 80 or older by 2050.",
+        date: "2025-08-30",
+        image: "data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' width='100' height='100' viewBox='0 0 100 100'%3e%3crect width='100' height='100' fill='%23f8fafc'/%3e%3ctext x='50' y='62' font-size='40' text-anchor='middle' fill='%23374151'%3e👵%3c/text%3e%3c/svg%3e"
+    },
+    {
+        question: "How many pharmacies are there in the UK?",
+        answer: 13822,
+        category: "",
+        explanation: "",
+        hint: "There are around 1300 pharmacies in Scotland alone.",
+        date: "2025-08-31",
+        image: "data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' width='100' height='100' viewBox='0 0 100 100'%3e%3crect width='100' height='100' fill='%23f8fafc'/%3e%3ctext x='50' y='62' font-size='40' text-anchor='middle' fill='%23374151'%3e💊%3c/text%3e%3c/svg%3e"
     }
 ];
 
@@ -681,15 +717,26 @@ function initGame() {
     
     loadStats();
     loadCompletedQuestions();
-    
-    // Try to load saved game state first, then start new game if no saved state
-    const restoredFromSave = loadCurrentGameState();
-    if (!restoredFromSave) {
-        startNewGame();
+
+    // If URL has a specific question date, navigate to it first
+    let navigatedFromURL = false;
+    const initialRouteDate = parseURL();
+    if (initialRouteDate) {
+        navigatedFromURL = navigateToQuestion(initialRouteDate);
     }
-    
+
+    // If no route navigation occurred, try restoring saved state; else start new
+    let restoredFromSave = false;
+    if (!navigatedFromURL) {
+        restoredFromSave = loadCurrentGameState();
+        if (!restoredFromSave) {
+            startNewGame();
+        }
+    }
+
     setupEventListeners();
-    initRouting(restoredFromSave);
+    // Always initialize routing; allow it to handle future navigations
+    initRouting(false);
 }
 
 // Update current streak display
