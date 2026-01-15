@@ -2047,10 +2047,10 @@ const fermiQuestions = [
     },
     {
         question: "How much revenue in US dollars did Apple make in 2010?",
-        answer: 65225000000,
+        answer: 77200000000,
         category: "",
         explanation: "",
-        hint: "Apple sold roughly 40 million iPhones in 2010.",
+        hint: "Apple sold roughly 48 million iPhones in 2010.",
         date: "2026-01-16",
         image: "data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' width='100' height='100' viewBox='0 0 100 100'%3e%3crect width='100' height='100' fill='%23f0fdf4'/%3e%3ctext x='50' y='62' font-size='40' text-anchor='middle' fill='%2316a34a'%3e🍏%3c/text%3e%3c/svg%3e"
     },
