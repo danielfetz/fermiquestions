@@ -2100,13 +2100,13 @@ const fermiQuestions = [
         image: "data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' width='100' height='100' viewBox='0 0 100 100'%3e%3crect width='100' height='100' fill='%23f0fdf4'/%3e%3ctext x='50' y='62' font-size='40' text-anchor='middle' fill='%2316a34a'%3e👩‍✈️%3c/text%3e%3c/svg%3e"
     },
     {
-        question: "How many copies of Harry Potter books have been sold in the United States before 2023?",
-        answer: 230000000,
+        question: "How many hours after America declared independence did the first newspaper in London report about it?",
+        answer: 792,
         category: "",
         explanation: "",
-        hint: "Just below 40% of all Harry Potter book sales worldwide have been in the US.",
+        hint: "Sailing by ship westbound from Britain to America often took almost twice as long as the eastbound crossing.",
         date: "2026-01-22",
-        image: "data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' width='100' height='100' viewBox='0 0 100 100'%3e%3crect width='100' height='100' fill='%23f0fdf4'/%3e%3ctext x='50' y='62' font-size='40' text-anchor='middle' fill='%2316a34a'%3e📚%3c/text%3e%3c/svg%3e"
+        image: "data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' width='100' height='100' viewBox='0 0 100 100'%3e%3crect width='100' height='100' fill='%23f0fdf4'/%3e%3ctext x='50' y='62' font-size='40' text-anchor='middle' fill='%2316a34a'%3e🇺🇸%3c/text%3e%3c/svg%3e"
     },
     {
         question: "How many movies with more than 1000 user ratings are listed on the movie review platform IMDb? worldwide celebrate their 50th birthday today (December 24, 2025)?",
