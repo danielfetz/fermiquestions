@@ -2101,7 +2101,7 @@ const fermiQuestions = [
     },
     {
         question: "How many hours after America declared independence did the first newspaper in London report about it?",
-        answer: 792,
+        answer: 888,
         category: "",
         explanation: "",
         hint: "Sailing by ship westbound from Britain to America often took almost twice as long as the eastbound crossing.",
