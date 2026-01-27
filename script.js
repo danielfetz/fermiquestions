@@ -2145,6 +2145,15 @@ const fermiQuestions = [
         image: "data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' width='100' height='100' viewBox='0 0 100 100'%3e%3crect width='100' height='100' fill='%23f0fdf4'/%3e%3ctext x='50' y='62' font-size='40' text-anchor='middle' fill='%2316a34a'%3e📚%3c/text%3e%3c/svg%3e"
     },
     {
+        question: "How many public school teachers work in the United States as of 2024?",
+        answer: 3200000,
+        category: "",
+        explanation: "",
+        hint: "Around 4 million babies were born in 2010 in the United States.",
+        date: "2026-01-27",
+        image: "data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' width='100' height='100' viewBox='0 0 100 100'%3e%3crect width='100' height='100' fill='%23f0fdf4'/%3e%3ctext x='50' y='62' font-size='40' text-anchor='middle' fill='%2316a34a'%3e👩‍🏫%3c/text%3e%3c/svg%3e"
+    },
+    {
         question: "How many movies with more than 1000 user ratings are listed on the movie review platform IMDb? worldwide celebrate their 50th birthday today (December 24, 2025)?",
         answer: 275000,
         category: "",
