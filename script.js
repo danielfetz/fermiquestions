@@ -2230,7 +2230,7 @@ const fermiQuestions = [
         answer: 631706,
         category: "",
         explanation: "",
-        hint: "There were around 32,000 more cashiers working in grocery stores 5 years earlier.",
+        hint: "There were around 32,000 less cashiers working in grocery stores than 5 years earlier.",
         date: "2026-02-05",
         image: "data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' width='100' height='100' viewBox='0 0 100 100'%3e%3crect width='100' height='100' fill='%23f0fdf4'/%3e%3ctext x='50' y='62' font-size='40' text-anchor='middle' fill='%2316a34a'%3e🛒%3c/text%3e%3c/svg%3e"
     },
@@ -2287,6 +2287,15 @@ const fermiQuestions = [
         hint: "Airbnb reported over 491 million “Nights and Experiences Booked” in 2024.",
         date: "2026-02-11",
         image: "data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' width='100' height='100' viewBox='0 0 100 100'%3e%3crect width='100' height='100' fill='%23f0fdf4'/%3e%3ctext x='50' y='62' font-size='40' text-anchor='middle' fill='%2316a34a'%3e🏡%3c/text%3e%3c/svg%3e"
+    },
+    {
+        question: "How many supermarkets were there in the United States in 2024?",
+        answer: 45575,
+        category: "",
+        explanation: "",
+        hint: "In 2024, the average weekly sales per supermarket were around $711,806.",
+        date: "2026-02-12",
+        image: "data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' width='100' height='100' viewBox='0 0 100 100'%3e%3crect width='100' height='100' fill='%23f0fdf4'/%3e%3ctext x='50' y='62' font-size='40' text-anchor='middle' fill='%2316a34a'%3e🛒%3c/text%3e%3c/svg%3e"
     },
     {
         question: "How many movies with more than 1000 user ratings are listed on the movie review platform IMDb? worldwide celebrate their 50th birthday today (December 24, 2025)?",
