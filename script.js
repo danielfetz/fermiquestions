@@ -2305,7 +2305,7 @@ const fermiQuestions = [
         hint: "Around 3.35 million less people went snowboarding at least once during the 2024-25 ski season.",
         date: "2026-02-13",
         image: "data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' width='100' height='100' viewBox='0 0 100 100'%3e%3crect width='100' height='100' fill='%23f0fdf4'/%3e%3ctext x='50' y='62' font-size='40' text-anchor='middle' fill='%2316a34a'%3e⛷️%3c/text%3e%3c/svg%3e"
-    },
+    }, 
     {
         question: "How many gold medals have been won in Winter Olympics until 2022?",
         answer: 1172,
@@ -2314,6 +2314,15 @@ const fermiQuestions = [
         hint: "The first Winter Olympics took place in 1924 and only three countries have won more than 100 gold medals.",
         date: "2026-02-14",
         image: "data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' width='100' height='100' viewBox='0 0 100 100'%3e%3crect width='100' height='100' fill='%23f0fdf4'/%3e%3ctext x='50' y='62' font-size='40' text-anchor='middle' fill='%2316a34a'%3e🏅%3c/text%3e%3c/svg%3e"
+    },
+    {
+        question: "How many pairs of prescription glasses were sold in Germany in 2024?",
+        answer: 12000000,
+        category: "",
+        explanation: "",
+        hint: "In Germany, 22.6 million people wear glasses constantly and 16.1 million wear them occasionally.",
+        date: "2026-02-15",
+        image: "data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' width='100' height='100' viewBox='0 0 100 100'%3e%3crect width='100' height='100' fill='%23f0fdf4'/%3e%3ctext x='50' y='62' font-size='40' text-anchor='middle' fill='%2316a34a'%3e👓%3c/text%3e%3c/svg%3e"
     },
     {
         question: "How many movies with more than 1000 user ratings are listed on the movie review platform IMDb? worldwide celebrate their 50th birthday today (December 24, 2025)?",
