@@ -2330,7 +2330,7 @@ const fermiQuestions = [
         category: "",
         explanation: "",
         hint: "The spring summit window where almost all summits took place ran from May 9 to May 27, 2025.",
-        date: "2026-02-15",
+        date: "2026-02-16",
         image: "data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' width='100' height='100' viewBox='0 0 100 100'%3e%3crect width='100' height='100' fill='%23f0fdf4'/%3e%3ctext x='50' y='62' font-size='40' text-anchor='middle' fill='%2316a34a'%3e🗻%3c/text%3e%3c/svg%3e"
     },
     {
