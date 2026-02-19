@@ -273,15 +273,7 @@ async function fetchFirstGuessPercentile(questionDate) {
 }
 
 // Update the average tries display in the inline meta row
-function updateAverageDisplay(averageData) {
-    if (!avgTriesInline) return;
-    if (!averageData || averageData.totalPlayers < 1) {
-        avgTriesInline.textContent = '';
-        return;
-    }
-    const avgDisplay = averageData.average.toFixed(1);
-    avgTriesInline.textContent = `/ ${avgDisplay}`;
-}
+// Inline avg display removed entirely
 
 // Game state
 let currentQuestion = null;
@@ -329,7 +321,7 @@ const fermiQuestions = [
         explanation: "",
         hint: "Appx. 45.5% of the world's Jewish population lives in Israel.",
         date: "2025-07-25",
-        image: "data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' width='100' height='100' viewBox='0 0 100 100'%3e%3crect width='100' height='100' fill='%23fff8dc'/%3e%3ctext x='50' y='62' font-size='40' text-anchor='middle' fill='%236b46c1'%3e✡️%3c/text%3e%3c/svg%3e"
+        image: "data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' width='100' height='100' viewBox='0 0 100 100'%3e%3crect width='100' height='100' fill='%23f8fafc'/%3e%3ctext x='50' y='62' font-size='40' text-anchor='middle' fill='%23374151'%3e✡️%3c/text%3e%3c/svg%3e"
     },
     {
         question: "How many McDonald's restaurants exist worldwide?",
@@ -539,7 +531,7 @@ const fermiQuestions = [
         image: "data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' width='100' height='100' viewBox='0 0 100 100'%3e%3crect width='100' height='100' fill='%23f8fafc'/%3e%3ctext x='50' y='62' font-size='40' text-anchor='middle' fill='%23374151'%3e🪖%3c/text%3e%3c/svg%3e"
     },
     {
-        question: "How many airports are there in the US?",
+        question: "How many airports are there in the US, including small private airstrips and other types?",
         answer: 19482,
         category: "",
         explanation: "",
@@ -600,6 +592,33 @@ const fermiQuestions = [
         hint: "Dell was the third-largest PC vendor in 2024, selling 39.5 million units.",
         date: "2025-08-25",
         image: "data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' width='100' height='100' viewBox='0 0 100 100'%3e%3crect width='100' height='100' fill='%23f8fafc'/%3e%3ctext x='50' y='62' font-size='40' text-anchor='middle' fill='%23374151'%3e💻%3c/text%3e%3c/svg%3e"
+    },
+    {
+        question: "How many waiters and waitresses are there in the US?",
+        answer: 2280000,
+        category: "",
+        explanation: "",
+        hint: "Per capita food-away-from-home expenditure was $4,306 in 2024.",
+        date: "2025-08-26",
+        image: "data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' width='100' height='100' viewBox='0 0 100 100'%3e%3crect width='100' height='100' fill='%23f8fafc'/%3e%3ctext x='50' y='62' font-size='40' text-anchor='middle' fill='%23374151'%3e🍽️%3c/text%3e%3c/svg%3e"
+    },
+    {
+        question: "How many people worldwide speak English as a native or second language?",
+        answer: 1528000000,
+        category: "",
+        explanation: "",
+        hint: "There are around 390 million native English speakers in the world.",
+        date: "2025-08-27",
+        image: "data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' width='100' height='100' viewBox='0 0 100 100'%3e%3crect width='100' height='100' fill='%23f8fafc'/%3e%3ctext x='50' y='62' font-size='40' text-anchor='middle' fill='%23374151'%3e💬%3c/text%3e%3c/svg%3e"
+    },
+    {
+        question: "What percentage of the Earth's land surface is covered by forest?",
+        answer: 31,
+        category: "",
+        explanation: "",
+        hint: "Around 76% of the Earth's land surface is habitable.",
+        date: "2025-08-28",
+        image: "data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' width='100' height='100' viewBox='0 0 100 100'%3e%3crect width='100' height='100' fill='%23f8fafc'/%3e%3ctext x='50' y='62' font-size='40' text-anchor='middle' fill='%23374151'%3e🌲%3c/text%3e%3c/svg%3e"
     }
 ];
 
@@ -614,7 +633,6 @@ const hintContainer = document.getElementById('hint-container');
 const hintText = document.getElementById('hint-text');
 const questionMeta = document.getElementById('question-meta');
 const streakInline = document.getElementById('streak-inline');
-const avgTriesInline = document.getElementById('avg-tries-inline');
 const sourceBtn = document.getElementById('source-btn');
 const sourceModal = document.getElementById('source-modal');
 const sourceText = document.getElementById('source-text');
@@ -750,6 +768,8 @@ function startNewGame() {
     inputSection.style.display = 'block';
     newGameSection.style.display = 'none';
     shareBtn.style.display = 'none'; // Hide share button for new game
+    // Nudge attention to the counter on initial start (mobile only)
+    triggerShake(guessCounter);
     
     // Reset input
     guessInput.value = '';
@@ -906,7 +926,7 @@ function submitGuess() {
                 const currentRow = guessRows[currentGuess - 1];
                 const feedbackButton = currentRow.querySelector('.feedback-button');
                 feedbackButton.classList.add('show-tooltip');
-                setTimeout(() => feedbackButton.classList.remove('show-tooltip'), 2800);
+                setTimeout(() => feedbackButton.classList.remove('show-tooltip'), 3200);
                 localStorage.setItem('fermiTooltipTutorialShown', '1');
             }
         } catch (e) {
@@ -1268,7 +1288,6 @@ function endGame() {
     if (questionMeta) {
         questionMeta.style.display = 'flex';
         if (streakInline) streakInline.textContent = `🔥 ${stats.currentStreak}`;
-        if (avgTriesInline) avgTriesInline.textContent = '';
     }
     
     // Set result message
@@ -1287,15 +1306,7 @@ function endGame() {
     // Set correct answer
     correctAnswer.innerHTML = `The correct answer was <i>${formatNumber(currentQuestion.answer)}</i>`;
     
-    // Fetch and display average guesses from other players
-    if (currentQuestion) {
-        fetchAverageGuesses(currentQuestion.date).then(averageData => {
-            updateAverageDisplay(averageData);
-        }).catch(error => {
-            console.error('Error fetching average:', error);
-            // Just don't show average if there's an error
-        });
-    }
+    // Average tries inline removed; stats shown in Source modal on demand
 
     // Check if all available questions are completed
     const today = getCurrentDate();
@@ -1709,7 +1720,6 @@ function endGameDisplay() {
     if (questionMeta) {
         questionMeta.style.display = 'flex';
         if (streakInline) streakInline.textContent = `🔥 ${stats.currentStreak}`;
-        if (avgTriesInline) avgTriesInline.textContent = '';
     }
     
     // Set result message
@@ -1728,15 +1738,7 @@ function endGameDisplay() {
     // Set correct answer
     correctAnswer.innerHTML = `The correct answer was <i>${formatNumber(currentQuestion.answer)}</i>`;
     
-    // Fetch and display average guesses from other players (for restored games too)
-    if (currentQuestion) {
-        fetchAverageGuesses(currentQuestion.date).then(averageData => {
-            updateAverageDisplay(averageData);
-        }).catch(error => {
-            console.error('Error fetching average:', error);
-            // Just don't show average if there's an error
-        });
-    }
+    // Average tries inline removed; stats shown in Source modal on demand
 
     // Check if all available questions are completed
     const today = getCurrentDate();
@@ -1922,6 +1924,8 @@ function selectQuestion(question) {
                         inputSection.style.display = 'block';
                         newGameSection.style.display = 'none';
                         shareBtn.style.display = 'none';
+                        // Nudge attention to the counter when selecting question
+                        triggerShake(guessCounter);
                         
                         // Check if hint should be shown (2+ guesses and not won)
                         if (currentGuess >= 2 && !gameWon && currentQuestion.hint) {
@@ -1979,6 +1983,8 @@ function selectQuestion(question) {
         inputSection.style.display = 'block';
         newGameSection.style.display = 'none';
         shareBtn.style.display = 'none';
+        // Nudge attention for fresh selection
+        triggerShake(guessCounter);
         
         // Reset input
         guessInput.value = '';

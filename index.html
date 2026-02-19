@@ -8,7 +8,7 @@
     <meta name="description" content="A Wordle-style game for Fermi questions.">
     <link rel="stylesheet" href="styles.css">
     <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
-    <script defer data-domain="fermiquestions.org" src="https://plausible.io/js/script.hash.js"></script>
+    <script defer data-domain="fermiquestions.org" data-api="https://fermiquestions.daniel-fetz.workers.dev/fermiquestions/event" src="https://fermiquestions.daniel-fetz.workers.dev/fermiquestions/script.hash.js"></script>
     <!-- Supabase client library -->
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 </head>
@@ -51,8 +51,7 @@
             </div>
             <!-- Inline info shown only after game ends -->
             <div class="question-meta" id="question-meta" style="display: none;">
-                <span class="meta-item" id="streak-inline" tabindex="0" data-tooltip="This is how many questions in a row you've answered in 6 or less tries">🔥 0</span>
-                <span class="meta-item" id="avg-tries-inline" tabindex="0" data-tooltip="Average number of tries needed by players for this question"></span>
+                <span class="meta-item" id="streak-inline" tabindex="0" data-tooltip="Win streak">🔥 0</span>
                 <button id="source-btn" class="source-btn">Source & Stats <span class="arrow">></span></button>
             </div>
         </div>

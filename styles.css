@@ -153,13 +153,13 @@ button#stats-btn {
 
 .question-meta .meta-item {
     color: #333;
-    height: 60px;
+    height: 64px;
     text-align: center;
     background: #fff;
-    min-width: 100px;
-    padding: 24px 8px 16px 0;
+    min-width: 104px;
+    padding: 26px 12px 16px 0;
     border-width: 2px 0px 2px 2px;
-    border-style: dashed;
+    border-style: solid;
     border-color: #e9ecef;
     border-radius: 0 16px 0;
     position: relative;
@@ -210,10 +210,7 @@ button#stats-btn {
     opacity: 1;
 }
 
-#avg-tries-inline {
-    min-width: 110px;
-    margin-left: -8px;
-}
+/* avg-tries-inline removed */
 
 .source-btn {
     background: white;
@@ -225,8 +222,8 @@ button#stats-btn {
     cursor: pointer;
     width: 100%;
     padding: 21px 8px 12px;
-    height: 60px;
-    margin-left: -8px;
+    height: 64px;
+    margin-left: -12px;
     z-index: 4;
 }
 
@@ -445,6 +442,8 @@ button#stats-btn {
 /* Guesses Container */
 .guesses-container {
     margin-bottom: 20px;
+    position: relative;
+    z-index: 6; /* ensure tooltips above .question-box (z-index:5) */
 }
 
 .guess-row {
@@ -832,6 +831,17 @@ button#stats-btn {
         width: 100px;
         height: 100px;
     }
+    body {
+        background: repeating-linear-gradient(to bottom, rgb(0 0 0 / 1%) 0px, rgb(0 0 0 / 1%) 1px, transparent 2px, transparent 4px), linear-gradient(to bottom, rgb(16 163 127 / 5%) 0px, rgb(90 97 255 / 5%) 120px, rgb(232 240 242 / 37%) 200px, rgb(251 251 251) 290px, #f5f5f5 100%);
+        min-height: 100vh;   /* fallback */
+        min-height: 100dvh;
+    }
+    .question-meta .meta-item {
+        min-width: 112px;
+    }
+    .game-container {
+        box-shadow: 0 0px 5px #8579790f;
+    }
 }
 
 /* Responsive Design */
@@ -920,10 +930,7 @@ button#stats-btn {
     .strategy-link {
         display: inline;
     }
-    /* On mobile, hide inline average tries next to question, it still fetches from RPC so we might want to change that */
-    #avg-tries-inline {
-        display: none;
-    }
+    /* avg-tries-inline removed */
 }
 
 /* Animation for new guesses
