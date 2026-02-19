@@ -151,12 +151,13 @@ function initGame() {
     loadCompletedQuestions();
     
     // Try to load saved game state first, then start new game if no saved state
-    if (!loadCurrentGameState()) {
+    const restoredFromSave = loadCurrentGameState();
+    if (!restoredFromSave) {
         startNewGame();
     }
     
     setupEventListeners();
-    initRouting();
+    initRouting(restoredFromSave);
 }
 
 // Update current streak display
@@ -684,11 +685,17 @@ function loadCurrentGameState() {
     try {
         const gameState = JSON.parse(savedGameState);
         
-        // Check if the saved state is for the current question and not too old (24 hours)
+        // Check if the saved state is not too old (24 hours) and has valid question
         const maxAge = 24 * 60 * 60 * 1000; // 24 hours
         if (!gameState.question || 
-            gameState.question.date !== currentQuestion?.date ||
             (Date.now() - gameState.timestamp) > maxAge) {
+            clearCurrentGameState();
+            return false;
+        }
+        
+        // Check if the question from saved state is still available (not future-dated)
+        const today = getCurrentDate();
+        if (gameState.question.date > today) {
             clearCurrentGameState();
             return false;
         }
@@ -709,6 +716,10 @@ function loadCurrentGameState() {
         questionText.textContent = currentQuestion.question;
         questionCategory.innerHTML = getQuestionDisplayText(currentQuestion);
         updatePageTitle(currentQuestion);
+        updateStreakDisplay();
+        
+        // Update URL to reflect the restored question
+        updateURL(currentQuestion.date);
         
         // Clear guesses container and restore saved guesses
         clearGuesses();
@@ -717,6 +728,22 @@ function loadCurrentGameState() {
         // Update game state display
         if (gameOver) {
             endGameDisplay(); // Call display updates without stats/completion logic
+        } else {
+            // Show input section for continuing the game
+            guessCounter.style.display = 'block';
+            gameResult.style.display = 'none';
+            inputSection.style.display = 'block';
+            newGameSection.style.display = 'none';
+            shareBtn.style.display = 'none';
+            
+            // Enable input
+            guessInput.disabled = false;
+            submitBtn.disabled = false;
+            
+            // Auto-focus on desktop only
+            if (!('ontouchstart' in window) && !navigator.maxTouchPoints) {
+                setTimeout(() => guessInput.focus(), 100);
+            }
         }
         
         return true;
@@ -1182,9 +1209,14 @@ function handlePopState() {
 }
 
 // Initialize routing
-function initRouting() {
+function initRouting(skipInitialNavigation = false) {
     // Handle browser navigation
     window.addEventListener('popstate', handlePopState);
+    
+    // Skip initial navigation if we restored from saved state
+    if (skipInitialNavigation) {
+        return;
+    }
     
     // Handle initial page load
     const questionDate = parseURL();
