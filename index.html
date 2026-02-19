@@ -52,7 +52,10 @@
             </div>
             <!-- Inline info shown only after game ends -->
             <div class="question-meta" id="question-meta" style="display: none;">
-                <span class="meta-item" id="streak-inline" tabindex="0" data-tooltip="Win streak">🔥 0</span>
+                <span class="meta-item" tabindex="0" data-tooltip="Win streak">
+                    <span class="streak-emoji" aria-hidden="true">🔥</span>
+                    <span class="streak-count" id="streak-inline">0</span>
+                </span>
                 <button id="source-btn" class="source-btn">Source & Stats <span class="arrow">></span></button>
             </div>
         </div>

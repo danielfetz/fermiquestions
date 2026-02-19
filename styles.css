@@ -163,6 +163,20 @@ button#stats-btn {
     border-color: #e9ecef;
     border-radius: 0 16px 0;
     position: relative;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+}
+
+.streak-emoji { 
+    display: inline-block; 
+    line-height: 1; 
+    transform: translateY(-2.5px); 
+}
+.streak-count { 
+    display: inline-block; 
+    line-height: 1; 
 }
 
 /* Tooltips for inline meta items (appear below) */
@@ -577,7 +591,6 @@ button#stats-btn {
     display: flex;
     align-items: center;
     gap: 8px;
-    padding: 10px 15px;
     border-radius: 15px;
     flex: 1;
     border: 2px solid #eaecf0;
@@ -592,6 +605,8 @@ button#stats-btn {
     outline: none;
     min-width: 0;
     width: 100%;
+    padding: 18.5px 15px;
+    border-radius: 15px;
 }
 
 #guess-input::placeholder {
