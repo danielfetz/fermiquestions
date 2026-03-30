@@ -977,6 +977,52 @@ button#stats-btn {
     background-color: #2e86c1;
 }
 
+/* Game End Announcement Modal */
+.game-end-content {
+    text-align: center;
+}
+
+.game-end-content h2 {
+    font-size: 1.3rem;
+    margin-bottom: 16px;
+}
+
+.game-end-content p {
+    line-height: 1.6;
+    margin-bottom: 14px;
+}
+
+.game-end-cta {
+    display: inline-block;
+    background-color: #27ae60;
+    color: white;
+    text-decoration: none;
+    padding: 16px 28px;
+    border-radius: 12px;
+    font-family: 'Press Start 2P', monospace;
+    font-size: 0.85rem;
+    margin: 12px 0 8px;
+    transition: background-color 0.2s;
+}
+
+.game-end-cta:hover {
+    background-color: #219a52;
+}
+
+#close-game-end-btn {
+    display: block;
+    margin: 12px auto 0;
+    background: none;
+    color: #888;
+    font-size: 0.6rem;
+    padding: 10px;
+}
+
+#close-game-end-btn:hover {
+    color: #333;
+    background: none;
+}
+
 /* Stats Grid */
 .stats-grid {
     display: grid;

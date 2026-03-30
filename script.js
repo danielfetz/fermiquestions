@@ -2568,6 +2568,8 @@ const commentsList = document.getElementById('comments-list');
 const commentInput = document.getElementById('comment-input');
 const commentSubmitBtn = document.getElementById('comment-submit-btn');
 const commentCountEl = document.getElementById('comment-count');
+const gameEndModal = document.getElementById('game-end-modal');
+const closeGameEndBtn = document.getElementById('close-game-end-btn');
 
 
 // Confidence tooltip
@@ -4681,6 +4683,9 @@ function setupEventListeners() {
     closeHelpBtn.addEventListener('click', () => closeModal(helpModal));
     closeStatsBtn.addEventListener('click', () => closeModal(statsModal));
     closeQuestionsBtn.addEventListener('click', () => closeModal(questionsModal));
+    if (closeGameEndBtn && gameEndModal) {
+        closeGameEndBtn.addEventListener('click', () => closeModal(gameEndModal));
+    }
 
     // Comment buttons
     if (commentsBtn) commentsBtn.addEventListener('click', openComments);
@@ -4700,7 +4705,7 @@ function setupEventListeners() {
     shareStatsBtn.addEventListener('click', shareStats);
         
     // Close modals when clicking outside (desktop + mobile)
-    [helpModal, statsModal, questionsModal, sourceModal].forEach(modal => {
+    [helpModal, statsModal, questionsModal, sourceModal, gameEndModal].forEach(modal => {
         ['click', 'touchend'].forEach(event => {
             modal.addEventListener(event, e => e.target === modal && closeModal(modal));
         });
