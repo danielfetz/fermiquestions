@@ -1029,6 +1029,18 @@ button#stats-btn {
     border-color: #c8ced3;
 }
 
+/* Desktop has room for slightly larger popup text */
+@media (min-width: 769px) {
+    .game-end-content p {
+        font-size: 0.8rem;
+    }
+
+    .game-end-cta,
+    #close-game-end-btn {
+        font-size: 0.85rem;
+    }
+}
+
 /* Stats Grid */
 .stats-grid {
     display: grid;
