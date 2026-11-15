@@ -1019,8 +1019,8 @@ button#stats-btn {
     color: #333;
     border: 2px solid #dfe3e6;
     padding: 16px;
-    font-size: 0.7rem;
-    line-height: 1.6;
+    font-size: 0.85rem;
+    line-height: 1.4;
 }
 
 #close-game-end-btn:hover {
