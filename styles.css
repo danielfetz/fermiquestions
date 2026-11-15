@@ -993,15 +993,16 @@ button#stats-btn {
 }
 
 .game-end-cta {
-    display: inline-block;
+    display: block;
+    width: 100%;
     background-color: #27ae60;
     color: white;
     text-decoration: none;
-    padding: 16px 28px;
+    padding: 18px 16px;
     border-radius: 12px;
     font-family: 'Press Start 2P', monospace;
     font-size: 0.85rem;
-    margin: 12px 0 8px;
+    margin: 12px 0 0;
     transition: background-color 0.2s;
 }
 
@@ -1009,18 +1010,22 @@ button#stats-btn {
     background-color: #219a52;
 }
 
+/* Secondary button: clearly a button, but quieter than the Fermi Poker CTA */
 #close-game-end-btn {
     display: block;
-    margin: 12px auto 0;
-    background: none;
-    color: #888;
-    font-size: 0.6rem;
-    padding: 10px;
+    width: 100%;
+    margin: 10px 0 0;
+    background-color: #fff;
+    color: #333;
+    border: 2px solid #dfe3e6;
+    padding: 16px;
+    font-size: 0.7rem;
+    line-height: 1.6;
 }
 
 #close-game-end-btn:hover {
-    color: #333;
-    background: none;
+    background-color: #f8f9fa;
+    border-color: #c8ced3;
 }
 
 /* Stats Grid */
