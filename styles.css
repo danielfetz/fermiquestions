@@ -988,7 +988,8 @@ button#stats-btn {
 }
 
 .game-end-content p {
-    line-height: 1.6;
+    font-size: 0.7rem;
+    line-height: 1.7;
     margin-bottom: 14px;
 }
 
