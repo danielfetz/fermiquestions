@@ -977,6 +977,70 @@ button#stats-btn {
     background-color: #2e86c1;
 }
 
+/* Game End Announcement Modal */
+.game-end-content {
+    text-align: center;
+}
+
+.game-end-content h2 {
+    font-size: 1.3rem;
+    margin-bottom: 16px;
+}
+
+.game-end-content p {
+    font-size: 0.7rem;
+    line-height: 1.7;
+    margin-bottom: 14px;
+}
+
+.game-end-cta {
+    display: block;
+    width: 100%;
+    background-color: #27ae60;
+    color: white;
+    text-decoration: none;
+    padding: 15px 16px;
+    border-radius: 12px;
+    font-family: 'Press Start 2P', monospace;
+    font-size: 0.75rem;
+    margin: 12px 0 0;
+    transition: background-color 0.2s;
+}
+
+.game-end-cta:hover {
+    background-color: #219a52;
+}
+
+/* Secondary button: clearly a button, but quieter than the Fermi Poker CTA */
+#close-game-end-btn {
+    display: block;
+    width: 100%;
+    margin: 10px 0 0;
+    background-color: #fff;
+    color: #333;
+    border: 2px solid #dfe3e6;
+    padding: 13px 16px;
+    font-size: 0.75rem;
+    line-height: 1.4;
+}
+
+#close-game-end-btn:hover {
+    background-color: #f8f9fa;
+    border-color: #c8ced3;
+}
+
+/* Desktop has room for slightly larger popup text */
+@media (min-width: 769px) {
+    .game-end-content p {
+        font-size: 0.8rem;
+    }
+
+    .game-end-cta,
+    #close-game-end-btn {
+        font-size: 0.85rem;
+    }
+}
+
 /* Stats Grid */
 .stats-grid {
     display: grid;
